@@ -11,13 +11,17 @@
     "test:unit:dev": "cypress open --component"
   },
   "dependencies": {
+    "@quasar/extras": "^1.15.5",
+    "quasar": "^2.10.0",
     "vue": "^3.2.41",
     "vue-router": "^4.1.5"
   },
   "devDependencies": {
+    "@quasar/vite-plugin": "^1.2.3",
     "@vitejs/plugin-vue": "^3.2.0",
     "@vitejs/plugin-vue-jsx": "^2.0.1",
     "cypress": "^10.10.0",
+    "sass": "1.32.12",
     "start-server-and-test": "^1.14.0",
     "vite": "^3.2.0"
   }
