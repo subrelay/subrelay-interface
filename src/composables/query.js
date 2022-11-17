@@ -13,8 +13,10 @@ export const useQueryParams = (
   const router = useRouter();
   const queryParams = ref({});
   const searchText = ref('');
-  const selectedChain = ref(null);
   const loading = ref(false);
+  const selectedChain = ref(undefined);
+  const selectedStatus = ref(undefined);
+
   let sortingIndex, prevSortIndex;
 
   const storedQueryParams = computed(() => store.state[module].queryParams);
@@ -73,11 +75,28 @@ export const useQueryParams = (
 
   function handlePageChange(nextPage) {
     if (queryParams.value.offset === nextPage) return;
-    router.push({ query: { ...queryParams.value, offset: nextPage } });
+    pushQueryToRoute({ ...queryParams.value, offset: nextPage });
   }
 
   function handleSelectChain(chain_uuid) {
-    // router.push({ chain_uuid: { ...queryParams.value, chain_uuid } });
+    selectedChain.value = chain_uuid || undefined;
+
+    pushQueryToRoute({ ...queryParams.value, chain_uuid: selectedChain.value });
+  }
+
+  function handleSelectStatus(status) {
+    selectedStatus.value = status || undefined;
+    router.push({
+      query: { ...queryParams.value, status: selectedStatus.value },
+    });
+  }
+
+  function clearAllFilters() {
+    searchText.value = '';
+    selectedChain.value = undefined;
+    selectedStatus.value = undefined;
+    queryParams.value = defaultQueryParams.value;
+    pushQueryToRoute({ ...defaultQueryParams.value });
   }
 
   function getQueryParamsFromRoute(query) {
@@ -96,8 +115,10 @@ export const useQueryParams = (
     queryParams.value =
       storedQueryParams.value || getQueryParamsFromRoute(route.query);
 
-    const { order, sort, search } = route.query;
-    searchText.value = search;
+    const { order, sort, search, chain_uuid, status } = route.query;
+    searchText.value = search || '';
+    selectedChain.value = chain_uuid;
+    selectedStatus.value = status;
 
     if (order) {
       const index = findIndex(columns.value, { key: order });
@@ -110,13 +131,14 @@ export const useQueryParams = (
   onBeforeRouteUpdate((to, from, next) => {
     queryParams.value = getQueryParamsFromRoute(to.query);
 
-    const { order, sort, search } = to.query;
-    const prevOrder = from.query.order;
-
+    const { order, sort, search, chain_uuid, status } = to.query;
     searchText.value = search || '';
+    selectedChain.value = chain_uuid;
+    selectedStatus.value = status;
 
+    // Clear previous order if different
+    const prevOrder = from.query.order;
     if (order || prevOrder) {
-      // Clear previous order if different
       sortingIndex = findIndex(columns.value, { key: prevOrder });
       const nextSortIndex = findIndex(columns.value, { key: order });
 
@@ -145,20 +167,31 @@ export const useQueryParams = (
     { deep: true }
   );
 
-  onMounted(() => initQueryParams());
+  onMounted(() => {
+    initQueryParams();
+  });
 
   // NOTE TO UPDATE: Watch headers to update pagination params. If offset enterer manually in the url > totalPages => push to last page.
   // ref: Bes1221
 
   return [
-    { queryParams, searchText, selectedChain, loading, tablePagination },
+    {
+      queryParams,
+      searchText,
+      selectedChain,
+      selectedStatus,
+      loading,
+      tablePagination,
+    },
     {
       onDebouncedSearch,
       handleSort,
       handleSearch,
       handlePageChange,
       handleSelectChain,
+      handleSelectStatus,
       initQueryParams,
+      clearAllFilters,
     },
   ];
 };

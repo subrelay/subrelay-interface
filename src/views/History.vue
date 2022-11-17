@@ -169,15 +169,34 @@ const columns = ref([
 ]);
 
 const [
-  { queryParams, searchText, loading, tablePagination },
+  {
+    queryParams,
+    searchText,
+    loading,
+    tablePagination,
+    selectedChain,
+    selectedStatus,
+  },
   {
     onDebouncedSearch,
     handleSort,
     handleSearch,
     handlePageChange,
+    handleSelectChain,
+    handleSelectStatus,
     initQueryParams,
+    clearAllFilters,
   },
 ] = useQueryParams('history', columns, fetchData);
 
-provide('search', { searchText, onDebouncedSearch });
+provide('search', {
+  selectedChain,
+  selectedStatus,
+  queryParams,
+  searchText,
+  onDebouncedSearch,
+  handleSelectChain,
+  handleSelectStatus,
+  clearAllFilters,
+});
 </script>

@@ -1,6 +1,4 @@
 <template>
-  <div>queryParams {{ queryParams }}</div>
-
   <n-space vertical :size="30">
     <PageHeader :module="'workflows'" :statusOptions="statuses" />
 
@@ -184,22 +182,34 @@ function fetchData() {
 }
 
 const [
-  { queryParams, searchText, selectedChain, loading, tablePagination },
+  {
+    queryParams,
+    searchText,
+    loading,
+    tablePagination,
+    selectedChain,
+    selectedStatus,
+  },
   {
     onDebouncedSearch,
     handleSort,
     handleSearch,
     handlePageChange,
     handleSelectChain,
+    handleSelectStatus,
     initQueryParams,
+    clearAllFilters,
   },
 ] = useQueryParams('workflow', columns, fetchData);
 
 provide('search', {
+  selectedChain,
+  selectedStatus,
   queryParams,
   searchText,
-  selectedChain,
   onDebouncedSearch,
   handleSelectChain,
+  handleSelectStatus,
+  clearAllFilters,
 });
 </script>

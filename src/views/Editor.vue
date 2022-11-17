@@ -94,7 +94,7 @@
 <script setup>
 import { ref, watch, inject, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import useStore from 'vuex';
+import { useStore } from 'vuex';
 import Logo from '@/components/Common/Logo';
 import ShowOrEdit from '@/components/Common/ShowOrEdit';
 import Trigger from '@/components/Trigger/Trigger';

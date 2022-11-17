@@ -31,13 +31,17 @@
             placeholder="All statuses"
             :render-label="useRenderDropdownLabel"
             :options="statusOptions"
+            :value="selectedStatus"
+            @update:value="handleSelectStatus"
           />
         </n-gi>
       </n-grid>
 
       <n-tooltip trigger="hover">
         <template #trigger>
-          <n-button> <Icon icon="mdi:filter-remove" /></n-button>
+          <n-button @click="clearAllFilters">
+            <Icon icon="mdi:filter-remove"
+          /></n-button>
         </template>
         Clear all filters
       </n-tooltip>
@@ -52,19 +56,20 @@ import { Icon } from '@iconify/vue';
 import { useRenderDropdownLabel } from '@/composables';
 import ChainDropdown from '@/components/Common/ChainDropdown';
 const {
+  selectedChain,
+  selectedStatus,
   queryParams,
   searchText,
-  selectedChain,
   onDebouncedSearch,
   handleSelectChain,
+  handleSelectStatus,
+  clearAllFilters,
 } = inject('search');
 
 const props = defineProps({
   module: String,
   statusOptions: Array,
 });
-
-const test = ref(null);
 </script>
 
 <style lang="scss"></style>
