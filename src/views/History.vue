@@ -17,8 +17,9 @@
 <script setup>
 import ButtonWithPopConfirm from '@/components/Common/ButtonWithPopConfirm';
 import { Icon } from '@iconify/vue';
-import { ref, h, provide } from 'vue';
-import { NAvatar, NSwitch, NTooltip, useMessage } from 'naive-ui';
+import { ref, h, provide, computed } from 'vue';
+import { useStore } from 'vuex';
+import { NAvatar } from 'naive-ui';
 import PageHeader from '@/components/Common/PageHeader';
 import moment from 'moment';
 import {
@@ -26,6 +27,8 @@ import {
   useRenderSortIcon,
   useRenderCell,
 } from '@/composables';
+
+const store = useStore();
 
 const statuses = ref([
   {
@@ -62,38 +65,7 @@ function fetchData() {
   }, 300);
 }
 
-const createData = () => [
-  {
-    id: 10,
-    workflow: {
-      id: 10,
-      name: 'name 1',
-      chain: {
-        id: 1,
-        name: 'Acala',
-      },
-    },
-    started_at: '2022-11-02T03:12:39.018Z',
-    finished_at: '2022-11-02T03:12:39.018Z',
-    status: 'success',
-  },
-  {
-    id: 11,
-    workflow: {
-      id: 10,
-      name: 'name 2',
-      chain: {
-        id: 2,
-        name: 'Polkadot',
-      },
-    },
-    started_at: '2022-11-02T03:12:39.018Z',
-    finished_at: '2022-11-02T03:12:39.018Z',
-    status: 'failed',
-  },
-];
-
-const logs = createData();
+const logs = computed(() => store.state.history.logs);
 
 const columns = ref([
   {

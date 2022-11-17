@@ -3,6 +3,37 @@ export default {
 
   state: () => ({
     queryParams: null,
+
+    logs: [
+      {
+        id: 10,
+        workflow: {
+          id: 10,
+          name: 'name 1',
+          chain: {
+            id: 1,
+            name: 'Acala',
+          },
+        },
+        started_at: '2022-11-02T03:12:39.018Z',
+        finished_at: '2022-11-02T03:12:39.018Z',
+        status: 'success',
+      },
+      {
+        id: 11,
+        workflow: {
+          id: 10,
+          name: 'name 2',
+          chain: {
+            id: 2,
+            name: 'Polkadot',
+          },
+        },
+        started_at: '2022-11-02T03:12:39.018Z',
+        finished_at: '2022-11-02T03:12:39.018Z',
+        status: 'failed',
+      },
+    ],
   }),
 
   mutations: {
