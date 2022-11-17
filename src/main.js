@@ -1,28 +1,24 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
-import { Quasar } from 'quasar';
-import 'quasar/src/css/index.sass';
+import store from './store';
+import { Icon } from '@iconify/vue';
+import naive from 'naive-ui';
 
-import './assets/main.css';
+import JsonViewer from 'vue3-json-viewer';
+import 'vue3-json-viewer/dist/index.css';
+import './assets/main.scss';
+
+import mitt from 'mitt';
+const emitter = mitt();
 
 const app = createApp(App);
+app.provide('emitter', emitter);
+app.component('Icon', Icon);
+app.component('JsonViewer', JsonViewer);
 
 app.use(router);
-app.use(Quasar, {
-  plugins: {}, // import Quasar plugins and add here
-  /*
-  config: {
-    brand: {
-      // primary: '#e46262',
-      // ... or all other brand colors
-    },
-    notify: {...}, // default set of options for Notify Quasar plugin
-    loading: {...}, // default set of options for Loading Quasar plugin
-    loadingBar: { ... }, // settings for LoadingBar Quasar plugin
-    // ..and many more (check Installation card on each Quasar component/directive/plugin)
-  }
-  */
-});
+app.use(naive);
 
+app.use(store);
 app.mount('#app');
