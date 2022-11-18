@@ -1,65 +1,67 @@
+import axios from 'axios';
+
 export default {
   namespaced: true,
 
   state: () => ({
-    chains: [
-      {
-        uuid: '123',
-        name: 'Acala',
-        img_url: 'https://avatars.githubusercontent.com/u/54881907?s=280&v=4',
-        version: 'v1.2.0',
-      },
-      {
-        uuid: '456',
-        name: 'Polkadot',
-        img_url: 'https://cryptologos.cc/logos/polkadot-new-dot-logo.png',
-        version: 'v1.2.0',
-      },
-      {
-        uuid: '789',
-        name: 'Kusama',
-        img_url:
-          'https://www.liblogo.com/img-logo/ku2766k057-kusama-logo-kusama-ksm-bitprime.png',
-        version: 'v1.2.0',
-      },
-    ],
-
-    events: [
-      {
-        id: '1',
-        name: 'balances.deposit',
-        description: 'this event does this',
-      },
-      { id: '2', name: 'token.endowed', description: 'this event does that' },
-    ],
-
-    event: {
-      id: 123,
-      name: 'balances.deposit',
-      description: 'string',
-      fields: [
-        { name: 'data.who', type: 'string', description: 'who sent' },
-        { name: 'data.amount', type: 'number', description: '' },
-        { name: 'status', type: 'string', description: 'status of this event' },
-        {
-          name: 'extrinsic.name',
-          type: 'string',
-          description: 'this event belong to this extrinsic',
-        },
-      ],
-      sample: {
-        id: 123,
-        name: 'balances.deposit',
-        description: 'This Event Does This',
-        data: { who: '', amount: 123 },
-        status: 'success',
-        extrinsic: { name: 'balances.deposit' },
-        block: { hash: '', number: 123, timestamp: '' },
-      },
+    chains: [],
+    events: [],
+    event: null,
+    loading: {
+      getChainsLoading: null,
+      getEventsLoading: null,
     },
   }),
 
-  mutations: {},
+  mutations: {
+    getChains(state, chains) {
+      state.chains = chains;
+    },
 
-  actions: {},
+    getEvents(state, events) {
+      state.events = events;
+    },
+
+    getEvent(state, event) {
+      state.event = event;
+    },
+
+    setLoading(state, data) {
+      state.loading = { ...state.loading, ...data };
+    },
+  },
+
+  actions: {
+    async getChains({ commit }) {
+      commit('setLoading', { getChainsLoading: true });
+      try {
+        // const chains = await API.Chain.getChains();
+        const { data: chains } = await axios.get('/mockData/chains.json');
+        commit('getChains', chains);
+      } catch (error) {
+        commit('getAllDatasets', []);
+        console.log('error', error);
+      } finally {
+        setTimeout(() => {
+          commit('setLoading', { getChainsLoading: false });
+        }, 1000);
+      }
+    },
+
+    async getEvents({ commit }, chain_uuid) {
+      commit('setLoading', { getEventsLoading: true });
+      try {
+        // const events = await API.Chain.getEvents(chain_uuid);
+        const { data: events } = await axios.get('/mockData/events.json');
+        commit('getEvents', events);
+      } catch (error) {
+        commit('getAllDatasets', []);
+        console.log('error', error);
+      } finally {
+        setTimeout(() => {
+          commit('setLoading', { getEventsLoading: false });
+        }, 1000);
+      }
+    },
+  },
 };

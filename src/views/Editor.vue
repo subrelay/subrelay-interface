@@ -62,6 +62,7 @@
     </div>
 
     <pre>{{ workflowData }}</pre>
+
     <!-- STEPPER -->
     <div class="page_container">
       <n-steps
@@ -141,7 +142,6 @@ function onUpdateName(value) {
 }
 
 function handleUpdateTask(payload) {
-  // console.log('payload', payload);
   const index = workflowData.tasks.findIndex(
     (task) => task.name === payload.name
   );

@@ -14,6 +14,7 @@
     >
       <ChainDropdown
         v-model="formData.chain_uuid"
+        :onSelectChain="handleSelectChain"
         :placeholder="'Select Chain'"
       />
     </n-form-item>
@@ -25,13 +26,15 @@
 </template>
 
 <script setup>
-import { reactive, ref, inject, watch } from 'vue';
-
+import { reactive, ref, inject } from 'vue';
+import { useStore } from 'vuex';
 import ChainDropdown from '@/components/Common/ChainDropdown';
 
 const emits = defineEmits(['continue']);
 const formRef = ref(null);
 const formData = reactive({});
+const store = useStore();
+const eventBus = inject('eventBus');
 
 function onContinue(e) {
   e.preventDefault();
@@ -41,13 +44,17 @@ function onContinue(e) {
   });
 }
 
-const eventBus = inject('eventBus');
+function handleSelectChain(chain_uuid) {
+  let config = {};
 
-watch(
-  () => formData,
-  ({ chain_uuid }) => {
-    eventBus.emit('updateTask', { name: 'trigger', config: { chain_uuid } });
-  },
-  { deep: true }
-);
+  if (chain_uuid) {
+    store.dispatch('chain/getEvents', chain_uuid);
+    config = { chain_uuid };
+  } else {
+    store.commit('chain/getEvents', []);
+    config = { chain_uuid, event: null, conditions: [] };
+  }
+
+  eventBus.emit('updateTask', { name: 'trigger', config });
+}
 </script>

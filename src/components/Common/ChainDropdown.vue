@@ -7,13 +7,15 @@
     :value-field="'uuid'"
     :render-label="useRenderDropdownLabel"
     :options="chains"
+    :loading="loading"
+    :disabled="loading"
     :value="modelValue"
     @update:value="onUpdateValue"
   />
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRenderDropdownLabel, useDropdownFilter } from '@/composables';
 
@@ -32,4 +34,5 @@ function onUpdateValue(newValue) {
 }
 
 const chains = computed(() => store.state.chain.chains);
+const loading = computed(() => store.state.chain.loading.getChainsLoading);
 </script>

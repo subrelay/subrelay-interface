@@ -19,7 +19,11 @@
         </template>
 
         <template #default>
-          <component :is="step.component" @continue="nextStep" />
+          <component
+            :is="step.component"
+            @continue="nextStep"
+            @back="backStep"
+          />
         </template>
       </n-collapse-item>
     </n-collapse>
@@ -40,6 +44,10 @@ function updateExpanded(val) {
 
 function nextStep() {
   expandedNames.value = (parseInt(expandedNames.value) + 1).toString();
+}
+
+function backStep() {
+  expandedNames.value = (parseInt(expandedNames.value) - 1).toString();
 }
 </script>
 
