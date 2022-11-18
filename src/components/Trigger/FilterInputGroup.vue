@@ -92,9 +92,9 @@ const props = defineProps({
 
 const emits = defineEmits(['remove', 'input']);
 
-const propertyOptions = computed(() => store.state.event.event.fields);
+const propertyOptions = computed(() => store.state.chain.event.fields);
 const isLoading = ref(false);
-const emitter = inject('emitter');
+const eventBus = inject('eventBus');
 
 const requiredRule = ref({
   trigger: ['input'],
@@ -102,7 +102,7 @@ const requiredRule = ref({
     if (!value) {
       return new Error('Required!');
     }
-    emitter.emit('toggleTestFilter', { isDisabled: true });
+    eventBus.emit('toggleTestFilter', { isDisabled: true });
   },
 });
 

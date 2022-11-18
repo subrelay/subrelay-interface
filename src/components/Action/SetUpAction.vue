@@ -45,7 +45,7 @@ const rules = ref({
       required: true,
       trigger: ['input'],
       validator(_rule, value) {
-        emitter.emit('toggleTestAction', { isDisabled: true });
+        eventBus.emit('toggleTestAction', { isDisabled: true });
         if (!value) {
           return new Error('Required!');
         } else if (
@@ -64,7 +64,7 @@ const rules = ref({
       required: true,
       trigger: ['input'],
       validator(_rule, value) {
-        emitter.emit('toggleTestAction', { isDisabled: true });
+        eventBus.emit('toggleTestAction', { isDisabled: true });
         if (!value) {
           return new Error('Required!');
         } else if (/(-_)+|(_-)+|(-+)|(_+)|[^a-zA-Z0-9_-]/g.test(value)) {
@@ -79,7 +79,7 @@ const rules = ref({
       required: true,
       trigger: ['input'],
       validator(_rule, value) {
-        emitter.emit('toggleTestAction', { isDisabled: true });
+        eventBus.emit('toggleTestAction', { isDisabled: true });
         if (!value) {
           return new Error('Required!');
         } else if (/(\W{2,})|[^a-zA-Z0-9\W-_] /.test(value)) {
@@ -91,12 +91,12 @@ const rules = ref({
   ],
 });
 
-const emitter = inject('emitter');
+const eventBus = inject('eventBus');
 function onContinue(e) {
   e.preventDefault();
   formRef.value.validate(async (errors) => {
     if (errors) return;
-    emitter.emit('toggleTestAction', { isDisabled: false });
+    eventBus.emit('toggleTestAction', { isDisabled: false });
     emits('continue');
   });
 }

@@ -22,10 +22,11 @@ const props = defineProps({
   onSelectChain: { type: Function, default: () => {} },
 });
 
-const emits = defineEmits(['input', 'update:modelValue']);
+const emits = defineEmits(['update:modelValue']);
 
 function onUpdateValue(newValue) {
   emits('update:modelValue', newValue);
+
   props.onSelectChain(newValue);
 }
 

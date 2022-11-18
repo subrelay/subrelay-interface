@@ -19,7 +19,7 @@
           type="primary"
           class="action-button"
           icon-placement="right"
-          @click="onUpdateStep(2)"
+          @click="onChangeStep(2)"
           v-if="currentStep == 1"
         >
           Next
@@ -46,7 +46,7 @@
               type="primary"
               class="action-button"
               icon-placement="right"
-              @click="onUpdateStep(1)"
+              @click="onChangeStep(1)"
             >
               Back
               <template #icon>
@@ -58,14 +58,15 @@
       </n-space>
       <Logo />
 
-      <ShowOrEdit :onUpdateValue="onUpdateName" :value="workflowName" />
+      <ShowOrEdit :onUpdateValue="onUpdateName" :value="workflowData.name" />
     </div>
 
+    <pre>{{ workflowData }}</pre>
     <!-- STEPPER -->
     <div class="page_container">
       <n-steps
         :current="currentStep"
-        @update:current="onUpdateStep"
+        @update:current="onChangeStep"
         class="stepper"
       >
         <n-step title="TRIGGER" description="This is what starts the app">
@@ -92,7 +93,7 @@
 </template>
 
 <script setup>
-import { h, ref, watch, inject, computed } from 'vue';
+import { h, ref, reactive, watch, inject, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useDialog } from 'naive-ui';
 import { useStore } from 'vuex';
@@ -101,34 +102,61 @@ import ShowOrEdit from '@/components/Common/ShowOrEdit';
 import Trigger from '@/components/Trigger/Trigger';
 import Action from '@/components/Action/Action';
 
+const props = defineProps({ id: [String, Number] });
 const router = useRouter();
 const route = useRoute();
 const store = useStore();
 const dialog = useDialog();
 const currentStep = ref(null);
-const workflowName = ref('');
-
-const props = defineProps({ id: [String, Number] });
-
-function onUpdateName(value) {
-  workflowName.value = value;
-}
-
-function onUpdateStep(step) {
-  currentStep.value = step;
-  router.push({
-    name: step == 1 ? 'trigger' : 'action',
-    params: { id: props.id },
-  });
-}
-
-const emitter = inject('emitter');
-emitter.on('nextStep', () => onUpdateStep(2));
-emitter.on('finish', () => onFinish());
-
 const defaultQueryParams = computed(
   () => store.state.global.defaultQueryParams
 );
+
+// Build Workflow Data
+const workflowData = reactive({
+  name: null,
+  tasks: [
+    {
+      name: 'trigger',
+      type: 'trigger',
+      depend_on_name: null,
+
+      config: { event: 'null', chain_uuid: null, conditions: [] },
+    },
+    {
+      name: 'notify',
+      type: 'notification',
+      config: {
+        channel: 'webhook',
+        depend_on_name: 'trigger',
+        isError: false,
+        config: { headers: { API_KEY: null }, url: null },
+      },
+    },
+  ],
+});
+
+function onUpdateName(value) {
+  workflowData.name = value ? value : 'Untitled';
+}
+
+function handleUpdateTask(payload) {
+  // console.log('payload', payload);
+  const index = workflowData.tasks.findIndex(
+    (task) => task.name === payload.name
+  );
+  const task = workflowData.tasks[index];
+
+  workflowData.tasks[index].config = {
+    ...task.config,
+    ...payload.config,
+  };
+}
+
+const eventBus = inject('eventBus');
+eventBus.on('nextStep', () => onChangeStep(2));
+eventBus.on('finish', () => onFinish());
+eventBus.on('updateTask', (payload) => handleUpdateTask(payload));
 
 function goToHomePage() {
   dialog.warning({
@@ -167,14 +195,17 @@ watch(
   (route) => (currentStep.value = route.name === 'trigger' ? 1 : 2),
   { immediate: true }
 );
+
+function onChangeStep(step) {
+  currentStep.value = step;
+  router.push({
+    name: step == 1 ? 'trigger' : 'action',
+    params: { id: props.id },
+  });
+}
 </script>
 
 <style lang="scss">
-.action-button {
-  font-weight: 700;
-  width: 100px;
-}
-
 .stepper {
   width: 70%;
   margin: auto;

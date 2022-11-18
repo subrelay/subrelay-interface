@@ -88,7 +88,7 @@
       <n-button
         class="action_button"
         type="primary"
-        @click="emitter.emit('nextStep')"
+        @click="eventBus.emit('nextStep')"
         v-if="isTested"
       >
         Next
@@ -102,7 +102,7 @@ import JsonEventSample from '@/components/Common/JsonEventSample';
 import { computed, ref, inject } from 'vue';
 import { useStore } from 'vuex';
 
-const emitter = inject('emitter');
+const eventBus = inject('eventBus');
 const store = useStore();
 const isSuccess = ref(null);
 const loading = ref(null);

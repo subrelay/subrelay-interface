@@ -4,11 +4,14 @@
     @keyup.enter="onContinue"
     ref="formRef"
     :model="formData"
-    :rules="rules"
     :show-label="false"
     :validate-messages="{ required: 'Required!' }"
   >
-    <n-form-item path="event" class="w-100">
+    <n-form-item
+      path="event"
+      class="w-100"
+      :rule="{ required: true, trigger: 'input' }"
+    >
       <n-select
         clearable
         filterable
@@ -29,7 +32,7 @@
 </template>
 
 <script setup>
-import { ref, h } from 'vue';
+import { ref, h, reactive } from 'vue';
 import { NText } from 'naive-ui';
 import ChainDropdown from '@/components/Common/ChainDropdown';
 import {
@@ -39,10 +42,8 @@ import {
 } from '@/composables';
 
 const emits = defineEmits(['continue']);
-const formData = ref({});
 const formRef = ref(null);
-
-const rules = ref({ event: [{ required: true, trigger: 'input' }] });
+const formData = reactive({});
 
 const options = ref([
   { id: '1', name: 'balances.deposit', description: 'this event does this' },

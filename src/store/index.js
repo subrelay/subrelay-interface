@@ -1,7 +1,7 @@
 import { createStore } from 'vuex';
 import global from './global';
 import workflow from './workflow';
-import event from './event';
+import chain from './chain';
 import history from './history';
 import task from './task';
 
@@ -10,7 +10,7 @@ export default createStore({
     global,
     workflow,
     history,
-    event,
+    chain,
     task,
   },
 

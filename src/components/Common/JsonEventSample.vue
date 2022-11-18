@@ -16,7 +16,7 @@ import { useStore } from 'vuex';
 const store = useStore();
 
 const props = defineProps({ expandDepth: { type: Number, default: 0 } });
-const sampleData = computed(() => store.state.event.event.sample || {});
+const sampleData = computed(() => store.state.chain.event.sample || {});
 </script>
 
 <style lang="scss">

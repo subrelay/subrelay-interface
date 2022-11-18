@@ -15,8 +15,8 @@ const steps = shallowRef([
   { title: 'Test Action', name: '3', component: TestAction, isDisabled: true },
 ]);
 
-const emitter = inject('emitter');
-emitter.on('toggleTestAction', ({ isDisabled }) => {
+const eventBus = inject('eventBus');
+eventBus.on('toggleTestAction', ({ isDisabled }) => {
   steps.value = [...steps.value.slice(0, 2), { ...steps.value[2], isDisabled }];
 });
 </script>

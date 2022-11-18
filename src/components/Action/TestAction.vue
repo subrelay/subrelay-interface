@@ -70,7 +70,7 @@
       <n-button
         class="action_button"
         type="primary"
-        @click="emitter.emit('finish')"
+        @click="eventBus.emit('finish')"
         v-if="isTested"
       >
         Finish
@@ -87,7 +87,7 @@ const store = useStore();
 
 const loading = ref(null);
 const isTested = ref(false);
-const emitter = inject('emitter');
+const eventBus = inject('eventBus');
 
 const notiConfig = computed(() => {
   const notiTask = store.state.workflow.workflow.tasks.find(

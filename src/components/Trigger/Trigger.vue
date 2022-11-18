@@ -17,8 +17,8 @@ const steps = shallowRef([
   { title: 'Test filter', name: '4', component: TestFilter, isDisabled: true },
 ]);
 
-const emitter = inject('emitter');
-emitter.on('toggleTestFilter', ({ isDisabled }) => {
+const eventBus = inject('eventBus');
+eventBus.on('toggleTestFilter', ({ isDisabled }) => {
   // shallowRef can only update data in this way
   // check vue 3 docs
   // https://vuejs.org/guide/best-practices/performance.html#reduce-reactivity-overhead-for-large-immutable-structures

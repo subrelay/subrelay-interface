@@ -10,10 +10,10 @@ import 'vue3-json-viewer/dist/index.css';
 import './assets/main.scss';
 
 import mitt from 'mitt';
-const emitter = mitt();
+const eventBus = mitt();
 
 const app = createApp(App);
-app.provide('emitter', emitter);
+app.provide('eventBus', eventBus);
 app.component('Icon', Icon);
 app.component('JsonViewer', JsonViewer);
 

@@ -58,7 +58,7 @@ import { ref, inject, computed } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
-const emitter = inject('emitter');
+const eventBus = inject('eventBus');
 const emits = defineEmits(['continue']);
 const formRef = ref(null);
 
@@ -69,7 +69,7 @@ const form = ref({
 const conditionFormat = { variable: null, operator: null, value: null };
 
 function removeItem(index, conditionIdx) {
-  emitter.emit('toggleTestFilter', { isDisabled: true });
+  eventBus.emit('toggleTestFilter', { isDisabled: true });
   formRef.value.restoreValidation();
   const condition = form.value.conditions[index];
   if (condition.length === 1) {
@@ -92,10 +92,10 @@ function onContinue(e) {
   formRef.value.validate(async (errors) => {
     if (errors) return;
     if (form.value.conditions.length) {
-      emitter.emit('toggleTestFilter', { isDisabled: false });
+      eventBus.emit('toggleTestFilter', { isDisabled: false });
       emits('continue');
     } else {
-      emitter.emit('nextStep');
+      eventBus.emit('nextStep');
     }
   });
 }
