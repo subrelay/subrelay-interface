@@ -5,12 +5,11 @@
     @keyup.enter="onContinue"
     :model="EditorData.workflow.tasks[0].config"
     :show-label="false"
-    :validate-messages="{ required: 'Required!' }"
   >
     <n-form-item
       path="event"
       class="w-100"
-      :rule="{ required: true, trigger: 'input' }"
+      :rule="{ required: true, trigger: 'input', message: 'Required!' }"
     >
       <n-select
         clearable
@@ -44,15 +43,14 @@
 </template>
 
 <script setup>
-import { ref, computed, inject } from 'vue';
+import EditorData from '@/store/localStore/EditorData';
+import { ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import {
   useDropdownFilter,
   useRenderDropdownLabel,
   renderSelectTagWithDescription,
 } from '@/composables';
-
-import EditorData from '@/store/localStore/EditorData';
 
 const emits = defineEmits(['continue', 'back']);
 const store = useStore();

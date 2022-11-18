@@ -3,11 +3,10 @@
     class="step_container"
     ref="formRef"
     label-placement="left"
+    label-width="auto"
     @keyup.enter="onContinue"
     :model="formData"
     :rules="rules"
-    :validate-messages="{ required: 'Required!' }"
-    label-width="auto"
   >
     <n-form-item path="url" label="URL">
       <n-input clearable v-model:value="formData.url" />

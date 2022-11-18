@@ -36,7 +36,11 @@
             :options="operatorOptions"
             :value="props.condition.operator"
             @update:value="onInput($event, 'operator')"
-          />
+          >
+            <template #empty>
+              <n-empty description="Please select a property first" />
+            </template>
+          </n-select>
         </n-form-item>
       </n-gi>
 

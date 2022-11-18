@@ -5,12 +5,11 @@
     @keyup.enter="onContinue"
     :model="EditorData.workflow.tasks[0].config"
     :show-label="false"
-    :validate-messages="{ required: 'Required!' }"
   >
     <n-form-item
       path="chain_uuid"
       class="w-100"
-      :rule="{ required: true, trigger: ['input'] }"
+      :rule="{ required: true, trigger: ['input'], message: 'Required' }"
     >
       <ChainDropdown
         v-model="EditorData.workflow.tasks[0].config.chain_uuid"
@@ -26,11 +25,10 @@
 </template>
 
 <script setup>
+import EditorData from '@/store/localStore/EditorData';
 import ChainDropdown from '@/components/Common/ChainDropdown';
 import { ref, inject } from 'vue';
 import { useStore } from 'vuex';
-
-import EditorData from '@/store/localStore/EditorData';
 
 const emits = defineEmits(['continue']);
 const formRef = ref(null);

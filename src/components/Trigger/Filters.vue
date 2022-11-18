@@ -2,10 +2,13 @@
   <n-form
     class="step_container"
     ref="formRef"
-    :model="form"
+    :model="EditorData.workflow.tasks[0].config"
     :show-label="false"
   >
-    <div v-for="(group, index) in form.conditions" :key="index">
+    <div
+      v-for="(group, index) in EditorData.workflow.tasks[0].config.conditions"
+      :key="index"
+    >
       <n-divider title-placement="left" v-if="index !== 0"> OR </n-divider>
 
       <div v-for="(condition, conditionIdx) in group" :key="conditionIdx">
@@ -28,7 +31,7 @@
           attr-type="button"
           @click="addOr"
           type="info"
-          v-if="index === form.conditions.length - 1"
+          v-if="index === conditionLength - 1"
         >
           <Icon icon="fluent:add-16-filled" style="margin-right: 4px" />
           <span>Or</span>
@@ -40,58 +43,51 @@
       attr-type="button"
       @click="addOr"
       type="info"
-      v-if="!form.conditions.length"
+      v-if="!EditorData.workflow.tasks[0].config.conditions.length"
     >
       <Icon icon="fluent:add-16-filled" style="margin-right: 4px" />
       <span>Add filter condition</span>
     </n-button>
 
     <n-button class="action_button" type="primary" @click="onContinue">
-      {{ form.conditions.length ? 'Continue' : 'Skip filter' }}
+      {{ conditionLength ? 'Continue' : 'Skip filter' }}
     </n-button>
   </n-form>
 </template>
 
 <script setup>
 import FilterInputGroup from '@/components/Trigger/FilterInputGroup';
+import EditorData from '@/store/localStore/EditorData';
 import { ref, inject, computed } from 'vue';
 import { useStore } from 'vuex';
 
-const store = useStore();
 const eventBus = inject('eventBus');
 const emits = defineEmits(['continue']);
 const formRef = ref(null);
 
-const form = ref({
-  conditions: [],
+const conditionLength = computed(() => {
+  return EditorData.workflow.tasks[0].config.conditions.length;
 });
 
-const conditionFormat = { variable: null, operator: null, value: null };
-
-function removeItem(index, conditionIdx) {
+function removeItem(groupIdx, conditionIdx) {
   eventBus.emit('toggleTestFilter', { isDisabled: true });
   formRef.value.restoreValidation();
-  const condition = form.value.conditions[index];
-  if (condition.length === 1) {
-    form.value.conditions.splice(index, 1);
-  } else {
-    form.value.conditions[index].splice(conditionIdx, 1);
-  }
+  EditorData.removeCondition(groupIdx, conditionIdx);
 }
 
-function addAnd(index) {
-  form.value.conditions[index].push({ ...conditionFormat });
+function addAnd(groupIdx) {
+  EditorData.addAnd(groupIdx);
 }
 
 function addOr() {
-  form.value.conditions.push([{ ...conditionFormat }]);
+  EditorData.addOr();
 }
 
 function onContinue(e) {
   e.preventDefault();
   formRef.value.validate(async (errors) => {
     if (errors) return;
-    if (form.value.conditions.length) {
+    if (conditionLength.value) {
       eventBus.emit('toggleTestFilter', { isDisabled: false });
       emits('continue');
     } else {
@@ -100,9 +96,8 @@ function onContinue(e) {
   });
 }
 
-function updateForm(payload, index, conditionIdx) {
-  const { value, prop } = payload;
-  form.value.conditions[index][conditionIdx][prop] = value;
+function updateForm(payload, groupIdx, conditionIdx) {
+  EditorData.updateCondition(payload, groupIdx, conditionIdx);
 }
 </script>
 
