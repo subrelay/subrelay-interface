@@ -202,8 +202,8 @@ const walletAccount = computed(() => store.state.global.walletAccount);
 
 function onSelectProfileOption(key) {
   if (key === 'copyAddress') {
-    message.info(`Copied!`);
     navigator.clipboard.writeText(walletAccount.value.address);
+    message.success(`Copied!`);
   }
 
   if (key === 'changeAccount') {

@@ -66,6 +66,8 @@ const EditNode = defineComponent({
         placeholder: 'Enter name',
         onBlur: handleChange,
         clearable: true,
+        disabled: false,
+        status: inputValue.value ? 'success' : 'error',
         onUpdateValue: (v) => (inputValue.value = v),
         onKeyup: ({ key }) => {
           if (key === 'Enter') handleChange();

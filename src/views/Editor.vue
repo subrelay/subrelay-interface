@@ -92,8 +92,9 @@
 </template>
 
 <script setup>
-import { ref, watch, inject, computed } from 'vue';
+import { h, ref, watch, inject, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useDialog } from 'naive-ui';
 import { useStore } from 'vuex';
 import Logo from '@/components/Common/Logo';
 import ShowOrEdit from '@/components/Common/ShowOrEdit';
@@ -103,6 +104,7 @@ import Action from '@/components/Action/Action';
 const router = useRouter();
 const route = useRoute();
 const store = useStore();
+const dialog = useDialog();
 const currentStep = ref(null);
 const workflowName = ref('');
 
@@ -127,9 +129,33 @@ emitter.on('finish', () => onFinish());
 const defaultQueryParams = computed(
   () => store.state.global.defaultQueryParams
 );
+
 function goToHomePage() {
-  router.push({ name: 'workflows', query: defaultQueryParams.value });
-  // Throw a popup to confirm quit
+  dialog.warning({
+    title: 'Confirm quit',
+    content: () =>
+      h('div', { style: { fontSize: '0.85rem' } }, [
+        h(
+          'div',
+          'Changes you made will be discarded because the workflow is not yet completed.'
+        ),
+        h(
+          'div',
+          { style: { marginTop: '1rem' } },
+          'You can’t undo this action.'
+        ),
+      ]),
+    positiveText: 'Leave',
+    negativeText: 'Stay',
+
+    onPositiveClick: () => {
+      router.push({ name: 'workflows', query: defaultQueryParams.value });
+    },
+
+    // onNegativeClick: () => {
+    //   discard changes
+    // },
+  });
 }
 
 function onFinish() {

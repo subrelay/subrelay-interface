@@ -34,7 +34,7 @@
         >
           <n-space align="center" justify="space-between">
             <n-space align="center">
-              <PolkadotAccountIcon />
+              <PolkadotAccountIcon @click="onCopy(account)" />
               <div>
                 <div class="account_name">{{ account.name }}</div>
                 <n-text depth="3" class="account_address">
@@ -71,8 +71,8 @@
 import PolkadotAccountIcon from '@/components/PolkadotAccountIcon';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
+import { useMessage } from 'naive-ui';
 import { computed, ref, watch } from 'vue';
-import { isEmpty } from 'lodash';
 
 const props = defineProps({
   modelValue: { type: Boolean },
@@ -82,6 +82,7 @@ const emits = defineEmits(['update:modelValue']);
 
 const store = useStore();
 const router = useRouter();
+const message = useMessage();
 
 const accounts = ref([
   { name: 'Foo', address: '22EUKZfNUV6JPZ1baLscJShX7djtDDZnkiFZwqF7Fk8X5oUp' },
@@ -109,6 +110,10 @@ function onConfirm() {
   if (props.isSigningIn) {
     router.push({ name: 'workflows' });
   }
+}
+function onCopy({ address }) {
+  navigator.clipboard.writeText(address);
+  message.success('Copied!');
 }
 
 watch(
