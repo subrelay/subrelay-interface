@@ -1,9 +1,9 @@
 <template>
   <n-form
     class="step_container"
-    @keyup.enter="onContinue"
     ref="formRef"
-    :model="formData"
+    @keyup.enter="onContinue"
+    :model="EditorData.workflow.tasks[0].config"
     :show-label="false"
     :validate-messages="{ required: 'Required!' }"
   >
@@ -17,8 +17,8 @@
         filterable
         placeholder="Select Event"
         v-model:show="isShown"
-        v-model:value="formData.event"
         @update:value="handleSelectEvent"
+        :value="EditorData.workflow.tasks[0].config.event"
         :options="options"
         :value-field="'name'"
         :render-label="useRenderDropdownLabel"
@@ -44,7 +44,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, inject } from 'vue';
+import { ref, computed, inject } from 'vue';
 import { useStore } from 'vuex';
 import {
   useDropdownFilter,
@@ -52,10 +52,11 @@ import {
   renderSelectTagWithDescription,
 } from '@/composables';
 
+import EditorData from '@/store/localStore/EditorData';
+
 const emits = defineEmits(['continue', 'back']);
 const store = useStore();
 const formRef = ref(null);
-const formData = reactive({});
 
 const isShown = ref(false);
 const options = computed(() => store.state.chain.events);
@@ -73,8 +74,7 @@ function onBack() {
   emits('back');
 }
 
-const eventBus = inject('eventBus');
 function handleSelectEvent(event) {
-  eventBus.emit('updateTask', { name: 'trigger', config: { event } });
+  EditorData.setTrigger({ event });
 }
 </script>

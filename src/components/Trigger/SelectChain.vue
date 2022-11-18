@@ -3,7 +3,7 @@
     class="step_container"
     ref="formRef"
     @keyup.enter="onContinue"
-    :model="formData"
+    :model="EditorData.workflow.tasks[0].config"
     :show-label="false"
     :validate-messages="{ required: 'Required!' }"
   >
@@ -13,7 +13,7 @@
       :rule="{ required: true, trigger: ['input'] }"
     >
       <ChainDropdown
-        v-model="formData.chain_uuid"
+        v-model="EditorData.workflow.tasks[0].config.chain_uuid"
         :onSelectChain="handleSelectChain"
         :placeholder="'Select Chain'"
       />
@@ -26,13 +26,14 @@
 </template>
 
 <script setup>
-import { reactive, ref, inject } from 'vue';
-import { useStore } from 'vuex';
 import ChainDropdown from '@/components/Common/ChainDropdown';
+import { ref, inject } from 'vue';
+import { useStore } from 'vuex';
+
+import EditorData from '@/store/localStore/EditorData';
 
 const emits = defineEmits(['continue']);
 const formRef = ref(null);
-const formData = reactive({});
 const store = useStore();
 const eventBus = inject('eventBus');
 
@@ -45,16 +46,13 @@ function onContinue(e) {
 }
 
 function handleSelectChain(chain_uuid) {
-  let config = {};
-
+  EditorData.setTrigger({ chain_uuid });
   if (chain_uuid) {
     store.dispatch('chain/getEvents', chain_uuid);
-    config = { chain_uuid };
   } else {
+    EditorData.setTrigger({ event: null });
+    EditorData.setTrigger({ conditions: [] });
     store.commit('chain/getEvents', []);
-    config = { chain_uuid, event: null, conditions: [] };
   }
-
-  eventBus.emit('updateTask', { name: 'trigger', config });
 }
 </script>

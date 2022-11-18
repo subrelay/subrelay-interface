@@ -58,10 +58,13 @@
       </n-space>
       <Logo />
 
-      <ShowOrEdit :onUpdateValue="onUpdateName" :value="workflowData.name" />
+      <ShowOrEdit
+        :onUpdateValue="onUpdateName"
+        :value="EditorData.workflow.name"
+      />
     </div>
 
-    <pre>{{ workflowData }}</pre>
+    <pre>{{ EditorData }}</pre>
 
     <!-- STEPPER -->
     <div class="page_container">
@@ -94,10 +97,11 @@
 </template>
 
 <script setup>
-import { h, ref, reactive, watch, inject, computed } from 'vue';
+import { h, ref, watch, inject, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useDialog } from 'naive-ui';
 import { useStore } from 'vuex';
+
 import Logo from '@/components/Common/Logo';
 import ShowOrEdit from '@/components/Common/ShowOrEdit';
 import Trigger from '@/components/Trigger/Trigger';
@@ -114,49 +118,15 @@ const defaultQueryParams = computed(
 );
 
 // Build Workflow Data
-const workflowData = reactive({
-  name: null,
-  tasks: [
-    {
-      name: 'trigger',
-      type: 'trigger',
-      depend_on_name: null,
-
-      config: { event: 'null', chain_uuid: null, conditions: [] },
-    },
-    {
-      name: 'notify',
-      type: 'notification',
-      config: {
-        channel: 'webhook',
-        depend_on_name: 'trigger',
-        isError: false,
-        config: { headers: { API_KEY: null }, url: null },
-      },
-    },
-  ],
-});
+import EditorData from '@/store/localStore/EditorData';
 
 function onUpdateName(value) {
-  workflowData.name = value ? value : 'Untitled';
-}
-
-function handleUpdateTask(payload) {
-  const index = workflowData.tasks.findIndex(
-    (task) => task.name === payload.name
-  );
-  const task = workflowData.tasks[index];
-
-  workflowData.tasks[index].config = {
-    ...task.config,
-    ...payload.config,
-  };
+  EditorData.setName(value ? value : 'Untitled');
 }
 
 const eventBus = inject('eventBus');
 eventBus.on('nextStep', () => onChangeStep(2));
 eventBus.on('finish', () => onFinish());
-eventBus.on('updateTask', (payload) => handleUpdateTask(payload));
 
 function goToHomePage() {
   dialog.warning({
@@ -178,11 +148,10 @@ function goToHomePage() {
 
     onPositiveClick: () => {
       router.push({ name: 'workflows', query: defaultQueryParams.value });
+      EditorData.loadWorkflow();
     },
 
-    // onNegativeClick: () => {
-    //   discard changes
-    // },
+    onNegativeClick: () => {},
   });
 }
 

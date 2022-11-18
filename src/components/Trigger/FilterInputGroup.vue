@@ -57,8 +57,9 @@
           <n-input-number
             v-else
             class="w-100"
-            :value="props.condition.value"
+            :show-button="false"
             @update:value="onInput($event, 'value')"
+            :value="props.condition.value"
             clearable
           >
           </n-input-number>

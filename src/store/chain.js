@@ -6,7 +6,7 @@ export default {
   state: () => ({
     chains: [],
     events: [],
-    event: null,
+    event: {},
     loading: {
       getChainsLoading: null,
       getEventsLoading: null,
