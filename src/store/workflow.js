@@ -4,51 +4,6 @@ export default {
   state: () => ({
     queryParams: null,
 
-    workflow: {
-      id: 22,
-      created_at: '2022-11-02T03:12:39.018Z',
-      updated_at: '2022-11-02T03:12:39.018Z',
-      status: 'running',
-      name: 'workflow 1',
-      chain: { uuid: 'asdasdasd', name: 'Acala' },
-      tasks: [
-        {
-          id: 1,
-          name: 'trigger 1',
-          type: 'trigger',
-          config: {
-            event: 'balances.deposit',
-            chain_uuid: 'asdasdasd',
-            conditions: [
-              [{ variable: 'data.amount', operator: 'greaterThan', value: 1 }],
-              [{ variable: 'data.amount', operator: 'lessThan', value: 10 }],
-              [
-                { variable: 'data.amount', operator: 'greaterThan', value: 1 },
-                {
-                  variable: 'data.from',
-                  operator: 'equal',
-                  value: 'fooAndBar',
-                },
-              ],
-            ],
-          },
-          depend_on: null,
-        },
-        {
-          name: 'notify webhook',
-          type: 'notification',
-          config: {
-            channel: 'webhook',
-            config: {
-              headers: { API_KEY: 'encrypted' },
-              url: 'https://webhook.com',
-            },
-            depend_on: 1,
-          },
-        },
-      ],
-    },
-
     workflows: [
       {
         id: Math.floor(Math.random() * 10000),
@@ -96,15 +51,48 @@ export default {
       },
     ],
 
-    operators: {
-      number: [
-        { name: 'greater than', value: 'greaterThan' },
-        { name: 'greater than or equal', value: 'greaterThanEqual' },
-        { name: 'less than', value: 'lessThan' },
-      ],
-      string: [
-        { name: 'contains', value: 'contains' },
-        { name: 'exactly matches', value: 'exactMatch' },
+    workflow: {
+      id: 22,
+      created_at: '2022-11-02T03:12:39.018Z',
+      updated_at: '2022-11-02T03:12:39.018Z',
+      status: 'running',
+      name: 'workflow 1',
+      chain: { uuid: 'asdasdasd', name: 'Acala' },
+      tasks: [
+        {
+          id: 1,
+          name: 'trigger 1',
+          type: 'trigger',
+          config: {
+            event: 'balances.deposit',
+            chain_uuid: 'asdasdasd',
+            conditions: [
+              [{ variable: 'data.amount', operator: 'greaterThan', value: 1 }],
+              [{ variable: 'data.amount', operator: 'lessThan', value: 10 }],
+              [
+                { variable: 'data.amount', operator: 'greaterThan', value: 1 },
+                {
+                  variable: 'data.from',
+                  operator: 'equal',
+                  value: 'fooAndBar',
+                },
+              ],
+            ],
+          },
+          depend_on: null,
+        },
+        {
+          name: 'notify webhook',
+          type: 'notification',
+          config: {
+            channel: 'webhook',
+            config: {
+              headers: { API_KEY: 'encrypted' },
+              url: 'https://webhook.com',
+            },
+            depend_on: 1,
+          },
+        },
       ],
     },
   }),

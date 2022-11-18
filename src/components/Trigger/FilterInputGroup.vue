@@ -107,7 +107,7 @@ const requiredRule = ref({
 });
 
 const numberRule = ref({ type: 'number', ...requiredRule.value });
-const operators = computed(() => store.state.workflow.operators);
+const operators = computed(() => store.state.task.operators);
 const inputType = ref(null);
 const operatorOptions = ref([]);
 

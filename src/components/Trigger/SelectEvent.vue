@@ -32,9 +32,8 @@
 </template>
 
 <script setup>
-import { ref, h, reactive } from 'vue';
-import { NText } from 'naive-ui';
-import ChainDropdown from '@/components/Common/ChainDropdown';
+import { ref, reactive, computed } from 'vue';
+import { useStore } from 'vuex';
 import {
   useDropdownFilter,
   useRenderDropdownLabel,
@@ -42,13 +41,11 @@ import {
 } from '@/composables';
 
 const emits = defineEmits(['continue']);
+const store = useStore();
 const formRef = ref(null);
 const formData = reactive({});
 
-const options = ref([
-  { id: '1', name: 'balances.deposit', description: 'this event does this' },
-  { id: '2', name: 'token.endowed', description: 'this event does that' },
-]);
+const options = computed(() => store.state.chain.events);
 
 function onContinue(e) {
   e.preventDefault();
