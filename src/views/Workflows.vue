@@ -26,37 +26,12 @@ import {
   useQueryParams,
   useRenderSortIcon,
   useRenderCell,
+  useGetChainImg,
+  useWorkflowStatuses,
 } from '@/composables';
 
 const message = useMessage();
 const store = useStore();
-
-const statuses = ref([
-  {
-    label: 'Running',
-    value: 'running',
-    icon: 'fa:toggle-on',
-    iconColor: '#18a058',
-  },
-  {
-    label: 'Pausing',
-    value: 'pausing',
-    icon: 'fa:toggle-on',
-    iconColor: 'rgba(0, 0, 0, 0.14)',
-    iconRotate: 2,
-  },
-]);
-
-function getChainImg(chain) {
-  switch (chain.toLowerCase()) {
-    case 'acala':
-      return 'https://avatars.githubusercontent.com/u/54881907?s=280&v=4';
-    case 'polkadot':
-      return 'https://cryptologos.cc/logos/polkadot-new-dot-logo.png';
-    case 'kusama':
-      return 'https://www.liblogo.com/img-logo/ku2766k057-kusama-logo-kusama-ksm-bitprime.png';
-  }
-}
 
 function deleteRow(rowData) {
   message.info(`Workflow ${rowData.name} has been deleted`);
@@ -86,7 +61,7 @@ const columns = ref([
     render: ({ chain }) => {
       return h('div', { style: { display: 'flex', alignItems: 'center' } }, [
         h(NAvatar, {
-          src: getChainImg(chain.name),
+          src: useGetChainImg(chain.name),
           round: true,
           size: 'small',
           color: 'white',
@@ -173,7 +148,6 @@ const columns = ref([
 const workflows = computed(() => store.state.workflow.workflows);
 
 function fetchData() {
-  // console.log('component fetch data');
   loading.value = true;
 
   setTimeout(() => {
