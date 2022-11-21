@@ -33,7 +33,6 @@ import { useStore } from 'vuex';
 const emits = defineEmits(['continue']);
 const formRef = ref(null);
 const store = useStore();
-const eventBus = inject('eventBus');
 
 function onContinue(e) {
   e.preventDefault();

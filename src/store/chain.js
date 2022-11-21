@@ -6,22 +6,7 @@ export default {
   state: () => ({
     chains: [],
     events: [],
-    event: {
-      fields: [
-        { name: 'data.who', type: 'string', description: 'who sent' },
-        { name: 'data.amount', type: 'number', description: '' },
-        {
-          name: 'status',
-          type: 'string',
-          description: 'status of this event',
-        },
-        {
-          name: 'extrinsic.name',
-          type: 'string',
-          description: 'this event belong to this extrinsic',
-        },
-      ],
-    },
+    event: {},
     loading: {
       getChainsLoading: null,
       getEventsLoading: null,

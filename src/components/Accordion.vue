@@ -32,11 +32,9 @@
 
 <script setup>
 import { ref } from 'vue';
-const props = defineProps({
-  steps: Array,
-});
+const props = defineProps({ steps: Array });
 
-const expandedNames = ref('3');
+const expandedNames = ref('1');
 
 function updateExpanded(val) {
   expandedNames.value = val[0];

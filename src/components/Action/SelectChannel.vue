@@ -3,7 +3,7 @@
     class="step_container"
     @keyup.enter="onContinue"
     ref="formRef"
-    :model="formData"
+    :model="EditorData.workflow.tasks[1].config"
   >
     <n-form-item
       class="form_item_wrapper"
@@ -15,7 +15,10 @@
         trigger: ['input'],
       }"
     >
-      <n-radio-group v-model:value="formData.channel" class="channel_select">
+      <n-radio-group
+        v-model:value="EditorData.workflow.tasks[1].config.channel"
+        class="channel_select"
+      >
         <n-grid cols="2" y-gap="20" x-gap="30">
           <n-gi span="1" v-for="channel in channels" :key="channel.value">
             <n-radio-button
@@ -38,10 +41,9 @@
 </template>
 
 <script setup>
+import EditorData from '@/store/localStore/EditorData';
 import { ref } from 'vue';
-
 const formRef = ref(null);
-const formData = ref({});
 const emits = defineEmits(['continue']);
 
 const channels = ref([

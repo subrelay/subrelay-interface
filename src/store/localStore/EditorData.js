@@ -1,6 +1,8 @@
 import { reactive } from 'vue';
+
 const conditionFormat = { variable: null, operator: null, value: null };
-const defaultConfig = {
+
+const defaultConfig = () => ({
   name: null,
   tasks: [
     {
@@ -8,22 +10,25 @@ const defaultConfig = {
       type: 'trigger',
       depend_on_name: null,
       isError: false,
-      config: { event: 'balance', chain_uuid: '123', conditions: [] },
+      config: { event: null, chain_uuid: null, conditions: [] },
     },
     {
       name: 'notify',
       type: 'notification',
       config: {
-        channel: 'webhook',
+        channel: null,
         depend_on_name: 'trigger',
-        config: { headers: {}, url: null },
+        config: {
+          headers: [{ key: null, value: null }],
+          url: null,
+        },
       },
     },
   ],
-};
+});
 
 const editor = reactive({
-  workflow: { ...defaultConfig },
+  workflow: defaultConfig(),
 
   setName(name) {
     this.workflow.name = name;
@@ -64,7 +69,7 @@ const editor = reactive({
 
   loadWorkflow(data) {
     // Load data for milestone 2
-    this.workflow = data ? data : { ...defaultConfig };
+    this.workflow = data ? data : defaultConfig();
   },
 });
 
