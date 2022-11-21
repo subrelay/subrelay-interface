@@ -32,10 +32,16 @@
                 <b v-if="subIndex !== 0"> AND </b>
                 <i> {{ condition.variable }} </i>
                 <span>
-                  {{ condition.operator === 'contains' ? '' : ' is ' }}</span
-                >
+                  {{
+                    ['greaterThan, greaterThanEqual', 'lessThan'].includes(
+                      condition.operator
+                    )
+                      ? ' is '
+                      : ' '
+                  }}
+                </span>
                 <span> {{ parsePascalCaseStr(condition.operator) }}</span>
-                <i> {{ ' ' + condition.value }}</i>
+                <i> {{ condition.value ? ' condition.value' : '' }}</i>
               </span>
             </div>
           </n-space>
@@ -99,6 +105,7 @@
 
 <script setup>
 import JsonEventSample from '@/components/Common/JsonEventSample';
+import EditorData from '@/store/localStore/EditorData';
 import { computed, ref, inject } from 'vue';
 import { useStore } from 'vuex';
 
@@ -109,10 +116,7 @@ const loading = ref(null);
 const isTested = ref(null);
 
 const conditions = computed(() => {
-  const triggerTask = store.state.workflow.workflow.tasks.find(
-    (task) => task.type === 'trigger'
-  );
-  return triggerTask.config.conditions;
+  return EditorData.workflow.tasks[0].config.conditions;
 });
 
 function onTest() {

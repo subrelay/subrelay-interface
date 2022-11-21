@@ -24,6 +24,7 @@
             <n-radio-button
               :disabled="channel.value !== 'webhook'"
               :value="channel.value"
+              :bordered="false"
               class="channel_item"
             >
               <Icon :icon="channel.icon" class="icon" />
@@ -71,9 +72,7 @@ function onContinue(e) {
   }
 
   .n-radio-button {
-    border: none;
-
-    &:last-child {
+    &:not(.n-radio-button--checked) {
       border: none;
     }
   }

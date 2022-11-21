@@ -63,7 +63,9 @@ const keyRule = ref({
 const valueRule = ref({
   required: true,
   trigger: ['input'],
+  type: ['string', 'number'],
   validator(_rule, value) {
+    console.log('value', value);
     eventBus.emit('toggleTestAction', { isDisabled: true });
     if (!value) {
       return new Error('Required!');

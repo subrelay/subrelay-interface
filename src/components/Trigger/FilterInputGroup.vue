@@ -17,7 +17,11 @@
             :options="propertyOptions"
             :value="props.condition.variable"
             @update:value="onSelectProp"
-          />
+          >
+            <template #empty>
+              <n-empty description="Please select a chain and event first" />
+            </template>
+          </n-select>
         </n-form-item>
       </n-gi>
 

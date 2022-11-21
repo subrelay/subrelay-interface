@@ -81,6 +81,12 @@ const selectedChain = computed(() => EditorData.workflow.tasks[0].config.uuid);
 
 function handleSelectEvent(eventId) {
   EditorData.setTrigger({ eventId });
-  store.dispatch('chain/getEvent', { uuid: selectedChain.value, eventId });
+
+  if (eventId) {
+    store.dispatch('chain/getEvent', { uuid: selectedChain.value, eventId });
+  } else {
+    EditorData.setTrigger({ conditions: [] });
+    store.commit('chain/getEvent', {});
+  }
 }
 </script>

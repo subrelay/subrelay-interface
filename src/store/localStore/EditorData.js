@@ -16,11 +16,11 @@ const defaultConfig = () => ({
       name: 'notify',
       type: 'notification',
       config: {
-        channel: null,
+        channel: 'webhook',
         depend_on_name: 'trigger',
         config: {
-          headers: [{ key: null, value: null }],
-          url: null,
+          headers: [{ key: 's', value: '1' }],
+          url: 'https://www.naiveui.com/en-US/os-theme/components/radio',
         },
       },
     },

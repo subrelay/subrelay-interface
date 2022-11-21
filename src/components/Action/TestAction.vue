@@ -17,7 +17,9 @@
 
         <div class="input-item">
           <div class="title">Header:</div>
-          <n-text code>{{ notiConfig.headers }}</n-text>
+          <n-text code>
+            {{ headerObj }}
+          </n-text>
         </div>
 
         <n-space vertical>
@@ -81,6 +83,7 @@
 
 <script setup>
 import JsonEventSample from '@/components/Common/JsonEventSample';
+import EditorData from '@/store/localStore/EditorData';
 import { computed, ref, inject } from 'vue';
 import { useStore } from 'vuex';
 const store = useStore();
@@ -90,10 +93,7 @@ const isTested = ref(false);
 const eventBus = inject('eventBus');
 
 const notiConfig = computed(() => {
-  const notiTask = store.state.workflow.workflow.tasks.find(
-    (task) => task.type === 'notification'
-  );
-  return notiTask.config.config;
+  return EditorData.workflow.tasks[1].config.config;
 });
 
 const taskResponse = ref({
@@ -103,6 +103,10 @@ const taskResponse = ref({
 });
 
 const isSuccess = computed(() => taskResponse.value.status === 'success');
+const headerObj = computed(() => {
+  const keyValueArr = Object.values(notiConfig.value.headers[0]);
+  return Object.fromEntries([keyValueArr]);
+});
 
 function onTest() {
   loading.value = true;
