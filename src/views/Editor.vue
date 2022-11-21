@@ -64,7 +64,7 @@
       />
     </div>
 
-    <!-- <pre>{{ EditorData }}</pre> -->
+    <pre>{{ EditorData }}</pre>
 
     <!-- STEPPER -->
     <div class="page_container">

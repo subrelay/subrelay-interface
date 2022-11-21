@@ -78,10 +78,10 @@ export const useQueryParams = (
     pushQueryToRoute({ ...queryParams.value, offset: nextPage });
   }
 
-  function handleSelectChain(chain_uuid) {
-    selectedChain.value = chain_uuid || undefined;
+  function handleSelectChain(uuid) {
+    selectedChain.value = uuid || undefined;
 
-    pushQueryToRoute({ ...queryParams.value, chain_uuid: selectedChain.value });
+    pushQueryToRoute({ ...queryParams.value, uuid: selectedChain.value });
   }
 
   function handleSelectStatus(status) {
@@ -101,7 +101,7 @@ export const useQueryParams = (
 
   function getQueryParamsFromRoute(query) {
     return {
-      chain_uuid: query.chain_uuid || undefined,
+      uuid: query.uuid || undefined,
       status: query.status || undefined,
       search: (query.search && query.search.trim()) || undefined,
       order: query.order || undefined,
@@ -115,9 +115,9 @@ export const useQueryParams = (
     queryParams.value =
       storedQueryParams.value || getQueryParamsFromRoute(route.query);
 
-    const { order, sort, search, chain_uuid, status } = route.query;
+    const { order, sort, search, uuid, status } = route.query;
     searchText.value = search || '';
-    selectedChain.value = chain_uuid;
+    selectedChain.value = uuid;
     selectedStatus.value = status;
 
     if (order) {
@@ -131,9 +131,9 @@ export const useQueryParams = (
   onBeforeRouteUpdate((to, from, next) => {
     queryParams.value = getQueryParamsFromRoute(to.query);
 
-    const { order, sort, search, chain_uuid, status } = to.query;
+    const { order, sort, search, uuid, status } = to.query;
     searchText.value = search || '';
-    selectedChain.value = chain_uuid;
+    selectedChain.value = uuid;
     selectedStatus.value = status;
 
     // Clear previous order if different

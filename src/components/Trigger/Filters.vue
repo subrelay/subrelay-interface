@@ -59,7 +59,6 @@
 import FilterInputGroup from '@/components/Trigger/FilterInputGroup';
 import EditorData from '@/store/localStore/EditorData';
 import { ref, inject, computed } from 'vue';
-import { useStore } from 'vuex';
 
 const eventBus = inject('eventBus');
 const emits = defineEmits(['continue']);

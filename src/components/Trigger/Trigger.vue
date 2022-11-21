@@ -11,10 +11,10 @@ import TestFilter from '@/components/Trigger/TestFilter.vue';
 import Accordion from '@/components/Accordion.vue';
 
 const steps = shallowRef([
-  { title: 'Select chain', name: '1', component: SelectChain },
+  { title: 'Select Chain', name: '1', component: SelectChain },
   { title: 'Select Event', name: '2', component: SelectEvent },
-  { title: 'Filter setup', name: '3', component: Filters },
-  { title: 'Test filter', name: '4', component: TestFilter, isDisabled: true },
+  { title: 'Filter Setup', name: '3', component: Filters },
+  { title: 'Test Filter', name: '4', component: TestFilter, isDisabled: true },
 ]);
 
 const eventBus = inject('eventBus');

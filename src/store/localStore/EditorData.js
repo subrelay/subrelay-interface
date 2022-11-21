@@ -10,7 +10,7 @@ const defaultConfig = () => ({
       type: 'trigger',
       depend_on_name: null,
       isError: false,
-      config: { event: null, chain_uuid: null, conditions: [] },
+      config: { eventId: null, uuid: null, conditions: [] },
     },
     {
       name: 'notify',

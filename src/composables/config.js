@@ -27,7 +27,7 @@ export const useLogStatuses = ref([
   },
 ]);
 
-const useWorkflowStatuses = ref([
+export const useWorkflowStatuses = ref([
   // will be updated later to get status list of all workflows
   {
     label: 'Running',

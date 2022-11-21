@@ -7,9 +7,14 @@
     :show-label="false"
   >
     <n-form-item
-      path="event"
+      path="eventId"
       class="w-100"
-      :rule="{ required: true, trigger: 'input', message: 'Required!' }"
+      :rule="{
+        required: true,
+        trigger: 'input',
+        type: 'number',
+        message: 'Required!',
+      }"
     >
       <n-select
         clearable
@@ -17,9 +22,9 @@
         placeholder="Select Event"
         v-model:show="isShown"
         @update:value="handleSelectEvent"
-        :value="EditorData.workflow.tasks[0].config.event"
+        :value="EditorData.workflow.tasks[0].config.eventId"
         :options="options"
-        :value-field="'name'"
+        :value-field="'id'"
         :render-label="useRenderDropdownLabel"
         :render-tag="renderSelectTagWithDescription"
         :filter="useDropdownFilter"
@@ -72,7 +77,10 @@ function onBack() {
   emits('back');
 }
 
-function handleSelectEvent(event) {
-  EditorData.setTrigger({ event });
+const selectedChain = computed(() => EditorData.workflow.tasks[0].config.uuid);
+
+function handleSelectEvent(eventId) {
+  EditorData.setTrigger({ eventId });
+  store.dispatch('chain/getEvent', { uuid: selectedChain.value, eventId });
 }
 </script>

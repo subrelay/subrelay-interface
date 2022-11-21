@@ -25,9 +25,9 @@ export const useRenderCell = (value) => {
 };
 
 export const useRenderDropdownLabel = (option) => {
-  const iconNode = option.img_url
+  const iconNode = option.imageUrl
     ? h(NAvatar, {
-        src: option.img_url,
+        src: option.imageUrl,
         round: true,
         size: 'small',
         color: 'white',
@@ -52,12 +52,17 @@ export const useRenderDropdownLabel = (option) => {
     );
   }
 
+  const getLabel = () => {
+    if (option.pallet) {
+      return `${option.pallet}.${option.name}`;
+    }
+
+    return option.name || option.label;
+  };
+
   return h('div', { style: { display: 'flex', alignItems: 'center' } }, [
     iconNode,
-    h('div', { style: { padding: '4px 0' } }, [
-      h('div', option.name || option.label),
-      descNode,
-    ]),
+    h('div', { style: { padding: '4px 0' } }, [h('div', getLabel()), descNode]),
   ]);
 };
 
@@ -65,6 +70,9 @@ export const renderSelectTagWithDescription = ({ option }) => {
   return h(
     'div',
     { style: { display: 'flex', alignItems: 'center' } },
-    option.name
+    {
+      default: () =>
+        `${option.pallet ? `${option.pallet}.` : ''}${option.name}`,
+    }
   );
 };

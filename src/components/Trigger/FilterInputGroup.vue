@@ -32,10 +32,11 @@
             placeholder="Select Operator"
             :render-label="renderLabel"
             :loading="isLoading"
+            :disabled="isLoading"
             :filter="useDropdownFilter"
             :options="operatorOptions"
             :value="props.condition.operator"
-            @update:value="onInput($event, 'operator')"
+            @update:value="onInput('operator', $event)"
           >
             <template #empty>
               <n-empty description="Please select a property first" />
@@ -44,7 +45,7 @@
         </n-form-item>
       </n-gi>
 
-      <n-gi>
+      <n-gi v-if="inputType !== 'boolean'">
         <n-form-item
           :rule="numberRule"
           :path="`conditions[${props.index}][${props.conditionIdx}].value`"
@@ -54,7 +55,7 @@
             clearable
             class="w-100"
             :value="props.condition.value"
-            @update:value="onInput($event, 'value')"
+            @update:value="onInput('value', $event)"
           >
           </n-input>
 
@@ -62,7 +63,7 @@
             v-else
             class="w-100"
             :show-button="false"
-            @update:value="onInput($event, 'value')"
+            @update:value="onInput('value', $event)"
             :value="props.condition.value"
             clearable
           >
@@ -117,12 +118,14 @@ const inputType = ref(null);
 const operatorOptions = ref([]);
 
 function onSelectProp(val, options) {
-  onInput(null, 'operator');
-  onInput(null, 'value');
-  onInput(val, 'variable');
+  onInput('variable', val);
+
+  if (!val) {
+    onInput('operator', null);
+    onInput('value', null);
+  }
 
   isLoading.value = true;
-
   inputType.value = options?.type;
   operatorOptions.value = operators.value[inputType.value];
 
@@ -131,8 +134,8 @@ function onSelectProp(val, options) {
   }, 200);
 }
 
-function onInput(value, prop) {
-  emits('input', { value, prop });
+function onInput(prop, value) {
+  emits('input', { prop, value });
 }
 
 function renderLabel(option) {

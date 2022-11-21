@@ -7,12 +7,12 @@
     :show-label="false"
   >
     <n-form-item
-      path="chain_uuid"
+      path="uuid"
       class="w-100"
       :rule="{ required: true, trigger: ['input'], message: 'Required' }"
     >
       <ChainDropdown
-        v-model="EditorData.workflow.tasks[0].config.chain_uuid"
+        v-model="EditorData.workflow.tasks[0].config.uuid"
         :onSelectChain="handleSelectChain"
         :placeholder="'Select Chain'"
       />
@@ -27,7 +27,7 @@
 <script setup>
 import EditorData from '@/store/localStore/EditorData';
 import ChainDropdown from '@/components/Common/ChainDropdown';
-import { ref, inject } from 'vue';
+import { ref } from 'vue';
 import { useStore } from 'vuex';
 
 const emits = defineEmits(['continue']);
@@ -42,12 +42,12 @@ function onContinue(e) {
   });
 }
 
-function handleSelectChain(chain_uuid) {
-  EditorData.setTrigger({ chain_uuid });
-  if (chain_uuid) {
-    store.dispatch('chain/getEvents', chain_uuid);
+function handleSelectChain(uuid) {
+  EditorData.setTrigger({ uuid });
+  if (uuid) {
+    store.dispatch('chain/getEvents', uuid);
   } else {
-    EditorData.setTrigger({ event: null });
+    EditorData.setTrigger({ eventId: null });
     EditorData.setTrigger({ conditions: [] });
     store.commit('chain/getEvents', []);
   }

@@ -1,6 +1,6 @@
 <template>
   <n-space vertical :size="30">
-    <PageHeader :module="'workflows'" :statusOptions="statuses" />
+    <PageHeader :module="'workflows'" :statusOptions="useWorkflowStatuses" />
 
     <n-data-table
       :columns="columns"

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import API from '@/api';
 
 export default {
   namespaced: true,
@@ -10,57 +10,56 @@ export default {
     loading: {
       getChainsLoading: null,
       getEventsLoading: null,
+      getEventLoading: null,
     },
   }),
 
   mutations: {
-    getChains(state, chains) {
-      state.chains = chains;
-    },
-
-    getEvents(state, events) {
-      state.events = events;
-    },
-
-    getEvent(state, event) {
-      state.event = event;
-    },
-
-    setLoading(state, data) {
-      state.loading = { ...state.loading, ...data };
-    },
+    getChains: (state, chains) => (state.chains = chains),
+    getEvents: (state, events) => (state.events = events),
+    getEvent: (state, event) => (state.event = event),
+    setLoading: (state, data) =>
+      (state.loading = { ...state.loading, ...data }),
   },
 
   actions: {
     async getChains({ commit }) {
       commit('setLoading', { getChainsLoading: true });
       try {
-        // const chains = await API.Chain.getChains();
-        const { data: chains } = await axios.get('/mockData/chains.json');
+        const chains = await API.Chain.getChains();
         commit('getChains', chains);
       } catch (error) {
-        commit('getAllDatasets', []);
+        commit('getChains', []);
         console.log('error', error);
       } finally {
-        setTimeout(() => {
-          commit('setLoading', { getChainsLoading: false });
-        }, 1000);
+        commit('setLoading', { getChainsLoading: false });
       }
     },
 
-    async getEvents({ commit }, chain_uuid) {
+    async getEvents({ commit }, uuid) {
       commit('setLoading', { getEventsLoading: true });
       try {
-        // const events = await API.Chain.getEvents(chain_uuid);
-        const { data: events } = await axios.get('/mockData/events.json');
+        const events = await API.Chain.getEvents(uuid);
         commit('getEvents', events);
       } catch (error) {
-        commit('getAllDatasets', []);
+        commit('getChains', []);
         console.log('error', error);
       } finally {
-        setTimeout(() => {
-          commit('setLoading', { getEventsLoading: false });
-        }, 1000);
+        commit('setLoading', { getEventsLoading: false });
+      }
+    },
+
+    async getEvent({ commit }, { uuid, eventId }) {
+      commit('setLoading', { getEventLoading: true });
+      try {
+        const event = await API.Chain.getEvent(uuid, eventId);
+
+        commit('getEvent', event);
+      } catch (error) {
+        commit('getEvent', []);
+        console.log('error', error);
+      } finally {
+        commit('setLoading', { getEventLoading: false });
       }
     },
   },

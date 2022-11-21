@@ -65,7 +65,7 @@ export default {
           type: 'trigger',
           config: {
             event: 'balances.deposit',
-            chain_uuid: 'asdasdasd',
+            uuid: 'asdasdasd',
             conditions: [
               [{ variable: 'data.amount', operator: 'greaterThan', value: 1 }],
               [{ variable: 'data.amount', operator: 'lessThan', value: 10 }],

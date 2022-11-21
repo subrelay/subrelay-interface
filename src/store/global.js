@@ -13,7 +13,7 @@ export default {
       search: undefined,
       order: undefined,
       sort: undefined,
-      chain_uuid: undefined,
+      uuid: undefined,
       status: undefined,
       offset: 1,
       limit: 5,
