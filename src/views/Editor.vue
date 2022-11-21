@@ -97,7 +97,7 @@
 </template>
 
 <script setup>
-import { h, ref, watch, inject, computed, onMounted } from 'vue';
+import { h, ref, watch, inject, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useDialog } from 'naive-ui';
 import { useStore } from 'vuex';

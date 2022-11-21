@@ -16,6 +16,5 @@ onMounted(() => {
   store.dispatch('chain/getChains');
 });
 </script>
-=>
 
 <style lang="scss" scoped></style>
