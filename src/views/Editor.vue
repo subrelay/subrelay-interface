@@ -117,18 +117,12 @@ const defaultQueryParams = computed(
   () => store.state.global.defaultQueryParams
 );
 
-// Build Workflow Data
-import EditorData from '@/store/localStore/EditorData';
-
-function onUpdateName(value) {
-  EditorData.setName(value ? value : 'Untitled');
-}
-
 const eventBus = inject('eventBus');
 eventBus.on('nextStep', () => onChangeStep(2));
 eventBus.on('finish', () => onFinish());
 
 function goToHomePage() {
+  validateFormCompletion();
   dialog.warning({
     title: 'Confirm quit',
     content: () =>
@@ -157,6 +151,50 @@ function goToHomePage() {
 
 function onFinish() {
   goToHomePage();
+}
+
+// Build Workflow Data
+import EditorData from '@/store/localStore/EditorData';
+
+function onUpdateName(value) {
+  EditorData.setName(value);
+}
+
+function validateFormCompletion() {
+  if (!EditorData.workflow.name) {
+    EditorData.setName();
+  }
+
+  if (EditorData.workflow.tasks.some((task) => task.isError)) {
+    console.log('not finished');
+  }
+}
+
+function showExitWarning() {
+  dialog.warning({
+    title: 'Confirm quit',
+    content: () =>
+      h('div', { style: { fontSize: '0.85rem' } }, [
+        h(
+          'div',
+          'Changes you made will be discarded because the workflow is not yet completed.'
+        ),
+        h(
+          'div',
+          { style: { marginTop: '1rem' } },
+          'You can’t undo this action.'
+        ),
+      ]),
+    positiveText: 'Leave',
+    negativeText: 'Stay',
+
+    onPositiveClick: () => {
+      router.push({ name: 'workflows', query: defaultQueryParams.value });
+      EditorData.loadWorkflow();
+    },
+
+    onNegativeClick: () => {},
+  });
 }
 
 watch(

@@ -1,7 +1,7 @@
 <template>
   <n-form
     class="step_container"
-    @keyup.enter="onContinue"
+    @keyup.enter="validateForm"
     ref="formRef"
     :model="EditorData.workflow.tasks[1].config"
   >
@@ -17,10 +17,11 @@
     >
       <n-radio-group
         v-model:value="EditorData.workflow.tasks[1].config.channel"
+        @update:value="handleSelectChannel"
         class="channel_select"
       >
         <n-grid cols="2" y-gap="20" x-gap="30">
-          <n-gi span="1" v-for="channel in channels" :key="channel.value">
+          <n-gi span="1" v-for="channel in useChannels" :key="channel.value">
             <n-radio-button
               :disabled="channel.value !== 'webhook'"
               :value="channel.value"
@@ -35,7 +36,7 @@
       </n-radio-group>
     </n-form-item>
 
-    <n-button class="action_button" type="primary" @click="onContinue">
+    <n-button class="action_button" type="primary" @click="validateForm">
       Continue
     </n-button>
   </n-form>
@@ -43,23 +44,15 @@
 
 <script setup>
 import EditorData from '@/store/localStore/EditorData';
-import { ref } from 'vue';
-const formRef = ref(null);
+import { useFormValidation, useChannels } from '@/composables';
+
 const emits = defineEmits(['continue']);
+const [{ formRef }, { validateForm }] = useFormValidation('action', emits);
 
-const channels = ref([
-  { value: 'webhook', label: 'Webhook', icon: 'logos:webhooks' },
-  { value: 'email', label: 'Email', icon: 'fluent-emoji-flat:e-mail' },
-  { value: 'telegram', label: 'Telegram', icon: 'logos:telegram' },
-  { value: 'discord', label: 'Discord', icon: 'logos:discord-icon' },
-]);
+function handleSelectChannel() {
+  validateForm({ changeStep: false });
 
-function onContinue(e) {
-  e.preventDefault();
-  formRef.value.validate(async (errors) => {
-    if (errors) return;
-    emits('continue');
-  });
+  // Used for milestone 2 to clear 'Set Up Action' when user switches to other channel
 }
 </script>
 

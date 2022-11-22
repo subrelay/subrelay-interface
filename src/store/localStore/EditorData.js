@@ -8,18 +8,21 @@ const defaultConfig = () => ({
     {
       name: 'trigger',
       type: 'trigger',
-      depend_on_name: null,
+      isCompleted: false,
       isError: false,
+      depend_on_name: null,
       config: { eventId: null, uuid: null, conditions: [] },
     },
     {
-      name: 'notify',
+      name: 'action',
       type: 'notification',
+      isCompleted: false,
+      isError: false,
       config: {
-        channel: 'webhook',
+        channel: null,
         depend_on_name: 'trigger',
         config: {
-          headers: [{ key: 's', value: '1' }],
+          headers: [{ key: null, value: null }],
           url: 'https://www.naiveui.com/en-US/os-theme/components/radio',
         },
       },
@@ -30,13 +33,38 @@ const defaultConfig = () => ({
 const editor = reactive({
   workflow: defaultConfig(),
 
+  setError(taskName, isError) {
+    const index = this.workflow.tasks.findIndex(
+      (task) => task.name === taskName
+    );
+    this.workflow.tasks[index].isError = isError;
+  },
+
+  setComplete(taskName, isCompleted) {
+    const index = this.workflow.tasks.findIndex(
+      (task) => task.name === taskName
+    );
+    this.workflow.tasks[index].isCompleted = isCompleted;
+  },
+
   setName(name) {
-    this.workflow.name = name;
+    this.workflow.name = name ? name : 'Untitled';
   },
 
   setTrigger(data) {
+    const index = this.workflow.tasks.findIndex(
+      (task) => task.name === 'trigger'
+    );
     const [prop, value] = Object.entries(data)[0];
-    this.workflow.tasks[0].config[prop] = value;
+    this.workflow.tasks[index].config[prop] = value;
+
+    this.setComplete(
+      'trigger',
+      !!(
+        this.workflow.tasks[index].config.eventId &&
+        this.workflow.tasks[index].config.uuid
+      )
+    );
   },
 
   addOr() {

@@ -2,7 +2,7 @@
   <n-form
     class="step_container"
     ref="formRef"
-    @keyup.enter="onContinue"
+    @keyup.enter="validateForm"
     :model="EditorData.workflow.tasks[0].config"
     :show-label="false"
   >
@@ -41,7 +41,7 @@
       </n-select>
     </n-form-item>
 
-    <n-button class="action_button" type="primary" @click="onContinue">
+    <n-button class="action_button" type="primary" @click="validateForm">
       Continue
     </n-button>
   </n-form>
@@ -55,22 +55,16 @@ import {
   useDropdownFilter,
   useRenderDropdownLabel,
   renderSelectTagWithDescription,
+  useFormValidation,
 } from '@/composables';
 
 const emits = defineEmits(['continue', 'back']);
+const [{ formRef }, { validateForm }] = useFormValidation('trigger', emits);
+
 const store = useStore();
-const formRef = ref(null);
 
 const isShown = ref(false);
 const options = computed(() => store.state.chain.events);
-
-function onContinue(e) {
-  e.preventDefault();
-  formRef.value.validate(async (errors) => {
-    if (errors) return;
-    emits('continue');
-  });
-}
 
 function onBack() {
   isShown.value = false;
@@ -81,6 +75,7 @@ const selectedChain = computed(() => EditorData.workflow.tasks[0].config.uuid);
 
 function handleSelectEvent(eventId) {
   EditorData.setTrigger({ eventId });
+  validateForm({ changeStep: false });
 
   if (eventId) {
     store.dispatch('chain/getEvent', { uuid: selectedChain.value, eventId });

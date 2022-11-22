@@ -86,6 +86,7 @@ function onContinue(e) {
   e.preventDefault();
   formRef.value.validate(async (errors) => {
     if (errors) return;
+
     if (conditionLength.value) {
       eventBus.emit('toggleTestFilter', { isDisabled: false });
       emits('continue');

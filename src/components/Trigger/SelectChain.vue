@@ -2,7 +2,7 @@
   <n-form
     class="step_container"
     ref="formRef"
-    @keyup.enter="onContinue"
+    @keyup.enter="validateForm"
     :model="EditorData.workflow.tasks[0].config"
     :show-label="false"
   >
@@ -18,7 +18,7 @@
       />
     </n-form-item>
 
-    <n-button class="action_button" type="primary" @click="onContinue">
+    <n-button class="action_button" type="primary" @click="validateForm">
       Continue
     </n-button>
   </n-form>
@@ -27,23 +27,19 @@
 <script setup>
 import EditorData from '@/store/localStore/EditorData';
 import ChainDropdown from '@/components/Common/ChainDropdown';
-import { ref } from 'vue';
+import { useFormValidation } from '@/composables';
 import { useStore } from 'vuex';
 
 const emits = defineEmits(['continue']);
-const formRef = ref(null);
-const store = useStore();
 
-function onContinue(e) {
-  e.preventDefault();
-  formRef.value.validate(async (errors) => {
-    if (errors) return;
-    emits('continue');
-  });
-}
+const [{ formRef }, { validateForm }] = useFormValidation('trigger', emits);
+
+const store = useStore();
 
 function handleSelectChain(uuid) {
   EditorData.setTrigger({ uuid });
+  validateForm({ changeStep: false });
+
   if (uuid) {
     store.dispatch('chain/getEvents', uuid);
   } else {

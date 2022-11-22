@@ -85,8 +85,6 @@
 import JsonEventSample from '@/components/Common/JsonEventSample';
 import EditorData from '@/store/localStore/EditorData';
 import { computed, ref, inject } from 'vue';
-import { useStore } from 'vuex';
-const store = useStore();
 
 const loading = ref(null);
 const isTested = ref(false);
