@@ -8,16 +8,16 @@ const defaultConfig = () => ({
     {
       name: 'trigger',
       type: 'trigger',
-      isCompleted: false,
-      isError: false,
+      isCompleted: null,
+      isError: null,
       depend_on_name: null,
       config: { eventId: null, uuid: null, conditions: [] },
     },
     {
       name: 'action',
       type: 'notification',
-      isCompleted: false,
-      isError: false,
+      isCompleted: null,
+      isError: null,
       config: {
         channel: null,
         depend_on_name: 'trigger',
@@ -31,7 +31,11 @@ const defaultConfig = () => ({
 });
 
 const editor = reactive({
-  workflow: defaultConfig(),
+  workflow: null,
+
+  triggerIdx: null,
+
+  actionIdx: null,
 
   setError(taskName, isError) {
     const index = this.workflow.tasks.findIndex(
@@ -98,6 +102,12 @@ const editor = reactive({
   loadWorkflow(data) {
     // Load data for milestone 2
     this.workflow = data ? data : defaultConfig();
+    this.triggerIdx = this.workflow.tasks.findIndex(
+      (task) => task.name === 'trigger'
+    );
+    this.actionIdx = this.workflow.tasks.findIndex(
+      (task) => task.name === 'action'
+    );
   },
 });
 

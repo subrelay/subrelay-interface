@@ -73,18 +73,23 @@
         @update:current="onChangeStep"
         class="stepper"
       >
-        <n-step title="TRIGGER" description="This is what starts the app">
+        <n-step
+          title="TRIGGER"
+          description="This is what starts the app"
+          :status="triggerStatus"
+        >
           <template #icon>
-            <Icon icon="line-md:telegram" color="white" />
+            <n-icon><ThunderboltOutlined /> </n-icon>
           </template>
         </n-step>
 
         <n-step
           title="ACTION"
           description="Action will perform when the app has started"
+          :status="actionStatus"
         >
           <template #icon>
-            <Icon icon="line-md:play-filled" color="black" />
+            <n-icon><BellOutlined /> </n-icon>
           </template>
         </n-step>
       </n-steps>
@@ -97,7 +102,8 @@
 </template>
 
 <script setup>
-import { h, ref, watch, inject, computed } from 'vue';
+import { ThunderboltOutlined, BellOutlined } from '@vicons/antd';
+import { h, ref, watch, inject, computed, onBeforeMount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useDialog } from 'naive-ui';
 import { useStore } from 'vuex';
@@ -113,9 +119,7 @@ const route = useRoute();
 const store = useStore();
 const dialog = useDialog();
 const currentStep = ref(null);
-const defaultQueryParams = computed(
-  () => store.state.global.defaultQueryParams
-);
+const defaultQuery = computed(() => store.state.global.defaultQueryParams);
 
 const eventBus = inject('eventBus');
 eventBus.on('nextStep', () => onChangeStep(2));
@@ -141,7 +145,7 @@ function goToHomePage() {
     negativeText: 'Stay',
 
     onPositiveClick: () => {
-      router.push({ name: 'workflows', query: defaultQueryParams.value });
+      router.push({ name: 'workflows', query: defaultQuery.value });
       EditorData.loadWorkflow();
     },
 
@@ -155,6 +159,65 @@ function onFinish() {
 
 // Build Workflow Data
 import EditorData from '@/store/localStore/EditorData';
+onBeforeMount(() => EditorData.loadWorkflow());
+
+const triggerIdx = computed(() => EditorData.triggerIdx);
+const actionIdx = computed(() => EditorData.actionIdx);
+
+const isErrorWithTrigger = computed(
+  () => EditorData.workflow.tasks[triggerIdx.value].isError
+);
+
+const isTriggerCompleted = computed(
+  () => EditorData.workflow.tasks[triggerIdx.value].isCompleted
+);
+
+const isActionCompleted = computed(
+  () => EditorData.workflow.tasks[actionIdx.value].isCompleted
+);
+
+const changesAppliedToTrigger = computed(() => {
+  return (
+    typeof EditorData.workflow.tasks[triggerIdx.value].isError === 'boolean' ||
+    typeof EditorData.workflow.tasks[triggerIdx.value].isCompleted === 'boolean'
+  );
+});
+
+const changesAppliedToAction = computed(() => {
+  return (
+    typeof EditorData.workflow.tasks[actionIdx.value].isError === 'boolean' ||
+    typeof EditorData.workflow.tasks[actionIdx.value].isCompleted === 'boolean'
+  );
+});
+
+const isErrorWithAction = computed(
+  () => EditorData.workflow.tasks[actionIdx.value].isError
+);
+
+const triggerStatus = ref(null);
+const actionStatus = ref(null);
+
+function setStepStatus(step) {
+  if (step === 2) {
+    actionStatus.value = 'process';
+    triggerStatus.value = 'wait';
+
+    if (changesAppliedToTrigger.value) {
+      if (isErrorWithTrigger.value) return (triggerStatus.value = 'error');
+      if (isTriggerCompleted.value) return (triggerStatus.value = 'finish');
+    }
+  }
+
+  if (step === 1) {
+    actionStatus.value = 'wait';
+    triggerStatus.value = 'process';
+
+    if (changesAppliedToAction.value) {
+      if (isErrorWithAction.value) return (actionStatus.value = 'error');
+      if (isActionCompleted.value) return (actionStatus.value = 'finish');
+    }
+  }
+}
 
 function onUpdateName(value) {
   EditorData.setName(value);
@@ -189,7 +252,7 @@ function showExitWarning() {
     negativeText: 'Stay',
 
     onPositiveClick: () => {
-      router.push({ name: 'workflows', query: defaultQueryParams.value });
+      router.push({ name: 'workflows', query: defaultQuery.value });
       EditorData.loadWorkflow();
     },
 
@@ -205,6 +268,8 @@ watch(
 
 function onChangeStep(step) {
   currentStep.value = step;
+
+  setStepStatus(step);
   router.push({
     name: step == 1 ? 'trigger' : 'action',
     params: { id: props.id },

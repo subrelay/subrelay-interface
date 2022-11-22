@@ -6,7 +6,7 @@
       label-placement="top"
       label-width="auto"
       @keyup.enter="onContinue"
-      :model="EditorData.workflow.tasks[1].config.config"
+      :model="EditorData.workflow.tasks[actionIdx].config.config"
     >
       <n-form-item path="url" label="URL" :rule="urlRule">
         <n-input
@@ -19,7 +19,7 @@
         <n-input
           clearable
           v-model:value="
-            EditorData.workflow.tasks[1].config.config.headers[0].key
+            EditorData.workflow.tasks[actionIdx].config.config.headers[0].key
           "
         />
       </n-form-item>
@@ -32,7 +32,7 @@
         <n-input
           clearable
           v-model:value="
-            EditorData.workflow.tasks[1].config.config.headers[0].value
+            EditorData.workflow.tasks[actionIdx].config.config.headers[0].value
           "
         />
       </n-form-item>
@@ -61,7 +61,10 @@ import { ref, computed, inject } from 'vue';
 const emits = defineEmits(['continue', 'back']);
 const [{ formRef }, { validateForm }] = useFormValidation('action', emits);
 
-const showForm = computed(() => EditorData.workflow.tasks[1].config.channel);
+const actionIdx = computed(() => EditorData.actionIdx);
+const showForm = computed(
+  () => EditorData.workflow.tasks[actionIdx.value].config.channel
+);
 
 const keyRule = ref({
   required: true,
