@@ -95,6 +95,10 @@
       </n-steps>
     </div>
 
+    <div>Trigger status {{ triggerStatus }}</div>
+    <div>Action status {{ actionStatus }}</div>
+    <div>currentStep {{ currentStep }}</div>
+
     <!-- Use v-show to preserve the data when switching steps -->
     <Trigger v-show="currentStep == 1" />
     <Action v-show="currentStep == 2" />
@@ -127,30 +131,7 @@ eventBus.on('finish', () => onFinish());
 
 function goToHomePage() {
   validateFormCompletion();
-  dialog.warning({
-    title: 'Confirm quit',
-    content: () =>
-      h('div', { style: { fontSize: '0.85rem' } }, [
-        h(
-          'div',
-          'Changes you made will be discarded because the workflow is not yet completed.'
-        ),
-        h(
-          'div',
-          { style: { marginTop: '1rem' } },
-          'You can’t undo this action.'
-        ),
-      ]),
-    positiveText: 'Leave',
-    negativeText: 'Stay',
-
-    onPositiveClick: () => {
-      router.push({ name: 'workflows', query: defaultQuery.value });
-      EditorData.loadWorkflow();
-    },
-
-    onNegativeClick: () => {},
-  });
+  showExitWarning();
 }
 
 function onFinish() {
@@ -159,13 +140,19 @@ function onFinish() {
 
 // Build Workflow Data
 import EditorData from '@/store/localStore/EditorData';
-onBeforeMount(() => EditorData.loadWorkflow());
+
+const triggerStatus = ref(null);
+const actionStatus = ref(null);
 
 const triggerIdx = computed(() => EditorData.triggerIdx);
 const actionIdx = computed(() => EditorData.actionIdx);
 
 const isErrorWithTrigger = computed(
   () => EditorData.workflow.tasks[triggerIdx.value].isError
+);
+
+const isErrorWithAction = computed(
+  () => EditorData.workflow.tasks[actionIdx.value].isError
 );
 
 const isTriggerCompleted = computed(
@@ -190,14 +177,8 @@ const changesAppliedToAction = computed(() => {
   );
 });
 
-const isErrorWithAction = computed(
-  () => EditorData.workflow.tasks[actionIdx.value].isError
-);
-
-const triggerStatus = ref(null);
-const actionStatus = ref(null);
-
 function setStepStatus(step) {
+  // Switch from trigger to action
   if (step === 2) {
     actionStatus.value = 'process';
     triggerStatus.value = 'wait';
@@ -208,6 +189,7 @@ function setStepStatus(step) {
     }
   }
 
+  // Switch from action to trigger
   if (step === 1) {
     actionStatus.value = 'wait';
     triggerStatus.value = 'process';
@@ -228,9 +210,13 @@ function validateFormCompletion() {
     EditorData.setName();
   }
 
-  if (EditorData.workflow.tasks.some((task) => task.isError)) {
+  if (
+    EditorData.workflow.tasks.some((task) => task.isError || !task.isCompleted)
+  ) {
     console.log('not finished');
   }
+
+  console.log('finished');
 }
 
 function showExitWarning() {
@@ -248,6 +234,7 @@ function showExitWarning() {
           'You can’t undo this action.'
         ),
       ]),
+
     positiveText: 'Leave',
     negativeText: 'Stay',
 
@@ -260,12 +247,6 @@ function showExitWarning() {
   });
 }
 
-watch(
-  route,
-  (route) => (currentStep.value = route.name === 'trigger' ? 1 : 2),
-  { immediate: true }
-);
-
 function onChangeStep(step) {
   currentStep.value = step;
 
@@ -275,6 +256,12 @@ function onChangeStep(step) {
     params: { id: props.id },
   });
 }
+
+onBeforeMount(() => {
+  EditorData.loadWorkflow();
+  currentStep.value = route.name === 'trigger' ? 1 : 2;
+  setStepStatus(currentStep.value);
+});
 </script>
 
 <style lang="scss">
