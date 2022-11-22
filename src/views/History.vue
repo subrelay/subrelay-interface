@@ -33,11 +33,7 @@ import {
 const store = useStore();
 
 function fetchData() {
-  loading.value = true;
-
-  setTimeout(() => {
-    loading.value = false;
-  }, 300);
+  console.log('fetch history');
 }
 
 const logs = computed(() => store.state.history.logs);

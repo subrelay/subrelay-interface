@@ -19,7 +19,7 @@ import ButtonWithPopConfirm from '@/components/Common/ButtonWithPopConfirm';
 import PageHeader from '@/components/Common/PageHeader';
 import { NAvatar, NSwitch, NTooltip, useMessage } from 'naive-ui';
 import { Icon } from '@iconify/vue';
-import { ref, h, provide, computed } from 'vue';
+import { ref, h, provide, computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import moment from 'moment';
 import {
@@ -148,11 +148,7 @@ const columns = ref([
 const workflows = computed(() => store.state.workflow.workflows);
 
 function fetchData() {
-  loading.value = true;
-
-  setTimeout(() => {
-    loading.value = false;
-  }, 300);
+  store.dispatch('workflow/getWorkflows');
 }
 
 const [

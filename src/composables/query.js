@@ -13,13 +13,13 @@ export const useQueryParams = (
   const router = useRouter();
   const queryParams = ref({});
   const searchText = ref('');
-  const loading = ref(false);
   const selectedChain = ref(undefined);
   const selectedStatus = ref(undefined);
 
   let sortingIndex, prevSortIndex;
 
   const storedQueryParams = computed(() => store.state[module].queryParams);
+  const loading = computed(() => store.state[module].loading);
 
   const defaultQueryParams = computed(
     () => store.state.global.defaultQueryParams
@@ -169,6 +169,7 @@ export const useQueryParams = (
 
   onMounted(() => {
     initQueryParams();
+    fetchData();
   });
 
   // NOTE TO UPDATE: Watch headers to update pagination params. If offset enterer manually in the url > totalPages => push to last page.

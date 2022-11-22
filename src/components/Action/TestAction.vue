@@ -65,15 +65,23 @@
     </n-card>
 
     <n-space justify="end">
-      <n-button class="action_button" type="primary" @click="onTest">
+      <n-button
+        class="action_button"
+        type="primary"
+        @click="onTest"
+        :loading="loading"
+        :disabled="loading || postWorkflowLoading"
+      >
         {{ isTested ? 'Retest' : 'Test' }}
       </n-button>
 
       <n-button
         class="action_button"
         type="primary"
-        @click="eventBus.emit('finish')"
         v-if="isTested"
+        @click="eventBus.emit('finish')"
+        :loading="postWorkflowLoading"
+        :disabled="loading || postWorkflowLoading"
       >
         Finish
       </n-button>
@@ -85,9 +93,13 @@
 import JsonEventSample from '@/components/Common/JsonEventSample';
 import EditorData from '@/store/localStore/EditorData';
 import { computed, ref, inject } from 'vue';
+import { useStore } from 'vuex';
+const store = useStore();
 
 const loading = ref(null);
+const postWorkflowLoading = computed(() => store.state.workflow.loading);
 const isTested = ref(false);
+
 const eventBus = inject('eventBus');
 
 const notiConfig = computed(() => {

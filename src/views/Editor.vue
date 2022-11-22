@@ -7,7 +7,7 @@
           type="primary"
           class="action-button"
           icon-placement="left"
-          @click="goToHomePage"
+          @click="quitEditor"
         >
           <template #icon>
             <Icon icon="line-md:home-md" :inline="true" class="icon" />
@@ -34,7 +34,7 @@
               type="primary"
               class="action-button"
               icon-placement="right"
-              @click="goToHomePage"
+              @click="quitEditor"
             >
               Finish
               <template #icon>
@@ -63,8 +63,6 @@
         :value="EditorData.workflow.name"
       />
     </div>
-
-    <!-- <pre>{{ EditorData }}</pre> -->
 
     <!-- STEPPER -->
     <div class="page_container">
@@ -99,6 +97,7 @@
     <Trigger v-show="currentStep == 1" />
     <Action v-show="currentStep == 2" />
   </n-space>
+  <pre>{{ EditorData }}</pre>
 </template>
 
 <script setup>
@@ -113,12 +112,13 @@ import { useDialog } from 'naive-ui';
 import { useStore } from 'vuex';
 
 const props = defineProps({ id: [String, Number] });
+const defaultQuery = computed(() => store.state.global.defaultQueryParams);
 const router = useRouter();
 const route = useRoute();
 const store = useStore();
 const dialog = useDialog();
 const currentStep = ref(null);
-const defaultQuery = computed(() => store.state.global.defaultQueryParams);
+const loading = ref(null);
 
 function handleNextStep() {
   onChangeStep(2);
@@ -126,17 +126,12 @@ function handleNextStep() {
 
 const eventBus = inject('eventBus');
 eventBus.on('nextStep', handleNextStep);
-eventBus.on('finish', goToHomePage);
+eventBus.on('finish', quitEditor);
 
 onBeforeUnmount(() => {
-  eventBus.off('finish', goToHomePage);
+  eventBus.off('finish', quitEditor);
   eventBus.off('nextStep', handleNextStep);
 });
-
-function goToHomePage() {
-  validateFormCompletion();
-  showExitWarning();
-}
 
 // BUILD WORKFLOW DATA
 import EditorData from '@/store/localStore/EditorData';
@@ -205,20 +200,6 @@ function onUpdateName(value) {
   EditorData.setName(value);
 }
 
-function validateFormCompletion() {
-  if (!EditorData.workflow.name) {
-    EditorData.setName();
-  }
-
-  if (
-    EditorData.workflow.tasks.some((task) => task.isError || !task.isCompleted)
-  ) {
-    // console.log('not finished');
-  }
-
-  // console.log('finished');
-}
-
 function showExitWarning() {
   const sleep = () => new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -243,18 +224,33 @@ function showExitWarning() {
     onPositiveClick: () => {
       d.loading = true;
       EditorData.loadWorkflow();
-
       return new Promise((resolve) => {
         sleep()
-          .then(() => {
-            router.push({ name: 'workflows', query: defaultQuery.value });
-          })
+          .then(() =>
+            router.push({ name: 'workflows', query: defaultQuery.value })
+          )
           .then(resolve);
       });
     },
 
     onNegativeClick: () => {},
   });
+}
+
+async function quitEditor() {
+  if (!EditorData.workflow.name) {
+    EditorData.setName();
+  }
+
+  if (
+    EditorData.workflow.tasks.some((task) => task.isError || !task.isCompleted)
+  ) {
+    showExitWarning();
+  } else {
+    await store.dispatch('workflow/postWorkflow', EditorData.workflow);
+
+    router.push({ name: 'workflows', query: defaultQuery.value });
+  }
 }
 
 function onChangeStep(step) {
