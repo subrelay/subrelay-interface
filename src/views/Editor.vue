@@ -34,7 +34,7 @@
               type="primary"
               class="action-button"
               icon-placement="right"
-              @click="onFinish"
+              @click="goToHomePage"
             >
               Finish
               <template #icon>
@@ -64,7 +64,7 @@
       />
     </div>
 
-    <pre>{{ EditorData }}</pre>
+    <!-- <pre>{{ EditorData }}</pre> -->
 
     <!-- STEPPER -->
     <div class="page_container">
@@ -95,10 +95,6 @@
       </n-steps>
     </div>
 
-    <div>Trigger status {{ triggerStatus }}</div>
-    <div>Action status {{ actionStatus }}</div>
-    <div>currentStep {{ currentStep }}</div>
-
     <!-- Use v-show to preserve the data when switching steps -->
     <Trigger v-show="currentStep == 1" />
     <Action v-show="currentStep == 2" />
@@ -106,16 +102,15 @@
 </template>
 
 <script setup>
-import { ThunderboltOutlined, BellOutlined } from '@vicons/antd';
-import { h, ref, watch, inject, computed, onBeforeMount } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { useDialog } from 'naive-ui';
-import { useStore } from 'vuex';
-
 import Logo from '@/components/Common/Logo';
 import ShowOrEdit from '@/components/Common/ShowOrEdit';
 import Trigger from '@/components/Trigger/Trigger';
 import Action from '@/components/Action/Action';
+import { ThunderboltOutlined, BellOutlined } from '@vicons/antd';
+import { h, ref, inject, computed, onBeforeMount, onBeforeUnmount } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useDialog } from 'naive-ui';
+import { useStore } from 'vuex';
 
 const props = defineProps({ id: [String, Number] });
 const router = useRouter();
@@ -125,20 +120,25 @@ const dialog = useDialog();
 const currentStep = ref(null);
 const defaultQuery = computed(() => store.state.global.defaultQueryParams);
 
+function handleNextStep() {
+  onChangeStep(2);
+}
+
 const eventBus = inject('eventBus');
-eventBus.on('nextStep', () => onChangeStep(2));
-eventBus.on('finish', () => onFinish());
+eventBus.on('nextStep', handleNextStep);
+eventBus.on('finish', goToHomePage);
+
+onBeforeUnmount(() => {
+  eventBus.off('finish', goToHomePage);
+  eventBus.off('nextStep', handleNextStep);
+});
 
 function goToHomePage() {
   validateFormCompletion();
   showExitWarning();
 }
 
-function onFinish() {
-  goToHomePage();
-}
-
-// Build Workflow Data
+// BUILD WORKFLOW DATA
 import EditorData from '@/store/localStore/EditorData';
 
 const triggerStatus = ref(null);
@@ -213,14 +213,16 @@ function validateFormCompletion() {
   if (
     EditorData.workflow.tasks.some((task) => task.isError || !task.isCompleted)
   ) {
-    console.log('not finished');
+    // console.log('not finished');
   }
 
-  console.log('finished');
+  // console.log('finished');
 }
 
 function showExitWarning() {
-  dialog.warning({
+  const sleep = () => new Promise((resolve) => setTimeout(resolve, 500));
+
+  const d = dialog.warning({
     title: 'Confirm quit',
     content: () =>
       h('div', { style: { fontSize: '0.85rem' } }, [
@@ -239,8 +241,16 @@ function showExitWarning() {
     negativeText: 'Stay',
 
     onPositiveClick: () => {
-      router.push({ name: 'workflows', query: defaultQuery.value });
+      d.loading = true;
       EditorData.loadWorkflow();
+
+      return new Promise((resolve) => {
+        sleep()
+          .then(() => {
+            router.push({ name: 'workflows', query: defaultQuery.value });
+          })
+          .then(resolve);
+      });
     },
 
     onNegativeClick: () => {},
@@ -251,6 +261,7 @@ function onChangeStep(step) {
   currentStep.value = step;
 
   setStepStatus(step);
+
   router.push({
     name: step == 1 ? 'trigger' : 'action',
     params: { id: props.id },

@@ -19,10 +19,10 @@ const defaultConfig = () => ({
       isCompleted: null,
       isError: null,
       config: {
-        channel: null,
+        channel: 'webhook',
         depend_on_name: 'trigger',
         config: {
-          headers: [{ key: null, value: null }],
+          headers: [{ key: '11', value: '213' }],
           url: 'https://www.naiveui.com/en-US/os-theme/components/radio',
         },
       },
