@@ -126,10 +126,12 @@ export const useQueryParams = (
     }
 
     pushQueryToRoute(pickBy(queryParams.value));
+    store.commit(`${module}/saveQueryParams`, queryParams.value);
   }
 
   onBeforeRouteUpdate((to, from, next) => {
     queryParams.value = getQueryParamsFromRoute(to.query);
+    store.commit(`${module}/saveQueryParams`, queryParams.value);
 
     const { order, sort, search, uuid, status } = to.query;
     searchText.value = search || '';
@@ -154,8 +156,6 @@ export const useQueryParams = (
   watch(
     queryParams,
     () => {
-      store.commit(`${module}/saveQueryParams`, queryParams.value);
-
       const { offset, limit } = queryParams.value;
 
       tablePagination.value = {

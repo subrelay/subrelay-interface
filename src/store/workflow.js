@@ -1,13 +1,13 @@
 import axios from 'axios';
+// import API from '@/api';
+import { pickBy } from 'lodash';
 
 export default {
   namespaced: true,
 
   state: () => ({
     queryParams: null,
-
     workflows: [],
-
     loading: null,
   }),
 
@@ -18,13 +18,14 @@ export default {
   },
 
   actions: {
-    async getWorkflows({ commit }) {
+    async getWorkflows({ commit, state }) {
       commit('setLoading', true);
       try {
-        // const workflows = await API.Chain.getWorkflows();
+        // const workflows = await API.Workflow.getWorkflows(state.queryParams);
         const { data: workflows } = await axios({
-          url: 'mockData/workflows.json',
+          url: 'mockData/workflow/workflows.json',
           baseURL: 'http://127.0.0.1:5173',
+          params: new URLSearchParams({ ...pickBy(state.queryParams) }),
         });
         commit('getWorkflows', workflows);
       } catch (error) {
@@ -38,7 +39,7 @@ export default {
     async postWorkflow({ commit, dispatch }, data) {
       commit('setLoading', true);
       try {
-        // const response = await API.Chain.postWorkflow(data);
+        // const response = await API.Workflow.postWorkflow(data);
         await axios({
           method: 'post',
           url: 'mockData/workflow.json',
