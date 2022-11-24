@@ -104,14 +104,19 @@ const editor = reactive({
   },
 
   loadWorkflow(data) {
-    console.log('data loaded', data);
-    // Load data for milestone 2
+    if (data) {
+      data.tasks.forEach((task) => {
+        task.isCompleted = null;
+        task.isError = null;
+      });
+    }
     this.workflow = data ? data : defaultConfig();
+
     this.triggerIdx = this.workflow.tasks.findIndex(
-      (task) => task.name === 'trigger'
+      (task) => task.type === 'trigger'
     );
     this.actionIdx = this.workflow.tasks.findIndex(
-      (task) => task.name === 'action'
+      (task) => task.type === 'notification'
     );
   },
 });

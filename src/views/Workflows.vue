@@ -19,8 +19,9 @@ import ButtonWithPopConfirm from '@/components/Common/ButtonWithPopConfirm';
 import PageHeader from '@/components/Common/PageHeader';
 import { NAvatar, NSwitch, NTooltip, useMessage } from 'naive-ui';
 import { Icon } from '@iconify/vue';
-import { ref, h, provide, computed, onMounted } from 'vue';
+import { ref, h, provide, computed } from 'vue';
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 import moment from 'moment';
 import {
   useQueryParams,
@@ -32,6 +33,7 @@ import {
 
 const message = useMessage();
 const store = useStore();
+const router = useRouter();
 
 function deleteRow(rowData) {
   message.info(`Workflow ${rowData.name} has been deleted`);
@@ -46,10 +48,20 @@ const columns = ref([
     title: 'Name',
     key: 'name',
     ellipsis: { tooltip: true },
-    className: 'text-bold',
     sorter: true,
     sortOrder: false,
     renderSorterIcon: useRenderSortIcon,
+    render: ({ name, id }) => {
+      return h(
+        'div',
+        {
+          style: { display: 'flex', alignItems: 'center' },
+          class: 'text-bold cursor-pointer',
+          onClick: () => router.push({ name: 'trigger', params: { id } }),
+        },
+        name
+      );
+    },
   },
   {
     title: 'Chain',

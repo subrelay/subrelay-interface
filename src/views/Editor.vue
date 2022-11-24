@@ -1,5 +1,5 @@
 <template>
-  <n-space vertical :size="50">
+  <n-space vertical :size="50" v-if="EditorData.workflow">
     <!-- HEADER -->
     <div class="page_header dark">
       <n-space>
@@ -94,10 +94,12 @@
     </div>
 
     <!-- Use v-show to preserve the data when switching steps -->
+
     <Trigger v-show="currentStep == 1" />
     <Action v-show="currentStep == 2" />
   </n-space>
-  <pre>{{ EditorData }}</pre>
+
+  <pre>{{ EditorData.workflow }}</pre>
 </template>
 
 <script setup>
@@ -243,6 +245,7 @@ async function quitEditor() {
   }
 
   if (
+    (changesAppliedToTrigger.value || changesAppliedToAction.value) &&
     EditorData.workflow.tasks.some((task) => task.isError || !task.isCompleted)
   ) {
     showExitWarning();
@@ -267,12 +270,12 @@ function onChangeStep(step) {
 import axios from 'axios';
 
 const loading = ref(false);
+
 //  Move get workflow step to this component
 onBeforeMount(async () => {
   let data;
 
   if (props.id !== 'new-flow') {
-    console.log('run');
     try {
       // const workflow = await API.Chain.getWorkflow(props.id);
 
@@ -290,7 +293,7 @@ onBeforeMount(async () => {
     }
   }
 
-  EditorData.loadWorkflow(data); // pass data as params when init loading, for milestone 2
+  EditorData.loadWorkflow(data);
 
   const uuid = EditorData.workflow.tasks[0].config.uuid;
   const eventId = EditorData.workflow.tasks[0].config.eventId;

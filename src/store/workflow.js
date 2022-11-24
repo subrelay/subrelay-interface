@@ -23,15 +23,11 @@ export default {
       try {
         // const workflows = await API.Chain.getWorkflows();
 
-        setTimeout(async () => {
-          const { data: workflows } = await axios({
-            url: 'mockData/workflows.json',
-            baseURL: 'http://127.0.0.1:5173',
-          });
-
-          commit('getWorkflows', workflows);
-          commit('setLoading', false);
-        }, 1000);
+        const { data: workflows } = await axios({
+          url: 'mockData/workflows.json',
+          baseURL: 'http://127.0.0.1:5173',
+        });
+        commit('getWorkflows', workflows);
       } catch (error) {
         commit('getWorkflows', []);
         console.log('error', error);
