@@ -22,7 +22,6 @@ export default {
       commit('setLoading', true);
       try {
         // const workflows = await API.Chain.getWorkflows();
-
         const { data: workflows } = await axios({
           url: 'mockData/workflows.json',
           baseURL: 'http://127.0.0.1:5173',
@@ -36,33 +35,10 @@ export default {
       }
     },
 
-    // async getWorkflow({ commit }, workflowId) {
-    //   commit('setLoading', true);
-    //   try {
-    //     // const workflow = await API.Chain.getWorkflow(workflowId);
-
-    //     setTimeout(async () => {
-    //       const { data: workflow } = await axios({
-    //         url: 'mockData/workflow.json',
-    //         baseURL: 'http://127.0.0.1:5173',
-    //       });
-
-    //       commit('getWorkflow', workflow);
-    //       commit('setLoading', false);
-    //     }, 1000);
-    //   } catch (error) {
-    //     commit('getWorkflow', {});
-    //     console.log('error', error);
-    //   } finally {
-    //     commit('setLoading', false);
-    //   }
-    // },
-
     async postWorkflow({ commit, dispatch }, data) {
       commit('setLoading', true);
       try {
         // const response = await API.Chain.postWorkflow(data);
-
         await axios({
           method: 'post',
           url: 'mockData/workflow.json',

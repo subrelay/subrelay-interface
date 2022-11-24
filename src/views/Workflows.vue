@@ -55,7 +55,6 @@ const columns = ref([
       return h(
         'div',
         {
-          style: { display: 'flex', alignItems: 'center' },
           class: 'text-bold cursor-pointer',
           onClick: () => router.push({ name: 'trigger', params: { id } }),
         },

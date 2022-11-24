@@ -11,11 +11,7 @@ const defaultConfig = () => ({
       isCompleted: null,
       isError: null,
       depend_on_name: null,
-      config: {
-        eventId: 180,
-        uuid: '8b6af998-a145-46f5-8c04-a2d5c717e82a',
-        conditions: [],
-      },
+      config: { eventId: null, uuid: null, conditions: [] },
     },
     {
       name: 'action',
@@ -23,11 +19,11 @@ const defaultConfig = () => ({
       isCompleted: null,
       isError: null,
       config: {
-        channel: 'webhook',
+        channel: null,
         depend_on_name: 'trigger',
         config: {
-          headers: [{ key: '11', value: '213' }],
-          url: 'https://www.naiveui.com/en-US/os-theme/components/radio',
+          headers: [{ key: null, value: null }],
+          url: null,
         },
       },
     },
@@ -36,9 +32,7 @@ const defaultConfig = () => ({
 
 const editor = reactive({
   workflow: null,
-
   triggerIdx: null,
-
   actionIdx: null,
 
   setError(taskName, isError) {

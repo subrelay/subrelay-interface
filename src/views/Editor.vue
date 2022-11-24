@@ -99,7 +99,7 @@
     <Action v-show="currentStep == 2" />
   </n-space>
 
-  <pre>{{ EditorData.workflow }}</pre>
+  <!-- <pre>{{ EditorData.workflow }}</pre> -->
 </template>
 
 <script setup>
@@ -240,18 +240,14 @@ function showExitWarning() {
 }
 
 async function quitEditor() {
-  if (!EditorData.workflow.name) {
-    EditorData.setName();
-  }
-
   if (
     (changesAppliedToTrigger.value || changesAppliedToAction.value) &&
     EditorData.workflow.tasks.some((task) => task.isError || !task.isCompleted)
   ) {
     showExitWarning();
   } else {
+    if (!EditorData.workflow.name) EditorData.setName();
     await store.dispatch('workflow/postWorkflow', EditorData.workflow);
-
     router.push({ name: 'workflows', query: defaultQuery.value });
   }
 }
@@ -271,23 +267,19 @@ import axios from 'axios';
 
 const loading = ref(false);
 
-//  Move get workflow step to this component
 onBeforeMount(async () => {
   let data;
 
   if (props.id !== 'new-flow') {
     try {
       // const workflow = await API.Chain.getWorkflow(props.id);
-
       const { data: workflow } = await axios({
         url: 'mockData/workflow.json',
         baseURL: 'http://127.0.0.1:5173',
       });
-
       data = workflow;
     } catch (error) {
       message.error('Failed to fetch workflow data', error);
-      console.log('error', error);
     } finally {
       loading.value = false;
     }
