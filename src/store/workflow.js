@@ -36,9 +36,31 @@ export default {
         commit('getWorkflows', []);
         console.log('error', error);
       } finally {
-        // commit('setLoading', false);
+        commit('setLoading', false);
       }
     },
+
+    // async getWorkflow({ commit }, workflowId) {
+    //   commit('setLoading', true);
+    //   try {
+    //     // const workflow = await API.Chain.getWorkflow(workflowId);
+
+    //     setTimeout(async () => {
+    //       const { data: workflow } = await axios({
+    //         url: 'mockData/workflow.json',
+    //         baseURL: 'http://127.0.0.1:5173',
+    //       });
+
+    //       commit('getWorkflow', workflow);
+    //       commit('setLoading', false);
+    //     }, 1000);
+    //   } catch (error) {
+    //     commit('getWorkflow', {});
+    //     console.log('error', error);
+    //   } finally {
+    //     commit('setLoading', false);
+    //   }
+    // },
 
     async postWorkflow({ commit, dispatch }, data) {
       commit('setLoading', true);

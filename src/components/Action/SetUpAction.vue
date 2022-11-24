@@ -118,8 +118,9 @@ const eventBus = inject('eventBus');
 function onContinue(e) {
   e.preventDefault();
 
-  validateForm({ changeStep: true }, () => {
+  validateForm({}, () => {
     eventBus.emit('toggleTestAction', { isDisabled: false });
+    emits('continue');
     EditorData.setComplete('action', true);
   });
 }

@@ -3,12 +3,11 @@ import requester from './requester';
 export default {
   getWorkflows: (params) => requester.get('/workflows', params),
 
-  getWorkflow: (workflow_id) => requester.get(`/workflows/${workflow_id}`),
+  getWorkflow: (workflowId) => requester.get(`/workflows/${workflowId}`),
 
   postWorkflow: (data) => requester.post('/workflow', data),
 
-  deleteWorkflow: (workflow_id) =>
-    requester.delete(`/workflows/${workflow_id}`),
+  deleteWorkflow: (workflowId) => requester.delete(`/workflows/${workflowId}`),
 
   getLogs: (params) => requester.get('workflow/logs', params),
 };

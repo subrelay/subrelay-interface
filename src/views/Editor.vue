@@ -105,10 +105,11 @@ import Logo from '@/components/Common/Logo';
 import ShowOrEdit from '@/components/Common/ShowOrEdit';
 import Trigger from '@/components/Trigger/Trigger';
 import Action from '@/components/Action/Action';
+import EditorData from '@/store/localStore/EditorData';
 import { ThunderboltOutlined, BellOutlined } from '@vicons/antd';
 import { h, ref, inject, computed, onBeforeMount, onBeforeUnmount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useDialog } from 'naive-ui';
+import { useDialog, useMessage } from 'naive-ui';
 import { useStore } from 'vuex';
 
 const props = defineProps({ id: [String, Number] });
@@ -117,8 +118,8 @@ const router = useRouter();
 const route = useRoute();
 const store = useStore();
 const dialog = useDialog();
+const message = useMessage();
 const currentStep = ref(null);
-const loading = ref(null);
 
 function handleNextStep() {
   onChangeStep(2);
@@ -134,7 +135,6 @@ onBeforeUnmount(() => {
 });
 
 // BUILD WORKFLOW DATA
-import EditorData from '@/store/localStore/EditorData';
 
 const triggerStatus = ref(null);
 const actionStatus = ref(null);
@@ -264,8 +264,44 @@ function onChangeStep(step) {
   });
 }
 
-onBeforeMount(() => {
-  EditorData.loadWorkflow();
+import axios from 'axios';
+
+const loading = ref(false);
+//  Move get workflow step to this component
+onBeforeMount(async () => {
+  let data;
+
+  if (props.id !== 'new-flow') {
+    console.log('run');
+    try {
+      // const workflow = await API.Chain.getWorkflow(props.id);
+
+      const { data: workflow } = await axios({
+        url: 'mockData/workflow.json',
+        baseURL: 'http://127.0.0.1:5173',
+      });
+
+      data = workflow;
+    } catch (error) {
+      message.error('Failed to fetch workflow data', error);
+      console.log('error', error);
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  EditorData.loadWorkflow(data); // pass data as params when init loading, for milestone 2
+
+  const uuid = EditorData.workflow.tasks[0].config.uuid;
+  const eventId = EditorData.workflow.tasks[0].config.eventId;
+
+  if (uuid) {
+    store.dispatch('chain/getEvents', uuid);
+    if (eventId) {
+      store.dispatch('chain/getEvent', { uuid, eventId });
+    }
+  }
+
   currentStep.value = route.name === 'trigger' ? 1 : 2;
   setStepStatus(currentStep.value);
 });

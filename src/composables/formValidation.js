@@ -16,6 +16,7 @@ export const useFormValidation = (taskName, emits) => {
 
       if (callback) {
         callback();
+        return;
       }
 
       if (changeStep) emits('continue');

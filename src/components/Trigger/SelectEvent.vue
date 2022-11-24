@@ -62,7 +62,6 @@ const emits = defineEmits(['continue', 'back']);
 const [{ formRef }, { validateForm }] = useFormValidation('trigger', emits);
 
 const store = useStore();
-
 const isShown = ref(false);
 const options = computed(() => store.state.chain.events);
 
@@ -71,14 +70,14 @@ function onBack() {
   emits('back');
 }
 
-const selectedChain = computed(() => EditorData.workflow.tasks[0].config.uuid);
+const uuid = computed(() => EditorData.workflow.tasks[0].config.uuid);
 
 function handleSelectEvent(eventId) {
   EditorData.setTrigger({ eventId });
   validateForm({ changeStep: false });
 
   if (eventId) {
-    store.dispatch('chain/getEvent', { uuid: selectedChain.value, eventId });
+    store.dispatch('chain/getEvent', { uuid: uuid.value, eventId });
   } else {
     EditorData.setTrigger({ conditions: [] });
     store.commit('chain/getEvent', {});

@@ -3,7 +3,7 @@
   "created_at": "2022-11-02T03:12:39.018Z",
   "updated_at": "2022-11-02T03:12:39.018Z",
   "status": "running",
-  "name": "workflow 1",
+  "name": "TESTING FOO",
   "chain": {
     "uuid": "asdasdasd",
     "name": "Acala"

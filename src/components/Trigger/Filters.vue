@@ -58,11 +58,12 @@
 <script setup>
 import FilterInputGroup from '@/components/Trigger/FilterInputGroup';
 import EditorData from '@/store/localStore/EditorData';
-import { ref, inject, computed } from 'vue';
+import { useFormValidation } from '@/composables';
+import { inject, computed } from 'vue';
 
 const eventBus = inject('eventBus');
 const emits = defineEmits(['continue']);
-const formRef = ref(null);
+const [{ formRef }, { validateForm }] = useFormValidation('trigger', emits);
 
 const conditionLength = computed(() => {
   return EditorData.workflow.tasks[0].config.conditions.length;
@@ -70,8 +71,11 @@ const conditionLength = computed(() => {
 
 function removeItem(groupIdx, conditionIdx) {
   eventBus.emit('toggleTestFilter', { isDisabled: true });
-  formRef.value.restoreValidation();
+  // formRef.value.restoreValidation();
   EditorData.removeCondition(groupIdx, conditionIdx);
+  if (conditionLength.value === 0) {
+    EditorData.setError('trigger', false);
+  }
 }
 
 function addAnd(groupIdx) {
@@ -84,9 +88,8 @@ function addOr() {
 
 function onContinue(e) {
   e.preventDefault();
-  formRef.value.validate(async (errors) => {
-    if (errors) return;
 
+  validateForm({}, () => {
     if (conditionLength.value) {
       eventBus.emit('toggleTestFilter', { isDisabled: false });
       emits('continue');

@@ -11,7 +11,11 @@ const defaultConfig = () => ({
       isCompleted: null,
       isError: null,
       depend_on_name: null,
-      config: { eventId: null, uuid: null, conditions: [] },
+      config: {
+        eventId: 180,
+        uuid: '8b6af998-a145-46f5-8c04-a2d5c717e82a',
+        conditions: [],
+      },
     },
     {
       name: 'action',
@@ -100,6 +104,7 @@ const editor = reactive({
   },
 
   loadWorkflow(data) {
+    console.log('data loaded', data);
     // Load data for milestone 2
     this.workflow = data ? data : defaultConfig();
     this.triggerIdx = this.workflow.tasks.findIndex(
