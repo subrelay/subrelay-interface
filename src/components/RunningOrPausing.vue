@@ -40,7 +40,7 @@ async function onUpdateStatus() {
   const params = new URLSearchParams({ ...pickBy(query.value) });
   await axios({
     method: 'put',
-    url: 'mockData/workflow.json',
+    url: 'mockData/workflow/workflow.json',
     baseURL: 'http://127.0.0.1:5173',
     data: { status: newStatus },
   });

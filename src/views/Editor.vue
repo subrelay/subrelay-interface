@@ -274,7 +274,7 @@ onBeforeMount(async () => {
     try {
       // const workflow = await API.Chain.getWorkflow(props.id);
       const { data: workflow } = await axios({
-        url: 'mockData/workflow.json',
+        url: 'mockData/workflow/workflow.json',
         baseURL: 'http://127.0.0.1:5173',
       });
       data = workflow;

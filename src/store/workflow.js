@@ -42,7 +42,7 @@ export default {
         // const response = await API.Workflow.postWorkflow(data);
         await axios({
           method: 'post',
-          url: 'mockData/workflow.json',
+          url: 'mockData/workflow/workflow.json',
           baseURL: 'http://127.0.0.1:5173',
           data,
         });
