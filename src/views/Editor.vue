@@ -99,7 +99,7 @@
     <Action v-show="currentStep == 2" />
   </n-space>
 
-  <!-- <pre>{{ EditorData.workflow }}</pre> -->
+  <pre>{{ EditorData.workflow }}</pre>
 </template>
 
 <script setup>
