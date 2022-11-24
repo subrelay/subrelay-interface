@@ -5,17 +5,17 @@
   "status": "running",
   "name": "TESTING FOO",
   "chain": {
-    "uuid": "asdasdasd",
+    "uuid": "8b6af998-a145-46f5-8c04-a2d5c717e82a",
     "name": "Acala"
   },
   "tasks": [
     {
       "id": 1,
-      "name": "trigger 1",
+      "name": "trigger",
       "type": "trigger",
       "config": {
         "eventId": 25,
-        "chainUuid": "asdasdasd",
+        "uuid": "8b6af998-a145-46f5-8c04-a2d5c717e82a",
         "conditions": [
           [
             { "variable": "data.amount", "operator": "greaterThan", "value": 1 }
@@ -26,7 +26,7 @@
       "depend_on": null
     },
     {
-      "name": "notify webhook",
+      "name": "action",
       "type": "notification",
       "config": {
         "channel": "webhook",

@@ -87,7 +87,13 @@
     </n-card>
 
     <n-space justify="end">
-      <n-button class="action_button" type="primary" @click="onTest">
+      <n-button
+        class="action_button"
+        type="primary"
+        @click="onTest"
+        :loading="loading"
+        :disabled="loading"
+      >
         {{ isTested ? 'Retest' : 'Test' }}
       </n-button>
 
