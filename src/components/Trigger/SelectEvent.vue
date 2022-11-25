@@ -49,7 +49,7 @@
 
 <script setup>
 import EditorData from '@/store/localStore/EditorData';
-import { ref, computed } from 'vue';
+import { ref, computed, inject } from 'vue';
 import { useStore } from 'vuex';
 import {
   useDropdownFilter,
@@ -63,6 +63,7 @@ const [{ formRef }, { validateForm }] = useFormValidation('trigger', emits);
 
 const store = useStore();
 const isShown = ref(false);
+const eventBus = inject('eventBus');
 const options = computed(() => store.state.chain.events);
 
 function onBack() {
@@ -74,12 +75,13 @@ const uuid = computed(() => EditorData.workflow.tasks[0].config.uuid);
 
 function handleSelectEvent(eventId) {
   EditorData.setTrigger({ eventId });
+  EditorData.setTrigger({ conditions: [] });
+  eventBus.emit('toggleTestFilter', { isDisabled: true });
   validateForm({ changeStep: false });
 
   if (eventId) {
     store.dispatch('chain/getEvent', { uuid: uuid.value, eventId });
   } else {
-    EditorData.setTrigger({ conditions: [] });
     store.commit('chain/getEvent', {});
   }
 }

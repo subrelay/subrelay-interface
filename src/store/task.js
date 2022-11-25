@@ -1,10 +1,10 @@
-import axios from 'axios';
+import API from '@/api';
 
 export default {
   namespaced: true,
 
   state: () => ({
-    operators: {},
+    operators: [],
     loading: null,
   }),
 
@@ -15,21 +15,12 @@ export default {
 
   actions: {
     async getOperators({ commit }) {
-      commit('setLoading', true);
       try {
-        // const operators = await API.Chain.getOperators();
-        const { data: operators } = await axios({
-          url: 'mockData/operators.json',
-          baseURL: 'http://127.0.0.1:5173',
-        });
+        const operators = await API.Task.getOperators();
         commit('getOperators', operators);
       } catch (error) {
-        commit('getOperators', null);
+        commit('getOperators', []);
         console.log('error', error);
-      } finally {
-        setTimeout(() => {
-          commit('setLoading', false);
-        }, 1000);
       }
     },
   },

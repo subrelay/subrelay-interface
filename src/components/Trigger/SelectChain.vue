@@ -29,22 +29,27 @@ import EditorData from '@/store/localStore/EditorData';
 import ChainDropdown from '@/components/Common/ChainDropdown';
 import { useFormValidation } from '@/composables';
 import { useStore } from 'vuex';
+import { inject } from 'vue';
 
 const emits = defineEmits(['continue']);
 
 const [{ formRef }, { validateForm }] = useFormValidation('trigger', emits);
 
 const store = useStore();
+const eventBus = inject('eventBus');
 
 function handleSelectChain(uuid) {
   EditorData.setTrigger({ uuid });
+  EditorData.setTrigger({ eventId: null });
+  EditorData.setTrigger({ conditions: [] });
+
+  eventBus.emit('toggleTestFilter', { isDisabled: true });
+
   validateForm({ changeStep: false });
 
   if (uuid) {
     store.dispatch('chain/getEvents', uuid);
   } else {
-    EditorData.setTrigger({ eventId: null });
-    EditorData.setTrigger({ conditions: [] });
     store.commit('chain/getEvents', []);
   }
 }

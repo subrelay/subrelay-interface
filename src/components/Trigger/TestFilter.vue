@@ -41,7 +41,9 @@
                   }}
                 </span>
                 <span> {{ parsePascalCaseStr(condition.operator) }}</span>
-                <i> {{ condition.value ? ' condition.value' : '' }}</i>
+                <i>
+                  {{ condition.value !== null ? ` ${condition.value}` : '' }}</i
+                >
               </span>
             </div>
           </n-space>
@@ -113,16 +115,18 @@
 import JsonEventSample from '@/components/Common/JsonEventSample';
 import EditorData from '@/store/localStore/EditorData';
 import { computed, ref, inject } from 'vue';
-import { useStore } from 'vuex';
 
 const eventBus = inject('eventBus');
-const store = useStore();
 const isSuccess = ref(null);
 const loading = ref(null);
 const isTested = ref(null);
 
 const conditions = computed(() => {
   return EditorData.workflow.tasks[0].config.conditions;
+});
+
+eventBus.on('toggleTestFilter', ({ isDisabled }) => {
+  if (isDisabled) isTested.value = false;
 });
 
 function onTest() {

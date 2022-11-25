@@ -109,7 +109,7 @@ const eventBus = inject('eventBus');
 const requiredRule = ref({
   trigger: ['input'],
   validator(rule, value) {
-    if (!value) {
+    if (value === null) {
       return new Error('Required!');
     }
     eventBus.emit('toggleTestFilter', { isDisabled: true });
