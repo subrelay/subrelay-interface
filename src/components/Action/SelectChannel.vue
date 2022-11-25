@@ -22,8 +22,8 @@
       >
         <n-grid cols="2" y-gap="20" x-gap="30">
           <n-gi span="1" v-for="channel in useChannels" :key="channel.value">
+            <!-- :disabled="channel.value !== 'webhook'" -->
             <n-radio-button
-              :disabled="channel.value !== 'webhook'"
               :value="channel.value"
               :bordered="false"
               class="channel_item"

@@ -98,7 +98,7 @@
 import API from '@/api';
 import JsonEventSample from '@/components/Common/JsonEventSample';
 import EditorData from '@/store/localStore/EditorData';
-import { computed, ref, inject } from 'vue';
+import { computed, ref, inject, onBeforeUnmount } from 'vue';
 import { useStore } from 'vuex';
 const store = useStore();
 
@@ -108,6 +108,12 @@ const postWorkflowLoading = computed(() => store.state.workflow.loading);
 const taskResponse = ref({});
 
 const eventBus = inject('eventBus');
+eventBus.on('toggleTestAction', resetTest);
+onBeforeUnmount(() => eventBus.off('toggleTestAction', resetTest));
+
+function resetTest({ isDisabled }) {
+  if (isDisabled) isTested.value = false;
+}
 
 const notiConfig = computed(() => {
   return EditorData.workflow.tasks[1].config.config;
