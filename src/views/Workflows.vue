@@ -5,6 +5,7 @@
     <n-data-table
       :columns="columns"
       :data="workflows"
+      :row-key="({ id }) => id"
       :pagination="tablePagination"
       :render-cell="useRenderCell"
       :loading="loading"
@@ -24,6 +25,8 @@ import { ref, h, provide, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import moment from 'moment';
+import API from '@/api';
+import axios from 'axios';
 import {
   useQueryParams,
   useRenderSortIcon,
@@ -35,13 +38,30 @@ import {
 const message = useMessage();
 const store = useStore();
 const router = useRouter();
+const workflows = computed(() => store.state.workflow.workflows);
 
-function deleteRow(rowData) {
-  message.info(`Workflow ${rowData.name} has been deleted`);
+function deleteWorkflow({ id, name }) {
+  // await API.Workflow.deleteWorkflow(id)
+  // await store.dispatch('workflow/getWorkflows');
+  // message.info(`Workflow ${name} has been deleted`);
+
+  return new Promise((resolve) => {
+    setTimeout(async () => {
+      const { data: newWorkflows } = await axios({
+        url: 'mockData/workflow/deleteWorkflow.json',
+        baseURL: 'http://127.0.0.1:5173',
+      });
+
+      store.commit('workflow/getWorkflows', newWorkflows);
+      message.info(`Workflow ${name} has been deleted`);
+
+      resolve();
+    }, 1000);
+  });
 }
 
-function handleUpdateValue(status, loading) {
-  loading = true;
+function fetchData() {
+  store.dispatch('workflow/getWorkflows');
 }
 
 const columns = ref([
@@ -127,7 +147,7 @@ const columns = ref([
           ButtonWithPopConfirm,
           {
             style: { 'margin-right': '1rem' },
-            onPositiveClick: () => deleteRow(row),
+            onPositiveClick: async () => await deleteWorkflow(row),
             elementKey: row.id,
             tooltipText: 'Delete workflow',
             confirmText: 'Are you sure to delete this workflow?',
@@ -140,8 +160,6 @@ const columns = ref([
     },
   },
 ]);
-
-const workflows = computed(() => store.state.workflow.workflows);
 
 const [
   {
@@ -174,8 +192,4 @@ provide('search', {
   handleSelectStatus,
   clearAllFilters,
 });
-
-function fetchData() {
-  store.dispatch('workflow/getWorkflows');
-}
 </script>

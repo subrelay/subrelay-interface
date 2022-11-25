@@ -1,16 +1,5 @@
 [
   {
-    "id": 1,
-    "name": "John Brown",
-    "created_at": 134245325,
-    "updated_at": 3546634,
-    "status": "running",
-    "chain": {
-      "uuid": "uasdasdsd",
-      "name": "Acala"
-    }
-  },
-  {
     "id": 2,
     "name": "Jim Green",
     "created_at": 435435435,

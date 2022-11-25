@@ -15,7 +15,6 @@
 </template>
 
 <script setup>
-import ButtonWithPopConfirm from '@/components/Common/ButtonWithPopConfirm';
 import PageHeader from '@/components/Common/PageHeader';
 import { Icon } from '@iconify/vue';
 import { ref, h, provide, computed } from 'vue';

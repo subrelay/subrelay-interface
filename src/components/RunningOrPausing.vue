@@ -7,6 +7,7 @@
         :loading="loading"
         :disabled="loading"
         :checked-value="'running'"
+        :unchecked-value="'pausing'"
       />
     </template>
     {{ props.status }}
@@ -32,8 +33,7 @@ const props = defineProps({
 const loading = ref(null);
 const query = computed(() => store.state.workflow.queryParams);
 
-async function onUpdateStatus() {
-  const newStatus = props.status === 'running' ? 'pausing' : 'running';
+async function onUpdateStatus(newStt) {
   loading.value = true;
 
   // --- Mock  data ---
@@ -42,7 +42,7 @@ async function onUpdateStatus() {
     method: 'put',
     url: 'mockData/workflow/workflow.json',
     baseURL: 'http://127.0.0.1:5173',
-    data: { status: newStatus },
+    data: { status: newStt },
   });
 
   const { data: newWorkflows } = await axios({
