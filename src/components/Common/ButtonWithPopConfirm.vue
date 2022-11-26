@@ -32,10 +32,18 @@
             color="white"
             ghost
             @click="showTooltip = false"
+            :disabled="loading"
           >
             {{ negativeText }}
           </n-button>
-          <n-button size="small" type="error" @click="handlePositive">
+
+          <n-button
+            size="small"
+            type="error"
+            @click="handlePositive"
+            :loading="loading"
+            :disabled="loading"
+          >
             {{ positiveText }}
           </n-button>
         </n-space>
@@ -62,6 +70,7 @@ const props = defineProps({
 
 const showConfirm = ref(false);
 const showTooltip = ref(false);
+const loading = ref(false);
 
 function handleMouseEnter() {
   showConfirm.value = false;
@@ -83,16 +92,18 @@ function onClickOutSide() {
   }
 }
 
-function handlePositive() {
+async function handlePositive() {
+  loading.value = true;
+  await props.onPositiveClick();
+  loading.value = false;
   showTooltip.value = false;
-  props.onPositiveClick();
 }
 
 onMounted(() => {
+  // Toggle tooltip
   const element = document.querySelector(
     `#action-${props.positiveText}__key-${props.elementKey}`
   );
-
   element.addEventListener('mouseenter', handleMouseEnter);
   element.addEventListener('mouseleave', handleMouseLeave);
 });

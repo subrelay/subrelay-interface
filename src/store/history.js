@@ -1,46 +1,38 @@
+import axios from 'axios';
+import { pickBy } from 'lodash';
+
 export default {
   namespaced: true,
 
   state: () => ({
     queryParams: null,
-
-    logs: [
-      {
-        id: 10,
-        workflow: {
-          id: 10,
-          name: 'name 1',
-          chain: {
-            id: 1,
-            name: 'Acala',
-          },
-        },
-        started_at: '2022-11-02T03:12:39.018Z',
-        finished_at: '2022-11-02T03:12:39.018Z',
-        status: 'success',
-      },
-      {
-        id: 11,
-        workflow: {
-          id: 10,
-          name: 'name 2',
-          chain: {
-            id: 2,
-            name: 'Polkadot',
-          },
-        },
-        started_at: '2022-11-02T03:12:39.018Z',
-        finished_at: '2022-11-02T03:12:39.018Z',
-        status: 'failed',
-      },
-    ],
+    logs: [],
+    loading: null,
   }),
 
   mutations: {
-    saveQueryParams(state, queryParams) {
-      state.queryParams = queryParams;
-    },
+    saveQueryParams: (state, queryParams) => (state.queryParams = queryParams),
+    getLogs: (state, logs) => (state.logs = logs),
+    setLoading: (state, isLoading) => (state.loading = isLoading),
   },
 
-  actions: {},
+  actions: {
+    async getLogs({ commit, state }) {
+      commit('setLoading', true);
+      try {
+        // const logs = await API.Workflow.getLogs(state.queryParams);
+        const { data: logs } = await axios({
+          url: 'mockData/workflow/logs.json',
+          baseURL: 'http://127.0.0.1:5173',
+          params: new URLSearchParams({ ...pickBy(state.queryParams) }),
+        });
+        commit('getLogs', logs);
+      } catch (error) {
+        commit('getLogs', []);
+        console.log('error', error);
+      } finally {
+        commit('setLoading', false);
+      }
+    },
+  },
 };

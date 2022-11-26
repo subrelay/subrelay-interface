@@ -8,13 +8,16 @@ const defaultConfig = () => ({
     {
       name: 'trigger',
       type: 'trigger',
+      isCompleted: null,
+      isError: null,
       depend_on_name: null,
-      isError: false,
-      config: { event: null, chain_uuid: null, conditions: [] },
+      config: { eventId: null, uuid: null, conditions: [] },
     },
     {
-      name: 'notify',
+      name: 'action',
       type: 'notification',
+      isCompleted: null,
+      isError: null,
       config: {
         channel: null,
         depend_on_name: 'trigger',
@@ -28,15 +31,42 @@ const defaultConfig = () => ({
 });
 
 const editor = reactive({
-  workflow: defaultConfig(),
+  workflow: null,
+  triggerIdx: null,
+  actionIdx: null,
+
+  setError(taskName, isError) {
+    const index = this.workflow.tasks.findIndex(
+      (task) => task.name === taskName
+    );
+    this.workflow.tasks[index].isError = isError;
+  },
+
+  setComplete(taskName, isCompleted) {
+    const index = this.workflow.tasks.findIndex(
+      (task) => task.name === taskName
+    );
+    this.workflow.tasks[index].isCompleted = isCompleted;
+  },
 
   setName(name) {
-    this.workflow.name = name;
+    this.workflow.name = name ? name : 'Untitled';
   },
 
   setTrigger(data) {
+    const index = this.workflow.tasks.findIndex(
+      (task) => task.name === 'trigger'
+    );
     const [prop, value] = Object.entries(data)[0];
-    this.workflow.tasks[0].config[prop] = value;
+    this.workflow.tasks[index].config[prop] = value;
+
+    this.setComplete(
+      'trigger',
+      !!(
+        this.workflow.tasks[index].config.eventId &&
+        this.workflow.tasks[index].config.uuid
+      )
+    );
   },
 
   addOr() {
@@ -68,8 +98,20 @@ const editor = reactive({
   },
 
   loadWorkflow(data) {
-    // Load data for milestone 2
+    if (data) {
+      data.tasks.forEach((task) => {
+        task.isCompleted = null;
+        task.isError = null;
+      });
+    }
     this.workflow = data ? data : defaultConfig();
+
+    this.triggerIdx = this.workflow.tasks.findIndex(
+      (task) => task.type === 'trigger'
+    );
+    this.actionIdx = this.workflow.tasks.findIndex(
+      (task) => task.type === 'notification'
+    );
   },
 });
 

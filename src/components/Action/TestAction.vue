@@ -17,7 +17,9 @@
 
         <div class="input-item">
           <div class="title">Header:</div>
-          <n-text code>{{ notiConfig.headers }}</n-text>
+          <n-text code>
+            {{ headerObj }}
+          </n-text>
         </div>
 
         <n-space vertical>
@@ -42,16 +44,21 @@
           <div class="title">Status:</div>
 
           <Icon
-            :icon="isSuccess ? 'ep:success-filled' : 'ic:round-cancel'"
-            :color="isSuccess ? '#18A058FF' : '#D03050FF'"
+            :inline="true"
+            :icon="
+              taskResponse.success ? 'ep:success-filled' : 'ic:round-cancel'
+            "
+            :color="taskResponse.success ? '#18A058FF' : '#D03050FF'"
             :width="'1.2rem'"
-            style="margin-right: 10px"
+            style="margin-right: 5px"
           />
-          <span class="text-capitalize">{{ taskResponse.status }}</span>
+          <span class="text-capitalize">
+            {{ taskResponse.success ? 'Success' : 'Failed' }}
+          </span>
         </div>
 
-        <div class="input-item" v-if="!isSuccess">
-          <div class="title">Error:</div>
+        <div class="input-item" v-if="!taskResponse.success">
+          <div class="title">Message:</div>
           <p>{{ taskResponse.error.message }}</p>
         </div>
 
@@ -63,15 +70,23 @@
     </n-card>
 
     <n-space justify="end">
-      <n-button class="action_button" type="primary" @click="onTest">
+      <n-button
+        class="action_button"
+        type="primary"
+        @click="onTest"
+        :loading="loading"
+        :disabled="loading || postWorkflowLoading"
+      >
         {{ isTested ? 'Retest' : 'Test' }}
       </n-button>
 
       <n-button
         class="action_button"
         type="primary"
-        @click="eventBus.emit('finish')"
         v-if="isTested"
+        @click="eventBus.emit('finish')"
+        :loading="postWorkflowLoading"
+        :disabled="loading || postWorkflowLoading"
       >
         Finish
       </n-button>
@@ -80,37 +95,52 @@
 </template>
 
 <script setup>
+import API from '@/api';
 import JsonEventSample from '@/components/Common/JsonEventSample';
-import { computed, ref, inject } from 'vue';
+import EditorData from '@/store/localStore/EditorData';
+import { computed, ref, inject, onBeforeUnmount } from 'vue';
 import { useStore } from 'vuex';
 const store = useStore();
 
 const loading = ref(null);
 const isTested = ref(false);
+const postWorkflowLoading = computed(() => store.state.workflow.loading);
+const taskResponse = ref({});
+
 const eventBus = inject('eventBus');
+eventBus.on('toggleTestAction', resetTest);
+onBeforeUnmount(() => eventBus.off('toggleTestAction', resetTest));
+
+function resetTest({ isDisabled }) {
+  if (isDisabled) isTested.value = false;
+}
 
 const notiConfig = computed(() => {
-  const notiTask = store.state.workflow.workflow.tasks.find(
-    (task) => task.type === 'notification'
-  );
-  return notiTask.config.config;
+  return EditorData.workflow.tasks[1].config.config;
 });
 
-const taskResponse = ref({
-  status: 'failed',
-  error: { message: 'There was an error.' },
-  result: null,
+const headerObj = computed(() => {
+  const keyValueArr = Object.values(notiConfig.value.headers[0]);
+  return Object.fromEntries([keyValueArr]);
 });
 
-const isSuccess = computed(() => taskResponse.value.status === 'success');
+const sample = {
+  id: 123,
+  name: 'balances.deposit',
+  description: 'This Event Does This',
+  data: { who: '', amount: 123 },
+  status: 'success',
+  extrinsic: { name: 'balances.deposit' },
+  block: { hash: '', number: 123, timestamp: '' },
+};
 
-function onTest() {
+async function onTest() {
   loading.value = true;
-
-  setTimeout(() => {
-    loading.value = false;
-    isTested.value = true;
-  }, 1000);
+  const { type, config } = EditorData.workflow.tasks[EditorData.actionIdx];
+  const res = await API.Task.runTask({ type, data: sample, config });
+  taskResponse.value = res;
+  loading.value = false;
+  isTested.value = true;
 }
 
 function parsePascalCaseStr(string) {
@@ -124,7 +154,7 @@ function parsePascalCaseStr(string) {
   display: flex;
   align-items: center;
   .title {
-    width: 10%;
+    width: 15%;
   }
 }
 </style>

@@ -32,10 +32,18 @@
                 <b v-if="subIndex !== 0"> AND </b>
                 <i> {{ condition.variable }} </i>
                 <span>
-                  {{ condition.operator === 'contains' ? '' : ' is ' }}</span
-                >
+                  {{
+                    ['greaterThan, greaterThanEqual', 'lessThan'].includes(
+                      condition.operator
+                    )
+                      ? ' is '
+                      : ' '
+                  }}
+                </span>
                 <span> {{ parsePascalCaseStr(condition.operator) }}</span>
-                <i> {{ ' ' + condition.value }}</i>
+                <i>
+                  {{ condition.value !== null ? ` ${condition.value}` : '' }}</i
+                >
               </span>
             </div>
           </n-space>
@@ -60,19 +68,16 @@
         </n-space>
       </n-space>
 
-      <n-space align="center" v-else>
+      <n-space align="center" v-else :wrap="false">
         <Icon
-          :icon="isSuccess ? 'ep:success-filled' : 'ic:round-cancel'"
-          :color="isSuccess ? '#18A058FF' : '#D03050FF'"
+          :icon="isMatched ? 'ep:success-filled' : 'ic:round-cancel'"
+          :color="isMatched ? '#18A058FF' : '#D03050FF'"
           :width="'2rem'"
         />
 
         <div>
-          <div v-if="isSuccess">Your task would have continued</div>
-          <div v-else>
-            Your task would not have continued. Sample event doesn't match your
-            filter conditions
-          </div>
+          <div v-if="isMatched">Matched!</div>
+          <div v-else>Not matched!</div>
           <n-text depth="3" class="font-size-075">
             If this was unexpected, go back to edit your filters and retest.
           </n-text>
@@ -81,7 +86,13 @@
     </n-card>
 
     <n-space justify="end">
-      <n-button class="action_button" type="primary" @click="onTest">
+      <n-button
+        class="action_button"
+        type="primary"
+        @click="onTest"
+        :loading="loading"
+        :disabled="loading"
+      >
         {{ isTested ? 'Retest' : 'Test' }}
       </n-button>
 
@@ -98,32 +109,46 @@
 </template>
 
 <script setup>
+import API from '@/api';
 import JsonEventSample from '@/components/Common/JsonEventSample';
-import { computed, ref, inject } from 'vue';
+import EditorData from '@/store/localStore/EditorData';
+import { computed, ref, inject, onBeforeUnmount } from 'vue';
 import { useStore } from 'vuex';
 
 const eventBus = inject('eventBus');
-const store = useStore();
-const isSuccess = ref(null);
+const isMatched = ref(null);
 const loading = ref(null);
 const isTested = ref(null);
+const store = useStore();
 
 const conditions = computed(() => {
-  const triggerTask = store.state.workflow.workflow.tasks.find(
-    (task) => task.type === 'trigger'
-  );
-  return triggerTask.config.conditions;
+  return EditorData.workflow.tasks[0].config.conditions;
 });
 
-function onTest() {
+function resetTest({ isDisabled }) {
+  if (isDisabled) isTested.value = false;
+}
+
+eventBus.on('toggleTestFilter', resetTest);
+onBeforeUnmount(() => eventBus.off('toggleTestFilter', resetTest));
+
+const sample = {
+  id: 123,
+  name: 'balances.deposit',
+  description: 'This Event Does This',
+  data: { who: '', amount: 123 },
+  status: 'success',
+  extrinsic: { name: 'balances.deposit' },
+  block: { hash: '', number: 123, timestamp: '' },
+};
+
+async function onTest() {
   loading.value = true;
-
-  setTimeout(() => {
-    loading.value = false;
-    isTested.value = true;
-  }, 1000);
-
-  isSuccess.value = !isSuccess.value;
+  const { type, config } = EditorData.workflow.tasks[EditorData.triggerIdx];
+  const res = await API.Task.runTask({ type, data: sample, config });
+  loading.value = false;
+  isTested.value = true;
+  isMatched.value = res.output.match;
 }
 
 function parsePascalCaseStr(string) {

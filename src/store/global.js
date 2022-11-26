@@ -6,20 +6,22 @@ export default {
       name: 'Foo',
       address: '22EUKZfNUV6JPZ1baLscJShX7djtDDZnkiFZwqF7Fk8X5oUp',
     },
+
     isDarkMode: false,
-    queryParams: null,
+    isSiderCollapsed: false,
 
     defaultQueryParams: {
       search: undefined,
       order: undefined,
       sort: undefined,
-      chain_uuid: undefined,
+      uuid: undefined,
       status: undefined,
       offset: 1,
       limit: 5,
     },
 
     isAuthenticating: null,
+
     // Profile page
     profileInitials: 'TC',
     profileUsername: 'anhthichieu',
@@ -38,6 +40,8 @@ export default {
     setAuthenticating(state, isAuthenticating) {
       state.isAuthenticating = isAuthenticating;
     },
+
+    toggleSider: (state, isCollapsed) => (state.isSiderCollapsed = isCollapsed),
   },
 
   actions: {},

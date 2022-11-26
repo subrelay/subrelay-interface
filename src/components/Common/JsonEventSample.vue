@@ -10,13 +10,22 @@
 
 <script setup>
 import { JsonViewer } from 'vue3-json-viewer';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
 
 const props = defineProps({ expandDepth: { type: Number, default: 0 } });
-const sampleData = computed(() => store.state.chain.event.sample || {});
+// const sampleData = computed(() => store.state.chain.event.sample || {});
+const sampleData = ref({
+  id: 123,
+  name: 'balances.deposit',
+  description: 'This Event Does This',
+  data: { who: '', amount: 123 },
+  status: 'success',
+  extrinsic: { name: 'balances.deposit' },
+  block: { hash: '', number: 123, timestamp: '' },
+});
 </script>
 
 <style lang="scss">

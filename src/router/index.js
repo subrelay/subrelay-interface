@@ -32,7 +32,7 @@ const router = createRouter({
       ],
     },
     {
-      path: '/editor/:id?',
+      path: '/editor/:id',
       props: true,
       component: () => import('../views/Editor.vue'),
       meta: {

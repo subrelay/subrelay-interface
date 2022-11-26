@@ -1,10 +1,11 @@
 <template>
   <n-space vertical :size="30">
-    <PageHeader :module="'workflows'" :statusOptions="statuses" />
+    <PageHeader :module="'workflows'" :statusOptions="useWorkflowStatuses" />
 
     <n-data-table
       :columns="columns"
       :data="workflows"
+      :row-key="({ id }) => id"
       :pagination="tablePagination"
       :render-cell="useRenderCell"
       :loading="loading"
@@ -16,12 +17,16 @@
 
 <script setup>
 import ButtonWithPopConfirm from '@/components/Common/ButtonWithPopConfirm';
+import RunningOrPausing from '@/components/RunningOrPausing';
 import PageHeader from '@/components/Common/PageHeader';
-import { NAvatar, NSwitch, NTooltip, useMessage } from 'naive-ui';
+import { NAvatar, useMessage } from 'naive-ui';
 import { Icon } from '@iconify/vue';
 import { ref, h, provide, computed } from 'vue';
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 import moment from 'moment';
+import API from '@/api';
+import axios from 'axios';
 import {
   useQueryParams,
   useRenderSortIcon,
@@ -32,13 +37,31 @@ import {
 
 const message = useMessage();
 const store = useStore();
+const router = useRouter();
+const workflows = computed(() => store.state.workflow.workflows);
 
-function deleteRow(rowData) {
-  message.info(`Workflow ${rowData.name} has been deleted`);
+function deleteWorkflow({ id, name }) {
+  // await API.Workflow.deleteWorkflow(id)
+  // await store.dispatch('workflow/getWorkflows');
+  // message.info(`Workflow ${name} has been deleted`);
+
+  return new Promise((resolve) => {
+    setTimeout(async () => {
+      const { data: newWorkflows } = await axios({
+        url: 'mockData/workflow/deleteWorkflow.json',
+        baseURL: 'http://127.0.0.1:5173',
+      });
+
+      store.commit('workflow/getWorkflows', newWorkflows);
+      message.info(`Workflow ${name} has been deleted`);
+
+      resolve();
+    }, 1000);
+  });
 }
 
-function handleUpdateValue(status, loading) {
-  loading = true;
+function fetchData() {
+  store.dispatch('workflow/getWorkflows');
 }
 
 const columns = ref([
@@ -46,10 +69,19 @@ const columns = ref([
     title: 'Name',
     key: 'name',
     ellipsis: { tooltip: true },
-    className: 'text-bold',
     sorter: true,
     sortOrder: false,
     renderSorterIcon: useRenderSortIcon,
+    render: ({ name, id }) => {
+      return h(
+        'div',
+        {
+          class: 'text-bold cursor-pointer',
+          onClick: () => router.push({ name: 'trigger', params: { id } }),
+        },
+        name
+      );
+    },
   },
   {
     title: 'Chain',
@@ -101,24 +133,8 @@ const columns = ref([
     key: 'status',
     sorter: false,
     width: '10%',
-    render: ({ status }) => {
-      return h(
-        NTooltip,
-        { showArrow: false },
-        {
-          trigger: () =>
-            // tach thanh component, refer ShowOrEdit
-            // & easier to manage loading state.
-            h(NSwitch, {
-              // loading: false,
-              // value: status,
-              onUpdateValue: (newValue) => {
-                console.log('newValue', newValue);
-              },
-            }),
-          default: () => status,
-        }
-      );
+    render: ({ id, status }) => {
+      return h(RunningOrPausing, { status, id });
     },
   },
   {
@@ -131,7 +147,7 @@ const columns = ref([
           ButtonWithPopConfirm,
           {
             style: { 'margin-right': '1rem' },
-            onPositiveClick: () => deleteRow(row),
+            onPositiveClick: async () => await deleteWorkflow(row),
             elementKey: row.id,
             tooltipText: 'Delete workflow',
             confirmText: 'Are you sure to delete this workflow?',
@@ -144,16 +160,6 @@ const columns = ref([
     },
   },
 ]);
-
-const workflows = computed(() => store.state.workflow.workflows);
-
-function fetchData() {
-  loading.value = true;
-
-  setTimeout(() => {
-    loading.value = false;
-  }, 300);
-}
 
 const [
   {

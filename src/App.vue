@@ -14,6 +14,7 @@ const store = useStore();
 
 onMounted(() => {
   store.dispatch('chain/getChains');
+  store.dispatch('task/getOperators');
 });
 </script>
 

@@ -54,8 +54,7 @@
         :width="300"
         :collapsed-width="70"
         :collapsed="collapsed"
-        @collapse="collapsed = true"
-        @expand="collapsed = false"
+        @update:collapsed="(value) => store.commit('global/toggleSider', value)"
       >
         <n-menu
           v-model:value="activeKey"
@@ -92,10 +91,10 @@ const route = useRoute();
 const router = useRouter();
 const store = useStore();
 const message = useMessage();
-const collapsed = ref(null);
 const activeKey = ref(null);
 const showMenu = ref(false);
 const showModal = ref(false);
+const collapsed = computed(() => store.state.global.isSiderCollapsed);
 
 watch(
   () => route.name,

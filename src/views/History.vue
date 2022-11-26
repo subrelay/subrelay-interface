@@ -15,7 +15,6 @@
 </template>
 
 <script setup>
-import ButtonWithPopConfirm from '@/components/Common/ButtonWithPopConfirm';
 import PageHeader from '@/components/Common/PageHeader';
 import { Icon } from '@iconify/vue';
 import { ref, h, provide, computed } from 'vue';
@@ -33,11 +32,7 @@ import {
 const store = useStore();
 
 function fetchData() {
-  loading.value = true;
-
-  setTimeout(() => {
-    loading.value = false;
-  }, 300);
+  store.dispatch('history/getLogs');
 }
 
 const logs = computed(() => store.state.history.logs);

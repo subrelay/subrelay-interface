@@ -27,7 +27,7 @@ export const useLogStatuses = ref([
   },
 ]);
 
-const useWorkflowStatuses = ref([
+export const useWorkflowStatuses = ref([
   // will be updated later to get status list of all workflows
   {
     label: 'Running',
@@ -42,4 +42,11 @@ const useWorkflowStatuses = ref([
     iconColor: 'rgba(0, 0, 0, 0.14)',
     iconRotate: 2,
   },
+]);
+
+export const useChannels = ref([
+  { value: 'webhook', label: 'Webhook', icon: 'logos:webhooks' },
+  { value: 'email', label: 'Email', icon: 'fluent-emoji-flat:e-mail' },
+  { value: 'telegram', label: 'Telegram', icon: 'logos:telegram' },
+  { value: 'discord', label: 'Discord', icon: 'logos:discord-icon' },
 ]);
