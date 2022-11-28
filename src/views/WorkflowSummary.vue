@@ -22,9 +22,10 @@
       <n-tab-pane name="overview" tab="Overview">
         <router-view :key="activeTab" />
       </n-tab-pane>
-      <n-tab-pane name="logs" tab="Logs">
+
+      <!-- <n-tab-pane name="logs" tab="Logs">
         <router-view :key="activeTab" />
-      </n-tab-pane>
+      </n-tab-pane> -->
     </n-tabs>
   </n-space>
 </template>
