@@ -29,6 +29,16 @@ const router = createRouter({
           name: 'history',
           component: () => import('../views/History.vue'),
         },
+        {
+          path: '/workflow-summary/:id',
+          props: true,
+          name: 'workflow-summary',
+          component: () => import('../views/WorkflowSummary.vue'),
+          meta: {
+            requiresAuth: true,
+            title: 'Workflow Summary',
+          },
+        },
       ],
     },
     {
@@ -53,16 +63,11 @@ const router = createRouter({
         },
       ],
     },
-    {
-      path: '/test',
-      name: 'test',
-      component: () => import('../views/Test.vue'),
-    },
   ],
 });
 
 router.beforeResolve((to, from, next) => {
-  document.title = `${to.meta.title}`;
+  document.title = `${to.meta.title} | SubRelay`;
   // if (to.matched.some((record) => record.meta.requiresAuth)) {
   //   Auth.currentAuthenticatedUser()
   //     .then(() => {

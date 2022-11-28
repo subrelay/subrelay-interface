@@ -77,7 +77,8 @@ const columns = ref([
         'div',
         {
           class: 'text-bold cursor-pointer',
-          onClick: () => router.push({ name: 'trigger', params: { id } }),
+          onClick: () =>
+            router.push({ name: 'workflow-summary', params: { id } }),
         },
         name
       );
