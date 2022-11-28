@@ -22,7 +22,7 @@
 
 <script setup>
 import Logo from '@/components/Common/Logo';
-import AccountModal from '@/components/AccountModal';
+import AccountModal from '@/components/Misc/AccountModal';
 import { ref } from 'vue';
 
 const showModal = ref(false);

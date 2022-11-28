@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 @import './variables.scss';
 
 @font-face {
@@ -72,7 +72,7 @@ body {
   transition: color 0.5s, background-color 0.5s;
   line-height: 1.6;
   font-family: 'Poppins', sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -153,7 +153,11 @@ body {
 }
 
 .text-bold {
-  font-weight: bold;
+  font-weight: 700;
+}
+
+.text-semi-bold {
+  font-weight: 600;
 }
 
 .text-italic {
@@ -190,4 +194,12 @@ body {
 
 flex-1 {
   flex: 1;
+}
+
+.input-item {
+  display: flex;
+  align-items: center;
+  .title {
+    width: 15%;
+  }
 }

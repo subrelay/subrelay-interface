@@ -6,14 +6,16 @@ export default {
   namespaced: true,
 
   state: () => ({
-    queryParams: null,
     workflows: [],
+    workflow: {},
+    queryParams: null,
     loading: null,
   }),
 
   mutations: {
-    saveQueryParams: (state, queryParams) => (state.queryParams = queryParams),
     getWorkflows: (state, workflows) => (state.workflows = workflows),
+    getWorkflow: (state, workflow) => (state.workflow = workflow),
+    saveQueryParams: (state, queryParams) => (state.queryParams = queryParams),
     setLoading: (state, isLoading) => (state.loading = isLoading),
   },
 
@@ -30,6 +32,25 @@ export default {
         commit('getWorkflows', workflows);
       } catch (error) {
         commit('getWorkflows', []);
+        console.log('error', error);
+      } finally {
+        commit('setLoading', false);
+      }
+    },
+
+    async getWorkflow({ commit }, workflowId) {
+      commit('setLoading', true);
+      try {
+        // const workflow = await API.Workflow.getWorkflow(workflowId);
+
+        const { data: workflow } = await axios({
+          url: 'mockData/workflow/workflow.json',
+          baseURL: 'http://127.0.0.1:5173',
+        });
+
+        commit('getWorkflow', workflow);
+      } catch (error) {
+        commit('getWorkflow', {});
         console.log('error', error);
       } finally {
         commit('setLoading', false);

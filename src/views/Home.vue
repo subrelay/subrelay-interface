@@ -55,6 +55,8 @@
         :collapsed-width="70"
         :collapsed="collapsed"
         @update:collapsed="(value) => store.commit('global/toggleSider', value)"
+        trigger-style="top:20%"
+        collapsed-trigger-style="top:20%"
       >
         <n-menu
           v-model:value="activeKey"
@@ -79,7 +81,7 @@
 </template>
 
 <script setup>
-import AccountModal from '@/components/AccountModal';
+import AccountModal from '@/components/Misc/AccountModal';
 import Logo from '@/components/Common/Logo';
 import { computed, h, ref, watch } from 'vue';
 import { useStore } from 'vuex';

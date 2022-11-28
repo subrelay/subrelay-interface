@@ -9,24 +9,7 @@
       </template>
 
       <n-skeleton v-if="loading" text :repeat="5" />
-      <n-space vertical :size="10" v-else>
-        <div class="input-item">
-          <div class="title">URL:</div>
-          <n-text code>{{ notiConfig.url }}</n-text>
-        </div>
-
-        <div class="input-item">
-          <div class="title">Header:</div>
-          <n-text code>
-            {{ headerObj }}
-          </n-text>
-        </div>
-
-        <n-space vertical>
-          <div class="title">Body:</div>
-          <JsonEventSample />
-        </n-space>
-      </n-space>
+      <WebhookInput v-else :config="config" />
     </n-card>
 
     <n-card
@@ -96,7 +79,7 @@
 
 <script setup>
 import API from '@/api';
-import JsonEventSample from '@/components/Common/JsonEventSample';
+import WebhookInput from '@/components/Action/WebhookInput';
 import EditorData from '@/store/localStore/EditorData';
 import { computed, ref, inject, onBeforeUnmount } from 'vue';
 import { useStore } from 'vuex';
@@ -115,13 +98,8 @@ function resetTest({ isDisabled }) {
   if (isDisabled) isTested.value = false;
 }
 
-const notiConfig = computed(() => {
+const config = computed(() => {
   return EditorData.workflow.tasks[1].config.config;
-});
-
-const headerObj = computed(() => {
-  const keyValueArr = Object.values(notiConfig.value.headers[0]);
-  return Object.fromEntries([keyValueArr]);
 });
 
 const sample = {
@@ -142,19 +120,6 @@ async function onTest() {
   loading.value = false;
   isTested.value = true;
 }
-
-function parsePascalCaseStr(string) {
-  if (!string) return;
-  return string.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase();
-}
 </script>
 
-<style lang="scss">
-.input-item {
-  display: flex;
-  align-items: center;
-  .title {
-    width: 15%;
-  }
-}
-</style>
+<style lang="scss"></style>

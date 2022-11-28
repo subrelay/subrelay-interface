@@ -7,7 +7,7 @@ import { shallowRef, inject } from 'vue';
 import SelectChannel from '@/components/Action/SelectChannel.vue';
 import SetUpAction from '@/components/Action/SetUpAction.vue';
 import TestAction from '@/components/Action/TestAction.vue';
-import Accordion from '@/components/Accordion.vue';
+import Accordion from '@/components/Misc/Accordion.vue';
 
 const steps = shallowRef([
   { title: 'Select Application', name: '1', component: SelectChannel },
