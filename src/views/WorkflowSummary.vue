@@ -8,17 +8,20 @@
     <n-spin description="Loading data... Please wait" size="small" />
   </n-space>
 
-  <n-card style="margin-bottom: 16px">
+  <n-space v-else vertical :size="30">
+    <div class="page_title">{{ workflow.name }}</div>
+
     <n-tabs
       default-value="overview"
       justify-content="space-evenly"
       type="card"
-      pane-style="background: yellow"
+      pane-class="tab-content"
     >
       <n-tab-pane name="overview" tab="Overview"> THI TEST </n-tab-pane>
     </n-tabs>
-  </n-card>
-  <!-- <pre>{{ workflow }}</pre> -->
+  </n-space>
+
+  <pre>{{ workflow }}</pre>
 </template>
 
 <script setup>
@@ -42,7 +45,15 @@ onBeforeMount(async () => {
       workflow.value = data;
       loading.value = false;
       resolve();
-    }, 0);
+    }, 1000);
   });
 });
 </script>
+
+<style lang="scss">
+.tab-content {
+  border: 1px solid rgb(239, 239, 245);
+  border-top: none;
+  padding: 1rem !important;
+}
+</style>

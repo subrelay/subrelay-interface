@@ -8,7 +8,7 @@ import SelectChain from '@/components/Trigger/SelectChain.vue';
 import SelectEvent from '@/components/Trigger/SelectEvent.vue';
 import Filters from '@/components/Trigger/Filters.vue';
 import TestFilter from '@/components/Trigger/TestFilter.vue';
-import Accordion from '@/components/Accordion.vue';
+import Accordion from '@/components/Misc/Accordion.vue';
 
 const steps = shallowRef([
   { title: 'Select Chain', name: '1', component: SelectChain },

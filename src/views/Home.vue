@@ -79,7 +79,7 @@
 </template>
 
 <script setup>
-import AccountModal from '@/components/AccountModal';
+import AccountModal from '@/components/Misc/AccountModal';
 import Logo from '@/components/Common/Logo';
 import { computed, h, ref, watch } from 'vue';
 import { useStore } from 'vuex';
