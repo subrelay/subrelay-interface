@@ -33,14 +33,14 @@
                 <i> {{ condition.variable }} </i>
                 <span>
                   {{
-                    ['greaterThan, greaterThanEqual', 'lessThan'].includes(
+                    ['greaterThan', 'greaterThanEqual', 'lessThan'].includes(
                       condition.operator
                     )
                       ? ' is '
                       : ' '
                   }}
                 </span>
-                <span> {{ parsePascalCaseStr(condition.operator) }}</span>
+                <span> {{ useParsePascalCaseStr(condition.operator) }}</span>
                 <i>
                   {{ condition.value !== null ? ` ${condition.value}` : '' }}</i
                 >
@@ -114,6 +114,7 @@ import JsonEventSample from '@/components/Common/JsonEventSample';
 import EditorData from '@/store/localStore/EditorData';
 import { computed, ref, inject, onBeforeUnmount } from 'vue';
 import { useStore } from 'vuex';
+import { useParsePascalCaseStr } from '@/composables';
 
 const eventBus = inject('eventBus');
 const isMatched = ref(null);
@@ -149,11 +150,6 @@ async function onTest() {
   loading.value = false;
   isTested.value = true;
   isMatched.value = res.output.match;
-}
-
-function parsePascalCaseStr(string) {
-  if (!string) return;
-  return string.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase();
 }
 </script>
 

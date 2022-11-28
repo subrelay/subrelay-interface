@@ -32,12 +32,27 @@ const router = createRouter({
         {
           path: '/workflow-summary/:id',
           props: true,
-          name: 'workflow-summary',
           component: () => import('../views/WorkflowSummary.vue'),
           meta: {
             requiresAuth: true,
             title: 'Workflow Summary',
           },
+          children: [
+            { path: '', redirect: { name: 'overview' } },
+            {
+              props: true,
+              path: 'overview',
+              name: 'overview',
+              component: () =>
+                import('@/components/WorkflowDetails/Overview.vue'),
+            },
+            {
+              path: 'logs',
+              name: 'logs',
+              component: () =>
+                import('@/components/WorkflowDetails/WorkflowLogs.vue'),
+            },
+          ],
         },
       ],
     },

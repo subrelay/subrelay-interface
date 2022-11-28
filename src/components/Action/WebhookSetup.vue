@@ -30,7 +30,6 @@
         "
       />
     </n-form-item>
-
     <n-button class="action_button" type="primary" @click="onContinue">
       Continue
     </n-button>
@@ -43,8 +42,7 @@ import EditorData from '@/store/localStore/EditorData';
 import { useFormValidation } from '@/composables';
 import { ref, computed, inject } from 'vue';
 
-const emits = defineEmits(['continue', 'back']);
-const [{ formRef }, { validateForm }] = useFormValidation('action', emits);
+const [{ formRef }, { validateForm }] = useFormValidation('action');
 
 const actionIdx = computed(() => EditorData.actionIdx);
 
@@ -96,13 +94,14 @@ const urlRule = ref({
 });
 
 const eventBus = inject('eventBus');
+const emitContinue = inject('emitContinue');
 
 function onContinue(e) {
   e.preventDefault();
 
   validateForm({}, () => {
     eventBus.emit('toggleTestAction', { isDisabled: false });
-    emits('continue');
+    emitContinue();
     EditorData.setComplete('action', true);
   });
 }

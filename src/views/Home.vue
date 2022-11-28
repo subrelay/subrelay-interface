@@ -55,6 +55,8 @@
         :collapsed-width="70"
         :collapsed="collapsed"
         @update:collapsed="(value) => store.commit('global/toggleSider', value)"
+        trigger-style="top:20%"
+        collapsed-trigger-style="top:20%"
       >
         <n-menu
           v-model:value="activeKey"

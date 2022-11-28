@@ -10,7 +10,7 @@
         :unchecked-value="'pausing'"
       />
     </template>
-    {{ props.status }}
+    <span class="text-capitalize"> {{ props.status }} </span>
   </n-tooltip>
 </template>
 
@@ -25,9 +25,9 @@ const store = useStore();
 const message = useMessage();
 
 const props = defineProps({
-  id: Number,
+  id: [Number, String],
   status: [String],
-  onUpdateValue: [Function, Array],
+  fetchOne: { type: Boolean, default: true },
 });
 
 const loading = ref(null);
@@ -45,12 +45,20 @@ async function onUpdateStatus(newStt) {
     data: { status: newStt },
   });
 
-  const { data: newWorkflows } = await axios({
-    url: 'mockData/workflow/changeStatus.json',
-    baseURL: 'http://127.0.0.1:5173',
-    params,
-  });
-  store.commit('workflow/getWorkflows', newWorkflows);
+  if (props.fetchOne) {
+    const { data: newWorkflow } = await axios({
+      url: 'mockData/workflow/changeStatusFetchOne.json',
+      baseURL: 'http://127.0.0.1:5173',
+    });
+    store.commit('workflow/getWorkflow', newWorkflow);
+  } else {
+    const { data: newWorkflows } = await axios({
+      url: 'mockData/workflow/changeStatusFetchAll.json',
+      baseURL: 'http://127.0.0.1:5173',
+      params,
+    });
+    store.commit('workflow/getWorkflows', newWorkflows);
+  }
   // --- End of mock data ---
 
   try {

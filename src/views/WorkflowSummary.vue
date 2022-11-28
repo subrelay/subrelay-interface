@@ -16,37 +16,44 @@
       justify-content="space-evenly"
       type="card"
       pane-class="tab-content"
+      :value="activeTab"
+      @update:value="onChangeTab"
     >
-      <n-tab-pane name="overview" tab="Overview"> THI TEST </n-tab-pane>
+      <n-tab-pane name="overview" tab="Overview">
+        <router-view :key="activeTab" />
+      </n-tab-pane>
+      <n-tab-pane name="logs" tab="Logs">
+        <router-view :key="activeTab" />
+      </n-tab-pane>
     </n-tabs>
   </n-space>
-
-  <pre>{{ workflow }}</pre>
 </template>
 
 <script setup>
-import { onBeforeMount, ref } from 'vue';
+import Overview from '@/components/WorkflowDetails/Overview.vue';
 import API from '@/api';
 import axios from 'axios';
+import { useRoute, useRouter } from 'vue-router';
+import { useStore } from 'vuex';
+import { onBeforeMount, ref, computed } from 'vue';
 
 const props = defineProps({ id: [String, Number] });
-const workflow = ref({});
-const loading = ref(null);
+const route = useRoute();
+const router = useRouter();
+const store = useStore();
+
+const activeTab = ref(null);
+const workflow = computed(() => store.state.workflow.workflow);
+const loading = computed(() => store.state.workflow.loading);
+
+function onChangeTab(tab) {
+  activeTab.value = tab;
+  router.push({ name: tab, params: { id: props.id } });
+}
 
 onBeforeMount(async () => {
-  return new Promise((resolve) => {
-    loading.value = true;
-    setTimeout(async () => {
-      const { data } = await axios({
-        url: 'mockData/workflow/workflow.json',
-        baseURL: 'http://127.0.0.1:5173',
-      });
-
-      workflow.value = data;
-      loading.value = false;
-      resolve();
-    }, 1000);
-  });
+  activeTab.value = route.name;
+  store.dispatch('workflow/getWorkflow', +props.id);
 });
 </script>
 
