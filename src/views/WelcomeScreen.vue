@@ -29,10 +29,6 @@ const showModal = ref(false);
 </script>
 
 <style lang="scss" scoped>
-.page_header {
-  padding-top: 2rem;
-}
-
 .welcome {
   margin-top: 15vh;
   height: calc(100vh);

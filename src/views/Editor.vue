@@ -1,7 +1,7 @@
 <template>
   <n-space vertical :size="50" v-if="EditorData.workflow">
     <!-- HEADER -->
-    <div class="page_header dark">
+    <div class="page_header">
       <n-space>
         <n-button
           type="primary"

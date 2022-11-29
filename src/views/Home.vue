@@ -1,81 +1,78 @@
 <template>
-  <n-space vertical size="large">
-    <div class="page_header dark">
-      <Logo @click="goToHomePage" />
+  <div class="page_header">
+    <Logo
+      @click="goToHomePage"
+      :color="store.state.global.isDarkMode ? '#fcfcfc' : ''"
+    />
 
-      <n-dropdown
-        v-model:show="showMenu"
-        :options="profileOptions"
-        @select="onSelectProfileOption"
+    <n-dropdown
+      v-model:show="showMenu"
+      :options="profileOptions"
+      @select="onSelectProfileOption"
+    >
+      <n-button
+        size="large"
+        class="profile_menu"
+        round
+        :color="store.state.global.isDarkMode ? 'white' : ''"
       >
-        <n-button
-          size="large"
-          color="white"
-          text-color="black"
-          class="profile_menu"
-          round
-        >
-          <n-space align="center">
-            <n-avatar
-              round
-              size="small"
-              color="white"
-              src="https://cryptologos.cc/logos/polkadot-new-dot-logo.png"
-            />
+        <n-space align="center">
+          <n-avatar
+            round
+            size="small"
+            color="white"
+            src="https://cryptologos.cc/logos/polkadot-new-dot-logo.png"
+          />
 
-            <n-space vertical :size="5">
-              <div
-                v-html="walletAccount.name"
-                class="text-bold font-size-085"
-              />
-              <div
-                v-html="truncate(walletAccount)"
-                class="text-gray font-size-075"
-                style="margin-top: 4px"
-              />
-            </n-space>
-
-            <Icon
-              icon="akar-icons:chevron-down"
-              class="icon"
-              :inline="true"
-              :style="{ transform: showMenu ? 'rotate(180deg)' : '' }"
+          <n-space vertical :size="5">
+            <div v-html="walletAccount.name" class="text-bold font-size-085" />
+            <div
+              v-html="truncate(walletAccount)"
+              class="text-gray font-size-075"
+              style="margin-top: 4px"
             />
           </n-space>
-        </n-button>
-      </n-dropdown>
-    </div>
 
-    <n-layout has-sider>
-      <n-layout-sider
-        bordered
-        show-trigger="bar"
-        collapse-mode="width"
-        :width="300"
-        :collapsed-width="70"
+          <Icon
+            icon="akar-icons:chevron-down"
+            class="icon"
+            :inline="true"
+            :style="{ transform: showMenu ? 'rotate(180deg)' : '' }"
+          />
+        </n-space>
+      </n-button>
+    </n-dropdown>
+  </div>
+
+  <n-layout has-sider class="home_layout">
+    <n-layout-sider
+      bordered
+      show-trigger="bar"
+      collapse-mode="width"
+      :width="300"
+      :collapsed-width="70"
+      :collapsed="collapsed"
+      @update:collapsed="(value) => store.commit('global/toggleSider', value)"
+      trigger-style="top:20%"
+      collapsed-trigger-style="top:20%"
+    >
+      <n-menu
+        v-model:value="activeKey"
+        @update:value="onUpdateActive"
+        :default-value="'workflows'"
         :collapsed="collapsed"
-        @update:collapsed="(value) => store.commit('global/toggleSider', value)"
-        trigger-style="top:20%"
-        collapsed-trigger-style="top:20%"
-      >
-        <n-menu
-          v-model:value="activeKey"
-          @update:value="onUpdateActive"
-          :default-value="'workflows'"
-          :collapsed="collapsed"
-          :collapsed-width="64"
-          :collapsed-icon-size="40"
-          :options="siderOptions"
-          :icon-size="25"
-          :indent="20"
-        />
-      </n-layout-sider>
+        :collapsed-width="64"
+        :collapsed-icon-size="40"
+        :options="siderOptions"
+        :icon-size="25"
+        :indent="20"
+      />
+    </n-layout-sider>
 
-      <n-layout-content content-style="padding: 0 5rem;">
-        <RouterView />
-      </n-layout-content>
-    </n-layout>
-  </n-space>
+    <n-layout-content :content-style="{ padding: '0 5rem' }">
+      <RouterView />
+    </n-layout-content>
+  </n-layout>
 
   <AccountModal v-model="showModal" :isSigningIn="false" />
 </template>
@@ -225,7 +222,6 @@ function onSelectProfileOption(key) {
   .icon {
     transition: 0.3s transform ease;
     transform-origin: 50%;
-    // font-size: 3rem;
   }
 }
 
@@ -245,5 +241,9 @@ function onSelectProfileOption(key) {
       }
     }
   }
+}
+
+.home_layout {
+  height: calc(100vh - 70px);
 }
 </style>

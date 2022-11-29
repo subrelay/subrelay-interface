@@ -11,7 +11,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 
 const props = defineProps({
-  color: { type: String, default: '#fcfcfc' },
+  color: { type: String, default: '' },
 });
 
 const emits = defineEmits(['click']);
