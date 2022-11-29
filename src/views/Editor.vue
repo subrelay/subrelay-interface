@@ -56,7 +56,7 @@
           </n-space>
         </div>
       </n-space>
-      <Logo />
+      <Logo :color="store.state.global.isDarkMode ? '#fcfcfc' : ''" />
 
       <ShowOrEdit
         :onUpdateValue="onUpdateName"

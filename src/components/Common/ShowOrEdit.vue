@@ -97,11 +97,18 @@ const EditNode = defineComponent({
     .workflow-name {
       font-size: 1.5rem;
       font-weight: 700;
+
+      @media (prefers-color-scheme: dark) {
+        color: white;
+      }
     }
 
     .edit-icon {
       margin-left: 0.5rem;
       font-size: 1rem;
+      @media (prefers-color-scheme: dark) {
+        color: white;
+      }
     }
   }
 }

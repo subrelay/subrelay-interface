@@ -58,7 +58,6 @@ import ChainDropdown from '@/components/Common/ChainDropdown';
 const {
   selectedChain,
   selectedStatus,
-  queryParams,
   searchText,
   onDebouncedSearch,
   handleSelectChain,

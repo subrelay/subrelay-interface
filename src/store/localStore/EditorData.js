@@ -19,11 +19,11 @@ const defaultConfig = () => ({
       isCompleted: null,
       isError: null,
       config: {
-        channel: 'webhook',
+        channel: null,
         depend_on_name: 'trigger',
         config: {
-          headers: [{ key: 'foo', value: 'bar' }],
-          url: 'https://app.clickup.com/31600137/v/dc/y4bg9-125/y4bg9-105',
+          headers: [{ key: null, value: null }],
+          url: null,
         },
       },
     },

@@ -3,7 +3,7 @@
     class="step_container"
     ref="formRef"
     @keyup.enter="validateForm"
-    :model="EditorData.workflow.tasks[0].config"
+    :model="EditorData.workflow.tasks[EditorData.triggerIdx].config"
     :show-label="false"
   >
     <n-form-item
@@ -22,16 +22,21 @@
         placeholder="Select Event"
         v-model:show="isShown"
         @update:value="handleSelectEvent"
-        :value="EditorData.workflow.tasks[0].config.eventId"
+        :value="EditorData.workflow.tasks[EditorData.triggerIdx].config.eventId"
         :options="options"
         :value-field="'id'"
         :render-label="useRenderDropdownLabel"
         :render-tag="renderSelectTagWithDescription"
-        :filter="useDropdownFilter"
+        :filter="eventFilter"
       >
         <template #empty>
           <n-empty description="No event found">
-            <template #extra>
+            <template
+              #extra
+              v-if="
+                !EditorData.workflow.tasks[EditorData.triggerIdx].config.uuid
+              "
+            >
               <n-button size="small" @click="onBack">
                 Select a chain first
               </n-button>
@@ -52,7 +57,6 @@ import EditorData from '@/store/localStore/EditorData';
 import { ref, computed, inject } from 'vue';
 import { useStore } from 'vuex';
 import {
-  useDropdownFilter,
   useRenderDropdownLabel,
   renderSelectTagWithDescription,
   useFormValidation,
@@ -65,13 +69,12 @@ const store = useStore();
 const isShown = ref(false);
 const eventBus = inject('eventBus');
 const options = computed(() => store.state.chain.events);
+const uuid = computed(() => EditorData.workflow.tasks[0].config.uuid);
 
 function onBack() {
   isShown.value = false;
   emits('back');
 }
-
-const uuid = computed(() => EditorData.workflow.tasks[0].config.uuid);
 
 function handleSelectEvent(eventId) {
   EditorData.setTrigger({ eventId });
@@ -84,5 +87,11 @@ function handleSelectEvent(eventId) {
   } else {
     store.commit('chain/getEvent', {});
   }
+}
+
+function eventFilter(string, option) {
+  const { pallet, name } = option;
+  const fullOptionText = `${pallet}.${name}`.toLowerCase();
+  return fullOptionText.includes(string.toLowerCase());
 }
 </script>
