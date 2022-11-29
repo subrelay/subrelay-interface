@@ -66,10 +66,10 @@
           <n-input-number
             v-else
             class="w-100"
-            :show-button="false"
-            @update:value="onInput('value', $event)"
-            :value="props.condition.value"
             clearable
+            :show-button="false"
+            :value="props.condition.value"
+            @update:value="onInput('value', $event)"
           >
           </n-input-number>
         </n-form-item>

@@ -30,6 +30,10 @@ const defaultConfig = () => ({
   ],
 });
 
+function randomKey() {
+  return Math.random().toString(16).slice(2);
+}
+
 const editor = reactive({
   workflow: null,
   triggerIdx: null,
@@ -70,12 +74,15 @@ const editor = reactive({
   },
 
   addOr() {
-    this.workflow.tasks[0].config.conditions.push([{ ...conditionFormat }]);
+    this.workflow.tasks[0].config.conditions.push([
+      { ...conditionFormat, key: randomKey() },
+    ]);
   },
 
   addAnd(groupIdx) {
     this.workflow.tasks[0].config.conditions[groupIdx].push({
       ...conditionFormat,
+      key: randomKey(),
     });
   },
 

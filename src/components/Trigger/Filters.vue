@@ -11,15 +11,15 @@
     >
       <n-divider title-placement="left" v-if="index !== 0"> OR </n-divider>
 
-      <div v-for="(condition, conditionIdx) in group" :key="conditionIdx">
-        <FilterInputGroup
-          :index="index"
-          :conditionIdx="conditionIdx"
-          :condition="condition"
-          @remove="removeItem(index, conditionIdx)"
-          @input="updateForm($event, index, conditionIdx)"
-        />
-      </div>
+      <FilterInputGroup
+        v-for="(condition, conditionIdx) in group"
+        :key="condition.key"
+        :index="index"
+        :conditionIdx="conditionIdx"
+        :condition="condition"
+        @remove="removeItem(index, conditionIdx)"
+        @input="updateForm($event, index, conditionIdx)"
+      />
 
       <n-space>
         <n-button attr-type="button" @click="addAnd(index)" type="info">
@@ -29,8 +29,8 @@
 
         <n-button
           attr-type="button"
-          @click="addOr"
           type="info"
+          @click="addOr"
           v-if="index === conditionLength - 1"
         >
           <Icon icon="fluent:add-16-filled" style="margin-right: 4px" />
