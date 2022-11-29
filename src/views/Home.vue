@@ -10,18 +10,13 @@
       :options="profileOptions"
       @select="onSelectProfileOption"
     >
-      <n-button
-        size="large"
-        class="profile_menu"
-        round
-        :color="store.state.global.isDarkMode ? 'white' : ''"
-      >
+      <n-button size="large" class="profile_menu" round>
         <n-space align="center">
           <n-avatar
             round
             size="small"
-            color="white"
-            src="https://cryptologos.cc/logos/polkadot-new-dot-logo.png"
+            color="transparent"
+            src="https://polkadot.network/assets/img/staking/polkadot.svg?v=eabc0486b6"
           />
 
           <n-space vertical :size="5">

@@ -5,7 +5,7 @@ export function useGetChainImg(chain) {
     case 'acala':
       return 'https://avatars.githubusercontent.com/u/54881907?s=280&v=4';
     case 'polkadot':
-      return 'https://cryptologos.cc/logos/polkadot-new-dot-logo.png';
+      return 'https://polkadot.network/assets/img/staking/polkadot.svg?v=eabc0486b6';
     case 'kusama':
       return 'https://www.liblogo.com/img-logo/ku2766k057-kusama-logo-kusama-ksm-bitprime.png';
   }
@@ -33,13 +33,15 @@ export const useWorkflowStatuses = ref([
     label: 'Running',
     value: 'running',
     icon: 'fa:toggle-on',
-    iconColor: '#18a058',
+    iconColorDark: 'rgb(42, 148, 125)',
+    iconColorLight: '#18a058',
   },
   {
     label: 'Pausing',
     value: 'pausing',
     icon: 'fa:toggle-on',
-    iconColor: 'rgba(0, 0, 0, 0.14)',
+    iconColorDark: 'rgba(255, 255, 255, 0.2)',
+    iconColorLight: 'rgba(0, 0, 0, 0.14)',
     iconRotate: 2,
   },
 ]);
