@@ -8,16 +8,48 @@ const defaultConfig = () => ({
     {
       name: 'trigger',
       type: 'trigger',
-      isCompleted: null,
-      isError: null,
       depend_on_name: null,
-      config: { eventId: null, uuid: null, conditions: [] },
+      config: {
+        eventId: 139,
+        uuid: '8b6af998-a145-46f5-8c04-a2d5c717e82a',
+        conditions: [
+          [
+            {
+              variable: 'data.index',
+              operator: 'greaterThan',
+              value: 1,
+            },
+            {
+              variable: 'data.index',
+              operator: 'greaterThanEqual',
+              value: 3,
+            },
+          ],
+          [
+            {
+              variable: 'success',
+              operator: 'isFalse',
+              value: null,
+            },
+            {
+              variable: 'data.child_index',
+              operator: 'lessThan',
+              value: 5,
+            },
+          ],
+          [
+            {
+              variable: 'data.child_index',
+              operator: 'greaterThan',
+              value: 0,
+            },
+          ],
+        ],
+      },
     },
     {
       name: 'action',
       type: 'notification',
-      isCompleted: null,
-      isError: null,
       config: {
         channel: null,
         depend_on_name: 'trigger',
@@ -105,13 +137,12 @@ const editor = reactive({
   },
 
   loadWorkflow(data) {
-    if (data) {
-      data.tasks.forEach((task) => {
-        task.isCompleted = null;
-        task.isError = null;
-      });
-    }
     this.workflow = data ? data : defaultConfig();
+
+    this.workflow.tasks.forEach((task) => {
+      task.isCompleted = null;
+      task.isError = null;
+    });
 
     this.triggerIdx = this.workflow.tasks.findIndex(
       (task) => task.type === 'trigger'

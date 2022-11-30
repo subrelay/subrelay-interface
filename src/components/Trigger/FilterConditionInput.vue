@@ -1,4 +1,5 @@
 <template>
+  <div>input type: {{ inputType }}</div>
   <n-space :wrap="false" :wrap-item="false" class="w-100">
     <n-grid cols="3" x-gap="20" class="grid_area">
       <n-gi>
@@ -35,12 +36,12 @@
             clearable
             placeholder="Select Operator"
             :render-label="renderLabel"
-            :loading="isLoading"
-            :disabled="isLoading"
+            :loading="isLoading || getOperatorsLoading"
+            :disabled="isLoading || getOperatorsLoading"
             :filter="useDropdownFilter"
             :options="operatorOptions"
             :value="props.condition.operator"
-            @update:value="onInput('operator', $event)"
+            @update:value="onSelectOperator"
           >
             <template #empty>
               <n-empty description="Please select a property first" />
@@ -59,7 +60,7 @@
             clearable
             class="w-100"
             :value="props.condition.value"
-            @update:value="onInput('value', $event)"
+            @update:value="onValueInput"
           >
           </n-input>
 
@@ -69,7 +70,7 @@
             clearable
             :show-button="false"
             :value="props.condition.value"
-            @update:value="onInput('value', $event)"
+            @update:value="onValueInput"
           >
           </n-input-number>
         </n-form-item>
@@ -83,7 +84,7 @@
 </template>
 
 <script setup>
-import { ref, computed, inject, h, onBeforeMount } from 'vue';
+import { ref, computed, watch, inject, h, onBeforeMount } from 'vue';
 import { useStore } from 'vuex';
 import { isEmpty } from 'lodash';
 import {
@@ -105,6 +106,7 @@ const emits = defineEmits(['remove', 'input']);
 const propertyOptions = computed(() => store.state.chain.event.fields);
 const isLoading = ref(false);
 const eventBus = inject('eventBus');
+const validateForm = inject('validateForm');
 
 const requiredRule = ref({
   trigger: ['input'],
@@ -118,6 +120,7 @@ const requiredRule = ref({
 
 const numberRule = ref({ type: 'number', ...requiredRule.value });
 const operators = computed(() => store.state.task.operators);
+const getOperatorsLoading = computed(() => store.state.task.loading);
 const inputType = ref(null);
 const operatorOptions = ref([]);
 
@@ -125,6 +128,7 @@ function onSelectProp(val, options) {
   onInput('variable', val);
 
   if (!val) {
+    validateForm({ changeStep: false });
     onInput('operator', null);
     onInput('value', null);
   }
@@ -138,6 +142,16 @@ function onSelectProp(val, options) {
   }, 200);
 }
 
+function onSelectOperator(val) {
+  onInput('operator', val);
+  validateForm({ changeStep: false });
+}
+
+function onValueInput(val) {
+  onInput('value', val);
+  validateForm({ changeStep: false });
+}
+
 function onInput(prop, value) {
   emits('input', { prop, value });
 }
@@ -147,9 +161,25 @@ function renderLabel(option) {
 }
 
 onBeforeMount(() => {
-  if (!isEmpty(props.condition)) {
-    inputType.value = typeof props.condition.value;
+  if (!(isEmpty(props.condition) && isEmpty(operators.value))) {
+    if (['isTrue', 'isFalse'].includes(props.condition.operator)) {
+      inputType.value = 'boolean';
+    } else {
+      inputType.value = typeof props.condition.value;
+    }
+
     operatorOptions.value = operators.value[inputType.value];
   }
 });
+
+watch(
+  operators,
+  () => {
+    if (!isEmpty(operators.value)) {
+      operatorOptions.value = operators.value[inputType.value];
+    }
+  },
+  { immediate: true },
+  { deep: true }
+);
 </script>

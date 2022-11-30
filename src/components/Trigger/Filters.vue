@@ -11,7 +11,7 @@
     >
       <n-divider title-placement="left" v-if="index !== 0"> OR </n-divider>
 
-      <FilterInputGroup
+      <FilterConditionInput
         v-for="(condition, conditionIdx) in group"
         :key="condition.key"
         :index="index"
@@ -56,14 +56,15 @@
 </template>
 
 <script setup>
-import FilterInputGroup from '@/components/Trigger/FilterInputGroup';
+import FilterConditionInput from '@/components/Trigger/FilterConditionInput';
 import EditorData from '@/store/localStore/EditorData';
 import { useFormValidation } from '@/composables';
-import { inject, computed } from 'vue';
+import { inject, computed, provide } from 'vue';
 
 const eventBus = inject('eventBus');
 const emits = defineEmits(['continue']);
 const [{ formRef }, { validateForm }] = useFormValidation('trigger', emits);
+provide('validateForm', validateForm);
 
 const conditionLength = computed(() => {
   return EditorData.workflow.tasks[0].config.conditions.length;
