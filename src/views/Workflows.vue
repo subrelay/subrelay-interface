@@ -134,7 +134,7 @@ const columns = ref([
     sorter: false,
     width: '10%',
     render: ({ id, status }) => {
-      return h(RunningOrPausing, { status, id });
+      return h(RunningOrPausing, { status, id, fetchOne: false });
     },
   },
   {

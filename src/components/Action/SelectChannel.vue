@@ -51,8 +51,7 @@ const [{ formRef }, { validateForm }] = useFormValidation('action', emits);
 
 function handleSelectChannel() {
   validateForm({ changeStep: false });
-
-  // Used for milestone 2 to clear 'Set Up Action' when user switches to other channel
+  // Used for milestone 2 to clear 'Set Up Action' data when user switches to other channel
 }
 </script>
 

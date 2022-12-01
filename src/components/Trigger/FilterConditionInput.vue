@@ -1,5 +1,4 @@
 <template>
-  <div>input type: {{ inputType }}</div>
   <n-space :wrap="false" :wrap-item="false" class="w-100">
     <n-grid cols="3" x-gap="20" class="grid_area">
       <n-gi>
