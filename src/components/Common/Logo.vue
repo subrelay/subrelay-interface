@@ -1,7 +1,10 @@
 <template>
   <div class="logo" @click="emits('click')" :class="classes" :style="style">
-    <Icon icon="eos-icons:action-chains-outlined" :inline="true" />
-    <span class="text">SUBRELAY</span>
+    <n-text>
+      <Icon icon="eos-icons:action-chains-outlined" :inline="true" />
+    </n-text>
+
+    <n-text depth="1" class="text"> SUBRELAY </n-text>
   </div>
 </template>
 
@@ -38,8 +41,7 @@ const style = computed(() => {
   font-size: 2.25rem;
 
   .text {
-    margin-top: 10px;
-    margin-left: 1rem;
+    margin-left: 0.8rem;
   }
 }
 </style>

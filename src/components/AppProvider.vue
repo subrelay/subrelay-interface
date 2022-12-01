@@ -1,9 +1,7 @@
 <template>
   <n-config-provider
-    :theme="colorScheme"
-    :theme-overrides="
-      colorScheme === null ? lightThemeOverrides : darkThemeOverrides
-    "
+    :theme="darkMode ? darkTheme : null"
+    :theme-overrides="darkMode ? darkThemeOverrides : lightThemeOverrides"
   >
     <n-loading-bar-provider>
       <n-message-provider>
@@ -16,19 +14,18 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { darkTheme } from 'naive-ui';
 import { useStore } from 'vuex';
-// import { NConfigProvider, GlobalThemeOverrides } from 'naive-ui';
+
 const store = useStore();
+const darkMode = computed(() => store.state.global.isDarkMode);
 
 import {
   NMessageProvider,
   NLoadingBarProvider,
   NDialogProvider,
 } from 'naive-ui';
-
-const colorScheme = ref(null);
 
 const lightThemeOverrides = {
   // common: {
@@ -71,7 +68,6 @@ onMounted(() => {
     window.matchMedia &&
     window.matchMedia('(prefers-color-scheme: dark)').matches
   ) {
-    colorScheme.value = darkTheme;
     store.commit('global/setDarkMode', true);
   }
 
@@ -79,7 +75,6 @@ onMounted(() => {
   window
     .matchMedia('(prefers-color-scheme: dark)')
     .addEventListener('change', (e) => {
-      colorScheme.value = e.matches ? darkTheme : null;
       store.commit('global/setDarkMode', e.matches);
     });
 });

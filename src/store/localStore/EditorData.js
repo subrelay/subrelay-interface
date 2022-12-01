@@ -9,43 +9,7 @@ const defaultConfig = () => ({
       name: 'trigger',
       type: 'trigger',
       depend_on_name: null,
-      config: {
-        eventId: 139,
-        uuid: '8b6af998-a145-46f5-8c04-a2d5c717e82a',
-        conditions: [
-          [
-            {
-              variable: 'data.index',
-              operator: 'greaterThan',
-              value: 1,
-            },
-            {
-              variable: 'data.index',
-              operator: 'greaterThanEqual',
-              value: 3,
-            },
-          ],
-          [
-            {
-              variable: 'success',
-              operator: 'isFalse',
-              value: null,
-            },
-            {
-              variable: 'data.child_index',
-              operator: 'lessThan',
-              value: 5,
-            },
-          ],
-          [
-            {
-              variable: 'data.child_index',
-              operator: 'greaterThan',
-              value: 0,
-            },
-          ],
-        ],
-      },
+      config: { eventId: null, uuid: null, conditions: [] },
     },
     {
       name: 'action',
@@ -90,17 +54,14 @@ const editor = reactive({
   },
 
   setTrigger(data) {
-    const index = this.workflow.tasks.findIndex(
-      (task) => task.name === 'trigger'
-    );
     const [prop, value] = Object.entries(data)[0];
-    this.workflow.tasks[index].config[prop] = value;
+    this.workflow.tasks[this.triggerIdx].config[prop] = value;
 
     this.setComplete(
       'trigger',
       !!(
-        this.workflow.tasks[index].config.eventId &&
-        this.workflow.tasks[index].config.uuid
+        this.workflow.tasks[this.triggerIdx].config.eventId &&
+        this.workflow.tasks[this.triggerIdx].config.uuid
       )
     );
   },
@@ -139,17 +100,46 @@ const editor = reactive({
   loadWorkflow(data) {
     this.workflow = data ? data : defaultConfig();
 
-    this.workflow.tasks.forEach((task) => {
-      task.isCompleted = null;
-      task.isError = null;
-    });
-
     this.triggerIdx = this.workflow.tasks.findIndex(
       (task) => task.type === 'trigger'
     );
+
     this.actionIdx = this.workflow.tasks.findIndex(
       (task) => task.type === 'notification'
     );
+
+    // Add flag for error validator
+    this.workflow.tasks.forEach((task, index) => {
+      task.isError = null;
+
+      if (index === this.triggerIdx) {
+        if (data) {
+          task.isCompleted = !!(task.config.eventId && task.config.uuid);
+        } else {
+          task.isCompleted = null;
+        }
+      }
+
+      if (index === this.taskIdx) {
+        task.isCompleted = null; // UPDATE LATER
+      }
+    });
+
+    // Add key to each condition
+    this.workflow.tasks[this.triggerIdx].config.conditions.forEach((group) =>
+      group.forEach((condition) => (condition.key = randomKey()))
+    );
+  },
+
+  cleanUpWorkflow() {
+    if (!this.workflow.name) this.setName();
+
+    this.workflow.tasks.forEach((task) => {
+      delete task.isCompleted;
+      delete task.isError;
+    });
+
+    // Note to emove key for each condition before submitting too.
   },
 });
 

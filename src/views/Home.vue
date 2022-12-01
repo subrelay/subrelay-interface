@@ -1,73 +1,120 @@
 <template>
-  <div class="page_header">
-    <Logo
-      @click="goToHomePage"
-      :color="store.state.global.isDarkMode ? '#fcfcfc' : ''"
-    />
+  <div style="height: 100vh; position: relative">
+    <n-layout position="absolute">
+      <n-layout-header style="padding: 5px 3rem" bordered>
+        <n-space align="center" justify="space-between">
+          <Logo @click="goToHomePage" />
 
-    <n-dropdown
-      v-model:show="showMenu"
-      :options="profileOptions"
-      @select="onSelectProfileOption"
-    >
-      <n-button size="large" class="profile_menu" round>
-        <n-space align="center">
-          <n-avatar
-            round
-            size="small"
-            color="transparent"
-            src="https://polkadot.network/assets/img/staking/polkadot.svg?v=eabc0486b6"
-          />
+          <n-space align="center" :size="30">
+            <n-switch
+              :rail-style="railStyle"
+              size="large"
+              :value="darkMode"
+              @update:value="store.commit('global/setDarkMode', $event)"
+            >
+              <template #icon>
+                <Icon
+                  icon="line-md:sunny-filled-loop-to-moon-alt-filled-loop-transition"
+                  color="black"
+                  v-if="darkMode"
+                />
 
-          <n-space vertical :size="5">
-            <div v-html="walletAccount.name" class="text-bold font-size-085" />
-            <div
-              v-html="truncate(walletAccount)"
-              class="text-gray font-size-075"
-              style="margin-top: 4px"
-            />
+                <Icon
+                  color="rgb(255, 172, 51)"
+                  icon="line-md:moon-filled-to-sunny-filled-loop-transition"
+                  v-else
+                />
+              </template>
+
+              <template #checked>
+                <Icon
+                  icon="icon-park-outline:sun"
+                  color="#EAEAEA"
+                  :style="{ 'margin-right': '10px', 'margin-left': '-10px' }"
+                />
+              </template>
+
+              <template #unchecked>
+                <Icon
+                  icon="heroicons-outline:moon"
+                  color="#797676"
+                  :style="{ 'margin-right': '-10px', 'margin-left': '10px' }"
+                />
+              </template>
+            </n-switch>
+
+            <n-dropdown
+              v-model:show="showMenu"
+              :options="profileOptions"
+              @select="onSelectProfileOption"
+            >
+              <n-button size="large" class="profile_menu" round>
+                <n-space align="center">
+                  <n-avatar
+                    round
+                    size="small"
+                    color="transparent"
+                    src="https://polkadot.network/assets/img/staking/polkadot.svg?v=eabc0486b6"
+                  />
+
+                  <n-space vertical :size="5">
+                    <div
+                      v-html="walletAccount.name"
+                      class="text-bold font-size-085"
+                    />
+
+                    <n-text depth="3" class="font-size-075">
+                      {{ truncate(walletAccount) }}
+                    </n-text>
+                  </n-space>
+
+                  <Icon
+                    icon="akar-icons:chevron-down"
+                    class="icon"
+                    :inline="true"
+                    :style="{ transform: showMenu ? 'rotate(180deg)' : '' }"
+                  />
+                </n-space>
+              </n-button>
+            </n-dropdown>
           </n-space>
-
-          <Icon
-            icon="akar-icons:chevron-down"
-            class="icon"
-            :inline="true"
-            :style="{ transform: showMenu ? 'rotate(180deg)' : '' }"
-          />
         </n-space>
-      </n-button>
-    </n-dropdown>
+      </n-layout-header>
+
+      <n-layout has-sider class="home_layout">
+        <n-layout-sider
+          bordered
+          show-trigger="bar"
+          collapse-mode="width"
+          :width="300"
+          :collapsed-width="70"
+          :collapsed="collapsed"
+          @update:collapsed="
+            (value) => store.commit('global/toggleSider', value)
+          "
+          trigger-style="top:20%"
+          collapsed-trigger-style="top:20%"
+        >
+          <n-menu
+            style="padding-top: 20px"
+            v-model:value="activeKey"
+            @update:value="onUpdateActive"
+            :default-value="'workflows'"
+            :collapsed="collapsed"
+            :collapsed-width="64"
+            :collapsed-icon-size="40"
+            :options="siderOptions"
+            :icon-size="25"
+            :indent="20"
+          />
+        </n-layout-sider>
+
+        <n-layout-content :content-style="{ padding: '20px 5rem 0' }">
+          <RouterView />
+        </n-layout-content>
+      </n-layout>
+    </n-layout>
   </div>
-
-  <n-layout has-sider class="home_layout">
-    <n-layout-sider
-      bordered
-      show-trigger="bar"
-      collapse-mode="width"
-      :width="300"
-      :collapsed-width="70"
-      :collapsed="collapsed"
-      @update:collapsed="(value) => store.commit('global/toggleSider', value)"
-      trigger-style="top:20%"
-      collapsed-trigger-style="top:20%"
-    >
-      <n-menu
-        v-model:value="activeKey"
-        @update:value="onUpdateActive"
-        :default-value="'workflows'"
-        :collapsed="collapsed"
-        :collapsed-width="64"
-        :collapsed-icon-size="40"
-        :options="siderOptions"
-        :icon-size="25"
-        :indent="20"
-      />
-    </n-layout-sider>
-
-    <n-layout-content :content-style="{ padding: '0 5rem' }">
-      <RouterView />
-    </n-layout-content>
-  </n-layout>
 
   <AccountModal v-model="showModal" :isSigningIn="false" />
 </template>
@@ -89,44 +136,9 @@ const activeKey = ref(null);
 const showMenu = ref(false);
 const showModal = ref(false);
 const collapsed = computed(() => store.state.global.isSiderCollapsed);
-
-watch(
-  () => route.name,
-  (newRouteName) => (activeKey.value = newRouteName),
-  { immediate: true }
-);
-
-function goToEditor(id) {
-  router.push({ name: 'trigger', params: { id } });
-}
-
-const defaultQueryParams = computed(
-  () => store.state.global.defaultQueryParams
-);
-
-function goToHomePage() {
-  router.push({ name: 'workflows', query: defaultQueryParams.value });
-}
-
-function onUpdateActive(value) {
-  if (value === 'editor') {
-    goToEditor('new-flow');
-  }
-}
-
-function renderIcon(icon, isButton = false) {
-  if (isButton) {
-    return () =>
-      collapsed.value
-        ? h(
-            NButton,
-            { type: 'primary' },
-            { default: () => h(Icon, { icon, inline: true }) }
-          )
-        : '';
-  }
-  return () => h(Icon, { icon, inline: true });
-}
+const walletAccount = computed(() => store.state.global.walletAccount);
+const query = computed(() => store.state.global.defaultQueryParams);
+const darkMode = computed(() => store.state.global.isDarkMode);
 
 const siderOptions = ref([
   {
@@ -150,7 +162,7 @@ const siderOptions = ref([
     label: () =>
       h(
         RouterLink,
-        { to: { name: 'workflows', query: defaultQueryParams.value } },
+        { to: { name: 'workflows', query: query.value } },
         { default: () => 'Workflows' }
       ),
     key: 'workflows',
@@ -160,7 +172,7 @@ const siderOptions = ref([
     label: () =>
       h(
         RouterLink,
-        { to: { name: 'history', query: defaultQueryParams.value } },
+        { to: { name: 'history', query: query.value } },
         { default: () => 'History' }
       ),
     key: 'history',
@@ -186,12 +198,44 @@ const profileOptions = ref([
   },
 ]);
 
+watch(
+  () => route.name,
+  (newRouteName) => (activeKey.value = newRouteName),
+  { immediate: true }
+);
+
+function goToEditor(id) {
+  router.push({ name: 'trigger', params: { id } });
+}
+
+function goToHomePage() {
+  router.push({ name: 'workflows', query: query.value });
+}
+
+function onUpdateActive(value) {
+  if (value === 'editor') {
+    goToEditor('new-flow');
+  }
+}
+
+function renderIcon(icon, isButton = false) {
+  if (isButton) {
+    return () =>
+      collapsed.value
+        ? h(
+            NButton,
+            { type: 'primary' },
+            { default: () => h(Icon, { icon, inline: true }) }
+          )
+        : '';
+  }
+  return () => h(Icon, { icon, inline: true });
+}
+
 function truncate({ address }) {
   if (!address) return '';
   return `${address.slice(0, 5)} ... ${address.slice(-5)}`;
 }
-
-const walletAccount = computed(() => store.state.global.walletAccount);
 
 function onSelectProfileOption(key) {
   if (key === 'copyAddress') {
@@ -208,12 +252,26 @@ function onSelectProfileOption(key) {
     router.push({ name: 'welcome' });
   }
 }
+
+function railStyle({ focused, checked } = {}) {
+  const style = {};
+
+  if (checked) {
+    style.background = 'rgba(255, 255, 255, 0.2)';
+  } else {
+    style.background = '#e0e0e0';
+  }
+
+  if (focused) {
+    style.boxShadow = '0 0 0 2px #e0e0e0';
+  }
+
+  return style;
+}
 </script>
 
 <style lang="scss">
 .profile_menu {
-  margin-right: 2rem;
-
   .icon {
     transition: 0.3s transform ease;
     transform-origin: 50%;
@@ -239,6 +297,6 @@ function onSelectProfileOption(key) {
 }
 
 .home_layout {
-  height: calc(100vh - 70px);
+  height: calc(100vh - 78px);
 }
 </style>

@@ -1,113 +1,124 @@
 <template>
-  <n-space vertical :size="50" v-if="EditorData.workflow">
-    <!-- HEADER -->
-    <div class="page_header">
-      <n-space>
-        <n-button
-          type="primary"
-          class="action-button"
-          icon-placement="left"
-          @click="quitEditor"
-        >
-          <template #icon>
-            <Icon icon="line-md:home-md" :inline="true" class="icon" />
-          </template>
-          Home
-        </n-button>
+  <n-layout v-if="EditorData.workflow">
+    <n-layout-header style="padding: 5px 3rem" bordered>
+      <!-- HEADER -->
+      <n-space align="center" justify="space-between">
+        <!-- Buttons -->
+        <n-space>
+          <n-button
+            type="primary"
+            class="action-button"
+            icon-placement="left"
+            @click="quitEditor"
+          >
+            <template #icon>
+              <Icon icon="line-md:home-md" :inline="true" class="icon" />
+            </template>
+            Home
+          </n-button>
 
-        <n-button
-          type="primary"
-          class="action-button"
-          icon-placement="right"
-          @click="onChangeStep(2)"
-          v-if="currentStep == 1"
-        >
-          Next
-          <template #icon>
-            <Icon icon="line-md:chevron-small-double-right" class="icon" />
-          </template>
-        </n-button>
+          <n-button
+            type="primary"
+            class="action-button"
+            icon-placement="right"
+            @click="onChangeStep(2)"
+            v-if="currentStep == 1"
+          >
+            Next
+            <template #icon>
+              <Icon icon="line-md:chevron-small-double-right" class="icon" />
+            </template>
+          </n-button>
 
-        <div v-else>
-          <n-space>
-            <n-button
-              type="primary"
-              class="action-button"
-              icon-placement="right"
-              @click="quitEditor"
-            >
-              Finish
-              <template #icon>
-                <Icon icon="line-md:confirm" class="icon" />
-              </template>
-            </n-button>
+          <div v-else>
+            <n-space>
+              <n-button
+                type="primary"
+                class="action-button"
+                icon-placement="right"
+                @click="quitEditor"
+              >
+                Finish
+                <template #icon>
+                  <Icon icon="line-md:confirm" class="icon" />
+                </template>
+              </n-button>
 
-            <n-button
-              type="primary"
-              class="action-button"
-              icon-placement="right"
-              @click="onChangeStep(1)"
-            >
-              Back
-              <template #icon>
-                <Icon icon="line-md:chevron-small-double-left" class="icon" />
-              </template>
-            </n-button>
-          </n-space>
-        </div>
+              <n-button
+                type="primary"
+                class="action-button"
+                icon-placement="right"
+                @click="onChangeStep(1)"
+              >
+                Back
+                <template #icon>
+                  <Icon icon="line-md:chevron-small-double-left" class="icon" />
+                </template>
+              </n-button>
+            </n-space>
+          </div>
+        </n-space>
+
+        <!-- Logo -->
+        <Logo @click="quitEditor" />
+
+        <!-- Name -->
+        <ShowOrEdit
+          :onUpdateValue="onUpdateName"
+          :value="EditorData.workflow.name"
+        />
       </n-space>
-      <Logo :color="store.state.global.isDarkMode ? '#fcfcfc' : ''" />
+    </n-layout-header>
 
-      <ShowOrEdit
-        :onUpdateValue="onUpdateName"
-        :value="EditorData.workflow.name"
-      />
-    </div>
+    <n-layout-content content-style="padding-top: 50px;">
+      <n-space :size="50" vertical>
+        <!-- STEPPER -->
+        <div class="page_container">
+          <n-steps
+            :current="currentStep"
+            @update:current="onChangeStep"
+            class="stepper"
+          >
+            <n-step
+              title="TRIGGER"
+              description="This is what starts the app"
+              :status="triggerStatus"
+            >
+              <template #icon>
+                <n-icon><ThunderboltOutlined /> </n-icon>
+              </template>
+            </n-step>
 
-    <!-- STEPPER -->
-    <div class="page_container">
-      <n-steps
-        :current="currentStep"
-        @update:current="onChangeStep"
-        class="stepper"
-      >
-        <n-step
-          title="TRIGGER"
-          description="This is what starts the app"
-          :status="triggerStatus"
-        >
-          <template #icon>
-            <n-icon><ThunderboltOutlined /> </n-icon>
-          </template>
-        </n-step>
+            <n-step
+              title="ACTION"
+              description="Action will perform when the app has started"
+              :status="actionStatus"
+            >
+              <template #icon>
+                <n-icon><BellOutlined /> </n-icon>
+              </template>
+            </n-step>
+          </n-steps>
+        </div>
 
-        <n-step
-          title="ACTION"
-          description="Action will perform when the app has started"
-          :status="actionStatus"
-        >
-          <template #icon>
-            <n-icon><BellOutlined /> </n-icon>
-          </template>
-        </n-step>
-      </n-steps>
-    </div>
+        <!-- Use v-show to preserve the data when switching steps -->
+        <Trigger v-show="currentStep == 1" />
+        <Action v-show="currentStep == 2" />
+      </n-space>
+    </n-layout-content>
+  </n-layout>
 
-    <!-- Use v-show to preserve the data when switching steps -->
+  <n-space vertical :size="50"> </n-space>
 
-    <Trigger v-show="currentStep == 1" />
-    <Action v-show="currentStep == 2" />
-  </n-space>
-
-  <pre>{{ EditorData }}</pre>
+  <!-- <pre>{{ EditorData }}</pre> -->
 </template>
 
 <script setup>
+import EditorData from '@/store/localStore/EditorData';
 import Logo from '@/components/Common/Logo';
 import ShowOrEdit from '@/components/Common/ShowOrEdit';
 import Trigger from '@/components/Trigger/Trigger';
 import Action from '@/components/Action/Action';
-import EditorData from '@/store/localStore/EditorData';
 import { ThunderboltOutlined, BellOutlined } from '@vicons/antd';
 import { h, ref, inject, computed, onBeforeMount, onBeforeUnmount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -137,7 +148,6 @@ onBeforeUnmount(() => {
 });
 
 // BUILD WORKFLOW DATA
-
 const triggerStatus = ref(null);
 const actionStatus = ref(null);
 
@@ -161,16 +171,19 @@ const isActionCompleted = computed(
 );
 
 const changesAppliedToTrigger = computed(() => {
+  const task = EditorData.workflow.tasks[triggerIdx.value];
   return (
-    typeof EditorData.workflow.tasks[triggerIdx.value].isError === 'boolean' ||
-    typeof EditorData.workflow.tasks[triggerIdx.value].isCompleted === 'boolean'
+    typeof task.isError === 'boolean' ||
+    typeof task.isCompleted === 'boolean' ||
+    !!task.config.eventId ||
+    !!task.config.uuid
   );
 });
 
 const changesAppliedToAction = computed(() => {
+  const task = EditorData.workflow.tasks[actionIdx.value];
   return (
-    typeof EditorData.workflow.tasks[actionIdx.value].isError === 'boolean' ||
-    typeof EditorData.workflow.tasks[actionIdx.value].isCompleted === 'boolean'
+    typeof task.isError === 'boolean' || typeof task.isCompleted === 'boolean'
   );
 });
 
@@ -246,7 +259,7 @@ async function quitEditor() {
   ) {
     showExitWarning();
   } else {
-    if (!EditorData.workflow.name) EditorData.setName();
+    EditorData.cleanUpWorkflow();
     await store.dispatch('workflow/postWorkflow', EditorData.workflow);
     router.push({ name: 'workflows', query: defaultQuery.value });
   }
@@ -285,6 +298,8 @@ onBeforeMount(async () => {
     }
   }
 
+  // Might need to update right here to prevent child components from mounting
+  // Before data is completely loaded
   EditorData.loadWorkflow(data);
 
   const uuid = EditorData.workflow.tasks[0].config.uuid;
