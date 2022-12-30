@@ -22,7 +22,7 @@ import { useStore } from 'vuex';
 import { NAvatar } from 'naive-ui';
 import moment from 'moment';
 import {
-  useQueryParams,
+  useQuery,
   useRenderSortIcon,
   useRenderCell,
   useGetChainImg,
@@ -112,7 +112,7 @@ const columns = ref([
 
 const [
   {
-    queryParams,
+    query,
     searchText,
     loading,
     tablePagination,
@@ -127,12 +127,12 @@ const [
     handleSelectStatus,
     clearAllFilters,
   },
-] = useQueryParams('history', columns, fetchData);
+] = useQuery('history', columns, fetchData);
 
 provide('search', {
   selectedChain,
   selectedStatus,
-  queryParams,
+  query,
   searchText,
   onDebouncedSearch,
   handleSelectChain,

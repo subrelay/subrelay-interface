@@ -126,7 +126,7 @@ import { useDialog, useMessage } from 'naive-ui';
 import { useStore } from 'vuex';
 
 const props = defineProps({ id: [String, Number] });
-const defaultQuery = computed(() => store.state.global.defaultQueryParams);
+const defaultQuery = computed(() => store.state.global.defaultQuery);
 const router = useRouter();
 const route = useRoute();
 const store = useStore();

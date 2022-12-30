@@ -3,7 +3,7 @@ import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router';
 import { pickBy, debounce, isEmpty, findIndex } from 'lodash';
 import { useStore } from 'vuex';
 
-export const useQueryParams = (
+export const useQuery = (
   module,
   columns,
   fetchData = () => console.log('default fetchData')
@@ -11,23 +11,21 @@ export const useQueryParams = (
   const store = useStore();
   const route = useRoute();
   const router = useRouter();
-  const queryParams = ref({});
+  const query = ref({});
   const searchText = ref('');
   const selectedChain = ref(undefined);
   const selectedStatus = ref(undefined);
 
   let sortingIndex, prevSortIndex;
 
-  const storedQueryParams = computed(() => store.state[module].queryParams);
+  const storedQuery = computed(() => store.state[module].query);
   const loading = computed(() => store.state[module].loading);
 
-  const defaultQueryParams = computed(
-    () => store.state.global.defaultQueryParams
-  );
+  const defaultQuery = computed(() => store.state.global.defaultQuery);
 
   const tablePagination = ref({
     size: 'small',
-    pageSize: defaultQueryParams.value.limit,
+    pageSize: defaultQuery.value.limit,
   });
 
   function pushQueryToRoute(query) {
@@ -44,7 +42,7 @@ export const useQueryParams = (
 
   function handleSearch() {
     const nextQuery = {
-      ...queryParams.value,
+      ...query.value,
       search: searchText.value || undefined,
       offset: 1,
     };
@@ -68,26 +66,26 @@ export const useQueryParams = (
       : { order: undefined, sort: undefined };
 
     pushQueryToRoute({
-      ...queryParams.value,
+      ...query.value,
       ...queryBySort,
     });
   }
 
   function handlePageChange(nextPage) {
-    if (queryParams.value.offset === nextPage) return;
-    pushQueryToRoute({ ...queryParams.value, offset: nextPage });
+    if (query.value.offset === nextPage) return;
+    pushQueryToRoute({ ...query.value, offset: nextPage });
   }
 
   function handleSelectChain(uuid) {
     selectedChain.value = uuid || undefined;
 
-    pushQueryToRoute({ ...queryParams.value, uuid: selectedChain.value });
+    pushQueryToRoute({ ...query.value, uuid: selectedChain.value });
   }
 
   function handleSelectStatus(status) {
     selectedStatus.value = status || undefined;
     router.push({
-      query: { ...queryParams.value, status: selectedStatus.value },
+      query: { ...query.value, status: selectedStatus.value },
     });
   }
 
@@ -95,25 +93,24 @@ export const useQueryParams = (
     searchText.value = '';
     selectedChain.value = null;
     selectedStatus.value = null;
-    queryParams.value = defaultQueryParams.value;
-    pushQueryToRoute({ ...defaultQueryParams.value });
+    query.value = defaultQuery.value;
+    pushQueryToRoute({ ...defaultQuery.value });
   }
 
-  function getQueryParamsFromRoute(query) {
+  function getQueryFromRoute(query) {
     return {
       uuid: query.uuid || undefined,
       status: query.status || undefined,
       search: (query.search && query.search.trim()) || undefined,
       order: query.order || undefined,
       sort: query.sort || undefined,
-      offset: +query.offset || defaultQueryParams.value.offset,
-      limit: +query.limit || defaultQueryParams.value.limit,
+      offset: +query.offset || defaultQuery.value.offset,
+      limit: +query.limit || defaultQuery.value.limit,
     };
   }
 
-  function initQueryParams() {
-    queryParams.value =
-      storedQueryParams.value || getQueryParamsFromRoute(route.query);
+  function initQuery() {
+    query.value = storedQuery.value || getQueryFromRoute(route.query);
 
     const { order, sort, search, uuid, status } = route.query;
     searchText.value = search || '';
@@ -125,13 +122,13 @@ export const useQueryParams = (
       columns.value[index].sortOrder = sort;
     }
 
-    pushQueryToRoute(pickBy(queryParams.value));
-    store.commit(`${module}/saveQueryParams`, queryParams.value);
+    pushQueryToRoute(pickBy(query.value));
+    store.commit(`${module}/saveQuery`, query.value);
   }
 
   onBeforeRouteUpdate((to, from, next) => {
-    queryParams.value = getQueryParamsFromRoute(to.query);
-    store.commit(`${module}/saveQueryParams`, queryParams.value);
+    query.value = getQueryFromRoute(to.query);
+    store.commit(`${module}/saveQuery`, query.value);
 
     const { order, sort, search, uuid, status } = to.query;
     searchText.value = search || '';
@@ -154,9 +151,9 @@ export const useQueryParams = (
   });
 
   watch(
-    queryParams,
+    query,
     () => {
-      const { offset, limit } = queryParams.value;
+      const { offset, limit } = query.value;
 
       tablePagination.value = {
         ...tablePagination.value,
@@ -168,7 +165,7 @@ export const useQueryParams = (
   );
 
   onMounted(() => {
-    initQueryParams();
+    initQuery();
     fetchData();
   });
 
@@ -177,7 +174,7 @@ export const useQueryParams = (
 
   return [
     {
-      queryParams,
+      query,
       searchText,
       selectedChain,
       selectedStatus,
@@ -191,7 +188,7 @@ export const useQueryParams = (
       handlePageChange,
       handleSelectChain,
       handleSelectStatus,
-      initQueryParams,
+      initQuery,
       clearAllFilters,
     },
   ];

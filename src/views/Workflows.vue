@@ -28,7 +28,7 @@ import moment from 'moment';
 import API from '@/api';
 import axios from 'axios';
 import {
-  useQueryParams,
+  useQuery,
   useRenderSortIcon,
   useRenderCell,
   useGetChainImg,
@@ -163,7 +163,7 @@ const columns = ref([
 
 const [
   {
-    queryParams,
+    query,
     searchText,
     loading,
     tablePagination,
@@ -178,12 +178,12 @@ const [
     handleSelectStatus,
     clearAllFilters,
   },
-] = useQueryParams('workflow', columns, fetchData);
+] = useQuery('workflow', columns, fetchData);
 
 provide('search', {
   selectedChain,
   selectedStatus,
-  queryParams,
+  query,
   searchText,
   onDebouncedSearch,
   handleSelectChain,

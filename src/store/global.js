@@ -10,7 +10,7 @@ export default {
     isDarkMode: false,
     isSiderCollapsed: false,
 
-    defaultQueryParams: {
+    defaultQuery: {
       search: undefined,
       order: undefined,
       sort: undefined,

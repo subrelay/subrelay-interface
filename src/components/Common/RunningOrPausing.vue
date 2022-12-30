@@ -31,7 +31,7 @@ const props = defineProps({
 });
 
 const loading = ref(null);
-const query = computed(() => store.state.workflow.queryParams);
+const query = computed(() => store.state.workflow.query);
 
 async function onUpdateStatus(newStt) {
   loading.value = true;
