@@ -11,15 +11,15 @@
     >
       <n-divider title-placement="left" v-if="index !== 0"> OR </n-divider>
 
-      <div v-for="(condition, conditionIdx) in group" :key="conditionIdx">
-        <FilterInputGroup
-          :index="index"
-          :conditionIdx="conditionIdx"
-          :condition="condition"
-          @remove="removeItem(index, conditionIdx)"
-          @input="updateForm($event, index, conditionIdx)"
-        />
-      </div>
+      <FilterConditionInput
+        v-for="(condition, conditionIdx) in group"
+        :key="condition.key"
+        :index="index"
+        :conditionIdx="conditionIdx"
+        :condition="condition"
+        @remove="removeItem(index, conditionIdx)"
+        @input="updateForm($event, index, conditionIdx)"
+      />
 
       <n-space>
         <n-button attr-type="button" @click="addAnd(index)" type="info">
@@ -29,8 +29,8 @@
 
         <n-button
           attr-type="button"
-          @click="addOr"
           type="info"
+          @click="addOr"
           v-if="index === conditionLength - 1"
         >
           <Icon icon="fluent:add-16-filled" style="margin-right: 4px" />
@@ -56,14 +56,15 @@
 </template>
 
 <script setup>
-import FilterInputGroup from '@/components/Trigger/FilterInputGroup';
+import FilterConditionInput from '@/components/Trigger/FilterConditionInput';
 import EditorData from '@/store/localStore/EditorData';
 import { useFormValidation } from '@/composables';
-import { inject, computed } from 'vue';
+import { inject, computed, provide } from 'vue';
 
 const eventBus = inject('eventBus');
 const emits = defineEmits(['continue']);
 const [{ formRef }, { validateForm }] = useFormValidation('trigger', emits);
+provide('validateForm', validateForm);
 
 const conditionLength = computed(() => {
   return EditorData.workflow.tasks[0].config.conditions.length;

@@ -93,8 +93,8 @@ export const useQueryParams = (
 
   function clearAllFilters() {
     searchText.value = '';
-    selectedChain.value = undefined;
-    selectedStatus.value = undefined;
+    selectedChain.value = null;
+    selectedStatus.value = null;
     queryParams.value = defaultQueryParams.value;
     pushQueryToRoute({ ...defaultQueryParams.value });
   }

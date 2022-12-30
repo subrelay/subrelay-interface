@@ -29,7 +29,7 @@
                 v-for="(condition, subIndex) in conditionGroup"
                 :key="subIndex"
               >
-                <b v-if="subIndex !== 0"> AND </b>
+                <b v-if="subIndex !== 0" style="margin-left: 4px"> AND </b>
                 <i> {{ condition.variable }} </i>
                 <span>
                   {{

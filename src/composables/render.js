@@ -1,6 +1,7 @@
 import { NIcon, NAvatar, NText } from 'naive-ui';
 import { h } from 'vue';
 import { Icon } from '@iconify/vue';
+import { useStore } from 'vuex';
 
 export const useRenderSortIcon = ({ order }) => {
   if (order === false) return h('div', '');
@@ -25,18 +26,24 @@ export const useRenderCell = (value) => {
 };
 
 export const useRenderDropdownLabel = (option) => {
+  const store = useStore();
+
   const iconNode = option.imageUrl
     ? h(NAvatar, {
         src: option.imageUrl,
         round: true,
         size: 'small',
-        color: 'white',
+        color: 'transparent',
         style: { marginRight: '12px' },
       })
     : option.icon
     ? h(Icon, {
         icon: option.icon,
-        color: option.iconColor,
+        color: option.iconColor
+          ? option.iconColor
+          : store.state.global.isDarkMode
+          ? option.iconColorDark
+          : option.iconColorLight,
         width: '1.2rem',
         rotate: option.iconRotate,
         style: { marginRight: '12px' },

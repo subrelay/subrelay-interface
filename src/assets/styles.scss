@@ -32,7 +32,7 @@
 
 /* semantic color variables for this project */
 :root {
-  --color-background: #cfd2d1;
+  --color-background: var(--vt-c-white);
   --color-background-soft: var(--vt-c-white-soft);
   --color-background-mute: var(--vt-c-white-mute);
 
@@ -69,6 +69,7 @@
 body {
   min-height: 100vh;
   color: var(--color-text);
+  background: var(--color-background);
   transition: color 0.5s, background-color 0.5s;
   line-height: 1.6;
   font-family: 'Poppins', sans-serif;
@@ -108,15 +109,14 @@ body {
 }
 
 .page_header {
-  color: white;
   padding: 0 3rem;
-  margin-bottom: 1rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border: 1px solid rgb(239, 239, 245);
 
-  &.dark {
-    background: black;
+  @media (prefers-color-scheme: dark) {
+    border: 1px solid rgba(255, 255, 255, 0.09);
   }
 
   &.center {
@@ -170,6 +170,10 @@ body {
 
 .text-gray {
   color: #5f5f5f;
+
+  @media (prefers-color-scheme: dark) {
+    color: #d5d6d7;
+  }
 }
 
 .cursor-pointer {

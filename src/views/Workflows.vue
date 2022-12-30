@@ -43,7 +43,7 @@ const workflows = computed(() => store.state.workflow.workflows);
 function deleteWorkflow({ id, name }) {
   // await API.Workflow.deleteWorkflow(id)
   // await store.dispatch('workflow/getWorkflows');
-  // message.info(`Workflow ${name} has been deleted`);
+  // message.success(`Workflow ${name} has been deleted`);
 
   return new Promise((resolve) => {
     setTimeout(async () => {
@@ -53,7 +53,7 @@ function deleteWorkflow({ id, name }) {
       });
 
       store.commit('workflow/getWorkflows', newWorkflows);
-      message.info(`Workflow ${name} has been deleted`);
+      message.success(`Workflow ${name} has been deleted`);
 
       resolve();
     }, 1000);
@@ -134,7 +134,7 @@ const columns = ref([
     sorter: false,
     width: '10%',
     render: ({ id, status }) => {
-      return h(RunningOrPausing, { status, id });
+      return h(RunningOrPausing, { status, id, fetchOne: false });
     },
   },
   {

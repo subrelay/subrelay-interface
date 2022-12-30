@@ -8,27 +8,27 @@ const defaultConfig = () => ({
     {
       name: 'trigger',
       type: 'trigger',
-      isCompleted: null,
-      isError: null,
       depend_on_name: null,
       config: { eventId: null, uuid: null, conditions: [] },
     },
     {
       name: 'action',
       type: 'notification',
-      isCompleted: null,
-      isError: null,
       config: {
-        channel: 'webhook',
+        channel: null,
         depend_on_name: 'trigger',
         config: {
-          headers: [{ key: 'foo', value: 'bar' }],
-          url: 'https://app.clickup.com/31600137/v/dc/y4bg9-125/y4bg9-105',
+          headers: [{ key: null, value: null }],
+          url: null,
         },
       },
     },
   ],
 });
+
+function randomKey() {
+  return Math.random().toString(16).slice(2);
+}
 
 const editor = reactive({
   workflow: null,
@@ -54,28 +54,28 @@ const editor = reactive({
   },
 
   setTrigger(data) {
-    const index = this.workflow.tasks.findIndex(
-      (task) => task.name === 'trigger'
-    );
     const [prop, value] = Object.entries(data)[0];
-    this.workflow.tasks[index].config[prop] = value;
+    this.workflow.tasks[this.triggerIdx].config[prop] = value;
 
     this.setComplete(
       'trigger',
       !!(
-        this.workflow.tasks[index].config.eventId &&
-        this.workflow.tasks[index].config.uuid
+        this.workflow.tasks[this.triggerIdx].config.eventId &&
+        this.workflow.tasks[this.triggerIdx].config.uuid
       )
     );
   },
 
   addOr() {
-    this.workflow.tasks[0].config.conditions.push([{ ...conditionFormat }]);
+    this.workflow.tasks[0].config.conditions.push([
+      { ...conditionFormat, key: randomKey() },
+    ]);
   },
 
   addAnd(groupIdx) {
     this.workflow.tasks[0].config.conditions[groupIdx].push({
       ...conditionFormat,
+      key: randomKey(),
     });
   },
 
@@ -98,20 +98,48 @@ const editor = reactive({
   },
 
   loadWorkflow(data) {
-    if (data) {
-      data.tasks.forEach((task) => {
-        task.isCompleted = null;
-        task.isError = null;
-      });
-    }
     this.workflow = data ? data : defaultConfig();
 
     this.triggerIdx = this.workflow.tasks.findIndex(
       (task) => task.type === 'trigger'
     );
+
     this.actionIdx = this.workflow.tasks.findIndex(
       (task) => task.type === 'notification'
     );
+
+    // Add flag for error validator
+    this.workflow.tasks.forEach((task, index) => {
+      task.isError = null;
+
+      if (index === this.triggerIdx) {
+        if (data) {
+          task.isCompleted = !!(task.config.eventId && task.config.uuid);
+        } else {
+          task.isCompleted = null;
+        }
+      }
+
+      if (index === this.taskIdx) {
+        task.isCompleted = null; // UPDATE LATER
+      }
+    });
+
+    // Add key to each condition
+    this.workflow.tasks[this.triggerIdx].config.conditions.forEach((group) =>
+      group.forEach((condition) => (condition.key = randomKey()))
+    );
+  },
+
+  cleanUpWorkflow() {
+    if (!this.workflow.name) this.setName();
+
+    this.workflow.tasks.forEach((task) => {
+      delete task.isCompleted;
+      delete task.isError;
+    });
+
+    // Note to emove key for each condition before submitting too.
   },
 });
 

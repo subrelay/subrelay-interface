@@ -15,12 +15,15 @@ export default {
 
   actions: {
     async getOperators({ commit }) {
+      commit('setLoading', true);
       try {
         const operators = await API.Task.getOperators();
         commit('getOperators', operators);
       } catch (error) {
         commit('getOperators', []);
         console.log('error', error);
+      } finally {
+        commit('setLoading', false);
       }
     },
   },

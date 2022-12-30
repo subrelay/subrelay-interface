@@ -15,7 +15,7 @@
 
 <script setup>
 import { h, ref, defineComponent, nextTick } from 'vue';
-import { NInput, NEllipsis } from 'naive-ui';
+import { NInput, NEllipsis, NText } from 'naive-ui';
 
 const props = defineProps({
   value: [String],
@@ -45,9 +45,10 @@ const ShowNode = defineComponent({
         NEllipsis,
         { style: 'max-width: 250px' },
         {
+          tooltip: () => h('div', { style: 'max-width: 250px' }, props.value),
           default: () =>
             h(
-              'span',
+              NText,
               { class: 'workflow-name' },
               { default: () => (props.value ? props.value : 'Untitled') }
             ),
@@ -60,6 +61,7 @@ const EditNode = defineComponent({
   setup() {
     return () =>
       h(NInput, {
+        style: 'width: 250px',
         ref: inputRef,
         value: inputValue.value,
         size: 'small',
@@ -79,7 +81,6 @@ const EditNode = defineComponent({
 
 <style lang="scss">
 .show-or-edit {
-  width: 20%;
   cursor: pointer;
   height: 100%;
   display: flex;

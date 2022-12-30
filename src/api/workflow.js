@@ -8,7 +8,7 @@ export default {
   postWorkflow: (data) => requester.post('/workflow', data),
 
   editWorkflow: (workflowId, data) =>
-    requester.put(`/workflows/${workflowId}`, data),
+    requester.patch(`/workflows/${workflowId}`, data),
 
   deleteWorkflow: (workflowId) => requester.delete(`/workflows/${workflowId}`),
 

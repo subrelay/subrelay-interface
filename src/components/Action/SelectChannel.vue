@@ -22,10 +22,10 @@
       >
         <n-grid cols="2" y-gap="20" x-gap="30">
           <n-gi span="1" v-for="channel in useChannels" :key="channel.value">
-            <!-- :disabled="channel.value !== 'webhook'" -->
             <n-radio-button
               :value="channel.value"
               :bordered="false"
+              :disabled="channel.value !== 'webhook'"
               class="channel_item"
             >
               <Icon :icon="channel.icon" class="icon" />
@@ -51,8 +51,7 @@ const [{ formRef }, { validateForm }] = useFormValidation('action', emits);
 
 function handleSelectChannel() {
   validateForm({ changeStep: false });
-
-  // Used for milestone 2 to clear 'Set Up Action' when user switches to other channel
+  // Used for milestone 2 to clear 'Set Up Action' data when user switches to other channel
 }
 </script>
 
