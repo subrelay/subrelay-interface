@@ -83,6 +83,7 @@
 </template>
 
 <script setup>
+import EditorData from '@/store/localStore/EditorData';
 import { ref, computed, watch, inject, h, onBeforeMount } from 'vue';
 import { useStore } from 'vuex';
 import { isEmpty } from 'lodash';
@@ -111,8 +112,10 @@ const requiredRule = ref({
   trigger: ['input'],
   validator(rule, value) {
     if (value === null) {
+      EditorData.setError('trigger', true);
       return new Error('Required!');
     }
+    EditorData.setError('trigger', false);
     eventBus.emit('toggleTestFilter', { isDisabled: true });
   },
 });
@@ -143,12 +146,13 @@ function onSelectProp(val, options) {
 
 function onSelectOperator(val) {
   onInput('operator', val);
-  validateForm({ changeStep: false });
+  // EditorData.setError('trigger', !!val);
+  // validateForm({ changeStep: false });
 }
 
 function onValueInput(val) {
   onInput('value', val);
-  validateForm({ changeStep: false });
+  // validateForm({ changeStep: false });
 }
 
 function onInput(prop, value) {

@@ -4,6 +4,7 @@
     placement="top-end"
     @clickoutside="onClickOutSide"
     :show="showTooltip"
+    :style="{ 'max-width': '400px' }"
   >
     <template #trigger>
       <n-button

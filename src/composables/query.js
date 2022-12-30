@@ -34,13 +34,13 @@ export const useQueryParams = (
     router.push({ query });
   }
 
-  const onDebouncedSearch = debounce(handleSearch, 1000);
-
   function shouldChangeRoute(nextQuery) {
     const currentPath = route.fullPath;
     const nextPath = router.resolve({ query: nextQuery }).fullPath;
     return currentPath !== nextPath;
   }
+
+  const onDebouncedSearch = debounce(handleSearch, 1000);
 
   function handleSearch() {
     const nextQuery = {

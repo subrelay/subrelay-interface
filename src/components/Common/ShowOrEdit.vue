@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="pointer-cursor show-or-edit"
-    @click="handleOnClick"
-    :id="`row-${props.rowIndex}__col-${props.columnKey}`"
-  >
+  <div class="pointer-cursor show-or-edit" @click="handleOnClick">
     <EditNode v-if="isEdit" />
 
     <div v-else class="show-area">

@@ -122,11 +122,9 @@ const [
   {
     onDebouncedSearch,
     handleSort,
-    handleSearch,
     handlePageChange,
     handleSelectChain,
     handleSelectStatus,
-    initQueryParams,
     clearAllFilters,
   },
 ] = useQueryParams('history', columns, fetchData);
