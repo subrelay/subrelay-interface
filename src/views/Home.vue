@@ -162,7 +162,7 @@ const siderOptions = ref([
     label: () =>
       h(
         RouterLink,
-        { to: { name: 'workflows', query: query.value } },
+        { to: { name: 'workflows' } },
         { default: () => 'Workflows' }
       ),
     key: 'workflows',
@@ -170,11 +170,7 @@ const siderOptions = ref([
   },
   {
     label: () =>
-      h(
-        RouterLink,
-        { to: { name: 'history', query: query.value } },
-        { default: () => 'History' }
-      ),
+      h(RouterLink, { to: { name: 'history' } }, { default: () => 'History' }),
     key: 'history',
     icon: renderIcon('system-uicons:files-history'),
   },
@@ -209,7 +205,7 @@ function goToEditor(id) {
 }
 
 function goToHomePage() {
-  router.push({ name: 'workflows', query: query.value });
+  router.push({ name: 'workflows' });
 }
 
 function onUpdateActive(value) {

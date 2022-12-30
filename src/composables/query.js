@@ -1,7 +1,8 @@
 import { ref, onMounted, computed, watch } from 'vue';
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router';
-import { pickBy, debounce, isEmpty, findIndex } from 'lodash';
+import { debounce, isEmpty, findIndex } from 'lodash';
 import { useStore } from 'vuex';
+import { defaultQuery } from '@/composables/config.js';
 
 export const useQuery = (
   module,
@@ -11,25 +12,31 @@ export const useQuery = (
   const store = useStore();
   const route = useRoute();
   const router = useRouter();
-  const query = ref({});
+
   const searchText = ref('');
   const selectedChain = ref(undefined);
   const selectedStatus = ref(undefined);
 
   let sortingIndex, prevSortIndex;
 
-  const storedQuery = computed(() => store.state[module].query);
+  const query = computed(() => store.state[module].query);
   const loading = computed(() => store.state[module].loading);
-
-  const defaultQuery = computed(() => store.state.global.defaultQuery);
+  const itemCount = computed(() => store.state[module].itemCount);
 
   const tablePagination = ref({
     size: 'small',
-    pageSize: defaultQuery.value.limit,
+    page: 1,
+    pageSize: defaultQuery.limit,
   });
 
   function pushQueryToRoute(query) {
-    router.push({ query });
+    const { offset, limit } = query;
+    const page = offset / limit + 1;
+    const perPage = limit;
+    const nextQuery = { ...query, page, perPage };
+    delete nextQuery.offset;
+    delete nextQuery.limit;
+    router.push({ query: nextQuery });
   }
 
   function shouldChangeRoute(nextQuery) {
@@ -44,36 +51,38 @@ export const useQuery = (
     const nextQuery = {
       ...query.value,
       search: searchText.value || undefined,
-      offset: 1,
+      offset: 0,
     };
 
     shouldChangeRoute(nextQuery) && pushQueryToRoute(nextQuery);
   }
 
-  function handleSort(options) {
-    // Reset previous sort
+  function handleSort({ columnKey: tableOrder, order: tableSort }) {
     if (prevSortIndex !== undefined) {
+      // Reset previous sort
       columns.value[prevSortIndex].sortOrder = false;
     }
 
-    const { columnKey, order } = options;
-    sortingIndex = findIndex(columns.value, { key: columnKey });
+    sortingIndex = findIndex(columns.value, { key: tableOrder });
     prevSortIndex = sortingIndex;
-    columns.value[sortingIndex].sortOrder = order;
+    columns.value[sortingIndex].sortOrder = tableSort;
 
-    const queryBySort = order
-      ? { order: columnKey, sort: order }
-      : { order: undefined, sort: undefined };
+    const order = tableSort ? tableOrder : undefined;
+    const sort =
+      tableSort === 'descend'
+        ? 'desc'
+        : tableSort === 'ascend'
+        ? 'asc'
+        : undefined;
 
-    pushQueryToRoute({
-      ...query.value,
-      ...queryBySort,
-    });
+    const queryBySort = { order, sort };
+
+    pushQueryToRoute({ ...query.value, ...queryBySort });
   }
 
   function handlePageChange(nextPage) {
-    if (query.value.offset === nextPage) return;
-    pushQueryToRoute({ ...query.value, offset: nextPage });
+    const offset = query.value.limit * (nextPage - 1);
+    pushQueryToRoute({ ...query.value, offset });
   }
 
   function handleSelectChain(uuid) {
@@ -93,8 +102,7 @@ export const useQuery = (
     searchText.value = '';
     selectedChain.value = null;
     selectedStatus.value = null;
-    query.value = defaultQuery.value;
-    pushQueryToRoute({ ...defaultQuery.value });
+    pushQueryToRoute({ ...defaultQuery });
   }
 
   function getQueryFromRoute(query) {
@@ -104,31 +112,14 @@ export const useQuery = (
       search: (query.search && query.search.trim()) || undefined,
       order: query.order || undefined,
       sort: query.sort || undefined,
-      offset: +query.offset || defaultQuery.value.offset,
-      limit: +query.limit || defaultQuery.value.limit,
+      offset: +query.perPage * (+query.page - 1) || defaultQuery.offset,
+      limit: +query.perPage || defaultQuery.limit,
     };
   }
 
-  function initQuery() {
-    query.value = storedQuery.value || getQueryFromRoute(route.query);
-
-    const { order, sort, search, uuid, status } = route.query;
-    searchText.value = search || '';
-    selectedChain.value = uuid;
-    selectedStatus.value = status;
-
-    if (order) {
-      const index = findIndex(columns.value, { key: order });
-      columns.value[index].sortOrder = sort;
-    }
-
-    pushQueryToRoute(pickBy(query.value));
-    store.commit(`${module}/saveQuery`, query.value);
-  }
-
   onBeforeRouteUpdate((to, from, next) => {
-    query.value = getQueryFromRoute(to.query);
-    store.commit(`${module}/saveQuery`, query.value);
+    const params = getQueryFromRoute(to.query);
+    store.commit(`${module}/saveQuery`, params);
 
     const { order, sort, search, uuid, status } = to.query;
     searchText.value = search || '';
@@ -157,12 +148,33 @@ export const useQuery = (
 
       tablePagination.value = {
         ...tablePagination.value,
+        page: offset / limit + 1,
         pageSize: limit,
-        page: offset,
       };
     },
     { deep: true }
   );
+
+  watch(itemCount, (itemCount) => {
+    tablePagination.value = { ...tablePagination.value, itemCount };
+  });
+
+  function initQuery() {
+    const params = query.value || getQueryFromRoute(route.query);
+    store.commit(`${module}/saveQuery`, params);
+
+    const { order, sort, search, uuid, status } = route.query;
+    searchText.value = search || '';
+    selectedChain.value = uuid;
+    selectedStatus.value = status;
+
+    if (order) {
+      const index = findIndex(columns.value, { key: order });
+      columns.value[index].sortOrder = sort;
+    }
+
+    pushQueryToRoute(params);
+  }
 
   onMounted(() => {
     initQuery();

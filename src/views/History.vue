@@ -2,15 +2,25 @@
   <n-space vertical :size="30">
     <PageHeader :module="'history'" :statusOptions="useLogStatuses" />
 
-    <n-data-table
-      :columns="columns"
-      :data="logs"
-      :pagination="tablePagination"
-      :render-cell="useRenderCell"
-      :loading="loading"
-      @update:page="handlePageChange"
-      @update:sorter="handleSort"
-    />
+    <n-space :wrapItem="false">
+      <n-data-table
+        :columns="columns"
+        :data="logs"
+        :render-cell="useRenderCell"
+        :loading="loading"
+        @update:sorter="handleSort"
+      />
+
+      <n-pagination
+        class="table-pagination"
+        @update:page="handlePageChange"
+        :page="tablePagination.page"
+        :item-count="tablePagination.itemCount"
+        :page-size="tablePagination.pageSize"
+        :disabled="loading"
+        size="small"
+      />
+    </n-space>
   </n-space>
 </template>
 

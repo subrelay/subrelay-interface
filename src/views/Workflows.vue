@@ -2,16 +2,26 @@
   <n-space vertical :size="30">
     <PageHeader :module="'workflows'" :statusOptions="useWorkflowStatuses" />
 
-    <n-data-table
-      :columns="columns"
-      :data="workflows"
-      :row-key="({ id }) => id"
-      :pagination="tablePagination"
-      :render-cell="useRenderCell"
-      :loading="loading"
-      @update:page="handlePageChange"
-      @update:sorter="handleSort"
-    />
+    <n-space :wrapItem="false">
+      <n-data-table
+        :columns="columns"
+        :data="workflows"
+        :row-key="({ id }) => id"
+        :render-cell="useRenderCell"
+        :loading="loading"
+        @update:sorter="handleSort"
+      />
+
+      <n-pagination
+        class="table-pagination"
+        @update:page="handlePageChange"
+        :page="tablePagination.page"
+        :item-count="tablePagination.itemCount"
+        :page-size="tablePagination.pageSize"
+        :disabled="loading"
+        size="small"
+      />
+    </n-space>
   </n-space>
 </template>
 

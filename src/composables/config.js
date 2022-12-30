@@ -52,3 +52,13 @@ export const useChannels = ref([
   { value: 'telegram', label: 'Telegram', icon: 'logos:telegram' },
   { value: 'discord', label: 'Discord', icon: 'logos:discord-icon' },
 ]);
+
+export const defaultQuery = {
+  search: undefined,
+  order: undefined,
+  sort: undefined,
+  uuid: undefined,
+  status: undefined,
+  offset: 0,
+  limit: 5,
+};

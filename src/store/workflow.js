@@ -7,6 +7,7 @@ export default {
 
   state: () => ({
     workflows: [],
+    itemCount: null,
     workflow: {},
     query: null,
     loading: null,
@@ -14,6 +15,7 @@ export default {
 
   mutations: {
     getWorkflows: (state, workflows) => (state.workflows = workflows),
+    getItemCount: (state, itemCount) => (state.itemCount = itemCount),
     getWorkflow: (state, workflow) => (state.workflow = workflow),
     saveQuery: (state, query) => (state.query = query),
     setLoading: (state, isLoading) => (state.loading = isLoading),
@@ -24,12 +26,16 @@ export default {
       commit('setLoading', true);
       try {
         // const workflows = await API.Workflow.getWorkflows(state.query);
-        const { data: workflows } = await axios({
+        const {
+          data: { workflows, total },
+        } = await axios({
           url: 'mockData/workflow/workflows.json',
           baseURL: 'http://127.0.0.1:5173',
           params: new URLSearchParams({ ...pickBy(state.query) }),
         });
+
         commit('getWorkflows', workflows);
+        commit('getItemCount', total);
       } catch (error) {
         commit('getWorkflows', []);
         console.log('error', error);
