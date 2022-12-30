@@ -2,16 +2,26 @@
   <n-space vertical :size="30">
     <PageHeader :module="'workflows'" :statusOptions="useWorkflowStatuses" />
 
-    <n-data-table
-      :columns="columns"
-      :data="workflows"
-      :row-key="({ id }) => id"
-      :pagination="tablePagination"
-      :render-cell="useRenderCell"
-      :loading="loading"
-      @update:page="handlePageChange"
-      @update:sorter="handleSort"
-    />
+    <n-space :wrapItem="false">
+      <n-data-table
+        :columns="columns"
+        :data="workflows"
+        :row-key="({ id }) => id"
+        :render-cell="useRenderCell"
+        :loading="loading"
+        @update:sorter="handleSort"
+      />
+
+      <n-pagination
+        class="table-pagination"
+        @update:page="handlePageChange"
+        :page="tablePagination.page"
+        :item-count="tablePagination.itemCount"
+        :page-size="tablePagination.pageSize"
+        :disabled="loading"
+        size="small"
+      />
+    </n-space>
   </n-space>
 </template>
 
@@ -28,7 +38,7 @@ import moment from 'moment';
 import API from '@/api';
 import axios from 'axios';
 import {
-  useQueryParams,
+  useQuery,
   useRenderSortIcon,
   useRenderCell,
   useGetChainImg,
@@ -163,7 +173,7 @@ const columns = ref([
 
 const [
   {
-    queryParams,
+    query,
     searchText,
     loading,
     tablePagination,
@@ -173,19 +183,17 @@ const [
   {
     onDebouncedSearch,
     handleSort,
-    handleSearch,
     handlePageChange,
     handleSelectChain,
     handleSelectStatus,
-    initQueryParams,
     clearAllFilters,
   },
-] = useQueryParams('workflow', columns, fetchData);
+] = useQuery('workflow', columns, fetchData);
 
 provide('search', {
   selectedChain,
   selectedStatus,
-  queryParams,
+  query,
   searchText,
   onDebouncedSearch,
   handleSelectChain,

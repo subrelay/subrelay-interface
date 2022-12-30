@@ -1,8 +1,8 @@
 <template>
   <n-form
     class="step_container"
-    @keyup.enter="validateForm"
     ref="formRef"
+    @keyup.enter="validateForm"
     :model="EditorData.workflow.tasks[1].config"
   >
     <n-form-item

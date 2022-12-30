@@ -1,46 +1,51 @@
-[
-  {
-    "id": 1,
-    "name": "John Brown",
-    "created_at": 134245325,
-    "updated_at": 3546634,
-    "status": "running",
-    "chain": {
-      "uuid": "uasdasdsd",
-      "name": "Acala"
+{
+  "workflows": [
+    {
+      "id": 1,
+      "name": "John Brown",
+      "created_at": 134245325,
+      "updated_at": 3546634,
+      "status": "running",
+      "chain": {
+        "uuid": "uasdasdsd",
+        "name": "Acala"
+      }
+    },
+    {
+      "id": 2,
+      "name": "Jim Green",
+      "created_at": 435435435,
+      "updated_at": 546546546546,
+      "status": "pausing",
+      "chain": {
+        "uuid": "uasdasdsd",
+        "name": "Kusama"
+      }
+    },
+    {
+      "id": 3,
+      "name": "Joe Black",
+      "created_at": 56546546,
+      "updated_at": 56546546546546,
+      "status": "running",
+      "chain": {
+        "uuid": "uasdasdsd",
+        "name": "Polkadot"
+      }
+    },
+    {
+      "id": 4,
+      "name": "Jun Red",
+      "created_at": 546546546456,
+      "updated_at": 546546546546,
+      "status": "pausing",
+      "chain": {
+        "uuid": "uasdasdsd",
+        "name": "Acala"
+      }
     }
-  },
-  {
-    "id": 2,
-    "name": "Jim Green",
-    "created_at": 435435435,
-    "updated_at": 546546546546,
-    "status": "pausing",
-    "chain": {
-      "uuid": "uasdasdsd",
-      "name": "Kusama"
-    }
-  },
-  {
-    "id": 3,
-    "name": "Joe Black",
-    "created_at": 56546546,
-    "updated_at": 56546546546546,
-    "status": "running",
-    "chain": {
-      "uuid": "uasdasdsd",
-      "name": "Polkadot"
-    }
-  },
-  {
-    "id": 4,
-    "name": "Jun Red",
-    "created_at": 546546546456,
-    "updated_at": 546546546546,
-    "status": "pausing",
-    "chain": {
-      "uuid": "uasdasdsd",
-      "name": "Acala"
-    }
-  }
-]
+  ],
+  "limit": 10,
+  "offset": 0,
+  "total": 4
+}

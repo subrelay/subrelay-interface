@@ -126,7 +126,7 @@ import { useDialog, useMessage } from 'naive-ui';
 import { useStore } from 'vuex';
 
 const props = defineProps({ id: [String, Number] });
-const defaultQuery = computed(() => store.state.global.defaultQueryParams);
+const defaultQuery = computed(() => store.state.global.defaultQuery);
 const router = useRouter();
 const route = useRoute();
 const store = useStore();
@@ -241,9 +241,7 @@ function showExitWarning() {
       EditorData.loadWorkflow();
       return new Promise((resolve) => {
         sleep()
-          .then(() =>
-            router.push({ name: 'workflows', query: defaultQuery.value })
-          )
+          .then(() => router.push({ name: 'workflows' }))
           .then(resolve);
       });
     },
@@ -261,7 +259,7 @@ async function quitEditor() {
   } else {
     EditorData.cleanUpWorkflow();
     await store.dispatch('workflow/postWorkflow', EditorData.workflow);
-    router.push({ name: 'workflows', query: defaultQuery.value });
+    router.push({ name: 'workflows' });
   }
 }
 

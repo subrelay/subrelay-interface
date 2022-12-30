@@ -10,16 +10,6 @@ export default {
     isDarkMode: false,
     isSiderCollapsed: false,
 
-    defaultQueryParams: {
-      search: undefined,
-      order: undefined,
-      sort: undefined,
-      uuid: undefined,
-      status: undefined,
-      offset: 1,
-      limit: 5,
-    },
-
     isAuthenticating: null,
 
     // Profile page

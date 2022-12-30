@@ -2,15 +2,25 @@
   <n-space vertical :size="30">
     <PageHeader :module="'history'" :statusOptions="useLogStatuses" />
 
-    <n-data-table
-      :columns="columns"
-      :data="logs"
-      :pagination="tablePagination"
-      :render-cell="useRenderCell"
-      :loading="loading"
-      @update:page="handlePageChange"
-      @update:sorter="handleSort"
-    />
+    <n-space :wrapItem="false">
+      <n-data-table
+        :columns="columns"
+        :data="logs"
+        :render-cell="useRenderCell"
+        :loading="loading"
+        @update:sorter="handleSort"
+      />
+
+      <n-pagination
+        class="table-pagination"
+        @update:page="handlePageChange"
+        :page="tablePagination.page"
+        :item-count="tablePagination.itemCount"
+        :page-size="tablePagination.pageSize"
+        :disabled="loading"
+        size="small"
+      />
+    </n-space>
   </n-space>
 </template>
 
@@ -22,7 +32,7 @@ import { useStore } from 'vuex';
 import { NAvatar } from 'naive-ui';
 import moment from 'moment';
 import {
-  useQueryParams,
+  useQuery,
   useRenderSortIcon,
   useRenderCell,
   useGetChainImg,
@@ -112,7 +122,7 @@ const columns = ref([
 
 const [
   {
-    queryParams,
+    query,
     searchText,
     loading,
     tablePagination,
@@ -122,19 +132,17 @@ const [
   {
     onDebouncedSearch,
     handleSort,
-    handleSearch,
     handlePageChange,
     handleSelectChain,
     handleSelectStatus,
-    initQueryParams,
     clearAllFilters,
   },
-] = useQueryParams('history', columns, fetchData);
+] = useQuery('history', columns, fetchData);
 
 provide('search', {
   selectedChain,
   selectedStatus,
-  queryParams,
+  query,
   searchText,
   onDebouncedSearch,
   handleSelectChain,
