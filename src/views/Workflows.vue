@@ -1,5 +1,5 @@
 <template>
-  <n-space vertical :size="30">
+  <n-space vertical :size="32">
     <PageHeader :module="'workflows'" :statusOptions="useWorkflowStatuses" />
 
     <n-space :wrapItem="false">

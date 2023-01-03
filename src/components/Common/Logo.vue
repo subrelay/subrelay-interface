@@ -1,10 +1,6 @@
 <template>
   <div class="logo" @click="emits('click')" :class="classes" :style="style">
-    <n-text>
-      <Icon icon="eos-icons:action-chains-outlined" :inline="true" />
-    </n-text>
-
-    <n-text depth="1" class="text"> SUBRELAY </n-text>
+    <n-text depth="1" class="text"> Subrelay </n-text>
   </div>
 </template>
 
@@ -33,12 +29,13 @@ const style = computed(() => {
 
 <style lang="scss">
 .logo {
-  font-family: 'Montserrat';
+  font-family: 'Unbounded';
   cursor: pointer;
   user-select: none;
   display: flex;
   align-items: center;
-  font-size: 2.25rem;
+  font-size: 1.4rem;
+  font-weight: 700;
 
   .text {
     margin-left: 0.8rem;

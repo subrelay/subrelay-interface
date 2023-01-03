@@ -4,7 +4,7 @@
   </div>
 
   <div class="welcome">
-    <h1 class="title">Hi, welcome back!</h1>
+    <h1 class="title">Welcome to Subrelay</h1>
     <div class="text">
       <span style="margin-right: 5px">Please connect your</span>
       <n-avatar round :size="24" src="https://polkadot.js.org/logo.svg" />
@@ -12,7 +12,7 @@
         Polkadot{.js} wallet to start using SubRelay.</span
       >
     </div>
-    <n-button type="primary" class="connect_button" @click="showModal = true">
+    <n-button type="primary" round size="large" @click="showModal = true">
       Connect Wallet
     </n-button>
   </div>
@@ -29,9 +29,12 @@ const showModal = ref(false);
 </script>
 
 <style lang="scss" scoped>
+
+.page_header {
+  padding: 16px 32px;
+}
 .welcome {
   margin-top: 15vh;
-  height: calc(100vh);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -39,10 +42,12 @@ const showModal = ref(false);
   .text {
     display: flex;
     align-items: center;
+    margin-bottom: 2rem;
   }
 
   .title {
-    font-size: 4rem;
+    font-family: 'Unbounded';
+    font-size: 2.4rem;
     margin-bottom: 1rem;
   }
 

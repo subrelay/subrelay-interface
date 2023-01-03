@@ -1,11 +1,11 @@
 <template>
   <div style="height: 100vh; position: relative">
     <n-layout position="absolute">
-      <n-layout-header style="padding: 5px 3rem" bordered>
+      <n-layout-header style="padding: 16px 32px" bordered>
         <n-space align="center" justify="space-between">
           <Logo @click="goToHomePage" />
 
-          <n-space align="center" :size="30">
+          <n-space align="center" :size="32">
             <n-switch
               :rail-style="railStyle"
               size="large"
@@ -30,7 +30,7 @@
                 <Icon
                   icon="icon-park-outline:sun"
                   color="#EAEAEA"
-                  :style="{ 'margin-right': '10px', 'margin-left': '-10px' }"
+                  :style="{ 'margin-right': '12px', 'margin-left': '-12px' }"
                 />
               </template>
 
@@ -38,7 +38,7 @@
                 <Icon
                   icon="heroicons-outline:moon"
                   color="#797676"
-                  :style="{ 'margin-right': '-10px', 'margin-left': '10px' }"
+                  :style="{ 'margin-right': '-12px', 'margin-left': '12px' }"
                 />
               </template>
             </n-switch>
@@ -86,8 +86,8 @@
           bordered
           show-trigger="bar"
           collapse-mode="width"
-          :width="300"
-          :collapsed-width="70"
+          :width="240"
+          :collapsed-width="64"
           :collapsed="collapsed"
           @update:collapsed="
             (value) => store.commit('global/toggleSider', value)
@@ -102,9 +102,9 @@
             :default-value="'workflows'"
             :collapsed="collapsed"
             :collapsed-width="64"
-            :collapsed-icon-size="40"
+            :collapsed-icon-size="32"
             :options="siderOptions"
-            :icon-size="25"
+            :icon-size="24"
             :indent="20"
           />
         </n-layout-sider>
@@ -147,11 +147,11 @@ const siderOptions = ref([
         ? h('div', {}, { default: () => 'New workflow' })
         : h(
             NButton,
-            { block: true, type: 'primary' },
+            { block: true, type: 'primary', round: true },
             {
               default: () => [
                 h(Icon, { icon: 'fluent:add-12-filled', inline: true }),
-                h('div', { style: 'margin-left: 0.5rem' }, 'New workflow'),
+                h('div', { style: 'margin-left: 0.6rem' }, 'New workflow'),
               ],
             }
           ),

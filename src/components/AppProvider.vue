@@ -28,38 +28,40 @@ import {
 } from 'naive-ui';
 
 const lightThemeOverrides = {
-  // common: {
-  //   primaryColor: '#008060',
-  //   primaryColorHover: 'rgba(0, 128, 96, 0.8)',
-  //   primaryColorPressed: '#008060',
-  //   primaryColorSuppl: 'orange',
-  //   primaryColor: 'yellow',
-  // },
-  // Input: {
-  //   placeholderColor: '#888',
-  //   caretColor: 'black',
-  //   // borderFocus: '1px solid #E5BE4C',
-  // },
-  // Button: {
-  //   color: 'black',
-  //   colorFocus: 'black',
-  //   textColor: '#fff',
-  //   textColorFocus: '#fff',
-  //   border: 'none',
-  //   borderFocus: 'none',
-  // },
+  primaryColor: 'rgba(230, 0, 122, 1)',
+  primaryColorHover: 'rgba(230, 0, 122, 0.7)',
+  primaryColorPressed: 'rgba(230, 0, 122, 0.7)',
+  primaryColorSuppl: 'rgba(230, 0, 122, 1)',
 };
 
 const darkThemeOverrides = {
-  // common: {
-  //   textColor2: '#fff',
-  // },
-  // Button: {
-  //   textColor: 'black',
-  //   textColorFocus: 'black',
-  //   color: '#63e2b7',
-  //   colorFocus: '#63e2b7',
-  // },
+  common: {
+    baseColor: 'rgba(255, 255, 255)',
+    primaryColor: 'rgba(230, 0, 122, 1)',
+    primaryColorHover: 'rgba(230, 0, 122, 0.7)',
+    primaryColorPressed: 'rgba(230, 0, 122, 0.7)',
+    primaryColorSuppl: 'rgba(230, 0, 122, 1)',
+    // infoColor: string;
+    // infoColorHover: string;
+    // infoColorPressed: string;
+    // infoColorSuppl: string;
+    successColor: 'green',
+    // successColorHover: string;
+    // successColorPressed: string;
+    // successColorSuppl: string;
+    warningColor: 'rgb(255, 206, 0)',
+    // warningColorHover: string;
+    // warningColorPressed: string;
+    // warningColorSuppl: string;
+    errorColor: 'rgb(210, 84, 93)',
+    // errorColorHover: string;
+    // errorColorPressed: string;
+    // errorColorSuppl: string;
+    // textColorBase: string;
+    // textColor1: string;
+    // textColor2: string;
+    // textColor3: string;
+  },
 };
 
 onMounted(() => {
