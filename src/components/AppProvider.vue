@@ -18,14 +18,14 @@ import { computed, onMounted } from 'vue';
 import { darkTheme } from 'naive-ui';
 import { useStore } from 'vuex';
 
-const store = useStore();
-const darkMode = computed(() => store.state.global.isDarkMode);
-
 import {
   NMessageProvider,
   NLoadingBarProvider,
   NDialogProvider,
 } from 'naive-ui';
+
+const store = useStore();
+const darkMode = computed(() => store.state.global.isDarkMode);
 
 const lightThemeOverrides = {
   primaryColor: 'rgba(230, 0, 122, 1)',

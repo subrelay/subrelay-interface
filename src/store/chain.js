@@ -26,7 +26,7 @@ export default {
     async getChains({ commit }) {
       commit('setLoading', { getChainsLoading: true });
       try {
-        const chains = await API.Chain.getChains();
+        const chains = await API.getChains();
         commit('getChains', chains);
       } catch (error) {
         commit('getChains', []);
@@ -39,7 +39,7 @@ export default {
     async getEvents({ commit }, uuid) {
       commit('setLoading', { getEventsLoading: true });
       try {
-        const events = await API.Chain.getEvents(uuid);
+        const events = await API.getEvents(uuid);
         commit('getEvents', events);
       } catch (error) {
         commit('getChains', []);
@@ -52,7 +52,7 @@ export default {
     async getEvent({ commit }, { uuid, eventId }) {
       commit('setLoading', { getEventLoading: true });
       try {
-        const event = await API.Chain.getEvent(uuid, eventId);
+        const event = await API.getEvent(uuid, eventId);
 
         commit('getEvent', event);
       } catch (error) {

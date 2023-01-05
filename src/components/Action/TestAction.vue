@@ -8,10 +8,10 @@
         <div class="title">Input</div>
       </template>
 
-      <n-skeleton v-if="loading" text :repeat="5" />
+      <n-skeleton v-if="runningTest" text :repeat="5" />
       <WebhookInput v-else :config="config" />
     </n-card>
-
+    Fak {{ isTested }}
     <n-card
       header-style="padding-bottom: 0.5rem"
       v-if="isTested"
@@ -21,7 +21,7 @@
         <div class="title">Output</div>
       </template>
 
-      <n-skeleton v-if="loading && isTested" text :repeat="2" />
+      <n-skeleton v-if="runningTest && isTested" text :repeat="2" />
       <n-space vertical :size="10" v-else>
         <div class="input-item">
           <div class="title">Status:</div>
@@ -29,25 +29,25 @@
           <Icon
             :inline="true"
             :icon="
-              taskResponse.success ? 'ep:success-filled' : 'ic:round-cancel'
+              testResult.success ? 'ep:success-filled' : 'ic:round-cancel'
             "
-            :color="taskResponse.success ? '#18A058FF' : '#D03050FF'"
+            :color="testResult.success ? '#18A058FF' : '#D03050FF'"
             :width="'1.2rem'"
             style="margin-right: 5px"
           />
           <span class="text-capitalize">
-            {{ taskResponse.success ? 'Success' : 'Failed' }}
+            {{ testResult.success ? 'Success' : 'Failed' }}
           </span>
         </div>
 
-        <div class="input-item" v-if="!taskResponse.success">
+        <div class="input-item" v-if="!testResult.success">
           <div class="title">Message:</div>
-          <p>{{ taskResponse.error.message }}</p>
+          <p>{{ testResult.error.message }}</p>
         </div>
 
-        <div class="input-item" v-if="taskResponse.result">
+        <div class="input-item" v-if="testResult.result">
           <div class="title">Result:</div>
-          <p>{{ taskResponse.result }}</p>
+          <p>{{ testResult.result }}</p>
         </div>
       </n-space>
     </n-card>
@@ -57,19 +57,18 @@
         class="action_button"
         type="primary"
         @click="onTest"
-        :loading="loading"
-        :disabled="loading || postWorkflowLoading"
+        :loading="runningTest"
+        :disabled="runningTest || postWorkflowLoading"
       >
         {{ isTested ? 'Retest' : 'Test' }}
       </n-button>
-
       <n-button
         class="action_button"
         type="primary"
         v-if="isTested"
         @click="eventBus.emit('finish')"
         :loading="postWorkflowLoading"
-        :disabled="loading || postWorkflowLoading"
+        :disabled="runningTest || postWorkflowLoading"
       >
         Finish
       </n-button>
@@ -78,24 +77,25 @@
 </template>
 
 <script setup>
-import API from '@/api';
 import WebhookInput from '@/components/Action/WebhookInput';
 import EditorData from '@/store/localStore/EditorData';
-import { computed, ref, inject, onBeforeUnmount } from 'vue';
+import { computed, inject, onBeforeUnmount } from 'vue';
 import { useStore } from 'vuex';
-const store = useStore();
 
-const loading = ref(null);
-const isTested = ref(false);
+const store = useStore();
 const postWorkflowLoading = computed(() => store.state.workflow.loading);
-const taskResponse = ref({});
+const runningTest = computed(() => store.state.task.runningTest);
+const isTested = computed(() => store.state.task.tested);
+const testResult = computed(() => store.state.task.testResult);
 
 const eventBus = inject('eventBus');
 eventBus.on('toggleTestAction', resetTest);
 onBeforeUnmount(() => eventBus.off('toggleTestAction', resetTest));
 
 function resetTest({ isDisabled }) {
-  if (isDisabled) isTested.value = false;
+  if (isDisabled) {
+    store.commit('setTested', false);
+  }
 }
 
 const config = computed(() => {
@@ -113,12 +113,8 @@ const sample = {
 };
 
 async function onTest() {
-  loading.value = true;
   const { type, config } = EditorData.workflow.tasks[EditorData.actionIdx];
-  const res = await API.Task.runTask({ type, data: sample, config });
-  taskResponse.value = res;
-  loading.value = false;
-  isTested.value = true;
+  store.dispatch('task/runTask', { type, data: sample, config });
 }
 </script>
 

@@ -22,6 +22,7 @@ export const useQuery = (
   const query = computed(() => store.state[module].query);
   const loading = computed(() => store.state[module].loading);
   const itemCount = computed(() => store.state[module].itemCount);
+  const selectedAccount = computed(() => store.state.account.selected);
 
   const tablePagination = ref({
     size: 'small',
@@ -159,6 +160,10 @@ export const useQuery = (
     tablePagination.value = { ...tablePagination.value, itemCount };
   });
 
+  watch(selectedAccount, () => {
+    fetchData();
+  }, { immediate: true });
+
   function initQuery() {
     const params = query.value || getQueryFromRoute(route.query);
     store.commit(`${module}/saveQuery`, params);
@@ -178,11 +183,7 @@ export const useQuery = (
 
   onMounted(() => {
     initQuery();
-    fetchData();
   });
-
-  // NOTE TO UPDATE: Watch headers to update pagination params. If offset enterer manually in the url > totalPages => push to last page.
-  // ref: Bes1221
 
   return [
     {

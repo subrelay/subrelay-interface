@@ -35,8 +35,7 @@ import { ref, h, provide, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import moment from 'moment';
-import API from '@/api';
-import axios from 'axios';
+import Api from '@/api';
 import {
   useQuery,
   useRenderSortIcon,
@@ -50,24 +49,10 @@ const store = useStore();
 const router = useRouter();
 const workflows = computed(() => store.state.workflow.workflows);
 
-function deleteWorkflow({ id, name }) {
-  // await API.Workflow.deleteWorkflow(id)
-  // await store.dispatch('workflow/getWorkflows');
-  // message.success(`Workflow ${name} has been deleted`);
-
-  return new Promise((resolve) => {
-    setTimeout(async () => {
-      const { data: newWorkflows } = await axios({
-        url: 'mockData/workflow/deleteWorkflow.json',
-        baseURL: 'http://127.0.0.1:5173',
-      });
-
-      store.commit('workflow/getWorkflows', newWorkflows);
-      message.success(`Workflow ${name} has been deleted`);
-
-      resolve();
-    }, 1000);
-  });
+async function deleteWorkflow({ id, name }) {
+  await Api.Workflow.deleteWorkflow(id)
+  await store.dispatch('workflow/getWorkflows');
+  message.success(`Workflow ${name} has been deleted`);
 }
 
 function fetchData() {

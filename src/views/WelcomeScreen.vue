@@ -47,6 +47,7 @@ const showModal = ref(false);
 
   .title {
     font-family: 'Unbounded';
+    color: #fff;
     font-size: 2.4rem;
     margin-bottom: 1rem;
   }

@@ -84,24 +84,16 @@ const store = useStore();
 const router = useRouter();
 const message = useMessage();
 
-const accounts = ref([
-  { name: 'Foo', address: '22EUKZfNUV6JPZ1baLscJShX7djtDDZnkiFZwqF7Fk8X5oUp' },
-  { name: 'Bar', address: '26VUtimeU2asGUt9EWQr4AomgUgrxVp9ZLXmWQwNvT7N2zGg' },
-  {
-    name: 'Lorem',
-    address: '26VUtimeU2asGUt9EWQr4AomgUgrxVp9ZLXmWQwNvT7N2zGz',
-  },
-]);
-
 const currentAcc = ref({});
-const storedAccount = computed(() => store.state.global.walletAccount);
+const storedAccount = computed(() => store.state.account.selected);
+const accounts = computed(() => store.state.account.accounts);
 
 function onSelectAccount(account) {
   currentAcc.value = account;
 }
 
 function onConfirm() {
-  store.commit('global/setWalletAccount', currentAcc.value);
+  store.commit('account/setSelected', currentAcc.value.address);
   emits('update:modelValue', false);
 
   // this is a temporary method.

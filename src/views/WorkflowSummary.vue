@@ -9,9 +9,10 @@
   </n-space>
 
   <n-space v-else vertical :size="30">
-    <div class="page_title">{{ workflow.name }}</div>
+    <div v-if="workflow" class="page_title">{{ workflow.name }}</div>
 
     <n-tabs
+      v-if="workflow && workflow.tasks"
       default-value="overview"
       justify-content="space-evenly"
       type="card"
@@ -32,11 +33,9 @@
 
 <script setup>
 import Overview from '@/components/WorkflowDetails/Overview.vue';
-import API from '@/api';
-import axios from 'axios';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-import { onBeforeMount, ref, computed } from 'vue';
+import { onBeforeMount, ref, computed, watch } from 'vue';
 
 const props = defineProps({ id: [String, Number] });
 const route = useRoute();
@@ -46,16 +45,23 @@ const store = useStore();
 const activeTab = ref(null);
 const workflow = computed(() => store.state.workflow.workflow);
 const loading = computed(() => store.state.workflow.loading);
+const selectedAccount = computed(() => store.state.account.selected);
 
 function onChangeTab(tab) {
   activeTab.value = tab;
   router.push({ name: tab, params: { id: props.id } });
 }
 
+watch(selectedAccount, () => {
+  if (selectedAccount) {
+    store.dispatch('workflow/getWorkflow', +props.id);
+  }
+}, { immediate: true });
+
 onBeforeMount(async () => {
-  activeTab.value = route.name;
-  store.dispatch('workflow/getWorkflow', +props.id);
+  activeTab.value = route.name; 
 });
+
 </script>
 
 <style lang="scss">

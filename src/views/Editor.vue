@@ -124,6 +124,7 @@ import { h, ref, inject, computed, onBeforeMount, onBeforeUnmount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useDialog, useMessage } from 'naive-ui';
 import { useStore } from 'vuex';
+import Api from '@/api';
 
 const props = defineProps({ id: [String, Number] });
 const defaultQuery = computed(() => store.state.global.defaultQuery);
@@ -138,12 +139,13 @@ function handleNextStep() {
   onChangeStep(2);
 }
 
+// TODO: Replace event bus by local state
 const eventBus = inject('eventBus');
 eventBus.on('nextStep', handleNextStep);
-eventBus.on('finish', quitEditor);
+eventBus.on('finish', createWorkflow);
 
 onBeforeUnmount(() => {
-  eventBus.off('finish', quitEditor);
+  eventBus.off('finish', createWorkflow);
   eventBus.off('nextStep', handleNextStep);
 });
 
@@ -256,11 +258,12 @@ async function quitEditor() {
     EditorData.workflow.tasks.some((task) => task.isError || !task.isCompleted)
   ) {
     showExitWarning();
-  } else {
-    EditorData.cleanUpWorkflow();
-    await store.dispatch('workflow/postWorkflow', EditorData.workflow);
-    router.push({ name: 'workflows' });
   }
+}
+
+async function createWorkflow() {
+  EditorData.cleanUpWorkflow();
+  await store.dispatch('workflow/postWorkflow', EditorData.workflow);
 }
 
 function onChangeStep(step) {
@@ -274,19 +277,18 @@ function onChangeStep(step) {
   });
 }
 
-import axios from 'axios';
-
 const loading = ref(false);
 
 onBeforeMount(async () => {
   let data;
 
+  // TODO: Refactor
   if (props.id !== 'new-flow') {
     try {
-      // const workflow = await API.Chain.getWorkflow(props.id);
-      const { data: workflow } = await axios({
-        url: 'mockData/workflow/workflow.json',
-        baseURL: 'http://127.0.0.1:5173',
+      const { data: workflow } = await Api.getWorkFlow({
+        account: store.state.account.selected,
+        signer: store.state.account.signer,
+        id: props.id,
       });
       data = workflow;
     } catch (error) {

@@ -4,6 +4,7 @@ import workflow from './workflow';
 import chain from './chain';
 import history from './history';
 import task from './task';
+import account from './account';
 
 export default createStore({
   modules: {
@@ -12,6 +13,7 @@ export default createStore({
     history,
     chain,
     task,
+    account,
   },
 
   strict: true,

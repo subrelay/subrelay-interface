@@ -44,6 +44,7 @@
             </n-switch>
 
             <n-dropdown
+              v-if="walletAccount"
               v-model:show="showMenu"
               :options="profileOptions"
               @select="onSelectProfileOption"
@@ -136,7 +137,7 @@ const activeKey = ref(null);
 const showMenu = ref(false);
 const showModal = ref(false);
 const collapsed = computed(() => store.state.global.isSiderCollapsed);
-const walletAccount = computed(() => store.state.global.walletAccount);
+const walletAccount = computed(() => store.state.account.selected);
 const query = computed(() => store.state.global.defaultQuery);
 const darkMode = computed(() => store.state.global.isDarkMode);
 
