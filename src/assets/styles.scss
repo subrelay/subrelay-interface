@@ -8,6 +8,18 @@
   font-style: italic;
 }
 
+@font-face {
+  font-family: 'Unbounded';
+  src: url(/fonts/Unbounded-Bold.ttf) format('ttf');
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'Unbounded';
+  src: url(/fonts/Unbounded-Medium.ttf) format('ttf');
+  font-weight: 700;
+}
+
 :root {
   --vt-c-white: #ffffff;
   --vt-c-white-soft: #f8f8f8;
@@ -102,13 +114,15 @@ body {
 /**** END OF Custom Scrollbar Design ****/
 
 .page_title {
-  text-transform: uppercase;
+  font-family: 'Unbounded';
+  text-transform: capitalize;
   font-size: 2rem;
   font-weight: bold;
   user-select: none;
 }
 
 .page_header {
+  font-family: 'Unbounded';
   padding: 0 3rem;
   display: flex;
   align-items: center;

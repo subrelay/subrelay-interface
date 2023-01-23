@@ -1,5 +1,5 @@
-import axios from 'axios';
 import { pickBy } from 'lodash';
+import Api from '@/api';
 
 export default {
   namespaced: true,
@@ -17,21 +17,22 @@ export default {
   },
 
   actions: {
-    async getLogs({ commit, state }) {
-      commit('setLoading', true);
-      try {
-        // const logs = await API.Workflow.getLogs(state.query);
-        const { data: logs } = await axios({
-          url: 'mockData/workflow/logs.json',
-          baseURL: 'http://127.0.0.1:5173',
-          params: new URLSearchParams({ ...pickBy(state.query) }),
-        });
-        commit('getLogs', logs);
-      } catch (error) {
-        commit('getLogs', []);
-        console.log('error', error);
-      } finally {
-        commit('setLoading', false);
+    async getLogs({ commit, state, rootState }) {
+      if (rootState.account.selected) {
+        commit('setLoading', true);
+        try {
+          const { data: { workflowLogs } } = await Api.getLogs({
+            account: rootState.account.selected,
+            signer: rootState.account.signer,
+            params: pickBy(state.query),
+          });
+          commit('getLogs', workflowLogs);
+        } catch (error) {
+          commit('getLogs', []);
+          console.log('error', error);
+        } finally {
+          commit('setLoading', false);
+        }
       }
     },
   },

@@ -1,5 +1,5 @@
 import axios from 'axios';
-// import API from '@/api';
+import Api from '@/api';
 import { pickBy } from 'lodash';
 
 export default {
@@ -22,56 +22,55 @@ export default {
   },
 
   actions: {
-    async getWorkflows({ commit, state }) {
-      commit('setLoading', true);
-      try {
-        // const workflows = await API.Workflow.getWorkflows(state.query);
-        const {
-          data: { workflows, total },
-        } = await axios({
-          url: 'mockData/workflow/workflows.json',
-          baseURL: 'http://127.0.0.1:5173',
-          params: new URLSearchParams({ ...pickBy(state.query) }),
-        });
-
-        commit('getWorkflows', workflows);
-        commit('getItemCount', total);
-      } catch (error) {
-        commit('getWorkflows', []);
-        console.log('error', error);
-      } finally {
-        commit('setLoading', false);
+    async getWorkflows({ commit, state, rootState }) {
+      if (rootState.account.selected) {
+        commit('setLoading', true);
+        try {
+          const {
+            data: { workflows, total },
+          } = await Api.getWorkflows({
+            account: rootState.account.selected,
+            signer: rootState.account.signer,
+            params: pickBy(state.query),
+          });
+          commit('getWorkflows', workflows);
+          commit('getItemCount', total);
+        } catch (error) {
+          commit('getWorkflows', []);
+          console.log('error', error);
+        } finally {
+          commit('setLoading', false);
+        }
       }
     },
 
-    async getWorkflow({ commit }, workflowId) {
-      commit('setLoading', true);
-      try {
-        // const workflow = await API.Workflow.getWorkflow(workflowId);
-
-        const { data: workflow } = await axios({
-          url: 'mockData/workflow/workflow.json',
-          baseURL: 'http://127.0.0.1:5173',
-        });
-
-        commit('getWorkflow', workflow);
-      } catch (error) {
-        commit('getWorkflow', {});
-        console.log('error', error);
-      } finally {
-        commit('setLoading', false);
+    async getWorkflow({ commit, rootState }, workflowId) {
+      if (rootState) {
+        commit('setLoading', true);
+        try {
+          const { data: { workflow } } = await Api.getWorkflow({
+            account: rootState.account.selected,
+            signer: rootState.account.signer,
+            id: workflowId,
+          });
+  
+          commit('getWorkflow', workflow);
+        } catch (error) {
+          commit('getWorkflow', {});
+          console.log('error', error);
+        } finally {
+          commit('setLoading', false);
+        }
       }
     },
 
-    async postWorkflow({ commit, dispatch }, data) {
+    async postWorkflow({ commit, rootState, dispatch }, data) {
       commit('setLoading', true);
       try {
-        // const response = await API.Workflow.postWorkflow(data);
-        await axios({
-          method: 'post',
-          url: 'mockData/workflow/workflow.json',
-          baseURL: 'http://127.0.0.1:5173',
-          data,
+        await Api.createWorkflow({
+          account: rootState.account.selected,
+          signer: rootState.account.signer,
+          body: data,
         });
 
         dispatch('getWorkflows');

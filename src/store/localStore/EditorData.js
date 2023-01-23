@@ -4,19 +4,20 @@ const conditionFormat = { variable: null, operator: null, value: null };
 
 const defaultConfig = () => ({
   name: null,
+  chainUuid: '',
   tasks: [
     {
       name: 'trigger',
       type: 'trigger',
-      depend_on_name: null,
+      dependOnName: null,
       config: { eventId: null, uuid: null, conditions: [] },
     },
     {
       name: 'action',
       type: 'notification',
+      dependOnName: 'trigger',
       config: {
         channel: null,
-        depend_on_name: 'trigger',
         config: {
           headers: [{ key: null, value: null }],
           url: null,
@@ -51,6 +52,10 @@ const editor = reactive({
 
   setName(name) {
     this.workflow.name = name ? name : 'Untitled';
+  },
+
+  setChainUuid(uuid) {
+    this.workflow.chainUuid = uuid;
   },
 
   setTrigger(data) {

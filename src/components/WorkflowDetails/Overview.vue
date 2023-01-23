@@ -52,12 +52,6 @@
 
       <n-space vertical>
         <n-grid cols="3">
-          <n-gi>
-            <n-space vertical>
-              <div class="text-semi-bold">Chain</div>
-              <div>{{ workflow.chain.name }}</div>
-            </n-space>
-          </n-gi>
 
           <n-gi>
             <n-space vertical>
@@ -158,11 +152,11 @@ const eventString = ref(null);
 const filtersCondition = ref([]);
 
 const triggerTask = computed(() => {
-  return workflow.value.tasks.find((task) => task.type === 'trigger');
+  return workflow.tasks.find((task) => task.type === 'trigger');
 });
 
 const actionTask = computed(() => {
-  return workflow.value.tasks.find((task) => task.type === 'notification');
+  return workflow.tasks.find((task) => task.type === 'notification')
 });
 
 onMounted(async () => {

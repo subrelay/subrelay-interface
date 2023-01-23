@@ -69,9 +69,6 @@ const columns = ref([
     sorter: true,
     sortOrder: false,
     renderSorterIcon: useRenderSortIcon,
-    render: ({ workflow }) => {
-      return workflow.name;
-    },
   },
   {
     title: 'Chain',
@@ -80,10 +77,10 @@ const columns = ref([
     sorter: true,
     sortOrder: false,
     renderSorterIcon: useRenderSortIcon,
-    render: ({ workflow }) => {
+    render: (workflow) => {
       return h('div', { style: { display: 'flex', alignItems: 'center' } }, [
         h(NAvatar, {
-          src: useGetChainImg(workflow.chain.name),
+          src: 'https://polkadot.js.org/apps/static/westend_colour.eb7969da..svg',
           round: true,
           size: 'small',
           color: 'white',
@@ -91,7 +88,7 @@ const columns = ref([
         h(
           'div',
           { style: { marginLeft: '12px', padding: '4px 0' } },
-          workflow.chain.name
+          'Westen'
         ),
       ]);
     },

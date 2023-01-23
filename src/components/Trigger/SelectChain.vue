@@ -39,7 +39,7 @@ const store = useStore();
 const eventBus = inject('eventBus');
 
 function handleSelectChain(uuid) {
-  EditorData.setTrigger({ uuid });
+  EditorData.setChainUuid(uuid);
   EditorData.setTrigger({ eventId: null });
   EditorData.setTrigger({ conditions: [] });
 
