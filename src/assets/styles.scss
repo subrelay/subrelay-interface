@@ -10,14 +10,20 @@
 
 @font-face {
   font-family: 'Unbounded';
-  src: url(/fonts/Unbounded-Bold.ttf) format('ttf');
+  src: url(/fonts/Unbounded-Bold.woff2) format('woff2');
   font-weight: 700;
 }
 
 @font-face {
   font-family: 'Unbounded';
-  src: url(/fonts/Unbounded-Medium.ttf) format('ttf');
-  font-weight: 700;
+  src: url(/fonts/Unbounded-Medium.woff2) format('woff2');
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'Unbounded';
+  src: url(/fonts/MontserratAlt1-Regular.woff) format('woff');
+  font-weight: 400;
 }
 
 :root {

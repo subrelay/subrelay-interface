@@ -29,7 +29,6 @@ const showModal = ref(false);
 </script>
 
 <style lang="scss" scoped>
-
 .page_header {
   padding: 16px 32px;
 }
@@ -47,7 +46,6 @@ const showModal = ref(false);
 
   .title {
     font-family: 'Unbounded';
-    color: #fff;
     font-size: 2.4rem;
     margin-bottom: 1rem;
   }
