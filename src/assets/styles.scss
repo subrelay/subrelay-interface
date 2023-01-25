@@ -196,6 +196,12 @@ body {
   }
 }
 
+.text-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 .cursor-pointer {
   cursor: pointer;
 }
@@ -229,4 +235,20 @@ flex-1 {
 }
 .table-pagination {
   margin-left: auto;
+}
+
+.full-page {
+  min-height: calc(100vh - 50px);
+}
+
+.n-data-table-th {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.n-data-table .n-data-table-th .n-data-table-sorter {
+  vertical-align: middle !important;
+  width: 0;
+  height: 0;
 }

@@ -25,7 +25,7 @@
           <n-space vertical>
             <div class="text-semi-bold">Created at</div>
             <div>
-              {{ moment(workflow.updated_at).format('MMM Do YYYY, HH:mm:ss') }}
+              {{ moment(workflow.updatedAt).format('MMM Do YYYY, HH:mm:ss') }}
             </div>
           </n-space>
         </n-gi>
@@ -34,7 +34,7 @@
           <n-space vertical>
             <div class="text-semi-bold">Updated at</div>
             <div>
-              {{ moment(workflow.updated_at).format('MMM Do YYYY, HH:mm:ss') }}
+              {{ moment(workflow.updatedAt).format('MMM Do YYYY, HH:mm:ss') }}
             </div>
           </n-space>
         </n-gi>
@@ -52,7 +52,6 @@
 
       <n-space vertical>
         <n-grid cols="3">
-
           <n-gi>
             <n-space vertical>
               <div class="text-semi-bold">Event</div>
@@ -156,7 +155,7 @@ const triggerTask = computed(() => {
 });
 
 const actionTask = computed(() => {
-  return workflow.tasks.find((task) => task.type === 'notification')
+  return workflow.tasks.find((task) => task.type === 'notification');
 });
 
 onMounted(async () => {

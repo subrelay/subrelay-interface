@@ -50,7 +50,7 @@ const logs = computed(() => store.state.history.logs);
 const columns = ref([
   {
     title: 'Status',
-    key: 'updated_at',
+    key: 'updatedAt',
     sorter: false,
     width: '10%',
     render: ({ status }) => {
@@ -85,11 +85,7 @@ const columns = ref([
           size: 'small',
           color: 'white',
         }),
-        h(
-          'div',
-          { style: { marginLeft: '12px', padding: '4px 0' } },
-          'Westen'
-        ),
+        h('div', { style: { marginLeft: '12px', padding: '4px 0' } }, 'Westen'),
       ]);
     },
   },
