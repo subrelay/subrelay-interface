@@ -9,7 +9,16 @@
         :render-cell="useRenderCell"
         :loading="loading"
         @update:sorter="handleSort"
-      />
+      >
+        <template #empty>
+          <n-empty
+            description="No data available"
+            :show-icon="false"
+            :size="'small'"
+          >
+          </n-empty>
+        </template>
+      </n-data-table>
 
       <n-pagination
         class="table-pagination"

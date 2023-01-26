@@ -20,6 +20,7 @@ import { useStore } from 'vuex';
 import { ref, computed } from 'vue';
 import { useMessage } from 'naive-ui';
 import axios from 'axios';
+import Api from '@/api';
 
 const store = useStore();
 const message = useMessage();
@@ -31,42 +32,35 @@ const props = defineProps({
 });
 
 const loading = ref(null);
-const query = computed(() => store.state.workflow.query);
+const account = computed(() => store.state.account.selected);
+const signer = computed(() => store.state.account.signer);
 
 async function onUpdateStatus(newStt) {
   loading.value = true;
 
-  // --- Mock  data ---
-  const params = new URLSearchParams({ ...pickBy(query.value) });
-  await axios({
-    method: 'put',
-    url: 'mockData/workflow/workflow.json',
-    baseURL: 'http://127.0.0.1:5173',
-    data: { status: newStt },
-  });
-
-  if (props.fetchOne) {
-    const { data: newWorkflow } = await axios({
-      url: 'mockData/workflow/changeStatusFetchOne.json',
-      baseURL: 'http://127.0.0.1:5173',
-    });
-    store.commit('workflow/getWorkflow', newWorkflow);
-  } else {
-    const { data: newWorkflows } = await axios({
-      url: 'mockData/workflow/changeStatusFetchAll.json',
-      baseURL: 'http://127.0.0.1:5173',
-      params,
-    });
-    store.commit('workflow/getWorkflows', newWorkflows);
-  }
-  // --- End of mock data ---
-
   try {
-    // await API.Workflow.editWorkflow(props.id, { status: newStatus });
-    // await store.dispatch('workflow/getWorkflows', query);
+    const res = await Api.editWorkflow({
+      account: account.value,
+      signer: signer.value,
+      id: props.id,
+      body: { status: newStt },
+    });
+    console.log('res', res);
+
+    if (props.fetchOne) {
+      const { data: newWorkflow } = await axios({
+        url: 'mockData/workflow/changeStatusFetchOne.json',
+        baseURL: 'http://127.0.0.1:5173',
+      });
+      store.commit('workflow/getWorkflow', newWorkflow);
+    } else {
+      await store.dispatch('workflow/getWorkflows', { showLoading: false });
+    }
+
     message.success('Status updated successfully');
   } catch (error) {
-    message.error('Error:', error);
+    console.error(error);
+    message.error('Error:', error.message);
   } finally {
     loading.value = false;
   }

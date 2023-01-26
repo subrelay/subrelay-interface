@@ -22,9 +22,12 @@ export default {
   },
 
   actions: {
-    async getWorkflows({ commit, state, rootState }) {
+    async getWorkflows(
+      { commit, state, rootState },
+      { showLoading = true } = {}
+    ) {
       if (rootState.account.selected) {
-        commit('setLoading', true);
+        if (showLoading) commit('setLoading', true);
         try {
           const {
             data: { workflows, total },
@@ -48,12 +51,14 @@ export default {
       if (rootState) {
         commit('setLoading', true);
         try {
-          const { data: { workflow } } = await Api.getWorkflow({
+          const {
+            data: { workflow },
+          } = await Api.getWorkflow({
             account: rootState.account.selected,
             signer: rootState.account.signer,
             id: workflowId,
           });
-  
+
           commit('getWorkflow', workflow);
         } catch (error) {
           commit('getWorkflow', {});

@@ -11,7 +11,7 @@
       <n-skeleton v-if="runningTest" text :repeat="5" />
       <WebhookInput v-else :config="config" />
     </n-card>
-    Fak {{ isTested }}
+
     <n-card
       header-style="padding-bottom: 0.5rem"
       v-if="isTested"
@@ -28,9 +28,7 @@
 
           <Icon
             :inline="true"
-            :icon="
-              testResult.success ? 'ep:success-filled' : 'ic:round-cancel'
-            "
+            :icon="testResult.success ? 'ep:success-filled' : 'ic:round-cancel'"
             :color="testResult.success ? '#18A058FF' : '#D03050FF'"
             :width="'1.2rem'"
             style="margin-right: 5px"

@@ -127,7 +127,17 @@ export default {
     });
   },
 
-  async deleteWorkFlow({ account, signer, id }) {
+  async editWorkflow({ account, signer, id, body }) {
+    return request({
+      account,
+      signer,
+      method: 'patch',
+      endpoint: `/workflows/${id}`,
+      body,
+    });
+  },
+
+  async deleteWorkflow({ account, signer, id }) {
     return request({
       account,
       signer,

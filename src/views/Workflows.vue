@@ -10,7 +10,16 @@
         :render-cell="useRenderCell"
         :loading="loading"
         @update:sorter="handleSort"
-      />
+      >
+        <template #empty>
+          <n-empty
+            description="No data available"
+            :show-icon="false"
+            :size="'small'"
+          >
+          </n-empty>
+        </template>
+      </n-data-table>
 
       <n-pagination
         class="table-pagination"
@@ -48,10 +57,16 @@ const message = useMessage();
 const store = useStore();
 const router = useRouter();
 const workflows = computed(() => store.state.workflow.workflows);
+const account = computed(() => store.state.account.selected);
+const signer = computed(() => store.state.account.signer);
 
 async function deleteWorkflow({ id, name }) {
-  await Api.Workflow.deleteWorkflow(id);
-  await store.dispatch('workflow/getWorkflows');
+  await Api.deleteWorkflow({
+    account: account.value,
+    signer: signer.value,
+    id,
+  });
+  await store.dispatch('workflow/getWorkflows', { showLoading: false });
   message.success(`Workflow ${name} has been deleted`);
 }
 
@@ -148,7 +163,8 @@ const columns = ref([
             confirmText: 'Are you sure to delete this workflow?',
           },
           {
-            'trigger-content': () => h(Icon, { icon: 'bi:trash' }),
+            'trigger-content': () =>
+              h(Icon, { icon: 'bi:trash', style: { 'margin-right': '1rem' } }),
           }
         ),
       ]);
