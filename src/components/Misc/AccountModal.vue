@@ -9,6 +9,7 @@
     <n-card
       :bordered="false"
       :segmented="{ content: true }"
+      header-style="font-size: 1rem"
       style="width: 600px"
       title="Select Account"
       size="huge"
@@ -44,7 +45,7 @@
             </n-space>
 
             <Icon
-              width="24"
+              width="16"
               icon="line-md:confirm"
               v-if="currentAcc.address === account.address"
             />
@@ -96,9 +97,6 @@ function onConfirm() {
   store.commit('account/setSelected', currentAcc.value.address);
   emits('update:modelValue', false);
 
-  // this is a temporary method.
-  // update later to use official Auth method instead,
-  // to detect login event.
   if (props.isSigningIn) {
     router.push({ name: 'workflows' });
   }
@@ -112,7 +110,7 @@ watch(
   () => props.modelValue,
   (isOpen) => {
     if (isOpen) {
-      currentAcc.value = storedAccount.value;
+      currentAcc.value = storedAccount.value || {};
     }
   }
 );

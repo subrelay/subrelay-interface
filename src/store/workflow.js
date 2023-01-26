@@ -40,7 +40,7 @@ export default {
           commit('getItemCount', total);
         } catch (error) {
           commit('getWorkflows', []);
-          console.log('error', error);
+          console.error(error);
         } finally {
           commit('setLoading', false);
         }
@@ -62,7 +62,7 @@ export default {
           commit('getWorkflow', workflow);
         } catch (error) {
           commit('getWorkflow', {});
-          console.log('error', error);
+          console.error(error);
         } finally {
           commit('setLoading', false);
         }
@@ -80,7 +80,7 @@ export default {
 
         dispatch('getWorkflows');
       } catch (e) {
-        console.log(e);
+        console.error(e);
       } finally {
         commit('setLoading', false);
       }

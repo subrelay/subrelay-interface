@@ -12,14 +12,14 @@
         <div>
           <div class="title">Data sample:</div>
 
-          <n-skeleton v-if="loading" text :repeat="3" />
+          <n-skeleton v-if="runningTest" text :repeat="3" />
           <JsonEventSample v-else />
         </div>
 
         <div>
           <div class="title">Filters:</div>
 
-          <n-skeleton v-if="loading" text :repeat="3" />
+          <n-skeleton v-if="runningTest" text :repeat="3" />
 
           <n-space vertical v-else>
             <div v-for="(conditionGroup, index) in conditions" :key="index">
@@ -60,12 +60,11 @@
         <div class="title">Result</div>
       </template>
 
-      <n-space v-if="loading && isTested" align="center">
+      <n-space v-if="runningTest && isTested" align="center" :wrap-item="false">
         <n-skeleton circle height="2rem" />
-        <n-space vertical>
-          <n-skeleton text width="400px" />
-          <n-skeleton text width="400px" />
-        </n-space>
+        <div style="flex: 1">
+          <n-skeleton text :repeat="2" />
+        </div>
       </n-space>
 
       <n-space align="center" v-else :wrap="false">
@@ -90,8 +89,8 @@
         class="action_button"
         type="primary"
         @click="onTest"
-        :loading="loading"
-        :disabled="loading"
+        :loading="runningTest"
+        :disabled="runningTest"
       >
         {{ isTested ? 'Retest' : 'Test' }}
       </n-button>
@@ -101,6 +100,7 @@
         type="primary"
         @click="eventBus.emit('nextStep')"
         v-if="isTested"
+        :disabled="runningTest"
       >
         Next
       </n-button>
@@ -117,10 +117,20 @@ import { useStore } from 'vuex';
 import { useParsePascalCaseStr } from '@/composables';
 
 const eventBus = inject('eventBus');
-const isMatched = ref(null);
-const loading = ref(null);
-const isTested = ref(null);
 const store = useStore();
+const isMatched = ref(null);
+
+const type = computed(
+  () => EditorData.workflow.tasks[EditorData.triggerIdx].type
+);
+
+const config = computed(
+  () => EditorData.workflow.tasks[EditorData.triggerIdx].config
+);
+
+const runningTest = computed(() => store.state.task.runningTest[type.value]);
+const isTested = computed(() => store.state.task.tested[type.value]);
+const testResult = computed(() => store.state.task.testResult[type.value]);
 
 const conditions = computed(() => {
   return EditorData.workflow.tasks[0].config.conditions;
@@ -134,6 +144,7 @@ eventBus.on('toggleTestFilter', resetTest);
 onBeforeUnmount(() => eventBus.off('toggleTestFilter', resetTest));
 
 const sample = {
+  // todo: update actual event sample data
   id: 123,
   name: 'balances.deposit',
   description: 'This Event Does This',
@@ -144,12 +155,12 @@ const sample = {
 };
 
 async function onTest() {
-  loading.value = true;
-  const { type, config } = EditorData.workflow.tasks[EditorData.triggerIdx];
-  const res = await API.Task.runTask({ type, data: sample, config });
-  loading.value = false;
-  isTested.value = true;
-  isMatched.value = res.output.match;
+  await store.dispatch('task/runTask', {
+    type: type.value,
+    config: config.value,
+    data: sample,
+  });
+  isMatched.value = testResult.value.output.match;
 }
 </script>
 

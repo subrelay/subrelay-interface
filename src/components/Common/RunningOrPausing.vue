@@ -45,7 +45,6 @@ async function onUpdateStatus(newStt) {
       id: props.id,
       body: { status: newStt },
     });
-    console.log('res', res);
 
     if (props.fetchOne) {
       const { data: newWorkflow } = await axios({

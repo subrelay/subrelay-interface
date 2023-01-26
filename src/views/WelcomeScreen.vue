@@ -12,7 +12,13 @@
         Polkadot{.js} wallet to start using SubRelay.</span
       >
     </div>
-    <n-button type="primary" round size="large" @click="showModal = true">
+    <n-button
+      type="primary"
+      round
+      size="large"
+      @click="showModal = true"
+      :disabled="loading"
+    >
       Connect Wallet
     </n-button>
   </div>
@@ -23,9 +29,12 @@
 <script setup>
 import Logo from '@/components/Common/Logo';
 import AccountModal from '@/components/Misc/AccountModal';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { useStore } from 'vuex';
 
+const store = useStore();
 const showModal = ref(false);
+const loading = computed(() => store.state.account.loading);
 </script>
 
 <style lang="scss" scoped>

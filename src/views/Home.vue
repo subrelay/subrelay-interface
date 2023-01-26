@@ -245,7 +245,7 @@ function onSelectProfileOption(key) {
   }
 
   if (key === 'signOut') {
-    store.commit('global/setWalletAccount', {});
+    store.commit('account/setSelected', null);
     router.push({ name: 'welcome' });
   }
 }

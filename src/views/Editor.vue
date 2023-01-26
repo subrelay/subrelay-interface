@@ -181,7 +181,7 @@ const changesAppliedToTrigger = computed(() => {
     typeof task.isError === 'boolean' ||
     typeof task.isCompleted === 'boolean' ||
     !!task.config.eventId ||
-    !!task.config.uuid
+    !!task.chainUuid
   );
 });
 
@@ -277,6 +277,8 @@ async function quitEditor() {
 async function createWorkflow() {
   EditorData.cleanUpWorkflow();
   await store.dispatch('workflow/postWorkflow', EditorData.workflow);
+  router.push({ name: 'workflows' });
+  message.success('Workflow created!');
 }
 
 function onChangeStep(step) {
@@ -315,7 +317,7 @@ onBeforeMount(async () => {
   // Before data is completely loaded
   EditorData.loadWorkflow(data);
 
-  const uuid = EditorData.workflow.tasks[0].config.uuid;
+  const uuid = EditorData.workflow.tasks[0].chainUuid;
   const eventId = EditorData.workflow.tasks[0].config.eventId;
 
   if (uuid) {

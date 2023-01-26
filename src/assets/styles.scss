@@ -6,24 +6,28 @@
   src: url(/fonts/MontserratAlt1-Regular.woff) format('woff');
   font-weight: 700;
   font-style: italic;
+  font-display: block;
 }
 
 @font-face {
   font-family: 'Unbounded';
   src: url(/fonts/Unbounded-Bold.woff2) format('woff2');
   font-weight: 700;
+  font-display: block;
 }
 
 @font-face {
   font-family: 'Unbounded';
   src: url(/fonts/Unbounded-Medium.woff2) format('woff2');
   font-weight: 500;
+  font-display: block;
 }
 
 @font-face {
   font-family: 'Unbounded';
   src: url(/fonts/MontserratAlt1-Regular.woff) format('woff');
   font-weight: 400;
+  font-display: block;
 }
 
 :root {
@@ -91,7 +95,7 @@ body {
   transition: color 0.5s, background-color 0.5s;
   line-height: 1.6;
   font-family: 'Poppins', sans-serif;
-  font-size: 15px;
+  font-size: 14px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

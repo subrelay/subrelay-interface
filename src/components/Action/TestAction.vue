@@ -82,9 +82,18 @@ import { useStore } from 'vuex';
 
 const store = useStore();
 const postWorkflowLoading = computed(() => store.state.workflow.loading);
-const runningTest = computed(() => store.state.task.runningTest);
-const isTested = computed(() => store.state.task.tested);
-const testResult = computed(() => store.state.task.testResult);
+
+const type = computed(
+  () => EditorData.workflow.tasks[EditorData.actionIdx].type
+);
+
+const config = computed(
+  () => EditorData.workflow.tasks[EditorData.actionIdx].config
+);
+const runningTest = computed(() => store.state.task.runningTest[type.value]);
+
+const isTested = computed(() => store.state.task.tested[type.value]);
+const testResult = computed(() => store.state.task.testResult[type.value]);
 
 const eventBus = inject('eventBus');
 eventBus.on('toggleTestAction', resetTest);
@@ -96,11 +105,8 @@ function resetTest({ isDisabled }) {
   }
 }
 
-const config = computed(() => {
-  return EditorData.workflow.tasks[1].config.config;
-});
-
 const sample = {
+  // todo: get actual sample data from event
   id: 123,
   name: 'balances.deposit',
   description: 'This Event Does This',
@@ -111,8 +117,11 @@ const sample = {
 };
 
 async function onTest() {
-  const { type, config } = EditorData.workflow.tasks[EditorData.actionIdx];
-  store.dispatch('task/runTask', { type, data: sample, config });
+  await store.dispatch('task/runTask', {
+    type: type.value,
+    config: config.value,
+    data: sample,
+  });
 }
 </script>
 

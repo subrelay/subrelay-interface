@@ -30,7 +30,7 @@ export default {
         commit('getChains', chains);
       } catch (error) {
         commit('getChains', []);
-        console.log('error', error);
+        console.error('error', error);
       } finally {
         commit('setLoading', { getChainsLoading: false });
       }
@@ -43,7 +43,7 @@ export default {
         commit('getEvents', events);
       } catch (error) {
         commit('getChains', []);
-        console.log('error', error);
+        console.error('error', error);
       } finally {
         commit('setLoading', { getEventsLoading: false });
       }
@@ -57,7 +57,7 @@ export default {
         commit('getEvent', event);
       } catch (error) {
         commit('getEvent', []);
-        console.log('error', error);
+        console.error(error);
       } finally {
         commit('setLoading', { getEventLoading: false });
       }

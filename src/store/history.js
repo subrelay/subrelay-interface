@@ -1,4 +1,5 @@
 import { pickBy } from 'lodash';
+import axios from 'axios';
 import Api from '@/api';
 
 export default {
@@ -21,15 +22,18 @@ export default {
       if (rootState.account.selected) {
         commit('setLoading', true);
         try {
-          const { data: { workflowLogs } } = await Api.getLogs({
+          const {
+            data: { workflowLogs },
+          } = await Api.getLogs({
             account: rootState.account.selected,
             signer: rootState.account.signer,
             params: pickBy(state.query),
           });
+
           commit('getLogs', workflowLogs);
         } catch (error) {
           commit('getLogs', []);
-          console.log('error', error);
+          console.error(error);
         } finally {
           commit('setLoading', false);
         }

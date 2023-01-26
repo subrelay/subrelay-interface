@@ -3,16 +3,16 @@
     class="step_container"
     ref="formRef"
     @keyup.enter="validateForm"
-    :model="EditorData.workflow.tasks[0].config"
+    :model="EditorData.workflow.tasks[0]"
     :show-label="false"
   >
     <n-form-item
-      path="uuid"
+      path="chainUuid"
       class="w-100"
       :rule="{ required: true, trigger: ['input'], message: 'Required' }"
     >
       <ChainDropdown
-        v-model="EditorData.workflow.tasks[0].config.uuid"
+        v-model="EditorData.workflow.tasks[0].chainUuid"
         :onSelectChain="handleSelectChain"
         :placeholder="'Select Chain'"
       />
