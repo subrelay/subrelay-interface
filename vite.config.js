@@ -11,7 +11,7 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
       './runtimeConfig': './runtimeConfig.browser',
-      process: 'process/browser',
+      process: 'process/browser', // todo for bu xui
       stream: 'stream-browserify',
       zlib: 'browserify-zlib',
       util: 'util',
