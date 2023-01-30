@@ -10,7 +10,16 @@
         :render-cell="useRenderCell"
         :loading="loading"
         @update:sorter="handleSort"
-      />
+      >
+        <template #empty>
+          <n-empty
+            description="No data available"
+            :show-icon="false"
+            :size="'small'"
+          >
+          </n-empty>
+        </template>
+      </n-data-table>
 
       <n-pagination
         class="table-pagination"
@@ -48,10 +57,16 @@ const message = useMessage();
 const store = useStore();
 const router = useRouter();
 const workflows = computed(() => store.state.workflow.workflows);
+const account = computed(() => store.state.account.selected);
+const signer = computed(() => store.state.account.signer);
 
 async function deleteWorkflow({ id, name }) {
-  await Api.Workflow.deleteWorkflow(id)
-  await store.dispatch('workflow/getWorkflows');
+  await Api.deleteWorkflow({
+    account: account.value,
+    signer: signer.value,
+    id,
+  });
+  await store.dispatch('workflow/getWorkflows', { showLoading: false });
   message.success(`Workflow ${name} has been deleted`);
 }
 
@@ -63,6 +78,7 @@ const columns = ref([
   {
     title: 'Name',
     key: 'name',
+    width: '20%',
     ellipsis: { tooltip: true },
     sorter: true,
     sortOrder: false,
@@ -81,10 +97,8 @@ const columns = ref([
   {
     title: 'Chain',
     key: 'chain',
-    width: 180,
-    sorter: true,
-    sortOrder: false,
-    renderSorterIcon: useRenderSortIcon,
+    width: '20%',
+    ellipsis: { tooltip: true },
     render: ({ chain }) => {
       return h('div', { style: { display: 'flex', alignItems: 'center' } }, [
         h(NAvatar, {
@@ -103,34 +117,35 @@ const columns = ref([
   },
   {
     title: 'Created at',
-    key: 'created_at',
+    key: 'createdAt',
+    width: '20%',
     ellipsis: { tooltip: true },
     sorter: true,
     sortOrder: false,
     renderSorterIcon: useRenderSortIcon,
-    render: ({ created_at }) => {
-      return moment(created_at).format('MMM Do YYYY, HH:mm:ss');
+    render: ({ createdAt }) => {
+      return moment(createdAt).format('MMM Do YYYY, HH:mm:ss');
     },
   },
   {
     title: 'Updated at',
-    key: 'updated_at',
+    key: 'updatedAt',
+    width: '20%',
     ellipsis: { tooltip: true },
     sorter: true,
     sortOrder: false,
     renderSorterIcon: useRenderSortIcon,
-    render: ({ updated_at }) => {
-      return moment(updated_at).format('MMM Do YYYY, HH:mm:ss');
+    render: ({ updatedAt }) => {
+      return moment(updatedAt).format('MMM Do YYYY, HH:mm:ss');
     },
   },
   {
     title: 'Status',
     key: 'status',
-    sorter: false,
-    width: '10%',
-    render: ({ id, status }) => {
-      return h(RunningOrPausing, { status, id, fetchOne: false });
-    },
+    width: '20%',
+    ellipsis: { tooltip: true },
+    render: ({ id, status }) =>
+      h(RunningOrPausing, { status, id, fetchOne: false }),
   },
   {
     key: 'edit',
@@ -148,7 +163,8 @@ const columns = ref([
             confirmText: 'Are you sure to delete this workflow?',
           },
           {
-            'trigger-content': () => h(Icon, { icon: 'bi:trash' }),
+            'trigger-content': () =>
+              h(Icon, { icon: 'bi:trash', style: { 'margin-right': '1rem' } }),
           }
         ),
       ]);

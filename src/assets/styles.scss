@@ -6,18 +6,28 @@
   src: url(/fonts/MontserratAlt1-Regular.woff) format('woff');
   font-weight: 700;
   font-style: italic;
+  font-display: block;
 }
 
 @font-face {
   font-family: 'Unbounded';
-  src: url(/fonts/Unbounded-Bold.ttf) format('ttf');
+  src: url(/fonts/Unbounded-Bold.woff2) format('woff2');
   font-weight: 700;
+  font-display: block;
 }
 
 @font-face {
   font-family: 'Unbounded';
-  src: url(/fonts/Unbounded-Medium.ttf) format('ttf');
-  font-weight: 700;
+  src: url(/fonts/Unbounded-Medium.woff2) format('woff2');
+  font-weight: 500;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Unbounded';
+  src: url(/fonts/MontserratAlt1-Regular.woff) format('woff');
+  font-weight: 400;
+  font-display: block;
 }
 
 :root {
@@ -85,7 +95,7 @@ body {
   transition: color 0.5s, background-color 0.5s;
   line-height: 1.6;
   font-family: 'Poppins', sans-serif;
-  font-size: 15px;
+  font-size: 14px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -190,6 +200,12 @@ body {
   }
 }
 
+.text-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 .cursor-pointer {
   cursor: pointer;
 }
@@ -223,4 +239,24 @@ flex-1 {
 }
 .table-pagination {
   margin-left: auto;
+}
+
+.full-page {
+  min-height: calc(100vh - 50px);
+}
+
+.n-data-table-th {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.n-data-table .n-data-table-th .n-data-table-sorter {
+  vertical-align: middle !important;
+  width: 0;
+  height: 0;
+}
+
+.n-data-table-empty {
+  padding: 1rem !important;
 }

@@ -4,11 +4,7 @@ import { debounce, isEmpty, findIndex } from 'lodash';
 import { useStore } from 'vuex';
 import { defaultQuery } from '@/composables/config.js';
 
-export const useQuery = (
-  module,
-  columns,
-  fetchData = () => console.log('default fetchData')
-) => {
+export const useQuery = (module, columns, fetchData = () => {}) => {
   const store = useStore();
   const route = useRoute();
   const router = useRouter();
@@ -25,7 +21,7 @@ export const useQuery = (
   const selectedAccount = computed(() => store.state.account.selected);
 
   const tablePagination = ref({
-    size: 'small',
+    itemCount: 0,
     page: 1,
     pageSize: defaultQuery.limit,
   });
@@ -71,9 +67,9 @@ export const useQuery = (
     const order = tableSort ? tableOrder : undefined;
     const sort =
       tableSort === 'descend'
-        ? 'desc'
+        ? 'DESC'
         : tableSort === 'ascend'
-        ? 'asc'
+        ? 'ASC'
         : undefined;
 
     const queryBySort = { order, sort };
@@ -132,9 +128,10 @@ export const useQuery = (
     if (order || prevOrder) {
       sortingIndex = findIndex(columns.value, { key: prevOrder });
       const nextSortIndex = findIndex(columns.value, { key: order });
-
+      const tableSort = sort === 'ASC' ? 'ascend' : 'DESC' ? 'descend' : false;
       if (sortingIndex !== -1) columns.value[sortingIndex].sortOrder = false;
-      if (nextSortIndex !== -1) columns.value[nextSortIndex].sortOrder = sort;
+      if (nextSortIndex !== -1)
+        columns.value[nextSortIndex].sortOrder = tableSort;
     }
 
     if (!isEmpty(from.query)) fetchData();
@@ -160,9 +157,13 @@ export const useQuery = (
     tablePagination.value = { ...tablePagination.value, itemCount };
   });
 
-  watch(selectedAccount, () => {
-    fetchData();
-  }, { immediate: true });
+  watch(
+    selectedAccount,
+    () => {
+      fetchData();
+    },
+    { immediate: true }
+  );
 
   function initQuery() {
     const params = query.value || getQueryFromRoute(route.query);
@@ -175,7 +176,8 @@ export const useQuery = (
 
     if (order) {
       const index = findIndex(columns.value, { key: order });
-      columns.value[index].sortOrder = sort;
+      const tableSort = sort === 'ASC' ? 'ascend' : 'DESC' ? 'descend' : false;
+      if (index !== -1) columns.value[index].sortOrder = tableSort;
     }
 
     pushQueryToRoute(params);
@@ -183,6 +185,7 @@ export const useQuery = (
 
   onMounted(() => {
     initQuery();
+    fetchData();
   });
 
   return [

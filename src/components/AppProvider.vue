@@ -28,10 +28,12 @@ const store = useStore();
 const darkMode = computed(() => store.state.global.isDarkMode);
 
 const lightThemeOverrides = {
-  primaryColor: 'rgba(230, 0, 122, 1)',
-  primaryColorHover: 'rgba(230, 0, 122, 0.7)',
-  primaryColorPressed: 'rgba(230, 0, 122, 0.7)',
-  primaryColorSuppl: 'rgba(230, 0, 122, 1)',
+  common: {
+    primaryColor: 'rgba(230, 0, 122, 1)',
+    primaryColorHover: 'rgba(230, 0, 122, 0.7)',
+    primaryColorPressed: 'rgba(230, 0, 122, 0.7)',
+    primaryColorSuppl: 'rgba(230, 0, 122, 1)',
+  },
 };
 
 const darkThemeOverrides = {

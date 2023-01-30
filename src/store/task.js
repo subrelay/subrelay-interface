@@ -6,17 +6,20 @@ export default {
   state: () => ({
     operators: [],
     loading: null,
-    runningTest: false,
-    tested: false,
+    runningTest: {},
+    tested: {},
     testResult: {},
   }),
 
   mutations: {
     getOperators: (state, operators) => (state.operators = operators),
     setLoading: (state, isLoading) => (state.loading = isLoading),
-    setRunningTest: (state, isRunningTest) => (state.runningTest = isRunningTest),
-    setTested: (state, isTested) => (state.tested = isTested),
-    setTestResult: (state, result) => (state.testResult = result),
+
+    setRunningTest: (state, data) =>
+      (state.runningTest = { ...state.runningTest, ...data }),
+    setTested: (state, data) => (state.tested = { ...state.tested, ...data }),
+    setTestResult: (state, data) =>
+      (state.testResult = { ...state.tested, ...data }),
   },
 
   actions: {
@@ -27,27 +30,28 @@ export default {
         commit('getOperators', operators);
       } catch (error) {
         commit('getOperators', []);
-        console.log('error', error);
+        console.error(error);
       } finally {
         commit('setLoading', false);
       }
     },
 
     async runTask({ commit, rootState }, body) {
-      commit('setRunningTest', true);
+      const { type } = body;
+      commit('setRunningTest', { [type]: true });
       try {
         const { data } = await Api.runTask({
           account: rootState.account.selected,
           signer: rootState.account.signer,
           body,
         });
-        commit('setTestResult', data);
+        commit('setTestResult', { [type]: data });
       } catch (e) {
-        console.log(e);
+        console.error(e);
       } finally {
-        commit('setRunningTest', false);
-        commit('setTested', true);
+        commit('setRunningTest', { [type]: false });
+        commit('setTested', { [type]: true });
       }
-    }
+    },
   },
 };

@@ -4,13 +4,7 @@ export default {
   state: () => ({
     isDarkMode: false,
     isSiderCollapsed: false,
-
     isAuthenticating: null,
-
-    // Profile page
-    profileInitials: 'TC',
-    profileUsername: 'anhthichieu',
-    profileEmail: 'foo@gmail.com',
   }),
 
   mutations: {

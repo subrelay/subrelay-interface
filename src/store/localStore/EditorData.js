@@ -66,7 +66,7 @@ const editor = reactive({
       'trigger',
       !!(
         this.workflow.tasks[this.triggerIdx].config.eventId &&
-        this.workflow.tasks[this.triggerIdx].config.uuid
+        this.workflow.tasks[this.triggerIdx].chainUuid
       )
     );
   },
@@ -119,7 +119,7 @@ const editor = reactive({
 
       if (index === this.triggerIdx) {
         if (data) {
-          task.isCompleted = !!(task.config.eventId && task.config.uuid);
+          task.isCompleted = !!(task.config.eventId && task.chainUuid);
         } else {
           task.isCompleted = null;
         }

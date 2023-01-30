@@ -70,7 +70,7 @@
       </n-space>
     </n-layout-header>
 
-    <n-layout-content content-style="padding-top: 50px;">
+    <n-layout-content content-style="padding-top: 50px;" class="full-page">
       <n-space :size="50" vertical>
         <!-- STEPPER -->
         <div class="page_container">
@@ -110,7 +110,10 @@
 
   <n-space vertical :size="50"> </n-space>
 
-  <!-- <pre>{{ EditorData }}</pre> -->
+  <div>changesAppliedToTrigger {{ changesAppliedToTrigger }}</div>
+  <div>changesAppliedToAction {{ changesAppliedToAction }}</div>
+
+  <pre>{{ EditorData }}</pre>
 </template>
 
 <script setup>
@@ -178,7 +181,7 @@ const changesAppliedToTrigger = computed(() => {
     typeof task.isError === 'boolean' ||
     typeof task.isCompleted === 'boolean' ||
     !!task.config.eventId ||
-    !!task.config.uuid
+    !!task.chainUuid
   );
 });
 
@@ -253,17 +256,29 @@ function showExitWarning() {
 }
 
 async function quitEditor() {
+  // Quit without any changes
+  if (!changesAppliedToTrigger.value && !changesAppliedToAction.value) {
+    router.push({ name: 'workflows' });
+    return;
+  }
+
   if (
     (changesAppliedToTrigger.value || changesAppliedToAction.value) &&
     EditorData.workflow.tasks.some((task) => task.isError || !task.isCompleted)
   ) {
+    // Has changes but not yet completed, or has error.
     showExitWarning();
+  } else {
+    // TODO: validate this case
+    createWorkflow();
   }
 }
 
 async function createWorkflow() {
   EditorData.cleanUpWorkflow();
   await store.dispatch('workflow/postWorkflow', EditorData.workflow);
+  router.push({ name: 'workflows' });
+  message.success('Workflow created!');
 }
 
 function onChangeStep(step) {
@@ -302,7 +317,7 @@ onBeforeMount(async () => {
   // Before data is completely loaded
   EditorData.loadWorkflow(data);
 
-  const uuid = EditorData.workflow.tasks[0].config.uuid;
+  const uuid = EditorData.workflow.tasks[0].chainUuid;
   const eventId = EditorData.workflow.tasks[0].config.eventId;
 
   if (uuid) {

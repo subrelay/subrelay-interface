@@ -22,16 +22,20 @@
       />
 
       <n-space>
-        <n-button attr-type="button" @click="addAnd(index)" type="info">
+        <n-button
+          attr-type="button"
+          @click="addAnd(index)"
+          :type="darkMode ? 'default' : 'info'"
+        >
           <Icon icon="fluent:add-16-filled" style="margin-right: 4px" />
           <span>And</span>
         </n-button>
 
         <n-button
           attr-type="button"
-          type="info"
-          @click="addOr"
           v-if="index === conditionLength - 1"
+          :type="darkMode ? 'default' : 'info'"
+          @click="addOr"
         >
           <Icon icon="fluent:add-16-filled" style="margin-right: 4px" />
           <span>Or</span>
@@ -42,7 +46,7 @@
     <n-button
       attr-type="button"
       @click="addOr"
-      type="info"
+      :type="darkMode ? 'default' : 'info'"
       v-if="!EditorData.workflow.tasks[0].config.conditions.length"
     >
       <Icon icon="fluent:add-16-filled" style="margin-right: 4px" />
@@ -60,6 +64,10 @@ import FilterConditionInput from '@/components/Trigger/FilterConditionInput';
 import EditorData from '@/store/localStore/EditorData';
 import { useFormValidation } from '@/composables';
 import { inject, computed, provide } from 'vue';
+import { useStore } from 'vuex';
+
+const store = useStore();
+const darkMode = computed(() => store.state.global.isDarkMode);
 
 const eventBus = inject('eventBus');
 const emits = defineEmits(['continue']);

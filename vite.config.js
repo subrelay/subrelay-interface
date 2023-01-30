@@ -11,6 +11,10 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
       './runtimeConfig': './runtimeConfig.browser',
+      process: 'process/browser', // TODO: check process
+      stream: 'stream-browserify',
+      zlib: 'browserify-zlib',
+      util: 'util',
     },
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
   },
@@ -24,5 +28,9 @@ export default defineConfig({
         `,
       },
     },
+  },
+
+  build: {
+    chunkSizeWarningLimit: 2000,
   },
 });

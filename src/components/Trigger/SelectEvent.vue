@@ -33,9 +33,7 @@
           <n-empty description="No event found">
             <template
               #extra
-              v-if="
-                !EditorData.workflow.tasks[EditorData.triggerIdx].config.uuid
-              "
+              v-if="!EditorData.workflow.tasks[EditorData.triggerIdx].chainUuid"
             >
               <n-button size="small" @click="onBack">
                 Select a chain first
@@ -69,7 +67,7 @@ const store = useStore();
 const isShown = ref(false);
 const eventBus = inject('eventBus');
 const options = computed(() => store.state.chain.events);
-const uuid = computed(() => EditorData.workflow.tasks[0].config.uuid);
+const uuid = computed(() => EditorData.workflow.tasks[0].chainUuid);
 
 function onBack() {
   isShown.value = false;

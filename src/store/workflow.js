@@ -22,9 +22,12 @@ export default {
   },
 
   actions: {
-    async getWorkflows({ commit, state, rootState }) {
+    async getWorkflows(
+      { commit, state, rootState },
+      { showLoading = true } = {}
+    ) {
       if (rootState.account.selected) {
-        commit('setLoading', true);
+        if (showLoading) commit('setLoading', true);
         try {
           const {
             data: { workflows, total },
@@ -37,7 +40,7 @@ export default {
           commit('getItemCount', total);
         } catch (error) {
           commit('getWorkflows', []);
-          console.log('error', error);
+          console.error(error);
         } finally {
           commit('setLoading', false);
         }
@@ -48,16 +51,18 @@ export default {
       if (rootState) {
         commit('setLoading', true);
         try {
-          const { data: { workflow } } = await Api.getWorkflow({
+          const {
+            data: { workflow },
+          } = await Api.getWorkflow({
             account: rootState.account.selected,
             signer: rootState.account.signer,
             id: workflowId,
           });
-  
+
           commit('getWorkflow', workflow);
         } catch (error) {
           commit('getWorkflow', {});
-          console.log('error', error);
+          console.error(error);
         } finally {
           commit('setLoading', false);
         }
@@ -75,7 +80,7 @@ export default {
 
         dispatch('getWorkflows');
       } catch (e) {
-        console.log(e);
+        console.error(e);
       } finally {
         commit('setLoading', false);
       }

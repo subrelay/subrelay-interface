@@ -9,7 +9,16 @@
         :render-cell="useRenderCell"
         :loading="loading"
         @update:sorter="handleSort"
-      />
+      >
+        <template #empty>
+          <n-empty
+            description="No data available"
+            :show-icon="false"
+            :size="'small'"
+          >
+          </n-empty>
+        </template>
+      </n-data-table>
 
       <n-pagination
         class="table-pagination"
@@ -50,7 +59,7 @@ const logs = computed(() => store.state.history.logs);
 const columns = ref([
   {
     title: 'Status',
-    key: 'updated_at',
+    key: 'updatedAt',
     sorter: false,
     width: '10%',
     render: ({ status }) => {
@@ -85,11 +94,7 @@ const columns = ref([
           size: 'small',
           color: 'white',
         }),
-        h(
-          'div',
-          { style: { marginLeft: '12px', padding: '4px 0' } },
-          'Westen'
-        ),
+        h('div', { style: { marginLeft: '12px', padding: '4px 0' } }, 'Westen'),
       ]);
     },
   },

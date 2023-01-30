@@ -5,7 +5,14 @@ const instance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
 });
 
-const generateToken = async ({ account, signer, endpoint, method, body, timestamp }) => {
+const generateToken = async ({
+  account,
+  signer,
+  endpoint,
+  method,
+  body,
+  timestamp,
+}) => {
   const data = {
     endpoint,
     method: method.toUpperCase(),
@@ -18,16 +25,25 @@ const generateToken = async ({ account, signer, endpoint, method, body, timestam
   const { signature } = await signer.signRaw({
     address: account.address,
     data: stringToHex(message),
-    type: 'bytes'
+    type: 'bytes',
   });
 
-  return btoa(JSON.stringify({ address: account.address, timestamp, signature }));
-}
+  return btoa(
+    JSON.stringify({ address: account.address, timestamp, signature })
+  );
+};
 
 const request = async ({ account, signer, endpoint, method, body }) => {
   const timestamp = Date.now();
 
-  const token = await generateToken({ account, signer, endpoint, method, body, timestamp });
+  const token = await generateToken({
+    account,
+    signer,
+    endpoint,
+    method,
+    body,
+    timestamp,
+  });
 
   if (method === 'get' || method === 'delete') {
     return instance[method](endpoint, {
@@ -78,7 +94,7 @@ export default {
       account,
       signer,
       method: 'post',
-      endpoint: `/tasks/run`,
+      endpoint: '/tasks/run',
       body,
     });
   },
@@ -106,12 +122,22 @@ export default {
       account,
       signer,
       method: 'post',
-      endpoint: `/workflows`,
+      endpoint: '/workflows',
       body,
     });
   },
 
-  async deleteWorkFlow({ account, signer, id }) {
+  async editWorkflow({ account, signer, id, body }) {
+    return request({
+      account,
+      signer,
+      method: 'patch',
+      endpoint: `/workflows/${id}`,
+      body,
+    });
+  },
+
+  async deleteWorkflow({ account, signer, id }) {
     return request({
       account,
       signer,
@@ -128,4 +154,4 @@ export default {
       endpoint: '/workflow-logs',
     });
   },
-}
+};

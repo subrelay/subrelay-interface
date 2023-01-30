@@ -10,10 +10,10 @@ const getInjectedExtension = () => {
         if (window.injectedWeb3['polkadot-js']) {
           resolve(window.injectedWeb3['polkadot-js']);
         } else {
-          reject('Unsupported extension.')
+          reject('Unsupported extension.');
         }
       }
-  
+
       if (++counter === MAX_RETRY) {
         clearInterval(retryInterval);
         reject('Timeout.');
@@ -37,23 +37,34 @@ export default {
       state.accounts = accounts;
       state.selected = accounts[0];
     },
-    setSigner: (state, signer) => { state.signer = signer },
+    setLoading: (state, isLoading) => (state.loading = isLoading),
+    setSigner: (state, signer) => {
+      state.signer = signer;
+    },
     setSelected: (state, address) => {
-      const selected = state.accounts.find(account => account.address === address);
+      const selected = state.accounts.find(
+        (account) => account.address === address
+      );
       if (selected) {
         state.selected = selected;
       }
-    }
+    },
   },
 
   actions: {
     async loadAccounts({ commit }) {
-      const extension = await getInjectedExtension();
-      const result = await extension.enable();
-      const accounts = await result.accounts.get();
-
-      commit('setAccounts', accounts);
-      commit('setSigner', result.signer);
+      commit('setLoading', true);
+      try {
+        const extension = await getInjectedExtension();
+        const result = await extension.enable();
+        const accounts = await result.accounts.get();
+        commit('setAccounts', accounts);
+        commit('setSigner', result.signer);
+      } catch (e) {
+        console.error('e', e);
+      } finally {
+        commit('setLoading', false);
+      }
     },
   },
 };
