@@ -5,14 +5,75 @@ const instance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
 });
 
+const SAVED_AUTH_TOKEN = 'subrelay-auth-token';
+const EXPIRED_TIME = 82800000; // 23 hours in ms
+
+const getSavedAuthToken = () => {
+  const json = localStorage.getItem(SAVED_AUTH_TOKEN);
+
+  if (json) {
+    const { token, generatedAt } = JSON.parse(json);
+    const now = Date.now();
+
+    if (now < generatedAt + EXPIRED_TIME) {
+      return token;
+    }
+
+    localStorage.removeItem(SAVED_AUTH_TOKEN);
+  }
+
+  return null;
+};
+
+const saveAuthToken = (token, generatedAt) => {
+  const json = JSON.stringify({ token, generatedAt });
+
+  localStorage.setItem(SAVED_AUTH_TOKEN, json);
+};
+
+const generateGetToken = async ({
+  account,
+  signer,
+}) => {
+  const savedToken = getSavedAuthToken();
+
+  if (savedToken) {
+    return savedToken;
+  }
+
+  const timestamp = Date.now();
+  const data = {
+    endpoint: '/*',
+    method: 'GET',
+    body: {},
+    timestamp,
+  };
+
+  const message = JSON.stringify(data);
+
+  const { signature } = await signer.signRaw({
+    address: account.address,
+    data: stringToHex(message),
+    type: 'bytes',
+  });
+
+  const token = window.btoa(
+    JSON.stringify({ address: account.address, timestamp, signature })
+  );
+
+  saveAuthToken(token, timestamp);
+
+  return token;
+};
+
 const generateToken = async ({
   account,
   signer,
   endpoint,
   method,
   body,
-  timestamp,
 }) => {
+  const timestamp = Date.now();
   const data = {
     endpoint,
     method: method.toUpperCase(),
@@ -28,24 +89,32 @@ const generateToken = async ({
     type: 'bytes',
   });
 
-  return btoa(
+  return window.btoa(
     JSON.stringify({ address: account.address, timestamp, signature })
   );
 };
 
 const request = async ({ account, signer, endpoint, method, body }) => {
-  const timestamp = Date.now();
+  if (method === 'get') {
+    const getToken = await generateGetToken({ account, signer });
 
+    return instance[method](endpoint, {
+      headers: {
+        Authorization: getToken,
+      },
+    });
+  }
+
+  // User need to sign for write actions such as delete, post, put, patch ..
   const token = await generateToken({
     account,
     signer,
     endpoint,
     method,
     body,
-    timestamp,
   });
 
-  if (method === 'get' || method === 'delete') {
+  if (method === 'delete') {
     return instance[method](endpoint, {
       headers: {
         Authorization: token,
