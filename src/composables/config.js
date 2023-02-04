@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 
-export function useGetChainImg(chainsData = [], chainName) {
-  const chain = chainsData.find((el) => (el.name = chainName));
+export function useGetChainImg(chainName, chainsData) {
+  const chain = chainsData.find((el) => el.name === chainName);
   return chain.imageUrl;
 }
 

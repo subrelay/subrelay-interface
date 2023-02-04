@@ -242,8 +242,6 @@ function onUpdateName(value) {
 }
 
 function showExitWarning() {
-  const sleep = () => new Promise((resolve) => setTimeout(resolve, 500));
-
   const d = dialog.warning({
     title: 'Confirm quit',
     content: () =>
@@ -265,11 +263,7 @@ function showExitWarning() {
     onPositiveClick: () => {
       d.loading = true;
       EditorData.loadWorkflow();
-      return new Promise((resolve) => {
-        sleep()
-          .then(() => router.push({ name: 'workflows' }))
-          .then(resolve);
-      });
+      router.push({ name: 'workflows' });
     },
 
     onNegativeClick: () => {},

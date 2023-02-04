@@ -104,16 +104,16 @@ onMounted(() => {
   const element = document.querySelector(
     `#action-${props.positiveText}__key-${props.elementKey}`
   );
-  element.addEventListener('mouseenter', handleMouseEnter);
-  element.addEventListener('mouseleave', handleMouseLeave);
+  // element.addEventListener('mouseenter', handleMouseEnter);
+  // element.addEventListener('mouseleave', handleMouseLeave);
 });
 
 onBeforeUnmount(() => {
   const element = document.querySelector(
     `#action-${props.positiveText}__key-${props.elementKey}`
   );
-  element.removeEventListener('mouseenter', handleMouseEnter);
-  element.removeEventListener('mouseleave', handleMouseLeave);
+  // element.removeEventListener('mouseenter', handleMouseEnter);
+  // element.removeEventListener('mouseleave', handleMouseLeave);
 });
 </script>
 <style lang="scss">

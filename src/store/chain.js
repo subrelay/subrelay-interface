@@ -15,7 +15,9 @@ export default {
   }),
 
   mutations: {
-    getChains: (state, chains) => (state.chains = chains),
+    getChains: (state, chains) => {
+      state.chains = chains;
+    },
     getEvents: (state, events) => (state.events = events),
     getEvent: (state, event) => (state.event = event),
     setLoading: (state, data) =>

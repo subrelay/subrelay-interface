@@ -42,7 +42,7 @@ import RunningOrPausing from '@/components/Common/RunningOrPausing';
 import PageHeader from '@/components/Common/PageHeader';
 import { NAvatar, useMessage } from 'naive-ui';
 import { Icon } from '@iconify/vue';
-import { ref, h, provide, computed } from 'vue';
+import { ref, h, provide, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import moment from 'moment';
@@ -60,6 +60,7 @@ const store = useStore();
 const router = useRouter();
 const workflows = computed(() => store.state.workflow.workflows);
 const chains = computed(() => store.state.chain.chains);
+
 const account = computed(() => store.state.account.selected);
 const signer = computed(() => store.state.account.signer);
 
@@ -102,7 +103,7 @@ const columns = ref([
     render: ({ chain }) => {
       return h('div', { style: { display: 'flex', alignItems: 'center' } }, [
         h(NAvatar, {
-          src: useGetChainImg(chains.value, chain.name),
+          src: useGetChainImg(chain.name, chains.value),
           round: true,
           size: 'small',
           color: 'white',
