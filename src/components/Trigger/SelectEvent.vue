@@ -22,6 +22,8 @@
         placeholder="Select Event"
         v-model:show="isShown"
         @update:value="handleSelectEvent"
+        :loading="loading"
+        :disabled="loading"
         :value="EditorData.workflow.tasks[EditorData.triggerIdx].config.eventId"
         :options="options"
         :value-field="'id'"
@@ -68,6 +70,7 @@ const isShown = ref(false);
 const eventBus = inject('eventBus');
 const options = computed(() => store.state.chain.events);
 const uuid = computed(() => EditorData.workflow.chainUuid);
+const loading = computed(() => store.state.chain.loading.getEventsLoading);
 
 function onBack() {
   isShown.value = false;

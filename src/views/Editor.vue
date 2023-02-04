@@ -109,11 +109,6 @@
   </n-layout>
 
   <n-space vertical :size="50"> </n-space>
-
-  <div>changesAppliedToTrigger {{ changesAppliedToTrigger }}</div>
-  <div>changesAppliedToAction {{ changesAppliedToAction }}</div>
-
-  <pre>{{ EditorData }}</pre>
 </template>
 
 <script setup>
@@ -138,7 +133,6 @@ import { useStore } from 'vuex';
 import Api from '@/api';
 
 const props = defineProps({ id: [String, Number] });
-const defaultQuery = computed(() => store.state.global.defaultQuery);
 const router = useRouter();
 const route = useRoute();
 const store = useStore();
@@ -147,6 +141,9 @@ const message = useMessage();
 const currentStep = ref(null);
 
 onMounted(() => (window.$message = useMessage()));
+onBeforeMount(() => {
+  window.addEventListener('beforeunload', (e) => handleReload(e));
+});
 
 function handleNextStep() {
   onChangeStep(2);
@@ -196,7 +193,7 @@ const isActionCompleted = computed(
   () => EditorData.workflow.tasks[actionIdx.value].isCompleted
 );
 
-const changesAppliedToTrigger = computed(() => {
+const changedToTrigger = computed(() => {
   const task = EditorData.workflow.tasks[triggerIdx.value];
   return (
     typeof task.isError === 'boolean' ||
@@ -206,12 +203,26 @@ const changesAppliedToTrigger = computed(() => {
   );
 });
 
-const changesAppliedToAction = computed(() => {
+const changedToAction = computed(() => {
   const task = EditorData.workflow.tasks[actionIdx.value];
   return (
     typeof task.isError === 'boolean' || typeof task.isCompleted === 'boolean'
   );
 });
+
+const hasUpdates = computed(
+  () => changedToTrigger.value || changedToAction.value
+);
+
+const hasError = computed(() =>
+  EditorData.workflow.tasks.some((task) => task.isError || !task.isCompleted)
+);
+
+function handleReload(e) {
+  if (!hasUpdates.value) return;
+  e.preventDefault();
+  e.returnValue = '';
+}
 
 function setStepStatus(step) {
   // Switch from trigger to action
@@ -219,7 +230,7 @@ function setStepStatus(step) {
     actionStatus.value = 'process';
     triggerStatus.value = 'wait';
 
-    if (changesAppliedToTrigger.value) {
+    if (changedToTrigger.value) {
       if (isErrorWithTrigger.value) return (triggerStatus.value = 'error');
       if (isTriggerCompleted.value) return (triggerStatus.value = 'finish');
     }
@@ -230,7 +241,7 @@ function setStepStatus(step) {
     actionStatus.value = 'wait';
     triggerStatus.value = 'process';
 
-    if (changesAppliedToAction.value) {
+    if (changedToAction.value) {
       if (isErrorWithAction.value) return (actionStatus.value = 'error');
       if (isActionCompleted.value) return (actionStatus.value = 'finish');
     }
@@ -261,7 +272,6 @@ function showExitWarning() {
     negativeText: 'Stay',
 
     onPositiveClick: () => {
-      d.loading = true;
       EditorData.loadWorkflow();
       router.push({ name: 'workflows' });
     },
@@ -271,21 +281,11 @@ function showExitWarning() {
 }
 
 async function quitEditor() {
-  // Quit without any changes
-  if (!changesAppliedToTrigger.value && !changesAppliedToAction.value) {
-    router.push({ name: 'workflows' });
-    return;
-  }
-
-  if (
-    (changesAppliedToTrigger.value || changesAppliedToAction.value) &&
-    EditorData.workflow.tasks.some((task) => task.isError || !task.isCompleted)
-  ) {
-    // Has changes but not yet completed, or has error.
+  if (hasUpdates.value) {
     showExitWarning();
   } else {
-    // TODO: validate this case
-    createWorkflow();
+    router.push({ name: 'workflows' });
+    EditorData.cleanUpWorkflow();
   }
 }
 
