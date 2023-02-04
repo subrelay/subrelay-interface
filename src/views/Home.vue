@@ -55,7 +55,7 @@
                     round
                     size="small"
                     color="transparent"
-                    src="https://polkadot.network/assets/img/staking/polkadot.svg?v=eabc0486b6"
+                    src="https://cryptologos.cc/logos/polkadot-new-dot-logo.png"
                   />
 
                   <n-space vertical :size="5">

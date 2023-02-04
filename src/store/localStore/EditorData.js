@@ -4,13 +4,13 @@ const conditionFormat = { variable: null, operator: null, value: null };
 
 const defaultConfig = () => ({
   name: null,
-  chainUuid: '',
+  chainUuid: null,
   tasks: [
     {
       name: 'trigger',
       type: 'trigger',
       dependOnName: null,
-      config: { eventId: null, uuid: null, conditions: [] },
+      config: { eventId: null, conditions: [] },
     },
     {
       name: 'action',
