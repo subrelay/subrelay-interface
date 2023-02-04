@@ -2,7 +2,7 @@
   "name": "subrelay-webapp",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 9000",
     "build-dev": "vite build --mode development",
     "build-stg": "vite build --mode staging",
     "build-prd": "vite build --mode production",

@@ -123,7 +123,15 @@ import ShowOrEdit from '@/components/Common/ShowOrEdit';
 import Trigger from '@/components/Trigger/Trigger';
 import Action from '@/components/Action/Action';
 import { ThunderboltOutlined, BellOutlined } from '@vicons/antd';
-import { h, ref, inject, computed, onBeforeMount, onBeforeUnmount } from 'vue';
+import {
+  h,
+  ref,
+  inject,
+  computed,
+  onBeforeMount,
+  onBeforeUnmount,
+  onMounted,
+} from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useDialog, useMessage } from 'naive-ui';
 import { useStore } from 'vuex';
@@ -138,6 +146,8 @@ const dialog = useDialog();
 const message = useMessage();
 const currentStep = ref(null);
 
+onMounted(() => (window.$message = useMessage()));
+
 function handleNextStep() {
   onChangeStep(2);
 }
@@ -146,6 +156,17 @@ function handleNextStep() {
 const eventBus = inject('eventBus');
 eventBus.on('nextStep', handleNextStep);
 eventBus.on('finish', createWorkflow);
+
+function onChangeStep(step) {
+  currentStep.value = step;
+
+  setStepStatus(step);
+
+  router.push({
+    name: step == 1 ? 'trigger' : 'action',
+    params: { id: +props.id || 'new-flow' },
+  });
+}
 
 onBeforeUnmount(() => {
   eventBus.off('finish', createWorkflow);
@@ -281,17 +302,6 @@ async function createWorkflow() {
   message.success('Workflow created!');
 }
 
-function onChangeStep(step) {
-  currentStep.value = step;
-
-  setStepStatus(step);
-
-  router.push({
-    name: step == 1 ? 'trigger' : 'action',
-    params: { id: props.id },
-  });
-}
-
 const loading = ref(false);
 
 onBeforeMount(async () => {
@@ -303,7 +313,7 @@ onBeforeMount(async () => {
       const { data: workflow } = await Api.getWorkFlow({
         account: store.state.account.selected,
         signer: store.state.account.signer,
-        id: props.id,
+        id: +props.id,
       });
       data = workflow;
     } catch (error) {
@@ -314,10 +324,10 @@ onBeforeMount(async () => {
   }
 
   // Might need to update right here to prevent child components from mounting
-  // Before data is completely loaded
+  // before data is completely loaded
   EditorData.loadWorkflow(data);
 
-  const uuid = EditorData.workflow.tasks[0].chainUuid;
+  const uuid = EditorData.workflow.chainUuid;
   const eventId = EditorData.workflow.tasks[0].config.eventId;
 
   if (uuid) {

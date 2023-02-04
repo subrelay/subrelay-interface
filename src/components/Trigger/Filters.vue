@@ -99,12 +99,17 @@ function onContinue(e) {
   e.preventDefault();
 
   validateForm({}, () => {
+    eventBus.emit('nextStep');
+
+    // TODO: phase 3
+    /*
     if (conditionLength.value) {
-      eventBus.emit('toggleTestFilter', { isDisabled: false });
-      emits('continue');
+    eventBus.emit('toggleTestFilter', { isDisabled: false });
+    emits('continue');
     } else {
-      eventBus.emit('nextStep');
+    eventBus.emit('nextStep');
     }
+    */
   });
 }
 

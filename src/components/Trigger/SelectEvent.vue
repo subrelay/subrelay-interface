@@ -67,7 +67,7 @@ const store = useStore();
 const isShown = ref(false);
 const eventBus = inject('eventBus');
 const options = computed(() => store.state.chain.events);
-const uuid = computed(() => EditorData.workflow.tasks[0].chainUuid);
+const uuid = computed(() => EditorData.workflow.chainUuid);
 
 function onBack() {
   isShown.value = false;

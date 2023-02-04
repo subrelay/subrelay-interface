@@ -8,13 +8,12 @@
   >
     <template #trigger>
       <n-button
+        text
         size="small"
         :style="style"
         :id="`action-${props.positiveText}__key-${props.elementKey}`"
-        @click="onTrigger"
-        circle
         :color="store.state.global.isDarkMode ? '#fff' : '#111'"
-        quaternary
+        @click="onTrigger"
       >
         <slot name="trigger-content"></slot>
       </n-button>

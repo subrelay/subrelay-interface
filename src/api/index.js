@@ -31,10 +31,7 @@ const saveAuthToken = (token, generatedAt) => {
   localStorage.setItem(SAVED_AUTH_TOKEN, json);
 };
 
-const generateGetToken = async ({
-  account,
-  signer,
-}) => {
+const generateGetToken = async ({ account, signer }) => {
   const savedToken = getSavedAuthToken();
 
   if (savedToken) {
@@ -66,13 +63,7 @@ const generateGetToken = async ({
   return token;
 };
 
-const generateToken = async ({
-  account,
-  signer,
-  endpoint,
-  method,
-  body,
-}) => {
+const generateToken = async ({ account, signer, endpoint, method, body }) => {
   const timestamp = Date.now();
   const data = {
     endpoint,
@@ -116,16 +107,12 @@ const request = async ({ account, signer, endpoint, method, body }) => {
 
   if (method === 'delete') {
     return instance[method](endpoint, {
-      headers: {
-        Authorization: token,
-      },
+      headers: { Authorization: token },
     });
   }
 
   return instance[method](endpoint, body, {
-    headers: {
-      Authorization: token,
-    },
+    headers: { Authorization: token },
   });
 };
 
@@ -167,6 +154,16 @@ export default {
       body,
     });
   },
+
+  // async createTestChain({ account, signer, body }) {
+  //   return request({
+  //     account,
+  //     signer,
+  //     method: 'post',
+  //     endpoint: '/chains',
+  //     body,
+  //   });
+  // },
 
   async getWorkflows({ account, signer, params }) {
     return request({

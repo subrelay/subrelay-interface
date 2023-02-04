@@ -39,7 +39,7 @@ async function onUpdateStatus(newStt) {
   loading.value = true;
 
   try {
-    const res = await Api.editWorkflow({
+    await Api.editWorkflow({
       account: account.value,
       signer: signer.value,
       id: props.id,
@@ -47,11 +47,10 @@ async function onUpdateStatus(newStt) {
     });
 
     if (props.fetchOne) {
-      const { data: newWorkflow } = await axios({
-        url: 'mockData/workflow/changeStatusFetchOne.json',
-        baseURL: 'http://127.0.0.1:5173',
+      await store.dispatch('workflow/getWorkflow', {
+        showLoading: false,
+        id: props.id,
       });
-      store.commit('workflow/getWorkflow', newWorkflow);
     } else {
       await store.dispatch('workflow/getWorkflows', { showLoading: false });
     }

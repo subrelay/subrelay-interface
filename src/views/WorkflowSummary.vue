@@ -8,7 +8,7 @@
     <n-spin description="Loading data... Please wait" size="small" />
   </n-space>
 
-  <n-space v-else vertical :size="30">
+  <n-space vertical :size="30">
     <div v-if="workflow" class="page_title">{{ workflow.name }}</div>
 
     <n-tabs
@@ -36,6 +36,7 @@ import Overview from '@/components/WorkflowDetails/Overview.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { onBeforeMount, ref, computed, watch } from 'vue';
+import { isEmpty } from 'lodash';
 
 const props = defineProps({ id: [String, Number] });
 const route = useRoute();
@@ -52,16 +53,19 @@ function onChangeTab(tab) {
   router.push({ name: tab, params: { id: props.id } });
 }
 
-watch(selectedAccount, () => {
-  if (selectedAccount) {
-    store.dispatch('workflow/getWorkflow', +props.id);
-  }
-}, { immediate: true });
+watch(
+  selectedAccount,
+  () => {
+    if (selectedAccount) {
+      store.dispatch('workflow/getWorkflow', { id: +props.id });
+    }
+  },
+  { immediate: true }
+);
 
 onBeforeMount(async () => {
-  activeTab.value = route.name; 
+  activeTab.value = route.name;
 });
-
 </script>
 
 <style lang="scss">

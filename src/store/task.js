@@ -1,4 +1,5 @@
 import Api from '@/api';
+import { useShowMessage } from '@/composables';
 
 export default {
   namespaced: true,
@@ -38,7 +39,9 @@ export default {
 
     async runTask({ commit, rootState }, body) {
       const { type } = body;
+
       commit('setRunningTest', { [type]: true });
+
       try {
         const { data } = await Api.runTask({
           account: rootState.account.selected,
@@ -46,11 +49,12 @@ export default {
           body,
         });
         commit('setTestResult', { [type]: data });
+        commit('setTested', { [type]: true });
       } catch (e) {
         console.error(e);
+        useShowMessage('error', e.message);
       } finally {
         commit('setRunningTest', { [type]: false });
-        commit('setTested', { [type]: true });
       }
     },
   },

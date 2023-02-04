@@ -54,6 +54,15 @@
         <n-grid cols="3">
           <n-gi>
             <n-space vertical>
+              <div class="text-semi-bold">Chain</div>
+              <div>{{ workflow.chain.name }}</div>
+            </n-space>
+          </n-gi>
+        </n-grid>
+
+        <n-grid cols="3">
+          <n-gi>
+            <n-space vertical>
               <div class="text-semi-bold">Event</div>
               <div>{{ eventString }}</div>
             </n-space>
@@ -147,22 +156,24 @@ const store = useStore();
 const props = defineProps({ id: [String, Number] });
 const workflow = computed(() => store.state.workflow.workflow);
 const loading = computed(() => store.state.workflow.loading);
+
 const eventString = ref(null);
 const filtersCondition = ref([]);
 
 const triggerTask = computed(() => {
-  return workflow.tasks.find((task) => task.type === 'trigger');
+  return workflow.value.tasks.find((task) => task.type === 'trigger');
 });
 
 const actionTask = computed(() => {
-  return workflow.tasks.find((task) => task.type === 'notification');
+  return workflow.value.tasks.find((task) => task.type === 'notification');
 });
 
 onMounted(async () => {
-  const { eventId, uuid, conditions } = triggerTask.value.config;
+  const { eventId, conditions } = triggerTask.value.config;
+  const uuid = workflow.value.chain.uuid;
 
   if (eventId) {
-    const event = await API.Chain.getEvent(uuid, eventId);
+    const event = await API.getEvent(uuid, eventId);
     const { name, pallet } = event;
     eventString.value = `${pallet}.${name}`;
     filtersCondition.value = conditions;

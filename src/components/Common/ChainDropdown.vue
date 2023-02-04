@@ -2,9 +2,9 @@
   <n-select
     filterable
     clearable
+    value-field="uuid"
     :placeholder="placeholder"
     :filter="useDropdownFilter"
-    :value-field="'uuid'"
     :render-label="useRenderDropdownLabel"
     :options="chains"
     :loading="loading"

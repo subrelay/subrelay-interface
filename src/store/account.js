@@ -15,7 +15,7 @@ const getInjectedExtension = () => {
       }
 
       if (++counter === MAX_RETRY) {
-        clearInterval(retryInterval);
+        clearInterval(interval);
         reject('Timeout.');
       }
     }, 500);

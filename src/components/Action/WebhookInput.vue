@@ -2,7 +2,7 @@
   <n-space vertical :size="10">
     <div class="input-item">
       <div class="title">URL:</div>
-      <n-text code>{{ props.config.url }}</n-text>
+      <n-text code>{{ config.url }}</n-text>
     </div>
 
     <div class="input-item">
@@ -12,20 +12,18 @@
       </n-text>
     </div>
 
-    <n-space vertical>
+    <!-- <n-space vertical>
       <div class="title">Body:</div>
       <JsonEventSample />
-    </n-space>
+    </n-space> -->
   </n-space>
 </template>
 
 <script setup>
-import JsonEventSample from '@/components/Common/JsonEventSample';
+// import JsonEventSample from '@/components/Common/JsonEventSample';
 import { computed } from 'vue';
 
-const props = defineProps({
-  config: Object,
-});
+const props = defineProps({ config: Object });
 
 const headerObj = computed(() => {
   if (props.config.headers) {

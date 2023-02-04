@@ -14,16 +14,17 @@ const steps = shallowRef([
   { title: 'Select Chain', name: '1', component: SelectChain },
   { title: 'Select Event', name: '2', component: SelectEvent },
   { title: 'Filter Setup', name: '3', component: Filters },
-  { title: 'Test Filter', name: '4', component: TestFilter, isDisabled: true },
+  // { title: 'Test Filter', name: '4', component: TestFilter, isDisabled: true }, // TODO: Test filter in phase 3
 ]);
 
+/* TODO: phase 3
 const eventBus = inject('eventBus');
 eventBus.on('toggleTestFilter', ({ isDisabled }) => {
-  // shallowRef can only update data in this way
-  // check vue 3 docs
-  // https://vuejs.org/guide/best-practices/performance.html#reduce-reactivity-overhead-for-large-immutable-structures
   steps.value = [...steps.value.slice(0, 3), { ...steps.value[3], isDisabled }];
+  // shallowRef can only update data in this way, check vue 3 docs
+  // https://vuejs.org/guide/best-practices/performance.html#reduce-reactivity-overhead-for-large-immutable-structures
 });
+*/
 </script>
 
 <style lang="scss"></style>

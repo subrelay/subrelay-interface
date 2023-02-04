@@ -123,7 +123,7 @@
 <script setup>
 import AccountModal from '@/components/Misc/AccountModal';
 import Logo from '@/components/Common/Logo';
-import { computed, h, ref, watch } from 'vue';
+import { computed, h, ref, watch, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import { Icon } from '@iconify/vue';
 import { RouterLink, useRouter, useRoute } from 'vue-router';
@@ -140,6 +140,10 @@ const collapsed = computed(() => store.state.global.isSiderCollapsed);
 const walletAccount = computed(() => store.state.account.selected);
 const query = computed(() => store.state.global.defaultQuery);
 const darkMode = computed(() => store.state.global.isDarkMode);
+
+onMounted(() => {
+  window.$message = useMessage();
+});
 
 const siderOptions = ref([
   {

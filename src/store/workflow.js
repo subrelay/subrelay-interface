@@ -47,18 +47,15 @@ export default {
       }
     },
 
-    async getWorkflow({ commit, rootState }, workflowId) {
+    async getWorkflow({ commit, rootState }, { showLoading = true, id } = {}) {
       if (rootState) {
-        commit('setLoading', true);
+        if (showLoading) commit('setLoading', true);
         try {
-          const {
-            data: { workflow },
-          } = await Api.getWorkflow({
+          const { data: workflow } = await Api.getWorkflow({
             account: rootState.account.selected,
             signer: rootState.account.signer,
-            id: workflowId,
+            id,
           });
-
           commit('getWorkflow', workflow);
         } catch (error) {
           commit('getWorkflow', {});

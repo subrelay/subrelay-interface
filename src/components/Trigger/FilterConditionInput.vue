@@ -51,7 +51,7 @@
 
       <n-gi v-if="inputType !== 'boolean'">
         <n-form-item
-          :rule="numberRule"
+          :rule="{ ...requiredRule, type: 'number' }"
           :path="`conditions[${props.index}][${props.conditionIdx}].value`"
         >
           <n-input
@@ -101,12 +101,16 @@ const props = defineProps({
   condition: { type: Object, default: () => {} },
 });
 
-const emits = defineEmits(['remove', 'input']);
-
-const propertyOptions = computed(() => store.state.chain.event.fields);
-const isLoading = ref(false);
 const eventBus = inject('eventBus');
 const validateForm = inject('validateForm');
+const emits = defineEmits(['remove', 'input']);
+const isLoading = ref(false);
+const propertyOptions = computed(() => {
+  return store.state.chain.event.fields.map((e) => ({
+    ...e,
+    disabled: e.type === 'unknown',
+  }));
+});
 
 const requiredRule = ref({
   trigger: ['input'],
@@ -120,7 +124,6 @@ const requiredRule = ref({
   },
 });
 
-const numberRule = ref({ type: 'number', ...requiredRule.value });
 const operators = computed(() => store.state.task.operators);
 const getOperatorsLoading = computed(() => store.state.task.loading);
 const inputType = ref(null);

@@ -88,10 +88,14 @@ const type = computed(
 );
 
 const config = computed(
-  () => EditorData.workflow.tasks[EditorData.actionIdx].config
+  () => EditorData.workflow.tasks[EditorData.actionIdx].config.config
 );
-const runningTest = computed(() => store.state.task.runningTest[type.value]);
 
+const eventId = computed(
+  () => EditorData.workflow.tasks[EditorData.triggerIdx].config.eventId
+);
+
+const runningTest = computed(() => store.state.task.runningTest[type.value]);
 const isTested = computed(() => store.state.task.tested[type.value]);
 const testResult = computed(() => store.state.task.testResult[type.value]);
 
@@ -105,22 +109,11 @@ function resetTest({ isDisabled }) {
   }
 }
 
-const sample = {
-  // todo: get actual sample data from event
-  id: 123,
-  name: 'balances.deposit',
-  description: 'This Event Does This',
-  data: { who: '', amount: 123 },
-  status: 'success',
-  extrinsic: { name: 'balances.deposit' },
-  block: { hash: '', number: 123, timestamp: '' },
-};
-
 async function onTest() {
   await store.dispatch('task/runTask', {
     type: type.value,
     config: config.value,
-    data: sample,
+    data: { eventId: +eventId.value },
   });
 }
 </script>

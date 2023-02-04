@@ -3,7 +3,7 @@
     class="step_container"
     ref="formRef"
     @keyup.enter="validateForm"
-    :model="EditorData.workflow.tasks[0]"
+    :model="EditorData.workflow"
     :show-label="false"
   >
     <n-form-item
@@ -12,7 +12,7 @@
       :rule="{ required: true, trigger: ['input'], message: 'Required' }"
     >
       <ChainDropdown
-        v-model="EditorData.workflow.tasks[0].chainUuid"
+        v-model="EditorData.workflow.chainUuid"
         :onSelectChain="handleSelectChain"
         :placeholder="'Select Chain'"
       />
