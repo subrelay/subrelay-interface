@@ -8,8 +8,8 @@ const instance = axios.create({
 const SAVED_AUTH_TOKEN = 'subrelay-auth-token';
 const EXPIRED_TIME = 82800000; // 23 hours in ms
 
-const getSavedAuthToken = () => {
-  const json = localStorage.getItem(SAVED_AUTH_TOKEN);
+const getSavedAuthToken = (address) => {
+  const json = localStorage.getItem(address);
 
   if (json) {
     const { token, generatedAt } = JSON.parse(json);
@@ -19,20 +19,20 @@ const getSavedAuthToken = () => {
       return token;
     }
 
-    localStorage.removeItem(SAVED_AUTH_TOKEN);
+    localStorage.removeItem(address);
   }
 
   return null;
 };
 
-const saveAuthToken = (token, generatedAt) => {
+const saveAuthToken = (address, token, generatedAt) => {
   const json = JSON.stringify({ token, generatedAt });
 
-  localStorage.setItem(SAVED_AUTH_TOKEN, json);
+  localStorage.setItem(address, json);
 };
 
 const generateGetToken = async ({ account, signer }) => {
-  const savedToken = getSavedAuthToken();
+  const savedToken = getSavedAuthToken(account.address);
 
   if (savedToken) {
     return savedToken;
@@ -58,7 +58,7 @@ const generateGetToken = async ({ account, signer }) => {
     JSON.stringify({ address: account.address, timestamp, signature })
   );
 
-  saveAuthToken(token, timestamp);
+  saveAuthToken(account.address, token, timestamp);
 
   return token;
 };
