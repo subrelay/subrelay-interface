@@ -55,7 +55,7 @@
           <n-gi>
             <n-space vertical>
               <div class="text-semi-bold">Chain</div>
-              <div>{{ workflow.chain.name }}</div>
+              <div>{{ workflow.chainName }}</div>
             </n-space>
           </n-gi>
         </n-grid>
@@ -170,7 +170,7 @@ const actionTask = computed(() => {
 
 onMounted(async () => {
   const { eventId, conditions } = triggerTask.value.config;
-  const uuid = workflow.value.chain.uuid;
+  const uuid = workflow.value.chainUuid;
 
   if (eventId) {
     const event = await API.getEvent(uuid, eventId);

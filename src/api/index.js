@@ -155,16 +155,6 @@ export default {
     });
   },
 
-  // async createTestChain({ account, signer, body }) {
-  //   return request({
-  //     account,
-  //     signer,
-  //     method: 'post',
-  //     endpoint: '/chains',
-  //     body,
-  //   });
-  // },
-
   async getWorkflows({ account, signer, params }) {
     return request({
       account,

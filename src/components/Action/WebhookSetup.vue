@@ -47,13 +47,10 @@ const [{ formRef }, { validateForm }] = useFormValidation('action');
 const actionIdx = computed(() => EditorData.actionIdx);
 
 const keyRule = ref({
-  required: true,
   trigger: ['input'],
   validator(_rule, value) {
     eventBus.emit('toggleTestAction', { isDisabled: true });
-    if (!value) {
-      return new Error('Required!');
-    } else if (/(-_)+|(_-)+|(-{2,})|(_{2,})|[^a-zA-Z0-9_-]/g.test(value)) {
+    if (/(-_)+|(_-)+|(-{2,})|(_{2,})|[^a-zA-Z0-9_-]/g.test(value)) {
       return new Error('Invalid value');
     }
     return true;
@@ -61,14 +58,11 @@ const keyRule = ref({
 });
 
 const valueRule = ref({
-  required: true,
   trigger: ['input'],
   type: ['string', 'number'],
   validator(_rule, value) {
     eventBus.emit('toggleTestAction', { isDisabled: true });
-    if (!value) {
-      return new Error('Required!');
-    } else if (/(\W{2,})|[^a-zA-Z0-9\W-_] /.test(value)) {
+    if (/(\W{2,})|[^a-zA-Z0-9\W-_] /.test(value)) {
       return new Error('Invalid value');
     }
     return true;

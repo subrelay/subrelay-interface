@@ -10,6 +10,7 @@ export default {
   mutations: {
     setDarkMode(state, isDarkMode) {
       state.isDarkMode = isDarkMode;
+      localStorage.setItem('viewMode', isDarkMode ? 'dark' : 'light');
     },
 
     setAuthenticating(state, isAuthenticating) {

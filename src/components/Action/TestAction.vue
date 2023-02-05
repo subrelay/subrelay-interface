@@ -9,7 +9,7 @@
       </template>
 
       <n-skeleton v-if="runningTest" text :repeat="5" />
-      <WebhookInput v-else :config="config" />
+      <WebhookInput v-else :config="config.config" />
     </n-card>
 
     <n-card
@@ -88,7 +88,7 @@ const type = computed(
 );
 
 const config = computed(
-  () => EditorData.workflow.tasks[EditorData.actionIdx].config.config
+  () => EditorData.workflow.tasks[EditorData.actionIdx].config
 );
 
 const eventId = computed(

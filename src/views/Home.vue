@@ -1,83 +1,13 @@
 <template>
   <div style="height: 100vh; position: relative">
     <n-layout position="absolute">
-      <n-layout-header style="padding: 16px 32px" bordered>
+      <n-layout-header style="padding: 5px 3rem" bordered>
         <n-space align="center" justify="space-between">
           <Logo @click="goToHomePage" />
 
           <n-space align="center" :size="32">
-            <n-switch
-              :rail-style="railStyle"
-              size="large"
-              :value="darkMode"
-              @update:value="store.commit('global/setDarkMode', $event)"
-            >
-              <template #icon>
-                <Icon
-                  icon="line-md:sunny-filled-loop-to-moon-alt-filled-loop-transition"
-                  color="black"
-                  v-if="darkMode"
-                />
-
-                <Icon
-                  color="rgb(255, 172, 51)"
-                  icon="line-md:moon-filled-to-sunny-filled-loop-transition"
-                  v-else
-                />
-              </template>
-
-              <template #checked>
-                <Icon
-                  icon="icon-park-outline:sun"
-                  color="#EAEAEA"
-                  :style="{ 'margin-right': '12px', 'margin-left': '-12px' }"
-                />
-              </template>
-
-              <template #unchecked>
-                <Icon
-                  icon="heroicons-outline:moon"
-                  color="#797676"
-                  :style="{ 'margin-right': '-12px', 'margin-left': '12px' }"
-                />
-              </template>
-            </n-switch>
-
-            <n-dropdown
-              v-if="walletAccount"
-              v-model:show="showMenu"
-              :options="profileOptions"
-              @select="onSelectProfileOption"
-            >
-              <n-button size="large" class="profile_menu" round>
-                <n-space align="center">
-                  <n-avatar
-                    round
-                    size="small"
-                    color="transparent"
-                    src="https://polkadot.network/assets/img/staking/polkadot.svg?v=eabc0486b6"
-                  />
-
-                  <n-space vertical :size="5">
-                    <div
-                      v-html="walletAccount.name"
-                      class="text-bold font-size-085"
-                    />
-
-                    <n-text depth="3" class="font-size-075">
-                      {{ truncate(walletAccount) }}
-                    </n-text>
-                  </n-space>
-
-                  <Icon
-                    icon="akar-icons:chevron-down"
-                    class="icon"
-                    :inline="true"
-                    :style="{ transform: showMenu ? 'rotate(180deg)' : '' }"
-                  />
-                </n-space>
-              </n-button>
-            </n-dropdown>
+            <DarkmodeSwitch />
+            <AccountDropdown />
           </n-space>
         </n-space>
       </n-layout-header>
@@ -116,12 +46,11 @@
       </n-layout>
     </n-layout>
   </div>
-
-  <AccountModal v-model="showModal" :isSigningIn="false" />
 </template>
 
 <script setup>
-import AccountModal from '@/components/Misc/AccountModal';
+import DarkmodeSwitch from '@/components/Misc/DarkmodeSwitch';
+import AccountDropdown from '@/components/Misc/AccountDropdown';
 import Logo from '@/components/Common/Logo';
 import { computed, h, ref, watch, onMounted } from 'vue';
 import { useStore } from 'vuex';
@@ -134,16 +63,10 @@ const router = useRouter();
 const store = useStore();
 const message = useMessage();
 const activeKey = ref(null);
-const showMenu = ref(false);
-const showModal = ref(false);
 const collapsed = computed(() => store.state.global.isSiderCollapsed);
-const walletAccount = computed(() => store.state.account.selected);
 const query = computed(() => store.state.global.defaultQuery);
-const darkMode = computed(() => store.state.global.isDarkMode);
 
-onMounted(() => {
-  window.$message = useMessage();
-});
+onMounted(() => (window.$message = useMessage()));
 
 const siderOptions = ref([
   {
@@ -181,42 +104,17 @@ const siderOptions = ref([
   },
 ]);
 
-const profileOptions = ref([
-  {
-    label: 'Copy Address',
-    key: 'copyAddress',
-    icon: renderIcon('fluent:copy-add-24-regular'),
-  },
-  {
-    label: 'Change Account',
-    key: 'changeAccount',
-    icon: renderIcon('carbon:user-avatar-filled-alt'),
-  },
-  {
-    label: 'Sign Out',
-    key: 'signOut',
-    icon: renderIcon('octicon:sign-out-16'),
-  },
-]);
-
 watch(
   () => route.name,
   (newRouteName) => (activeKey.value = newRouteName),
   { immediate: true }
 );
 
-function goToEditor(id) {
-  router.push({ name: 'trigger', params: { id } });
-}
-
-function goToHomePage() {
-  router.push({ name: 'workflows' });
-}
+const goToEditor = (id) => router.push({ name: 'trigger', params: { id } });
+const goToHomePage = () => router.push({ name: 'workflows' });
 
 function onUpdateActive(value) {
-  if (value === 'editor') {
-    goToEditor('new-flow');
-  }
+  if (value === 'editor') goToEditor('new-flow');
 }
 
 function renderIcon(icon, isButton = false) {
@@ -231,43 +129,6 @@ function renderIcon(icon, isButton = false) {
         : '';
   }
   return () => h(Icon, { icon, inline: true });
-}
-
-function truncate({ address }) {
-  if (!address) return '';
-  return `${address.slice(0, 5)} ... ${address.slice(-5)}`;
-}
-
-function onSelectProfileOption(key) {
-  if (key === 'copyAddress') {
-    navigator.clipboard.writeText(walletAccount.value.address);
-    message.success(`Copied!`);
-  }
-
-  if (key === 'changeAccount') {
-    showModal.value = true;
-  }
-
-  if (key === 'signOut') {
-    store.commit('account/setSelected', null);
-    router.push({ name: 'welcome' });
-  }
-}
-
-function railStyle({ focused, checked } = {}) {
-  const style = {};
-
-  if (checked) {
-    style.background = 'rgba(255, 255, 255, 0.2)';
-  } else {
-    style.background = '#e0e0e0';
-  }
-
-  if (focused) {
-    style.boxShadow = '0 0 0 2px #e0e0e0';
-  }
-
-  return style;
 }
 </script>
 

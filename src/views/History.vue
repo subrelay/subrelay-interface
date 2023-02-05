@@ -44,7 +44,6 @@ import {
   useQuery,
   useRenderSortIcon,
   useRenderCell,
-  useGetChainImg,
   useLogStatuses,
 } from '@/composables';
 

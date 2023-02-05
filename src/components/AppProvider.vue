@@ -1,6 +1,6 @@
 <template>
   <n-config-provider
-    :theme="darkMode ? darkTheme : null"
+    :theme="theme"
     :theme-overrides="darkMode ? darkThemeOverrides : lightThemeOverrides"
   >
     <n-loading-bar-provider>
@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue';
+import { computed, onBeforeMount } from 'vue';
 import { darkTheme } from 'naive-ui';
 import { useStore } from 'vuex';
 
@@ -26,6 +26,7 @@ import {
 
 const store = useStore();
 const darkMode = computed(() => store.state.global.isDarkMode);
+const theme = computed(() => (darkMode.value ? darkTheme : null));
 
 const lightThemeOverrides = {
   common: {
@@ -47,7 +48,8 @@ const darkThemeOverrides = {
     // infoColorHover: string;
     // infoColorPressed: string;
     // infoColorSuppl: string;
-    successColor: 'green',
+
+    // successColor: 'green',
     // successColorHover: string;
     // successColorPressed: string;
     // successColorSuppl: string;
@@ -66,20 +68,28 @@ const darkThemeOverrides = {
   },
 };
 
-onMounted(() => {
-  // Detect dark mode
-  if (
-    window.matchMedia &&
-    window.matchMedia('(prefers-color-scheme: dark)').matches
-  ) {
-    store.commit('global/setDarkMode', true);
-  }
-
-  // Watch for theme changes
+onBeforeMount(() => {
+  // Watch for system theme changes
   window
     .matchMedia('(prefers-color-scheme: dark)')
     .addEventListener('change', (e) => {
       store.commit('global/setDarkMode', e.matches);
     });
+
+  const viewMode = localStorage.getItem('viewMode');
+
+  if (viewMode) {
+    store.commit('global/setDarkMode', viewMode === 'dark');
+    return;
+  }
+
+  // Detect system dark mode
+  if (
+    window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches
+  ) {
+    store.commit('global/setDarkMode', true);
+    return;
+  }
 });
 </script>

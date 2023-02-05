@@ -4,9 +4,11 @@
 
     <n-space :wrapItem="false">
       <n-data-table
+        row-class-name="pointer-cursor"
         :columns="columns"
         :data="workflows"
         :row-key="({ id }) => id"
+        :row-props="rowProps"
         :render-cell="useRenderCell"
         :loading="loading"
         @update:sorter="handleSort"
@@ -40,7 +42,7 @@ import RunningOrPausing from '@/components/Common/RunningOrPausing';
 import PageHeader from '@/components/Common/PageHeader';
 import { NAvatar, useMessage } from 'naive-ui';
 import { Icon } from '@iconify/vue';
-import { ref, h, provide, computed } from 'vue';
+import { ref, h, provide, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import moment from 'moment';
@@ -57,6 +59,8 @@ const message = useMessage();
 const store = useStore();
 const router = useRouter();
 const workflows = computed(() => store.state.workflow.workflows);
+const chains = computed(() => store.state.chain.chains);
+
 const account = computed(() => store.state.account.selected);
 const signer = computed(() => store.state.account.signer);
 
@@ -74,25 +78,22 @@ function fetchData() {
   store.dispatch('workflow/getWorkflows');
 }
 
+const rowProps = ({ id }) => {
+  return {
+    onClick: () => router.push({ name: 'overview', params: { id } }),
+  };
+};
+
 const columns = ref([
   {
     title: 'Name',
     key: 'name',
+    className: 'text-bold',
     width: '20%',
     ellipsis: { tooltip: true },
     sorter: true,
     sortOrder: false,
     renderSorterIcon: useRenderSortIcon,
-    render: ({ name, id }) => {
-      return h(
-        'div',
-        {
-          class: 'text-bold cursor-pointer',
-          onClick: () => router.push({ name: 'overview', params: { id } }),
-        },
-        name
-      );
-    },
   },
   {
     title: 'Chain',
@@ -102,7 +103,7 @@ const columns = ref([
     render: ({ chain }) => {
       return h('div', { style: { display: 'flex', alignItems: 'center' } }, [
         h(NAvatar, {
-          src: useGetChainImg(chain.name),
+          src: useGetChainImg(chain.name, chains.value),
           round: true,
           size: 'small',
           color: 'white',
@@ -145,7 +146,11 @@ const columns = ref([
     width: '20%',
     ellipsis: { tooltip: true },
     render: ({ id, status }) =>
-      h(RunningOrPausing, { status, id, fetchOne: false }),
+      h(
+        'div',
+        { onClick: (e) => e.stopPropagation() },
+        h(RunningOrPausing, { status, id, fetchOne: false })
+      ),
   },
   {
     key: 'edit',

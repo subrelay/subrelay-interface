@@ -1,14 +1,8 @@
 import { ref } from 'vue';
 
-export function useGetChainImg(chain) {
-  switch (chain.toLowerCase()) {
-    case 'acala':
-      return 'https://avatars.githubusercontent.com/u/54881907?s=280&v=4';
-    case 'polkadot':
-      return 'https://polkadot.network/assets/img/staking/polkadot.svg?v=eabc0486b6';
-    case 'kusama':
-      return 'https://www.liblogo.com/img-logo/ku2766k057-kusama-logo-kusama-ksm-bitprime.png';
-  }
+export function useGetChainImg(chainName, chainsData) {
+  const chain = chainsData.find((el) => el.name === chainName);
+  return chain.imageUrl;
 }
 
 export const useLogStatuses = ref([
