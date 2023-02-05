@@ -1,27 +1,28 @@
 <template>
-  <div class="page_header center">
-    <Logo :color="'black'" />
-  </div>
-
-  <div class="welcome">
-    <h1 class="title">Welcome to Subrelay</h1>
-    <div class="text">
-      <span style="margin-right: 5px">Please connect your</span>
-      <n-avatar round :size="24" src="https://polkadot.js.org/logo.svg" />
-      <span style="margin-left: 5px">
-        Polkadot{.js} wallet to start using SubRelay.</span
-      >
+  <n-spin :show="loading">
+    <div class="page_header center">
+      <Logo :color="'black'" />
     </div>
-    <n-button
-      type="primary"
-      round
-      size="large"
-      @click="showModal = true"
-      :disabled="loading"
-    >
-      Connect Wallet
-    </n-button>
-  </div>
+
+    <div class="welcome" v-if="!loading">
+      <h1 class="title">Welcome to Subrelay</h1>
+      <div class="text">
+        <span style="margin-right: 5px">Please connect your</span>
+        <n-avatar round :size="24" src="https://polkadot.js.org/logo.svg" />
+        <span style="margin-left: 5px">
+          Polkadot{.js} wallet to start using SubRelay.</span
+        >
+      </div>
+      <n-button
+        type="primary"
+        round
+        size="large"
+        @click="showModal = true"
+      >
+        Connect Wallet
+      </n-button>
+    </div>
+  </n-spin>
 
   <AccountModal v-model="showModal" />
 </template>
@@ -29,12 +30,25 @@
 <script setup>
 import Logo from '@/components/Common/Logo';
 import AccountModal from '@/components/Misc/AccountModal';
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const store = useStore();
 const showModal = ref(false);
 const loading = computed(() => store.state.account.loading);
+const selectedAccount = computed(() => store.state.account.selected);
+
+watch(
+  selectedAccount,
+  () => {
+    router.push({ name: 'home' });
+  },
+  { immediate: true }
+);
+
 </script>
 
 <style lang="scss" scoped>
