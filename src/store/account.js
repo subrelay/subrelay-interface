@@ -1,4 +1,5 @@
 const MAX_RETRY = 10;
+const CONNECTED_ACCOUNT = 'polkadot-js-connected';
 
 const getInjectedExtension = () => {
   let counter = 0;
@@ -47,6 +48,7 @@ export default {
       );
       if (selected) {
         state.selected = selected;
+        localStorage.setItem(CONNECTED_ACCOUNT, JSON.stringify(selected));
       }
     },
   },
@@ -60,6 +62,12 @@ export default {
         const accounts = await result.accounts.get();
         commit('setAccounts', accounts);
         commit('setSigner', result.signer);
+
+        const connectedAccount = localStorage.getItem(CONNECTED_ACCOUNT);
+
+        if (connectedAccount) {
+          commit('setSelected', JSON.parse(connectedAccount));
+        }
       } catch (e) {
         console.error('e', e);
       } finally {
