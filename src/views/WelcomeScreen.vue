@@ -13,12 +13,7 @@
           Polkadot{.js} wallet to start using SubRelay.</span
         >
       </div>
-      <n-button
-        type="primary"
-        round
-        size="large"
-        @click="showModal = true"
-      >
+      <n-button type="primary" round size="large" @click="showModal = true">
         Connect Wallet
       </n-button>
     </div>
@@ -43,12 +38,11 @@ const selectedAccount = computed(() => store.state.account.selected);
 
 watch(
   selectedAccount,
-  () => {
-    router.push({ name: 'home' });
+  (selectedAccount) => {
+    if (selectedAccount) router.push('/');
   },
   { immediate: true }
 );
-
 </script>
 
 <style lang="scss" scoped>

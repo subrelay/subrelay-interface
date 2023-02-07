@@ -22,43 +22,48 @@
         </n-button>
       </template>
 
-      <n-space vertical>
-        <n-card
-          small
-          hoverable
-          class="cursor-pointer"
-          v-for="(account, index) in accounts"
-          @click="onSelectAccount(account)"
-          :key="index"
-          :bordered="currentAcc.address === account.address"
-          :embedded="currentAcc.address === account.address"
-        >
-          <n-space
-            align="center"
-            justify="space-between"
-            :wrap="false"
-            :wrap-item="false"
-            style="max-width: 100%%"
+      <n-scrollbar style="max-height: 50vh" trigger="none">
+        <n-space vertical>
+          <n-card
+            small
+            hoverable
+            class="cursor-pointer"
+            v-for="(account, index) in accounts"
+            @click="onSelectAccount(account)"
+            style="max-width: 97%"
+            :key="index"
+            :bordered="currentAcc.address === account.address"
+            :embedded="currentAcc.address === account.address"
           >
-            <n-space align="center" :wrap-item="false" style="max-width: 95%">
-              <PolkadotAccountIcon @click="onCopy(account)" />
+            <n-space
+              align="center"
+              justify="space-between"
+              :wrap="false"
+              :wrap-item="false"
+              style="max-width: 100%%"
+            >
+              <n-space align="center" :wrap-item="false" style="max-width: 95%">
+                <PolkadotAccountIcon @click="onCopy(account)" />
 
-              <div style="max-width: 90%" class="text-ellipsis">
-                <div class="account_name text-ellipsis">{{ account.name }}</div>
-                <n-text depth="3" class="account_address">
-                  {{ account.address }}
-                </n-text>
-              </div>
+                <div style="max-width: 90%" class="text-ellipsis">
+                  <div class="account_name text-ellipsis">
+                    {{ account.name }}
+                  </div>
+                  <n-text depth="3" class="account_address">
+                    {{ account.address }}
+                  </n-text>
+                </div>
+              </n-space>
+
+              <Icon
+                width="16"
+                icon="line-md:confirm"
+                v-if="currentAcc.address === account.address"
+              />
             </n-space>
-
-            <Icon
-              width="16"
-              icon="line-md:confirm"
-              v-if="currentAcc.address === account.address"
-            />
-          </n-space>
-        </n-card>
-      </n-space>
+          </n-card>
+        </n-space>
+      </n-scrollbar>
 
       <template #action>
         <div style="text-align: right">

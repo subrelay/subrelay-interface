@@ -18,10 +18,7 @@ const defaultConfig = () => ({
       dependOnName: 'trigger',
       config: {
         channel: null,
-        config: {
-          headers: [{ key: null, value: null }],
-          url: null,
-        },
+        config: { headers: [{ key: null, value: null }], url: null },
       },
     },
   ],
@@ -66,7 +63,7 @@ const editor = reactive({
       'trigger',
       !!(
         this.workflow.tasks[this.triggerIdx].config.eventId &&
-        this.workflow.tasks[this.triggerIdx].chainUuid
+        this.workflow.chainUuid
       )
     );
   },
