@@ -40,11 +40,13 @@
 <script setup>
 import AccountModal from '@/components/Misc/AccountModal';
 import { ref, computed, h } from 'vue';
+import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { useMessage } from 'naive-ui';
 import { Icon } from '@iconify/vue';
 
 const store = useStore();
+const router = useRouter();
 const message = useMessage();
 const showModal = ref(false);
 const showMenu = ref(false);

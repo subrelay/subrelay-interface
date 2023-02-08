@@ -30,22 +30,24 @@ export default {
     accounts: [],
     signer: null,
     selected: null,
-    loading: false,
+    loading: null,
   }),
 
   mutations: {
+    setLoading: (state, isLoading) => (state.loading = isLoading),
+
+    setSigner: (state, signer) => (state.signer = signer),
+
     setAccounts: (state, accounts) => {
       state.accounts = accounts;
-      state.selected = accounts[0];
+      // state.selected = accounts[0];
     },
-    setLoading: (state, isLoading) => (state.loading = isLoading),
-    setSigner: (state, signer) => {
-      state.signer = signer;
-    },
+
     setSelected: (state, address) => {
       const selected = state.accounts.find(
         (account) => account.address === address
       );
+
       if (selected) {
         state.selected = selected;
         localStorage.setItem(CONNECTED_ACCOUNT, JSON.stringify(selected));
@@ -66,7 +68,7 @@ export default {
         const connectedAccount = localStorage.getItem(CONNECTED_ACCOUNT);
 
         if (connectedAccount) {
-          commit('setSelected', JSON.parse(connectedAccount));
+          commit('setSelected', JSON.parse(connectedAccount).address);
         }
       } catch (e) {
         console.error('e', e);

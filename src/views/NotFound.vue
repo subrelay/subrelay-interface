@@ -20,9 +20,8 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 
 const onBackToHome = () => {
-  router.push({ name: 'home' });
+  router.push('/');
 };
-
 </script>
 
 <style lang="scss" scoped>
@@ -37,5 +36,4 @@ const onBackToHome = () => {
   align-items: center;
   justify-content: center;
 }
-
 </style>

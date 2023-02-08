@@ -52,15 +52,13 @@
 
       <n-space vertical>
         <n-grid cols="3">
-          <n-gi>
+          <n-gi span="2">
             <n-space vertical>
               <div class="text-semi-bold">Chain</div>
               <div>{{ workflow.chainName }}</div>
             </n-space>
           </n-gi>
-        </n-grid>
 
-        <n-grid cols="3">
           <n-gi>
             <n-space vertical>
               <div class="text-semi-bold">Event</div>

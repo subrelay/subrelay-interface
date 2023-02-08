@@ -36,11 +36,11 @@
                 type="primary"
                 class="action-button"
                 icon-placement="right"
-                @click="quitEditor"
+                @click="onChangeStep(1)"
               >
-                Finish
+                Back
                 <template #icon>
-                  <Icon icon="line-md:confirm" class="icon" />
+                  <Icon icon="line-md:chevron-small-double-left" class="icon" />
                 </template>
               </n-button>
 
@@ -48,11 +48,12 @@
                 type="primary"
                 class="action-button"
                 icon-placement="right"
-                @click="onChangeStep(1)"
+                @click="createWorkflow"
+                :disabled="!isTriggerCompleted || !isActionCompleted"
               >
-                Back
+                Finish
                 <template #icon>
-                  <Icon icon="line-md:chevron-small-double-left" class="icon" />
+                  <Icon icon="line-md:confirm" class="icon" />
                 </template>
               </n-button>
             </n-space>
@@ -107,8 +108,6 @@
       </n-space>
     </n-layout-content>
   </n-layout>
-
-  <n-space vertical :size="50"> </n-space>
 </template>
 
 <script setup>
@@ -292,6 +291,7 @@ async function quitEditor() {
 async function createWorkflow() {
   EditorData.cleanUpWorkflow();
   await store.dispatch('workflow/postWorkflow', EditorData.workflow);
+  EditorData.loadWorkflow();
   router.push({ name: 'workflows' });
   message.success('Workflow created!');
 }

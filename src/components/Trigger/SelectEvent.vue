@@ -33,10 +33,7 @@
       >
         <template #empty>
           <n-empty description="No event found">
-            <template
-              #extra
-              v-if="!EditorData.workflow.tasks[EditorData.triggerIdx].chainUuid"
-            >
+            <template #extra v-if="!EditorData.workflow.chainUuid">
               <n-button size="small" @click="onBack">
                 Select a chain first
               </n-button>

@@ -8,7 +8,7 @@
     <n-spin description="Loading data... Please wait" size="small" />
   </n-space>
 
-  <n-space vertical :size="30">
+  <n-space vertical :size="30" v-else>
     <div v-if="workflow" class="page_title">{{ workflow.name }}</div>
 
     <n-tabs

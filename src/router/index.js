@@ -12,10 +12,11 @@ const router = createRouter({
     },
     {
       path: '/home',
-      name: 'home',
+      // name: 'home',
       component: () => import('../views/Home.vue'),
       meta: { title: 'Home' },
       children: [
+        { path: '', redirect: { name: 'workflow' } },
         {
           path: 'workflows',
           name: 'workflows',
