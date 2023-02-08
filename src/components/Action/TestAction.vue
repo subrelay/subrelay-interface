@@ -105,7 +105,7 @@ onBeforeUnmount(() => eventBus.off('toggleTestAction', resetTest));
 
 function resetTest({ isDisabled }) {
   if (isDisabled) {
-    store.commit('setTested', false);
+    store.commit('task/setTested', false);
   }
 }
 

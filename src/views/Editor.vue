@@ -291,6 +291,7 @@ async function quitEditor() {
 async function createWorkflow() {
   EditorData.cleanUpWorkflow();
   await store.dispatch('workflow/postWorkflow', EditorData.workflow);
+  EditorData.loadWorkflow();
   router.push({ name: 'workflows' });
   message.success('Workflow created!');
 }
