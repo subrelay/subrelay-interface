@@ -125,6 +125,7 @@ import {
   onBeforeMount,
   onBeforeUnmount,
   onMounted,
+  onUnmounted,
 } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useDialog, useMessage } from 'naive-ui';
@@ -292,6 +293,7 @@ async function createWorkflow() {
   EditorData.cleanUpWorkflow();
   await store.dispatch('workflow/postWorkflow', EditorData.workflow);
   EditorData.loadWorkflow();
+  store.commit('task/reset');
   router.push({ name: 'workflows' });
   message.success('Workflow created!');
 }
