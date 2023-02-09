@@ -3,75 +3,79 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: '/', redirect: '/welcome' },
     {
-      path: '/welcome',
-      name: 'welcome',
-      component: () => import('../views/WelcomeScreen.vue'),
-      meta: { title: 'Welcome' },
-    },
-    {
-      path: '/home',
-      // name: 'home',
-      component: () => import('../views/Home.vue'),
-      meta: { title: 'Home' },
+      path: '/',
+      redirect: '/dashboard/workflows',
+      component: async () => import('@/views/Home.vue'),
       children: [
-        { path: '', redirect: { name: 'workflow' } },
         {
-          path: 'workflows',
-          name: 'workflows',
-          component: () => import('../views/Workflows.vue'),
-        },
-        {
-          path: 'history',
-          name: 'history',
-          component: () => import('../views/History.vue'),
-        },
-        {
-          path: '/workflow-summary/:id',
-          props: true,
-          component: () => import('../views/WorkflowSummary.vue'),
-          meta: { title: 'Workflow Summary' },
+          path: '/dashboard',
+          component: () => import('@/views/Dashboard.vue'),
+          meta: { title: 'Dashboard', signInRequired: true },
           children: [
-            { path: '', redirect: { name: 'overview' } },
+            { path: '', redirect: { name: 'workflows' } },
             {
-              props: true,
-              path: 'overview',
-              name: 'overview',
-              component: () =>
-                import('@/components/WorkflowDetails/Overview.vue'),
+              path: 'workflows',
+              name: 'workflows',
+              component: () => import('../views/Workflows.vue'),
             },
             {
-              path: 'logs',
-              name: 'logs',
-              component: () =>
-                import('@/components/WorkflowDetails/WorkflowLogs.vue'),
+              path: 'history',
+              name: 'history',
+              component: () => import('../views/History.vue'),
+            },
+            {
+              path: '/workflow-summary/:id',
+              props: true,
+              component: () => import('../views/WorkflowSummary.vue'),
+              meta: { title: 'Workflow Summary' },
+              children: [
+                { path: '', redirect: { name: 'overview' } },
+                {
+                  props: true,
+                  path: 'overview',
+                  name: 'overview',
+                  component: () =>
+                    import('@/components/WorkflowDetails/Overview.vue'),
+                },
+                {
+                  path: 'logs',
+                  name: 'logs',
+                  component: () =>
+                    import('@/components/WorkflowDetails/WorkflowLogs.vue'),
+                },
+              ],
+            },
+          ],
+        },
+        {
+          path: '/editor/:id',
+          props: true,
+          component: () => import('../views/Editor.vue'),
+          meta: { title: 'Editor', signInRequired: true },
+          children: [
+            { path: '', redirect: { name: 'trigger' } },
+            {
+              path: 'trigger',
+              name: 'trigger',
+              component: () => import('@/components/Trigger/Trigger.vue'),
+            },
+            {
+              path: 'action',
+              name: 'action',
+              component: () => import('@/components/Action/Action.vue'),
             },
           ],
         },
       ],
     },
     {
-      path: '/editor/:id',
-      props: true,
-      component: () => import('../views/Editor.vue'),
-      meta: {
-        title: 'Editor',
-      },
-      children: [
-        { path: '', redirect: { name: 'trigger' } },
-        {
-          path: 'trigger',
-          name: 'trigger',
-          component: () => import('@/components/Trigger/Trigger.vue'),
-        },
-        {
-          path: 'action',
-          name: 'action',
-          component: () => import('@/components/Action/Action.vue'),
-        },
-      ],
+      path: '/welcome',
+      name: 'welcome',
+      component: () => import('../views/WelcomeScreen.vue'),
+      meta: { title: 'Welcome' },
     },
+
     {
       path: '/:pathMatch(.*)*',
       name: 'notfound',
@@ -83,7 +87,17 @@ const router = createRouter({
 
 router.beforeResolve((to, from, next) => {
   document.title = `${to.meta.title} | SubRelay`;
-  next();
+  if (to.matched.some((record) => record.meta.signInRequired)) {
+    const connectedAccount = localStorage.getItem('polkadot-js-connected');
+
+    if (connectedAccount) {
+      next();
+    } else {
+      next({ path: '/welcome' });
+    }
+  } else {
+    next();
+  }
 });
 
 export default router;

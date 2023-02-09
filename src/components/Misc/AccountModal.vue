@@ -106,7 +106,7 @@ function onSelectAccount(account) {
 }
 
 function onConfirm() {
-  store.commit('account/setSelected', currentAcc.value.address);
+  store.commit('account/setSelected', currentAcc.value);
   emits('update:modelValue', false);
 
   if (props.isSigningIn) {

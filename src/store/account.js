@@ -38,19 +38,15 @@ export default {
 
     setSigner: (state, signer) => (state.signer = signer),
 
-    setAccounts: (state, accounts) => {
-      state.accounts = accounts;
-      // state.selected = accounts[0];
-    },
+    setAccounts: (state, accounts) => (state.accounts = accounts),
 
-    setSelected: (state, address) => {
-      const selected = state.accounts.find(
-        (account) => account.address === address
-      );
+    setSelected: (state, selected) => {
+      state.selected = selected;
 
       if (selected) {
-        state.selected = selected;
         localStorage.setItem(CONNECTED_ACCOUNT, JSON.stringify(selected));
+      } else {
+        localStorage.removeItem(CONNECTED_ACCOUNT);
       }
     },
   },
@@ -62,13 +58,23 @@ export default {
         const extension = await getInjectedExtension();
         const result = await extension.enable();
         const accounts = await result.accounts.get();
+
         commit('setAccounts', accounts);
         commit('setSigner', result.signer);
 
         const connectedAccount = localStorage.getItem(CONNECTED_ACCOUNT);
 
         if (connectedAccount) {
-          commit('setSelected', JSON.parse(connectedAccount).address);
+          const savedAccExisted = accounts.find(
+            (account) =>
+              account.address === JSON.parse(connectedAccount).address
+          );
+
+          if (savedAccExisted) {
+            commit('setSelected', JSON.parse(connectedAccount));
+          } else {
+            commit('setSelected', null);
+          }
         }
       } catch (e) {
         console.error('e', e);
