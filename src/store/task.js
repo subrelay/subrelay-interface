@@ -21,6 +21,11 @@ export default {
     setTested: (state, data) => (state.tested = { ...state.tested, ...data }),
     setTestResult: (state, data) =>
       (state.testResult = { ...state.tested, ...data }),
+    reset: (state) => {
+      state.runningTest = {};
+      state.testResult = {};
+      state.tested = {};
+    },
   },
 
   actions: {

@@ -103,6 +103,7 @@ const columns = ref([
     render: ({ chain }) => {
       return h('div', { style: { display: 'flex', alignItems: 'center' } }, [
         h(NAvatar, {
+          style: { background: 'transparent' },
           src: useGetChainImg(chain.name, chains.value),
           round: true,
           size: 'small',
