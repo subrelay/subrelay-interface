@@ -45,9 +45,11 @@ import {
   useRenderSortIcon,
   useRenderCell,
   useLogStatuses,
+  useGetChainImg,
 } from '@/composables';
 
 const store = useStore();
+const chains = computed(() => store.state.chain.chains);
 
 function fetchData() {
   store.dispatch('history/getLogs');
@@ -85,15 +87,20 @@ const columns = ref([
     sorter: true,
     sortOrder: false,
     renderSorterIcon: useRenderSortIcon,
-    render: (workflow) => {
+    render: ({ chain }) => {
       return h('div', { style: { display: 'flex', alignItems: 'center' } }, [
         h(NAvatar, {
-          src: 'https://polkadot.js.org/apps/static/westend_colour.eb7969da..svg',
+          style: { background: 'transparent' },
+          src: useGetChainImg(chain.name, chains.value),
           round: true,
           size: 'small',
           color: 'white',
         }),
-        h('div', { style: { marginLeft: '12px', padding: '4px 0' } }, 'Westen'),
+        h(
+          'div',
+          { style: { marginLeft: '12px', padding: '4px 0' } },
+          chain.name
+        ),
       ]);
     },
   },
