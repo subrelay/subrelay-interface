@@ -7,7 +7,7 @@
 
     <div class="input-item">
       <div class="title">Header:</div>
-      <n-text code v-if="config.headers[0].key !== null">
+      <n-text code v-if="config.headers[0].key">
         {{ headerObj }}
       </n-text>
     </div>

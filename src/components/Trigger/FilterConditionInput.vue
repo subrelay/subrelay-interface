@@ -10,6 +10,7 @@
             filterable
             clearable
             placeholder="Select Property"
+            :consistent-menu-width="false"
             :filter="useDropdownFilter"
             :value-field="'name'"
             :render-label="useRenderDropdownLabel"

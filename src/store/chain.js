@@ -38,10 +38,10 @@ export default {
       }
     },
 
-    async getEvents({ commit }, uuid) {
+    async getEvents({ commit }, chainUuid) {
       commit('setLoading', { getEventsLoading: true });
       try {
-        const events = await API.getEvents(uuid);
+        const events = await API.getEvents(chainUuid);
         commit('getEvents', events);
       } catch (error) {
         commit('getChains', []);
@@ -51,10 +51,10 @@ export default {
       }
     },
 
-    async getEvent({ commit }, { uuid, eventId }) {
+    async getEvent({ commit }, { chainUuid, eventId }) {
       commit('setLoading', { getEventLoading: true });
       try {
-        const event = await API.getEvent(uuid, eventId);
+        const event = await API.getEvent(chainUuid, eventId);
 
         commit('getEvent', event);
       } catch (error) {

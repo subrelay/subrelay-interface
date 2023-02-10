@@ -82,10 +82,10 @@ export const useQuery = (module, columns, fetchData = () => {}) => {
     pushQueryToRoute({ ...query.value, offset });
   }
 
-  function handleSelectChain(uuid) {
-    selectedChain.value = uuid || undefined;
+  function handleSelectChain(chainUuid) {
+    selectedChain.value = chainUuid || undefined;
 
-    pushQueryToRoute({ ...query.value, uuid: selectedChain.value });
+    pushQueryToRoute({ ...query.value, chainUuid: selectedChain.value });
   }
 
   function handleSelectStatus(status) {
@@ -104,7 +104,7 @@ export const useQuery = (module, columns, fetchData = () => {}) => {
 
   function getQueryFromRoute(query) {
     return {
-      uuid: query.uuid || undefined,
+      chainUuid: query.chainUuid || undefined,
       status: query.status || undefined,
       search: (query.search && query.search.trim()) || undefined,
       order: query.order || undefined,
@@ -118,9 +118,9 @@ export const useQuery = (module, columns, fetchData = () => {}) => {
     const params = getQueryFromRoute(to.query);
     store.commit(`${module}/saveQuery`, params);
 
-    const { order, sort, search, uuid, status } = to.query;
+    const { order, sort, search, chainUuid, status } = to.query;
     searchText.value = search || '';
-    selectedChain.value = uuid;
+    selectedChain.value = chainUuid;
     selectedStatus.value = status;
 
     // Clear previous order if different
@@ -169,9 +169,9 @@ export const useQuery = (module, columns, fetchData = () => {}) => {
     const params = query.value || getQueryFromRoute(route.query);
     store.commit(`${module}/saveQuery`, params);
 
-    const { order, sort, search, uuid, status } = route.query;
+    const { order, sort, search, chainUuid, status } = route.query;
     searchText.value = search || '';
-    selectedChain.value = uuid;
+    selectedChain.value = chainUuid;
     selectedStatus.value = status;
 
     if (order) {

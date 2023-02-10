@@ -66,6 +66,10 @@ const darkThemeOverrides = {
     // textColor2: string;
     // textColor3: string;
   },
+  Radio: {
+    buttonColorActive: '#0000',
+    buttonTextColorActive: 'rgba(230, 0, 122, 1)',
+  },
 };
 
 onBeforeMount(() => {

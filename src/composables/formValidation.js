@@ -8,7 +8,7 @@ export const useFormValidation = (taskName, emits) => {
     formRef.value.validate(async (errors) => {
       if (errors) {
         EditorData.setError(taskName, true);
-        EditorData.setComplete(taskName, false);
+        // EditorData.setComplete(taskName, false);
         return;
       }
 

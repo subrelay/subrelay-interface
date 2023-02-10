@@ -201,12 +201,12 @@ export default {
     });
   },
 
-  async getLogs({ account, signer }) {
+  async getLogs({ account, signer, params }) {
     return request({
       account,
       signer,
       method: 'get',
-      endpoint: '/workflow-logs',
+      endpoint: '/workflow-logs' + buildQueryStr(params),
     });
   },
 };
