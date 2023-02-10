@@ -9,12 +9,14 @@ export default {
     query: null,
     logs: [],
     loading: null,
+    itemCount: null,
   }),
 
   mutations: {
     saveQuery: (state, query) => (state.query = query),
     getLogs: (state, logs) => (state.logs = logs),
     setLoading: (state, isLoading) => (state.loading = isLoading),
+    getItemCount: (state, itemCount) => (state.itemCount = itemCount),
   },
 
   actions: {
@@ -23,7 +25,7 @@ export default {
         commit('setLoading', true);
         try {
           const {
-            data: { workflowLogs },
+            data: { workflowLogs, total },
           } = await Api.getLogs({
             account: rootState.account.selected,
             signer: rootState.account.signer,
@@ -31,6 +33,7 @@ export default {
           });
 
           commit('getLogs', workflowLogs);
+          commit('getItemCount', total);
         } catch (error) {
           commit('getLogs', []);
           console.error(error);
