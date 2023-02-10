@@ -3,6 +3,15 @@
     <n-layout-header style="padding: 5px 3rem" bordered>
       <!-- HEADER -->
       <n-space align="center" justify="space-between">
+        <!-- Name -->
+        <ShowOrEdit
+          :onUpdateValue="onUpdateName"
+          :value="EditorData.workflow.name"
+        />
+
+        <!-- Logo -->
+        <Logo @click="quitEditor" />
+
         <!-- Buttons -->
         <n-space>
           <n-button
@@ -49,7 +58,12 @@
                 class="action-button"
                 icon-placement="right"
                 @click="createWorkflow"
-                :disabled="!isTriggerCompleted || !isActionCompleted"
+                :disabled="
+                  !isTriggerCompleted ||
+                  !isActionCompleted ||
+                  isErrorWithTrigger ||
+                  isErrorWithAction
+                "
               >
                 Finish
                 <template #icon>
@@ -59,15 +73,6 @@
             </n-space>
           </div>
         </n-space>
-
-        <!-- Logo -->
-        <Logo @click="quitEditor" />
-
-        <!-- Name -->
-        <ShowOrEdit
-          :onUpdateValue="onUpdateName"
-          :value="EditorData.workflow.name"
-        />
       </n-space>
     </n-layout-header>
 
@@ -323,13 +328,13 @@ onBeforeMount(async () => {
   // before data is completely loaded
   EditorData.loadWorkflow(data);
 
-  const uuid = EditorData.workflow.chainUuid;
+  const chainUuid = EditorData.workflow.chainUuid;
   const eventId = EditorData.workflow.tasks[0].config.eventId;
 
-  if (uuid) {
-    store.dispatch('chain/getEvents', uuid);
+  if (chainUuid) {
+    store.dispatch('chain/getEvents', chainUuid);
     if (eventId) {
-      store.dispatch('chain/getEvent', { uuid, eventId });
+      store.dispatch('chain/getEvent', { chainUuid, eventId });
     }
   }
 

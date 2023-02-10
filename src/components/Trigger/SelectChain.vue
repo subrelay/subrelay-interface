@@ -38,8 +38,8 @@ const [{ formRef }, { validateForm }] = useFormValidation('trigger', emits);
 const store = useStore();
 const eventBus = inject('eventBus');
 
-function handleSelectChain(uuid) {
-  EditorData.setChainUuid(uuid);
+function handleSelectChain(chainUuid) {
+  EditorData.setChainUuid(chainUuid);
   EditorData.setTrigger({ eventId: null });
   EditorData.setTrigger({ conditions: [] });
 
@@ -47,8 +47,8 @@ function handleSelectChain(uuid) {
 
   validateForm({ changeStep: false });
 
-  if (uuid) {
-    store.dispatch('chain/getEvents', uuid);
+  if (chainUuid) {
+    store.dispatch('chain/getEvents', chainUuid);
   } else {
     store.commit('chain/getEvents', []);
   }

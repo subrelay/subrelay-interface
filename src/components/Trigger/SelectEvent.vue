@@ -66,7 +66,7 @@ const store = useStore();
 const isShown = ref(false);
 const eventBus = inject('eventBus');
 const options = computed(() => store.state.chain.events);
-const uuid = computed(() => EditorData.workflow.chainUuid);
+const chainUuid = computed(() => EditorData.workflow.chainUuid);
 const loading = computed(() => store.state.chain.loading.getEventsLoading);
 
 function onBack() {
@@ -81,7 +81,7 @@ function handleSelectEvent(eventId) {
   validateForm({ changeStep: false });
 
   if (eventId) {
-    store.dispatch('chain/getEvent', { uuid: uuid.value, eventId });
+    store.dispatch('chain/getEvent', { chainUuid: chainUuid.value, eventId });
   } else {
     store.commit('chain/getEvent', {});
   }

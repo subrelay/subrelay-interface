@@ -51,8 +51,8 @@ const editor = reactive({
     this.workflow.name = name ? name : 'Untitled';
   },
 
-  setChainUuid(uuid) {
-    this.workflow.chainUuid = uuid;
+  setChainUuid(chainUuid) {
+    this.workflow.chainUuid = chainUuid;
   },
 
   setTrigger(data) {

@@ -168,10 +168,10 @@ const actionTask = computed(() => {
 
 onMounted(async () => {
   const { eventId, conditions } = triggerTask.value.config;
-  const uuid = workflow.value.chainUuid;
+  const chainUuid = workflow.value.chainUuid;
 
   if (eventId) {
-    const event = await API.getEvent(uuid, eventId);
+    const event = await API.getEvent(chainUuid, eventId);
     const { name, pallet } = event;
     eventString.value = `${pallet}.${name}`;
     filtersCondition.value = conditions;

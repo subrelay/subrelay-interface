@@ -5,7 +5,7 @@
   "status": "running",
   "name": "TESTING FOO",
   "chain": {
-    "uuid": "8b6af998-a145-46f5-8c04-a2d5c717e82a",
+    "chainUuid": "8b6af998-a145-46f5-8c04-a2d5c717e82a",
     "name": "Polkadot"
   },
   "tasks": [
@@ -15,7 +15,7 @@
       "type": "trigger",
       "config": {
         "eventId": 25,
-        "uuid": "8b6af998-a145-46f5-8c04-a2d5c717e82a",
+        "chainUuid": "8b6af998-a145-46f5-8c04-a2d5c717e82a",
         "conditions": [
           [
             {

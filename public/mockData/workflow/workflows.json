@@ -7,7 +7,7 @@
       "updatedAt": 3546634,
       "status": "running",
       "chain": {
-        "uuid": "uasdasdsd",
+        "chainUuid": "uasdasdsd",
         "name": "Acala"
       }
     },
@@ -18,7 +18,7 @@
       "updatedAt": 546546546546,
       "status": "pausing",
       "chain": {
-        "uuid": "uasdasdsd",
+        "chainUuid": "uasdasdsd",
         "name": "Kusama"
       }
     },
@@ -29,7 +29,7 @@
       "updatedAt": 56546546546546,
       "status": "running",
       "chain": {
-        "uuid": "uasdasdsd",
+        "chainUuid": "uasdasdsd",
         "name": "Polkadot"
       }
     },
@@ -40,7 +40,7 @@
       "updatedAt": 546546546546,
       "status": "pausing",
       "chain": {
-        "uuid": "uasdasdsd",
+        "chainUuid": "uasdasdsd",
         "name": "Acala"
       }
     }

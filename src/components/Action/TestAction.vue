@@ -8,7 +8,7 @@
         <div class="title">Input</div>
       </template>
 
-      <n-skeleton v-if="runningTest" text :repeat="5" />
+      <n-skeleton v-if="runningTest" text :repeat="2" />
       <WebhookInput v-else :config="config.config" />
     </n-card>
 
@@ -59,16 +59,6 @@
         :disabled="runningTest || postWorkflowLoading"
       >
         {{ isTested ? 'Retest' : 'Test' }}
-      </n-button>
-      <n-button
-        class="action_button"
-        type="primary"
-        v-if="isTested"
-        @click="eventBus.emit('finish')"
-        :loading="postWorkflowLoading"
-        :disabled="runningTest || postWorkflowLoading"
-      >
-        Finish
       </n-button>
     </n-space>
   </n-space>
