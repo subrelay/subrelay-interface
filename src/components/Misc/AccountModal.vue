@@ -69,8 +69,9 @@
         <div style="text-align: right">
           <n-button
             type="primary"
+            :loading="loading"
             @click="onConfirm"
-            :disabled="!currentAcc.address"
+            :disabled="!currentAcc.address || loading"
           >
             Confirm
           </n-button>
@@ -86,10 +87,10 @@ import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import { useMessage } from 'naive-ui';
 import { computed, ref, watch } from 'vue';
+import { generateGetToken } from '@/api';
 
 const props = defineProps({
   modelValue: { type: Boolean },
-  isSigningIn: { type: Boolean, default: true },
 });
 const emits = defineEmits(['update:modelValue']);
 
@@ -98,19 +99,27 @@ const router = useRouter();
 const message = useMessage();
 
 const currentAcc = ref({});
+const loading = ref(false);
 const storedAccount = computed(() => store.state.account.selected);
+const signer = computed(() => store.state.account.signer);
 const accounts = computed(() => store.state.account.accounts);
 
 function onSelectAccount(account) {
   currentAcc.value = account;
 }
 
-function onConfirm() {
+async function onConfirm() {
   store.commit('account/setSelected', currentAcc.value);
-  emits('update:modelValue', false);
 
-  if (props.isSigningIn) {
+  try {
+    loading.value = true;
+    await generateGetToken({ account: storedAccount.value, signer: signer.value });
+    emits('update:modelValue', false);
     router.push({ name: 'workflows' });
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
   }
 }
 function onCopy({ address }) {

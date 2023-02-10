@@ -5,10 +5,9 @@ const instance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
 });
 
-const SAVED_AUTH_TOKEN = 'subrelay-auth-token';
 const EXPIRED_TIME = 82800000; // 23 hours in ms
 
-const getSavedAuthToken = (address) => {
+export const getSavedAuthToken = (address) => {
   const json = localStorage.getItem(address);
 
   if (json) {
@@ -31,7 +30,7 @@ const saveAuthToken = (address, token, generatedAt) => {
   localStorage.setItem(address, json);
 };
 
-const generateGetToken = async ({ account, signer }) => {
+export const generateGetToken = async ({ account, signer }) => {
   const savedToken = getSavedAuthToken(account.address);
 
   if (savedToken) {
