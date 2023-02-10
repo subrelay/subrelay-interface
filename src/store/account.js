@@ -52,7 +52,7 @@ export default {
   },
 
   actions: {
-    async loadAccounts({ commit }) {
+    async loadAccounts({ commit, state }) {
       commit('setLoading', true);
       try {
         const extension = await getInjectedExtension();
@@ -62,17 +62,10 @@ export default {
         commit('setAccounts', accounts);
         commit('setSigner', result.signer);
 
-        const connectedAccount = localStorage.getItem(CONNECTED_ACCOUNT);
-
-        if (connectedAccount) {
-          const savedAccExisted = accounts.find(
-            (account) =>
-              account.address === JSON.parse(connectedAccount).address
-          );
-
-          if (savedAccExisted) {
-            commit('setSelected', JSON.parse(connectedAccount));
-          } else {
+        console.log('account loaded');
+        if (state.selected) {
+          const isAccountExisted = !!accounts.find(({ address }) => address === state.selected.address);
+          if (!isAccountExisted) {
             commit('setSelected', null);
           }
         }
@@ -82,5 +75,13 @@ export default {
         commit('setLoading', false);
       }
     },
+
+    loadConnectedAccount({ commit, dispatch }) {
+      const connectedAccount = localStorage.getItem(CONNECTED_ACCOUNT);
+      if (connectedAccount) {
+        commit('setSelected', JSON.parse(connectedAccount));
+        dispatch('loadAccounts');
+      }
+    }
   },
 };

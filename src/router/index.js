@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
+import { getSavedAuthToken } from '../api';
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -89,8 +90,9 @@ router.beforeResolve((to, from, next) => {
   document.title = `${to.meta.title} | SubRelay`;
   if (to.matched.some((record) => record.meta.signInRequired)) {
     const connectedAccount = localStorage.getItem('polkadot-js-connected');
+    const authToken = connectedAccount ? getSavedAuthToken(JSON.parse(connectedAccount).address) : null;
 
-    if (connectedAccount) {
+    if (authToken) {
       next();
     } else {
       next({ path: '/welcome' });

@@ -34,12 +34,12 @@
     </n-button>
   </n-dropdown>
 
-  <AccountModal v-model="showModal" :isSigningIn="false" />
+  <AccountModal v-model="showModal" />
 </template>
 
 <script setup>
 import AccountModal from '@/components/Misc/AccountModal';
-import { ref, computed, h } from 'vue';
+import { ref, computed, h, onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { useMessage } from 'naive-ui';
@@ -67,6 +67,7 @@ const profileOptions = ref([
     icon: renderIcon('octicon:sign-out-16'),
   },
 ]);
+
 const walletAccount = computed(() => store.state.account.selected || {});
 
 function renderIcon(icon) {
@@ -84,6 +85,7 @@ function onSelectProfileOption(key) {
   }
 
   if (key === 'signOut') {
+    localStorage.removeItem(walletAccount.value.address);
     store.commit('account/setSelected', null);
     router.push({ name: 'welcome' });
   }
