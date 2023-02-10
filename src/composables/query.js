@@ -83,7 +83,6 @@ export const useQuery = (module, columns, fetchData = () => {}) => {
   }
 
   function handleSelectChain(chainUuid) {
-    console.log('chainUuid', chainUuid);
     selectedChain.value = chainUuid || undefined;
 
     pushQueryToRoute({ ...query.value, chainUuid: selectedChain.value });
