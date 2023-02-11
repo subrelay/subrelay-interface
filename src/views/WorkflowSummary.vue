@@ -16,7 +16,7 @@
       default-value="overview"
       justify-content="space-evenly"
       type="card"
-      pane-class="tab-content"
+      :pane-class="`tab-content ${darkMode ? 'dark' : ''}`"
       :value="activeTab"
       @update:value="onChangeTab"
     >
@@ -47,6 +47,7 @@ const activeTab = ref(null);
 const workflow = computed(() => store.state.workflow.workflow);
 const loading = computed(() => store.state.workflow.loading);
 const selectedAccount = computed(() => store.state.account.selected);
+const darkMode = computed(() => store.state.global.isDarkMode);
 
 function onChangeTab(tab) {
   activeTab.value = tab;
@@ -73,5 +74,9 @@ onBeforeMount(async () => {
   border: 1px solid rgb(239, 239, 245);
   border-top: none;
   padding: 1rem !important;
+
+  &.dark {
+    border-color: rgba(255, 255, 255, 0.09);
+  }
 }
 </style>
