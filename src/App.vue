@@ -16,6 +16,7 @@ onBeforeMount(() => {
   store.dispatch('chain/getChains');
   store.dispatch('task/getOperators');
   store.dispatch('account/loadConnectedAccount');
+  store.dispatch('global/loadSiderState');
 });
 </script>
 

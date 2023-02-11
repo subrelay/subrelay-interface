@@ -62,9 +62,10 @@ export default {
         commit('setAccounts', accounts);
         commit('setSigner', result.signer);
 
-        console.log('account loaded');
         if (state.selected) {
-          const isAccountExisted = !!accounts.find(({ address }) => address === state.selected.address);
+          const isAccountExisted = !!accounts.find(
+            ({ address }) => address === state.selected.address
+          );
           if (!isAccountExisted) {
             commit('setSelected', null);
           }
@@ -82,6 +83,6 @@ export default {
         commit('setSelected', JSON.parse(connectedAccount));
         dispatch('loadAccounts');
       }
-    }
+    },
   },
 };

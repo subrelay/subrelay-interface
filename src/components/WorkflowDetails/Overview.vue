@@ -50,7 +50,7 @@
         <div class="title">Trigger</div>
       </template>
 
-      <n-space vertical>
+      <n-space vertical :size="24">
         <n-grid cols="3">
           <n-gi span="2">
             <n-space vertical>
@@ -112,21 +112,14 @@
         <div class="title">Action</div>
       </template>
 
-      <n-space vertical>
+      <n-space vertical :size="24">
         <n-grid cols="3">
-          <n-gi>
+          <n-gi span="2">
             <n-space vertical>
               <div class="text-semi-bold">Channel</div>
               <div class="text-capitalize">
                 {{ actionTask.config.channel }}
               </div>
-            </n-space>
-          </n-gi>
-
-          <n-gi>
-            <n-space vertical>
-              <div class="text-semi-bold">Event</div>
-              <div>{{ eventString }}</div>
             </n-space>
           </n-gi>
         </n-grid>

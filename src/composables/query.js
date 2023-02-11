@@ -153,17 +153,17 @@ export const useQuery = (module, columns, fetchData = () => {}) => {
     { deep: true }
   );
 
-  watch(itemCount, (itemCount) => {
-    tablePagination.value = { ...tablePagination.value, itemCount };
-  });
-
   watch(
-    selectedAccount,
-    () => {
-      fetchData();
+    itemCount,
+    (itemCount) => {
+      tablePagination.value = { ...tablePagination.value, itemCount };
     },
     { immediate: true }
   );
+
+  watch(selectedAccount, () => {
+    if (selectedAccount) fetchData();
+  });
 
   function initQuery() {
     const params = query.value || getQueryFromRoute(route.query);
