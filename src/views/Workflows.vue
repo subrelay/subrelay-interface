@@ -157,6 +157,7 @@ const columns = ref([
     key: 'edit',
     align: 'right',
     width: '5%',
+    ellipsis: { tooltip: true },
     render(row) {
       return h('div', [
         h(

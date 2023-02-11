@@ -5,16 +5,15 @@ const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      redirect: '/dashboard/workflows',
+      path: '',
       component: async () => import('@/views/Home.vue'),
       children: [
         {
-          path: '/dashboard',
+          path: '',
+          redirect: { name: 'workflows' },
           component: () => import('@/views/Dashboard.vue'),
           meta: { title: 'Dashboard', signInRequired: true },
           children: [
-            { path: '', redirect: { name: 'workflows' } },
             {
               path: 'workflows',
               name: 'workflows',
@@ -90,7 +89,9 @@ router.beforeResolve((to, from, next) => {
   document.title = `${to.meta.title} | SubRelay`;
   if (to.matched.some((record) => record.meta.signInRequired)) {
     const connectedAccount = localStorage.getItem('polkadot-js-connected');
-    const authToken = connectedAccount ? getSavedAuthToken(JSON.parse(connectedAccount).address) : null;
+    const authToken = connectedAccount
+      ? getSavedAuthToken(JSON.parse(connectedAccount).address)
+      : null;
 
     if (authToken) {
       next();

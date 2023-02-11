@@ -17,8 +17,20 @@ export default {
       state.isAuthenticating = isAuthenticating;
     },
 
-    toggleSider: (state, isCollapsed) => (state.isSiderCollapsed = isCollapsed),
+    toggleSider: (state, isCollapsed) => {
+      state.isSiderCollapsed = isCollapsed;
+      if (isCollapsed) {
+        localStorage.setItem('isSiderCollapsed', true);
+      } else {
+        localStorage.removeItem('isSiderCollapsed');
+      }
+    },
   },
 
-  actions: {},
+  actions: {
+    loadSiderState({ commit }) {
+      const loadSiderState = localStorage.getItem('isSiderCollapsed');
+      commit('toggleSider', !!loadSiderState);
+    },
+  },
 };

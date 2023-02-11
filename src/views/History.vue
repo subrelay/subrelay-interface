@@ -63,6 +63,7 @@ const columns = ref([
     key: 'updatedAt',
     sorter: false,
     width: '10%',
+    ellipsis: { tooltip: true },
     render: ({ status }) => {
       const isSuccess = status === 'success';
       return h(Icon, {
@@ -76,6 +77,8 @@ const columns = ref([
     title: 'Workflow Name',
     key: 'name',
     className: 'text-bold',
+    width: '30%',
+    ellipsis: { tooltip: true },
     sorter: true,
     sortOrder: false,
     renderSorterIcon: useRenderSortIcon,
@@ -83,7 +86,8 @@ const columns = ref([
   {
     title: 'Chain',
     key: 'chain',
-    width: 180,
+    width: '20%',
+    ellipsis: { tooltip: true },
     sorter: true,
     sortOrder: false,
     renderSorterIcon: useRenderSortIcon,
@@ -107,6 +111,7 @@ const columns = ref([
   {
     title: 'Started at',
     key: 'started_at',
+    width: '20%',
     ellipsis: { tooltip: true },
     sorter: true,
     sortOrder: false,
@@ -118,6 +123,7 @@ const columns = ref([
   {
     title: 'Finished at',
     key: 'finished_at',
+    width: '20%',
     ellipsis: { tooltip: true },
     sorter: true,
     sortOrder: false,
