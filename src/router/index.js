@@ -14,7 +14,6 @@ const router = createRouter({
           component: () => import('@/views/Dashboard.vue'),
           meta: { title: 'Dashboard', signInRequired: true },
           children: [
-            // { path: '', redirect: { name: 'workflows' } },
             {
               path: 'workflows',
               name: 'workflows',

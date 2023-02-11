@@ -30,7 +30,7 @@ export default {
   actions: {
     loadSiderState({ commit }) {
       const loadSiderState = localStorage.getItem('isSiderCollapsed');
-      if (loadSiderState) commit('toggleSider', true);
+      commit('toggleSider', !!loadSiderState);
     },
   },
 };
