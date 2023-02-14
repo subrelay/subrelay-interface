@@ -61,7 +61,6 @@ const columns = ref([
   {
     title: 'Status',
     key: 'updatedAt',
-    sorter: false,
     width: '10%',
     ellipsis: { tooltip: true },
     render: ({ status }) => {
@@ -88,9 +87,6 @@ const columns = ref([
     key: 'chain',
     width: '20%',
     ellipsis: { tooltip: true },
-    sorter: true,
-    sortOrder: false,
-    renderSorterIcon: useRenderSortIcon,
     render: ({ chain }) => {
       return h('div', { style: { display: 'flex', alignItems: 'center' } }, [
         h(NAvatar, {
@@ -110,26 +106,26 @@ const columns = ref([
   },
   {
     title: 'Started at',
-    key: 'started_at',
+    key: 'startedAt',
     width: '20%',
     ellipsis: { tooltip: true },
     sorter: true,
     sortOrder: false,
     renderSorterIcon: useRenderSortIcon,
-    render: ({ started_at }) => {
-      return moment(started_at).format('MMM Do YYYY, HH:mm:ss');
+    render: ({ startedAt }) => {
+      return moment(startedAt).format('MMM Do YYYY, HH:mm:ss');
     },
   },
   {
     title: 'Finished at',
-    key: 'finished_at',
+    key: 'finishedAt',
     width: '20%',
     ellipsis: { tooltip: true },
     sorter: true,
     sortOrder: false,
     renderSorterIcon: useRenderSortIcon,
-    render: ({ finished_at }) => {
-      return moment(finished_at).format('MMM Do YYYY, HH:mm:ss');
+    render: ({ finishedAt }) => {
+      return moment(finishedAt).format('MMM Do YYYY, HH:mm:ss');
     },
   },
 ]);
