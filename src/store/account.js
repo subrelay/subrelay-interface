@@ -14,8 +14,8 @@ const getInjectedExtension = () => {
           reject('Unsupported extension.');
         }
       }
-
-      if (++counter === MAX_RETRY) {
+      counter += 1;
+      if (counter === MAX_RETRY) {
         clearInterval(interval);
         reject('Timeout.');
       }

@@ -11,4 +11,14 @@ module.exports = {
   },
   plugins: ['vue'],
   rules: {},
+  settings: {
+    "import/resolver": {
+      alias: {
+        map: [
+          ["@", "./src"],
+        ],
+        extensions: [".js", ".vue"]
+      }
+    }
+  }
 };
