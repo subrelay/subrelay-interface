@@ -1,5 +1,4 @@
 import { pickBy } from 'lodash';
-import axios from 'axios';
 import Api from '@/api';
 
 export default {
@@ -13,10 +12,18 @@ export default {
   }),
 
   mutations: {
-    saveQuery: (state, query) => (state.query = query),
-    getLogs: (state, logs) => (state.logs = logs),
-    setLoading: (state, isLoading) => (state.loading = isLoading),
-    getItemCount: (state, itemCount) => (state.itemCount = itemCount),
+    saveQuery: (state, query) => {
+      state.query = query;
+    },
+    getLogs: (state, logs) => {
+      state.logs = logs;
+    },
+    setLoading: (state, isLoading) => {
+      state.loading = isLoading;
+    },
+    getItemCount: (state, itemCount) => {
+      state.itemCount = itemCount;
+    },
   },
 
   actions: {

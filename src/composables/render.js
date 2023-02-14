@@ -29,29 +29,39 @@ export const useRenderCell = (value) => {
 export const useRenderDropdownLabel = (option) => {
   const store = useStore();
 
-  const iconNode = option.imageUrl
-    ? h(NAvatar, {
+  let iconNode;
+  if (option.imageUrl) {
+    iconNode = h(NAvatar, {
       src: option.imageUrl,
       round: true,
       size: 'small',
       color: 'transparent',
       style: { marginRight: '12px' },
-    })
-    : option.icon
-      ? h(Icon, {
-        icon: option.icon,
-        color: option.iconColor
-          ? option.iconColor
-          : store.state.global.isDarkMode
-            ? option.iconColorDark
-            : option.iconColorLight,
-        width: '1.2rem',
-        rotate: option.iconRotate,
-        style: { marginRight: '12px' },
-      })
-      : null;
+    });
+  } else if (option.icon) {
+    let color;
+
+    if (option.iconColor) {
+      color = option.iconColor;
+    } else if (store.state.global.isDarkMode) {
+      color = option.iconColorDark;
+    } else {
+      color = option.iconColorLight;
+    }
+
+    iconNode = h(Icon, {
+      icon: option.icon,
+      color,
+      width: '1.2rem',
+      rotate: option.iconRotate,
+      style: { marginRight: '12px' },
+    });
+  } else {
+    iconNode = null;
+  }
 
   let descNode;
+
   if (option.description) {
     descNode = h(
       NText,
@@ -74,10 +84,13 @@ export const useRenderDropdownLabel = (option) => {
   ]);
 };
 
-export const renderSelectTagWithDescription = ({ option }) => h(
-  'div',
-  { style: { display: 'flex', alignItems: 'center' } },
-  {
-    default: () => `${option.pallet ? `${option.pallet}.` : ''}${option.name}`,
-  },
-);
+export const renderSelectTagWithDescription = ({ option }) => {
+  const tag = h(
+    'div',
+    { style: { display: 'flex', alignItems: 'center' } },
+    {
+      default: () => `${option.pallet ? `${option.pallet}.` : ''}${option.name}`,
+    },
+  );
+  return tag;
+};

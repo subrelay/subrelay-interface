@@ -12,16 +12,13 @@
             @input="onDebouncedSearch"
           >
             <template #suffix>
-              <Icon icon="akar-icons:search" style="margin-left: 0.5rem" />
+              <SubIcon icon="akar-icons:search" style="margin-left: 0.5rem" />
             </template>
           </n-input>
         </n-gi>
 
         <n-gi span="2 1150:1">
-          <ChainDropdown
-            v-model="selectedChain"
-            :onSelectChain="handleSelectChain"
-          />
+          <ChainDropdown v-model="selectedChain" :onSelectChain="handleSelectChain" />
         </n-gi>
 
         <n-gi span="2 1150:1">
@@ -39,9 +36,7 @@
 
       <n-tooltip trigger="hover">
         <template #trigger>
-          <n-button @click="clearAllFilters">
-            <Icon icon="mdi:filter-remove"
-          /></n-button>
+          <n-button @click="clearAllFilters"> <SubIcon icon="mdi:filter-remove" /></n-button>
         </template>
         Clear all filters
       </n-tooltip>

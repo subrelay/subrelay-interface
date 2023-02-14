@@ -20,9 +20,7 @@
           :width="240"
           :collapsed-width="64"
           :collapsed="collapsed"
-          @update:collapsed="
-            (value) => store.commit('global/toggleSider', value)
-          "
+          @update:collapsed="(value) => store.commit('global/toggleSider', value)"
           trigger-style="top:20%"
           collapsed-trigger-style="top:20%"
         >
@@ -61,7 +59,6 @@ import { NButton, useMessage } from 'naive-ui';
 const route = useRoute();
 const router = useRouter();
 const store = useStore();
-const message = useMessage();
 const activeKey = ref(null);
 const collapsed = computed(() => store.state.global.isSiderCollapsed);
 const query = computed(() => store.state.global.defaultQuery);
@@ -81,24 +78,18 @@ const siderOptions = ref([
                 h(Icon, { icon: 'fluent:add-12-filled', inline: true }),
                 h('div', { style: 'margin-left: 0.6rem' }, 'New workflow'),
               ],
-            }
+            },
           ),
     key: 'editor',
     icon: renderIcon('fluent:add-12-filled', true),
   },
   {
-    label: () =>
-      h(
-        RouterLink,
-        { to: { name: 'workflows' } },
-        { default: () => 'Workflows' }
-      ),
+    label: () => h(RouterLink, { to: { name: 'workflows' } }, { default: () => 'Workflows' }),
     key: 'workflows',
     icon: renderIcon('ic:round-dashboard'),
   },
   {
-    label: () =>
-      h(RouterLink, { to: { name: 'history' } }, { default: () => 'History' }),
+    label: () => h(RouterLink, { to: { name: 'history' } }, { default: () => 'History' }),
     key: 'history',
     icon: renderIcon('system-uicons:files-history'),
   },
@@ -107,7 +98,7 @@ const siderOptions = ref([
 watch(
   () => route.name,
   (newRouteName) => (activeKey.value = newRouteName),
-  { immediate: true }
+  { immediate: true },
 );
 
 const goToEditor = (id) => router.push({ name: 'trigger', params: { id } });
@@ -120,13 +111,7 @@ function onUpdateActive(value) {
 function renderIcon(icon, isButton = false) {
   if (isButton) {
     return () =>
-      collapsed.value
-        ? h(
-            NButton,
-            { type: 'primary' },
-            { default: () => h(Icon, { icon, inline: true }) }
-          )
-        : '';
+      collapsed.value ? h(NButton, { type: 'primary' }, { default: () => h(Icon, { icon, inline: true }) }) : '';
   }
   return () => h(Icon, { icon, inline: true });
 }

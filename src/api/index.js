@@ -53,18 +53,14 @@ export const generateGetToken = async ({ account, signer }) => {
     type: 'bytes',
   });
 
-  const token = window.btoa(
-    JSON.stringify({ address: account.address, timestamp, signature }),
-  );
+  const token = window.btoa(JSON.stringify({ address: account.address, timestamp, signature }));
 
   saveAuthToken(account.address, token, timestamp);
 
   return token;
 };
 
-const generateToken = async ({
-  account, signer, endpoint, method, body,
-}) => {
+const generateToken = async ({ account, signer, endpoint, method, body }) => {
   const timestamp = Date.now();
   const data = {
     endpoint,
@@ -81,14 +77,10 @@ const generateToken = async ({
     type: 'bytes',
   });
 
-  return window.btoa(
-    JSON.stringify({ address: account.address, timestamp, signature }),
-  );
+  return window.btoa(JSON.stringify({ address: account.address, timestamp, signature }));
 };
 
-const request = async ({
-  account, signer, endpoint, method, body,
-}) => {
+const request = async ({ account, signer, endpoint, method, body }) => {
   if (method === 'get') {
     const getToken = await generateGetToken({ account, signer });
 
@@ -184,9 +176,7 @@ export default {
     });
   },
 
-  async editWorkflow({
-    account, signer, id, body,
-  }) {
+  async editWorkflow({ account, signer, id, body }) {
     return request({
       account,
       signer,

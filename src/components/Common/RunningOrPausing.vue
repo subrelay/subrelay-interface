@@ -15,11 +15,9 @@
 </template>
 
 <script setup>
-import { pickBy } from 'lodash';
 import { useStore } from 'vuex';
 import { ref, computed } from 'vue';
 import { useMessage } from 'naive-ui';
-import axios from 'axios';
 import Api from '@/api';
 
 const store = useStore();

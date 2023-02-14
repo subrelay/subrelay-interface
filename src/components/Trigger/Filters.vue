@@ -5,10 +5,7 @@
     :model="EditorData.workflow.tasks[0].config"
     :show-label="false"
   >
-    <div
-      v-for="(group, index) in EditorData.workflow.tasks[0].config.conditions"
-      :key="index"
-    >
+    <div v-for="(group, index) in EditorData.workflow.tasks[0].config.conditions" :key="index">
       <n-divider title-placement="left" v-if="index !== 0"> OR </n-divider>
 
       <FilterConditionInput
@@ -22,12 +19,8 @@
       />
 
       <n-space>
-        <n-button
-          attr-type="button"
-          @click="addAnd(index)"
-          :type="darkMode ? 'default' : 'info'"
-        >
-          <Icon icon="fluent:add-16-filled" style="margin-right: 4px" />
+        <n-button attr-type="button" @click="addAnd(index)" :type="darkMode ? 'default' : 'info'">
+          <SubIcon icon="fluent:add-16-filled" style="margin-right: 4px" />
           <span>And</span>
         </n-button>
 
@@ -37,7 +30,7 @@
           :type="darkMode ? 'default' : 'info'"
           @click="addOr"
         >
-          <Icon icon="fluent:add-16-filled" style="margin-right: 4px" />
+          <SubIcon icon="fluent:add-16-filled" style="margin-right: 4px" />
           <span>Or</span>
         </n-button>
       </n-space>
@@ -49,7 +42,7 @@
       :type="darkMode ? 'default' : 'info'"
       v-if="!EditorData.workflow.tasks[0].config.conditions.length"
     >
-      <Icon icon="fluent:add-16-filled" style="margin-right: 4px" />
+      <SubIcon icon="fluent:add-16-filled" style="margin-right: 4px" />
       <span>Add filter condition</span>
     </n-button>
 

@@ -1,9 +1,6 @@
 <template>
   <n-space vertical :size="30" class="step_container">
-    <n-card
-      :segmented="{ content: 'soft' }"
-      header-style="padding-bottom: 0.5rem"
-    >
+    <n-card :segmented="{ content: 'soft' }" header-style="padding-bottom: 0.5rem">
       <template #header>
         <div class="title">Input</div>
       </template>
@@ -12,11 +9,7 @@
       <WebhookInput v-else :config="config.config" />
     </n-card>
 
-    <n-card
-      header-style="padding-bottom: 0.5rem"
-      v-if="isTested"
-      :segmented="{ content: 'soft' }"
-    >
+    <n-card header-style="padding-bottom: 0.5rem" v-if="isTested" :segmented="{ content: 'soft' }">
       <template #header>
         <div class="title">Output</div>
       </template>
@@ -26,7 +19,7 @@
         <div class="input-item">
           <div class="title">Status:</div>
 
-          <Icon
+          <SubIcon
             :inline="true"
             :icon="testResult.success ? 'ep:success-filled' : 'ic:round-cancel'"
             :color="testResult.success ? '#18A058FF' : '#D03050FF'"
@@ -56,7 +49,7 @@
         type="primary"
         @click="onTest"
         :loading="runningTest"
-        :disabled="runningTest || postWorkflowLoading"
+        :disabled="runningTest || workflowLoading"
       >
         {{ isTested ? 'Retest' : 'Test' }}
       </n-button>
@@ -71,21 +64,12 @@ import { computed, inject, onBeforeUnmount } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
-const postWorkflowLoading = computed(() => store.state.workflow.loading);
-
-const type = computed(
-  () => EditorData.workflow.tasks[EditorData.actionIdx].type
-);
-
-const config = computed(
-  () => EditorData.workflow.tasks[EditorData.actionIdx].config
-);
-
-const eventId = computed(
-  () => EditorData.workflow.tasks[EditorData.triggerIdx].config.eventId
-);
+const type = computed(() => EditorData.workflow.tasks[EditorData.actionIdx].type);
+const config = computed(() => EditorData.workflow.tasks[EditorData.actionIdx].config);
+const eventId = computed(() => EditorData.workflow.tasks[EditorData.triggerIdx].config.eventId);
 
 const runningTest = computed(() => store.state.task.runningTest[type.value]);
+const workflowLoading = computed(() => store.state.workflow.loading);
 const isTested = computed(() => store.state.task.tested[type.value]);
 const testResult = computed(() => store.state.task.testResult[type.value]);
 

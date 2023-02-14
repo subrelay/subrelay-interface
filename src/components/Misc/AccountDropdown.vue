@@ -1,9 +1,5 @@
 <template>
-  <n-dropdown
-    v-model:show="showMenu"
-    :options="profileOptions"
-    @select="onSelectProfileOption"
-  >
+  <n-dropdown v-model:show="showMenu" :options="profileOptions" @select="onSelectProfileOption">
     <n-button size="large" class="profile_menu" round>
       <n-space align="center">
         <n-avatar
@@ -14,17 +10,14 @@
         />
 
         <n-space vertical :size="5" class="test" :wrap-item="false">
-          <div
-            v-html="walletAccount.name"
-            class="text-bold font-size-085 text-ellipsis"
-          />
+          <div v-html="walletAccount.name" class="text-bold font-size-085 text-ellipsis" />
 
           <n-text depth="3" class="font-size-075">
             {{ truncate(walletAccount) }}
           </n-text>
         </n-space>
 
-        <Icon
+        <SubIcon
           icon="akar-icons:chevron-down"
           class="icon"
           :inline="true"
@@ -39,7 +32,7 @@
 
 <script setup>
 import AccountModal from '@/components/Misc/AccountModal';
-import { ref, computed, h, onBeforeMount } from 'vue';
+import { ref, computed, h } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { useMessage } from 'naive-ui';

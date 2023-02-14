@@ -8,10 +8,9 @@
     <div class="text">
       <span style="margin-right: 5px">Please connect your</span>
       <n-avatar round :size="24" src="https://polkadot.js.org/logo.svg" />
-      <span style="margin-left: 5px">
-        Polkadot{.js} wallet to start using SubRelay.</span
-      >
+      <span style="margin-left: 5px"> Polkadot{.js} wallet to start using SubRelay.</span>
     </div>
+
     <n-button :loading="loading" type="primary" round size="large" @click="onConnectWallet">
       Connect Wallet
     </n-button>
@@ -21,12 +20,12 @@
 </template>
 
 <script setup>
-import Logo from '@/components/Common/Logo';
-import AccountModal from '@/components/Misc/AccountModal';
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-import { generateGetToken } from '../api';
+import { useMessage } from 'naive-ui';
+import Logo from '@/components/Common/Logo';
+import AccountModal from '@/components/Misc/AccountModal';
 
 const router = useRouter();
 
@@ -35,6 +34,10 @@ const showModal = ref(false);
 const loading = computed(() => store.state.account.loading);
 const selectedAccount = computed(() => store.state.account.selected);
 
+onMounted(() => {
+  window.$message = useMessage();
+});
+
 const onConnectWallet = async () => {
   await store.dispatch('account/loadAccounts');
   showModal.value = true;
@@ -42,14 +45,11 @@ const onConnectWallet = async () => {
 
 watch(
   selectedAccount,
-  (selectedAccount) => {
-    if (selectedAccount) router.push('/');
+  (acc) => {
+    if (acc) router.push('/');
   },
-  { immediate: true }
+  { immediate: true },
 );
-
-
-
 </script>
 
 <style lang="scss" scoped>

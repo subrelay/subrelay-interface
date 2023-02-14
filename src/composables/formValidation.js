@@ -1,10 +1,10 @@
 import { ref } from 'vue';
 import EditorData from '@/store/localStore/EditorData';
 
-export const useFormValidation = (taskName, emits) => {
+export default function useFormValidation(taskName, emits) {
   const formRef = ref(null);
 
-  function validateForm({ changeStep = true } = {}, callback) {
+  function validateForm({ changeStep = true } = {}, callback = () => {}) {
     formRef.value.validate(async (errors) => {
       if (errors) {
         EditorData.setError(taskName, true);
@@ -14,14 +14,11 @@ export const useFormValidation = (taskName, emits) => {
 
       EditorData.setError(taskName, false);
 
-      if (callback) {
-        callback();
-        return;
-      }
+      callback();
 
       if (changeStep) emits('continue');
     });
   }
 
   return [{ formRef }, { validateForm }];
-};
+}

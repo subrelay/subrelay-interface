@@ -1,27 +1,21 @@
 <template>
+  <div class="cover-layout" v-if="loading"></div>
+
   <n-layout v-if="EditorData.workflow">
     <n-layout-header style="padding: 5px 3rem" bordered>
       <!-- HEADER -->
       <n-space align="center" justify="space-between">
         <!-- Name -->
-        <ShowOrEdit
-          :onUpdateValue="onUpdateName"
-          :value="EditorData.workflow.name"
-        />
+        <ShowOrEdit :onUpdateValue="onUpdateName" :value="EditorData.workflow.name" />
 
         <!-- Logo -->
         <Logo @click="quitEditor" />
 
         <!-- Buttons -->
         <n-space>
-          <n-button
-            type="primary"
-            class="action-button"
-            icon-placement="left"
-            @click="quitEditor"
-          >
+          <n-button type="primary" class="action-button" icon-placement="left" @click="quitEditor">
             <template #icon>
-              <Icon icon="line-md:home-md" :inline="true" class="icon" />
+              <SubIcon icon="line-md:home-md" :inline="true" class="icon" />
             </template>
             Home
           </n-button>
@@ -35,7 +29,7 @@
           >
             Next
             <template #icon>
-              <Icon icon="line-md:chevron-small-double-right" class="icon" />
+              <SubIcon icon="line-md:chevron-small-double-right" class="icon" />
             </template>
           </n-button>
 
@@ -49,7 +43,7 @@
               >
                 Back
                 <template #icon>
-                  <Icon icon="line-md:chevron-small-double-left" class="icon" />
+                  <SubIcon icon="line-md:chevron-small-double-left" class="icon" />
                 </template>
               </n-button>
 
@@ -67,7 +61,7 @@
               >
                 Finish
                 <template #icon>
-                  <Icon icon="line-md:confirm" class="icon" />
+                  <SubIcon icon="line-md:confirm" class="icon" />
                 </template>
               </n-button>
             </n-space>
@@ -80,11 +74,7 @@
       <n-space :size="50" vertical>
         <!-- STEPPER -->
         <div class="page_container">
-          <n-steps
-            :current="currentStep"
-            @update:current="onChangeStep"
-            class="stepper"
-          >
+          <n-steps :current="currentStep" @update:current="onChangeStep" class="stepper">
             <n-step
               title="TRIGGER"
               description="This is what starts the app"
@@ -122,18 +112,10 @@ import ShowOrEdit from '@/components/Common/ShowOrEdit';
 import Trigger from '@/components/Trigger/Trigger';
 import Action from '@/components/Action/Action';
 import { ThunderboltOutlined, BellOutlined } from '@vicons/antd';
-import {
-  h,
-  ref,
-  inject,
-  computed,
-  onBeforeMount,
-  onBeforeUnmount,
-  onMounted,
-  onUnmounted,
-} from 'vue';
+import { h, ref, inject, computed, onBeforeMount, onBeforeUnmount, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useDialog, useMessage } from 'naive-ui';
+import { useShowError } from '@/composables';
 import { useStore } from 'vuex';
 import Api from '@/api';
 
@@ -144,6 +126,8 @@ const store = useStore();
 const dialog = useDialog();
 const message = useMessage();
 const currentStep = ref(null);
+const account = computed(() => store.state.account.selected);
+const signer = computed(() => store.state.account.signer);
 
 onMounted(() => (window.$message = useMessage()));
 onBeforeMount(() => {
@@ -157,7 +141,6 @@ function handleNextStep() {
 // TODO: Replace event bus by local state
 const eventBus = inject('eventBus');
 eventBus.on('nextStep', handleNextStep);
-eventBus.on('finish', createWorkflow);
 
 function onChangeStep(step) {
   currentStep.value = step;
@@ -170,11 +153,6 @@ function onChangeStep(step) {
   });
 }
 
-onBeforeUnmount(() => {
-  eventBus.off('finish', createWorkflow);
-  eventBus.off('nextStep', handleNextStep);
-});
-
 // BUILD WORKFLOW DATA
 const triggerStatus = ref(null);
 const actionStatus = ref(null);
@@ -182,21 +160,13 @@ const actionStatus = ref(null);
 const triggerIdx = computed(() => EditorData.triggerIdx);
 const actionIdx = computed(() => EditorData.actionIdx);
 
-const isErrorWithTrigger = computed(
-  () => EditorData.workflow.tasks[triggerIdx.value].isError
-);
+const isErrorWithTrigger = computed(() => EditorData.workflow.tasks[triggerIdx.value].isError);
 
-const isErrorWithAction = computed(
-  () => EditorData.workflow.tasks[actionIdx.value].isError
-);
+const isErrorWithAction = computed(() => EditorData.workflow.tasks[actionIdx.value].isError);
 
-const isTriggerCompleted = computed(
-  () => EditorData.workflow.tasks[triggerIdx.value].isCompleted
-);
+const isTriggerCompleted = computed(() => EditorData.workflow.tasks[triggerIdx.value].isCompleted);
 
-const isActionCompleted = computed(
-  () => EditorData.workflow.tasks[actionIdx.value].isCompleted
-);
+const isActionCompleted = computed(() => EditorData.workflow.tasks[actionIdx.value].isCompleted);
 
 const changedToTrigger = computed(() => {
   const task = EditorData.workflow.tasks[triggerIdx.value];
@@ -210,17 +180,13 @@ const changedToTrigger = computed(() => {
 
 const changedToAction = computed(() => {
   const task = EditorData.workflow.tasks[actionIdx.value];
-  return (
-    typeof task.isError === 'boolean' || typeof task.isCompleted === 'boolean'
-  );
+  return typeof task.isError === 'boolean' || typeof task.isCompleted === 'boolean';
 });
 
-const hasUpdates = computed(
-  () => changedToTrigger.value || changedToAction.value
-);
+const hasUpdates = computed(() => changedToTrigger.value || changedToAction.value);
 
 const hasError = computed(() =>
-  EditorData.workflow.tasks.some((task) => task.isError || !task.isCompleted)
+  EditorData.workflow.tasks.some((task) => task.isError || !task.isCompleted),
 );
 
 function handleReload(e) {
@@ -258,19 +224,12 @@ function onUpdateName(value) {
 }
 
 function showExitWarning() {
-  const d = dialog.warning({
+  dialog.warning({
     title: 'Confirm quit',
     content: () =>
       h('div', { style: { fontSize: '0.85rem' } }, [
-        h(
-          'div',
-          'Changes you made will be discarded because the workflow is not yet completed.'
-        ),
-        h(
-          'div',
-          { style: { marginTop: '1rem' } },
-          'You can’t undo this action.'
-        ),
+        h('div', 'Changes you made will be discarded because the workflow is not yet completed.'),
+        h('div', { style: { marginTop: '1rem' } }, 'You can’t undo this action.'),
       ]),
 
     positiveText: 'Leave',
@@ -294,16 +253,38 @@ async function quitEditor() {
   }
 }
 
+const loading = ref(false);
+
 async function createWorkflow() {
-  EditorData.cleanUpWorkflow();
-  await store.dispatch('workflow/postWorkflow', EditorData.workflow);
-  EditorData.loadWorkflow();
-  store.commit('task/reset');
-  router.push({ name: 'workflows' });
-  message.success('Workflow created!');
+  loading.value = true;
+  try {
+    EditorData.cleanUpWorkflow();
+
+    await Api.createWorkflow({
+      account: account.value,
+      signer: signer.value,
+      body: EditorData.postWorkflowData,
+    });
+
+    message.success('Workflow created!');
+    router.push({ name: 'workflows' });
+  } catch (e) {
+    const errMsg = e.message;
+    if (errMsg === 'Cancelled') {
+      return;
+    } else {
+      useShowError(e);
+    }
+  } finally {
+    loading.value = true;
+  }
 }
 
-const loading = ref(false);
+onBeforeUnmount(() => {
+  EditorData.loadWorkflow();
+  store.commit('task/reset');
+  eventBus.off('nextStep', handleNextStep);
+});
 
 onBeforeMount(async () => {
   let data;
@@ -347,5 +328,16 @@ onBeforeMount(async () => {
 .stepper {
   width: 70%;
   margin: auto;
+}
+
+.cover-layout {
+  opacity: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: wait;
 }
 </style>

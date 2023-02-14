@@ -1,5 +1,5 @@
 import Api from '@/api';
-import { useShowMessage } from '@/composables';
+import { useShowError } from '@/composables';
 
 export default {
   namespaced: true,
@@ -13,12 +13,21 @@ export default {
   }),
 
   mutations: {
-    getOperators: (state, operators) => (state.operators = operators),
-    setLoading: (state, isLoading) => (state.loading = isLoading),
-
-    setRunningTest: (state, data) => (state.runningTest = { ...state.runningTest, ...data }),
-    setTested: (state, data) => (state.tested = { ...state.tested, ...data }),
-    setTestResult: (state, data) => (state.testResult = { ...state.tested, ...data }),
+    getOperators: (state, operators) => {
+      state.operators = operators;
+    },
+    setLoading: (state, isLoading) => {
+      state.loading = isLoading;
+    },
+    setRunningTest: (state, data) => {
+      state.runningTest = { ...state.runningTest, ...data };
+    },
+    setTested: (state, data) => {
+      state.tested = { ...state.tested, ...data };
+    },
+    setTestResult: (state, data) => {
+      state.testResult = { ...state.tested, ...data };
+    },
     reset: (state) => {
       state.runningTest = {};
       state.testResult = {};
@@ -54,8 +63,7 @@ export default {
         commit('setTestResult', { [type]: data });
         commit('setTested', { [type]: true });
       } catch (e) {
-        console.error(e);
-        useShowMessage('error', e.message);
+        useShowError(e);
       } finally {
         commit('setRunningTest', { [type]: false });
       }

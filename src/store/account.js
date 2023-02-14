@@ -1,3 +1,5 @@
+import { useShowError } from '@/composables';
+
 const MAX_RETRY = 10;
 const CONNECTED_ACCOUNT = 'polkadot-js-connected';
 
@@ -11,13 +13,15 @@ const getInjectedExtension = () => {
         if (window.injectedWeb3['polkadot-js']) {
           resolve(window.injectedWeb3['polkadot-js']);
         } else {
-          reject('Unsupported extension.');
+          reject(new Error('Unsupported extension.'));
         }
       }
+
       counter += 1;
       if (counter === MAX_RETRY) {
         clearInterval(interval);
-        reject('Timeout.');
+        useShowError('Error loading wallet. Please try again.');
+        reject(new Error('Timeout.'));
       }
     }, 500);
   });
@@ -34,11 +38,17 @@ export default {
   }),
 
   mutations: {
-    setLoading: (state, isLoading) => (state.loading = isLoading),
+    setLoading: (state, isLoading) => {
+      state.loading = isLoading;
+    },
 
-    setSigner: (state, signer) => (state.signer = signer),
+    setSigner: (state, signer) => {
+      state.signer = signer;
+    },
 
-    setAccounts: (state, accounts) => (state.accounts = accounts),
+    setAccounts: (state, accounts) => {
+      state.accounts = accounts;
+    },
 
     setSelected: (state, selected) => {
       state.selected = selected;
@@ -63,9 +73,11 @@ export default {
         commit('setSigner', result.signer);
 
         if (state.selected) {
-          const isAccountExisted = !!accounts.find(
-            ({ address }) => address === state.selected.address,
-          );
+          const isAccountExisted = !!accounts.find(({ address }) => {
+            const cond = address === state.selected.address;
+            return cond;
+          });
+
           if (!isAccountExisted) {
             commit('setSelected', null);
           }

@@ -28,7 +28,7 @@
               :disabled="channel.value !== 'webhook'"
               class="channel_item"
             >
-              <Icon :icon="channel.icon" class="icon" />
+              <SubIcon :icon="channel.icon" class="icon" />
               <span class="text">{{ channel.label }}</span>
             </n-radio-button>
           </n-gi>
@@ -36,9 +36,7 @@
       </n-radio-group>
     </n-form-item>
 
-    <n-button class="action_button" type="primary" @click="validateForm">
-      Continue
-    </n-button>
+    <n-button class="action_button" type="primary" @click="validateForm"> Continue </n-button>
   </n-form>
 </template>
 

@@ -14,12 +14,7 @@
         @update:sorter="handleSort"
       >
         <template #empty>
-          <n-empty
-            description="No data available"
-            :show-icon="false"
-            :size="'small'"
-          >
-          </n-empty>
+          <n-empty description="No data available" :show-icon="false" :size="'small'"> </n-empty>
         </template>
       </n-data-table>
 
@@ -42,7 +37,7 @@ import RunningOrPausing from '@/components/Common/RunningOrPausing';
 import PageHeader from '@/components/Common/PageHeader';
 import { NAvatar, useMessage } from 'naive-ui';
 import { Icon } from '@iconify/vue';
-import { ref, h, provide, computed, watch } from 'vue';
+import { ref, h, provide, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import moment from 'moment';
@@ -53,6 +48,7 @@ import {
   useRenderCell,
   useGetChainImg,
   useWorkflowStatuses,
+  useShowError,
 } from '@/composables';
 
 const message = useMessage();
@@ -65,13 +61,22 @@ const account = computed(() => store.state.account.selected);
 const signer = computed(() => store.state.account.signer);
 
 async function deleteWorkflow({ id, name }) {
-  await Api.deleteWorkflow({
-    account: account.value,
-    signer: signer.value,
-    id,
-  });
-  await store.dispatch('workflow/getWorkflows', { showLoading: false });
-  message.success(`Workflow ${name} has been deleted`);
+  try {
+    await Api.deleteWorkflow({
+      account: account.value,
+      signer: signer.value,
+      id,
+    });
+    await store.dispatch('workflow/getWorkflows', { showLoading: false });
+    message.success(`Workflow ${name} has been deleted`);
+  } catch (e) {
+    const errMsg = e.message;
+    if (errMsg === 'Cancelled') {
+      return;
+    } else {
+      useShowError(e);
+    }
+  }
 }
 
 function fetchData() {
@@ -109,11 +114,7 @@ const columns = ref([
           size: 'small',
           color: 'white',
         }),
-        h(
-          'div',
-          { style: { marginLeft: '12px', padding: '4px 0' } },
-          chain.name
-        ),
+        h('div', { style: { marginLeft: '12px', padding: '4px 0' } }, chain.name),
       ]);
     },
   },
@@ -150,7 +151,7 @@ const columns = ref([
       h(
         'div',
         { onClick: (e) => e.stopPropagation() },
-        h(RunningOrPausing, { status, id, fetchOne: false })
+        h(RunningOrPausing, { status, id, fetchOne: false }),
       ),
   },
   {
@@ -172,7 +173,7 @@ const columns = ref([
           {
             'trigger-content': () =>
               h(Icon, { icon: 'bi:trash', style: { 'margin-right': '1rem' } }),
-          }
+          },
         ),
       ]);
     },
@@ -180,14 +181,7 @@ const columns = ref([
 ]);
 
 const [
-  {
-    query,
-    searchText,
-    loading,
-    tablePagination,
-    selectedChain,
-    selectedStatus,
-  },
+  { query, searchText, loading, tablePagination, selectedChain, selectedStatus },
   {
     onDebouncedSearch,
     handleSort,

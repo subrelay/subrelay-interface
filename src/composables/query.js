@@ -1,12 +1,10 @@
-import {
-  ref, onMounted, computed, watch,
-} from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router';
 import { debounce, isEmpty, findIndex } from 'lodash';
 import { useStore } from 'vuex';
-import { defaultQuery } from '@/composables/config.js';
+import { defaultQuery } from '@/composables/config';
 
-export const useQuery = (module, columns, fetchData = () => {}) => {
+export default function useQuery(module, columns, fetchData = () => {}) {
   const store = useStore();
   const route = useRoute();
   const router = useRouter();
@@ -15,8 +13,8 @@ export const useQuery = (module, columns, fetchData = () => {}) => {
   const selectedChain = ref(undefined);
   const selectedStatus = ref(undefined);
 
-  let sortingIndex; let
-    prevSortIndex;
+  let sortingIndex;
+  let prevSortIndex;
 
   const query = computed(() => store.state[module].query);
   const loading = computed(() => store.state[module].loading);
@@ -29,11 +27,11 @@ export const useQuery = (module, columns, fetchData = () => {}) => {
     pageSize: defaultQuery.limit,
   });
 
-  function pushQueryToRoute(query) {
-    const { offset, limit } = query;
+  function pushQueryToRoute(newQuery) {
+    const { offset, limit } = newQuery;
     const page = offset / limit + 1;
     const perPage = limit;
-    const nextQuery = { ...query, page, perPage };
+    const nextQuery = { ...newQuery, page, perPage };
     delete nextQuery.offset;
     delete nextQuery.limit;
     router.push({ query: nextQuery });
@@ -45,8 +43,6 @@ export const useQuery = (module, columns, fetchData = () => {}) => {
     return currentPath !== nextPath;
   }
 
-  const onDebouncedSearch = debounce(handleSearch, 1000);
-
   function handleSearch() {
     const nextQuery = {
       ...query.value,
@@ -54,8 +50,10 @@ export const useQuery = (module, columns, fetchData = () => {}) => {
       offset: 0,
     };
 
-    shouldChangeRoute(nextQuery) && pushQueryToRoute(nextQuery);
+    if (shouldChangeRoute(nextQuery)) pushQueryToRoute(nextQuery);
   }
+
+  const onDebouncedSearch = debounce(handleSearch, 1000);
 
   function handleSort({ columnKey: tableOrder, order: tableSort }) {
     if (prevSortIndex !== undefined) {
@@ -68,11 +66,15 @@ export const useQuery = (module, columns, fetchData = () => {}) => {
     columns.value[sortingIndex].sortOrder = tableSort;
 
     const order = tableSort ? tableOrder : undefined;
-    const sort = tableSort === 'descend'
-      ? 'DESC'
-      : tableSort === 'ascend'
-        ? 'ASC'
-        : undefined;
+    let sort;
+
+    if (tableSort === 'descend') {
+      sort = 'DESC';
+    } else if (tableSort === 'ascend') {
+      sort = 'ASC';
+    } else {
+      sort = undefined;
+    }
 
     const queryBySort = { order, sort };
 
@@ -104,15 +106,15 @@ export const useQuery = (module, columns, fetchData = () => {}) => {
     pushQueryToRoute({ ...defaultQuery });
   }
 
-  function getQueryFromRoute(query) {
+  function getQueryFromRoute(routeQuery) {
     return {
-      chainUuid: query.chainUuid || undefined,
-      status: query.status || undefined,
-      search: (query.search && query.search.trim()) || undefined,
-      order: query.order || undefined,
-      sort: query.sort || undefined,
-      offset: +query.perPage * (+query.page - 1) || defaultQuery.offset,
-      limit: +query.perPage || defaultQuery.limit,
+      chainUuid: routeQuery.chainUuid || undefined,
+      status: routeQuery.status || undefined,
+      search: (routeQuery.search && routeQuery.search.trim()) || undefined,
+      order: routeQuery.order || undefined,
+      sort: routeQuery.sort || undefined,
+      offset: +routeQuery.perPage * (+routeQuery.page - 1) || defaultQuery.offset,
+      limit: +routeQuery.perPage || defaultQuery.limit,
     };
   }
 
@@ -120,9 +122,7 @@ export const useQuery = (module, columns, fetchData = () => {}) => {
     const params = getQueryFromRoute(to.query);
     store.commit(`${module}/saveQuery`, params);
 
-    const {
-      order, sort, search, chainUuid, status,
-    } = to.query;
+    const { order, sort, search, chainUuid, status } = to.query;
     searchText.value = search || '';
     selectedChain.value = chainUuid;
     selectedStatus.value = status;
@@ -132,7 +132,16 @@ export const useQuery = (module, columns, fetchData = () => {}) => {
     if (order || prevOrder) {
       sortingIndex = findIndex(columns.value, { key: prevOrder });
       const nextSortIndex = findIndex(columns.value, { key: order });
-      const tableSort = sort === 'ASC' ? 'ascend' : 'DESC' ? 'descend' : false;
+
+      let tableSort;
+      if (sort === 'ASC') {
+        tableSort = 'ascend';
+      } else if (sort === 'descend') {
+        tableSort = 'descend';
+      } else {
+        tableSort = false;
+      }
+
       if (sortingIndex !== -1) columns.value[sortingIndex].sortOrder = false;
       if (nextSortIndex !== -1) columns.value[nextSortIndex].sortOrder = tableSort;
     }
@@ -158,8 +167,8 @@ export const useQuery = (module, columns, fetchData = () => {}) => {
 
   watch(
     itemCount,
-    (itemCount) => {
-      tablePagination.value = { ...tablePagination.value, itemCount };
+    (val) => {
+      tablePagination.value = { ...tablePagination.value, itemCount: val };
     },
     { immediate: true },
   );
@@ -172,16 +181,23 @@ export const useQuery = (module, columns, fetchData = () => {}) => {
     const params = query.value || getQueryFromRoute(route.query);
     store.commit(`${module}/saveQuery`, params);
 
-    const {
-      order, sort, search, chainUuid, status,
-    } = route.query;
+    const { order, sort, search, chainUuid, status } = route.query;
     searchText.value = search || '';
     selectedChain.value = chainUuid;
     selectedStatus.value = status;
 
     if (order) {
       const index = findIndex(columns.value, { key: order });
-      const tableSort = sort === 'ASC' ? 'ascend' : 'DESC' ? 'descend' : false;
+
+      let tableSort;
+      if (sort === 'ASC') {
+        tableSort = 'ascend';
+      } else if (sort === 'descend') {
+        tableSort = 'descend';
+      } else {
+        tableSort = false;
+      }
+
       if (index !== -1) columns.value[index].sortOrder = tableSort;
     }
 
@@ -213,4 +229,4 @@ export const useQuery = (module, columns, fetchData = () => {}) => {
       clearAllFilters,
     },
   ];
-};
+}
