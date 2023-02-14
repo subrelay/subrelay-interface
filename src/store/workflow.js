@@ -1,6 +1,5 @@
-import axios from 'axios';
-import Api from '@/api';
 import { pickBy } from 'lodash';
+import Api from '@/api';
 
 export default {
   namespaced: true,
@@ -14,20 +13,29 @@ export default {
   }),
 
   mutations: {
-    getWorkflows: (state, workflows) => (state.workflows = workflows),
-    getItemCount: (state, itemCount) => (state.itemCount = itemCount),
-    getWorkflow: (state, workflow) => (state.workflow = workflow),
-    saveQuery: (state, query) => (state.query = query),
-    setLoading: (state, isLoading) => (state.loading = isLoading),
+    getWorkflows: (state, workflows) => {
+      state.workflows = workflows;
+    },
+    getItemCount: (state, itemCount) => {
+      state.itemCount = itemCount;
+    },
+    getWorkflow: (state, workflow) => {
+      state.workflow = workflow;
+    },
+    saveQuery: (state, query) => {
+      state.query = query;
+    },
+    setLoading: (state, isLoading) => {
+      state.loading = isLoading;
+    },
   },
 
   actions: {
-    async getWorkflows(
-      { commit, state, rootState },
-      { showLoading = true } = {}
-    ) {
+    async getWorkflows({ commit, state, rootState }, { showLoading = true } = {}) {
       if (rootState.account.selected) {
-        if (showLoading) commit('setLoading', true);
+        if (showLoading) {
+          commit('setLoading', true);
+        }
         try {
           const {
             data: { workflows, total },
@@ -68,6 +76,7 @@ export default {
 
     async postWorkflow({ commit, rootState, dispatch }, data) {
       commit('setLoading', true);
+
       try {
         await Api.createWorkflow({
           account: rootState.account.selected,

@@ -6,7 +6,6 @@
 
 <script setup>
 import AppProvider from '@/components/AppProvider.vue';
-import { RouterLink, RouterView } from 'vue-router';
 import { useStore } from 'vuex';
 import { onBeforeMount } from 'vue';
 

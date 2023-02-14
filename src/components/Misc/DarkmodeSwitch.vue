@@ -6,13 +6,13 @@
     @update:value="store.commit('global/setDarkMode', $event)"
   >
     <template #icon>
-      <Icon
+      <SubIcon
         icon="line-md:sunny-filled-loop-to-moon-alt-filled-loop-transition"
         color="black"
         v-if="darkMode"
       />
 
-      <Icon
+      <SubIcon
         color="rgb(255, 172, 51)"
         icon="line-md:moon-filled-to-sunny-filled-loop-transition"
         v-else
@@ -20,7 +20,7 @@
     </template>
 
     <template #checked>
-      <Icon
+      <SubIcon
         icon="icon-park-outline:sun"
         color="#EAEAEA"
         :style="{ 'margin-right': '12px', 'margin-left': '-12px' }"
@@ -28,7 +28,7 @@
     </template>
 
     <template #unchecked>
-      <Icon
+      <SubIcon
         icon="heroicons-outline:moon"
         color="#797676"
         :style="{ 'margin-right': '-12px', 'margin-left': '12px' }"

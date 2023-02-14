@@ -245,17 +245,11 @@ flex-1 {
   min-height: calc(100vh - 50px);
 }
 
-.n-data-table-th {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.n-data-table .n-data-table-th .n-data-table-sorter {
-  vertical-align: middle !important;
-  width: 0;
-  height: 0;
-}
+// .n-data-table-th {
+//   overflow: hidden;
+//   white-space: nowrap;
+//   text-overflow: ellipsis;
+// }
 
 .n-data-table-empty {
   padding: 1rem !important;

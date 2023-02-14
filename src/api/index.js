@@ -53,9 +53,7 @@ export const generateGetToken = async ({ account, signer }) => {
     type: 'bytes',
   });
 
-  const token = window.btoa(
-    JSON.stringify({ address: account.address, timestamp, signature })
-  );
+  const token = window.btoa(JSON.stringify({ address: account.address, timestamp, signature }));
 
   saveAuthToken(account.address, token, timestamp);
 
@@ -79,9 +77,7 @@ const generateToken = async ({ account, signer, endpoint, method, body }) => {
     type: 'bytes',
   });
 
-  return window.btoa(
-    JSON.stringify({ address: account.address, timestamp, signature })
-  );
+  return window.btoa(JSON.stringify({ address: account.address, timestamp, signature }));
 };
 
 const request = async ({ account, signer, endpoint, method, body }) => {
@@ -115,9 +111,7 @@ const request = async ({ account, signer, endpoint, method, body }) => {
   });
 };
 
-const buildQueryStr = (params) => {
-  return '?' + new URLSearchParams(params).toString();
-};
+const buildQueryStr = (params) => `?${new URLSearchParams(params).toString()}`;
 
 export default {
   async getChains() {
@@ -139,7 +133,7 @@ export default {
   },
 
   async getOperators() {
-    const response = await instance.get(`/tasks/operators`);
+    const response = await instance.get('/tasks/operators');
 
     return response.data;
   },
@@ -159,7 +153,7 @@ export default {
       account,
       signer,
       method: 'get',
-      endpoint: '/workflows' + buildQueryStr(params),
+      endpoint: `/workflows${buildQueryStr(params)}`,
     });
   },
 
@@ -206,7 +200,7 @@ export default {
       account,
       signer,
       method: 'get',
-      endpoint: '/workflow-logs' + buildQueryStr(params),
+      endpoint: `/workflow-logs${buildQueryStr(params)}`,
     });
   },
 };

@@ -1,9 +1,6 @@
 <template>
   <n-space vertical :size="30" class="step_container">
-    <n-card
-      :segmented="{ content: 'soft' }"
-      header-style="padding-bottom: 0.5rem"
-    >
+    <n-card :segmented="{ content: 'soft' }" header-style="padding-bottom: 0.5rem">
       <template #header>
         <div class="title">Input</div>
       </template>
@@ -25,25 +22,18 @@
             <div v-for="(conditionGroup, index) in conditions" :key="index">
               <b v-if="index !== 0">OR <br /> </b>
 
-              <span
-                v-for="(condition, subIndex) in conditionGroup"
-                :key="subIndex"
-              >
+              <span v-for="(condition, subIndex) in conditionGroup" :key="subIndex">
                 <b v-if="subIndex !== 0" style="margin-left: 4px"> AND </b>
                 <i> {{ condition.variable }} </i>
                 <span>
                   {{
-                    ['greaterThan', 'greaterThanEqual', 'lessThan'].includes(
-                      condition.operator
-                    )
+                    ['greaterThan', 'greaterThanEqual', 'lessThan'].includes(condition.operator)
                       ? ' is '
                       : ' '
                   }}
                 </span>
                 <span> {{ useParsePascalCaseStr(condition.operator) }}</span>
-                <i>
-                  {{ condition.value !== null ? ` ${condition.value}` : '' }}</i
-                >
+                <i> {{ condition.value !== null ? ` ${condition.value}` : '' }}</i>
               </span>
             </div>
           </n-space>
@@ -51,11 +41,7 @@
       </n-space>
     </n-card>
 
-    <n-card
-      header-style="padding-bottom: 0.5rem"
-      v-if="isTested"
-      :segmented="{ content: 'soft' }"
-    >
+    <n-card header-style="padding-bottom: 0.5rem" v-if="isTested" :segmented="{ content: 'soft' }">
       <template #header>
         <div class="title">Result</div>
       </template>
@@ -68,7 +54,7 @@
       </n-space>
 
       <n-space align="center" v-else :wrap="false">
-        <Icon
+        <SubIcon
           :icon="isMatched ? 'ep:success-filled' : 'ic:round-cancel'"
           :color="isMatched ? '#18A058FF' : '#D03050FF'"
           :width="'2rem'"
@@ -120,13 +106,9 @@ const eventBus = inject('eventBus');
 const store = useStore();
 const isMatched = ref(null);
 
-const type = computed(
-  () => EditorData.workflow.tasks[EditorData.triggerIdx].type
-);
+const type = computed(() => EditorData.workflow.tasks[EditorData.triggerIdx].type);
 
-const config = computed(
-  () => EditorData.workflow.tasks[EditorData.triggerIdx].config
-);
+const config = computed(() => EditorData.workflow.tasks[EditorData.triggerIdx].config);
 
 const runningTest = computed(() => store.state.task.runningTest[type.value]);
 const isTested = computed(() => store.state.task.tested[type.value]);

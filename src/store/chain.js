@@ -18,10 +18,15 @@ export default {
     getChains: (state, chains) => {
       state.chains = chains;
     },
-    getEvents: (state, events) => (state.events = events),
-    getEvent: (state, event) => (state.event = event),
-    setLoading: (state, data) =>
-      (state.loading = { ...state.loading, ...data }),
+    getEvents: (state, events) => {
+      state.events = events;
+    },
+    getEvent: (state, event) => {
+      state.event = event;
+    },
+    setLoading: (state, data) => {
+      state.loading = { ...state.loading, ...data };
+    },
   },
 
   actions: {

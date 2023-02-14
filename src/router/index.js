@@ -35,14 +35,12 @@ const router = createRouter({
                   props: true,
                   path: 'overview',
                   name: 'overview',
-                  component: () =>
-                    import('@/components/WorkflowDetails/Overview.vue'),
+                  component: () => import('@/components/WorkflowDetails/Overview.vue'),
                 },
                 {
                   path: 'logs',
                   name: 'logs',
-                  component: () =>
-                    import('@/components/WorkflowDetails/WorkflowLogs.vue'),
+                  component: () => import('@/components/WorkflowDetails/WorkflowLogs.vue'),
                 },
               ],
             },

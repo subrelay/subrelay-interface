@@ -1,4 +1,5 @@
 import { reactive } from 'vue';
+import { cloneDeep } from 'lodash';
 
 const conditionFormat = { variable: null, operator: null, value: null };
 
@@ -30,25 +31,22 @@ function randomKey() {
 
 const editor = reactive({
   workflow: null,
+  postWorkflowData: null,
   triggerIdx: null,
   actionIdx: null,
 
   setError(taskName, isError) {
-    const index = this.workflow.tasks.findIndex(
-      (task) => task.name === taskName
-    );
+    const index = this.workflow.tasks.findIndex((task) => task.name === taskName);
     this.workflow.tasks[index].isError = isError;
   },
 
   setComplete(taskName, isCompleted) {
-    const index = this.workflow.tasks.findIndex(
-      (task) => task.name === taskName
-    );
+    const index = this.workflow.tasks.findIndex((task) => task.name === taskName);
     this.workflow.tasks[index].isCompleted = isCompleted;
   },
 
   setName(name) {
-    this.workflow.name = name ? name : 'Untitled';
+    this.workflow.name = name || 'Untitled';
   },
 
   setChainUuid(chainUuid) {
@@ -61,17 +59,12 @@ const editor = reactive({
 
     this.setComplete(
       'trigger',
-      !!(
-        this.workflow.tasks[this.triggerIdx].config.eventId &&
-        this.workflow.chainUuid
-      )
+      !!(this.workflow.tasks[this.triggerIdx].config.eventId && this.workflow.chainUuid),
     );
   },
 
   addOr() {
-    this.workflow.tasks[0].config.conditions.push([
-      { ...conditionFormat, key: randomKey() },
-    ]);
+    this.workflow.tasks[0].config.conditions.push([{ ...conditionFormat, key: randomKey() }]);
   },
 
   addAnd(groupIdx) {
@@ -86,29 +79,21 @@ const editor = reactive({
     if (condition.length === 1) {
       this.workflow.tasks[0].config.conditions.splice(groupIdx, 1);
     } else {
-      this.workflow.tasks[0].config.conditions[groupIdx].splice(
-        conditionIdx,
-        1
-      );
+      this.workflow.tasks[0].config.conditions[groupIdx].splice(conditionIdx, 1);
     }
   },
 
   updateCondition(payload, groupIdx, conditionIdx) {
     const { value, prop } = payload;
-    this.workflow.tasks[0].config.conditions[groupIdx][conditionIdx][prop] =
-      value;
+    this.workflow.tasks[0].config.conditions[groupIdx][conditionIdx][prop] = value;
   },
 
   loadWorkflow(data) {
-    this.workflow = data ? data : defaultConfig();
+    this.workflow = data || defaultConfig();
 
-    this.triggerIdx = this.workflow.tasks.findIndex(
-      (task) => task.type === 'trigger'
-    );
+    this.triggerIdx = this.workflow.tasks.findIndex((task) => task.type === 'trigger');
 
-    this.actionIdx = this.workflow.tasks.findIndex(
-      (task) => task.type === 'notification'
-    );
+    this.actionIdx = this.workflow.tasks.findIndex((task) => task.type === 'notification');
 
     // Add flag for error validator
     this.workflow.tasks.forEach((task, index) => {
@@ -128,15 +113,22 @@ const editor = reactive({
     });
 
     // Add key to each condition
-    this.workflow.tasks[this.triggerIdx].config.conditions.forEach((group) =>
-      group.forEach((condition) => (condition.key = randomKey()))
-    );
+    this.workflow.tasks[this.triggerIdx].config.conditions.forEach((group) => {
+      group.forEach((condition) => {
+        condition.key = randomKey();
+      });
+    });
   },
 
   cleanUpWorkflow() {
     if (!this.workflow.name) this.setName();
 
-    this.workflow.tasks.forEach((task) => {
+    // Create a clean copy data object,
+    // so in case the user cancels signer when sending create workflow request
+    // supportive props (isComplete, isError, key, etc.) are still remained
+    this.postWorkflowData = cloneDeep(this.workflow);
+
+    this.postWorkflowData.tasks.forEach((task) => {
       delete task.isCompleted;
       delete task.isError;
     });

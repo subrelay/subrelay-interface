@@ -78,7 +78,7 @@
     </n-grid>
 
     <n-button @click="emits('remove')" text style="padding-bottom: 24px">
-      <Icon icon="bi:trash" />
+      <SubIcon icon="bi:trash" />
     </n-button>
   </n-space>
 </template>
@@ -187,6 +187,6 @@ watch(
     }
   },
   { immediate: true },
-  { deep: true }
+  { deep: true },
 );
 </script>

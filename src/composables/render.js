@@ -4,59 +4,60 @@ import { Icon } from '@iconify/vue';
 import { useStore } from 'vuex';
 
 export const useRenderSortIcon = ({ order }) => {
-  if (order === false) return '';
+  if (order === false) return h('div', '');
   return h(
     NIcon,
     {
       style: {
         transform: order === 'ascend' ? 'rotate(-180deg) ' : '',
         transition: '0.2s transform ease-out',
-        'margin-left': '2rem',
       },
     },
-    { default: () => h(Icon, { icon: 'akar-icons:arrow-down' }) }
+    { default: () => h(Icon, { icon: 'akar-icons:arrow-down' }) },
   );
-};
-
-export const useRenderCell = (value) => {
-  if (!value) {
-    return '--';
-  }
-
-  return value;
 };
 
 export const useRenderDropdownLabel = (option) => {
   const store = useStore();
 
-  const iconNode = option.imageUrl
-    ? h(NAvatar, {
-        src: option.imageUrl,
-        round: true,
-        size: 'small',
-        color: 'transparent',
-        style: { marginRight: '12px' },
-      })
-    : option.icon
-    ? h(Icon, {
-        icon: option.icon,
-        color: option.iconColor
-          ? option.iconColor
-          : store.state.global.isDarkMode
-          ? option.iconColorDark
-          : option.iconColorLight,
-        width: '1.2rem',
-        rotate: option.iconRotate,
-        style: { marginRight: '12px' },
-      })
-    : null;
+  let iconNode;
+  if (option.imageUrl) {
+    iconNode = h(NAvatar, {
+      src: option.imageUrl,
+      round: true,
+      size: 'small',
+      color: 'transparent',
+      style: { marginRight: '12px' },
+    });
+  } else if (option.icon) {
+    let color;
+
+    if (option.iconColor) {
+      color = option.iconColor;
+    } else if (store.state.global.isDarkMode) {
+      color = option.iconColorDark;
+    } else {
+      color = option.iconColorLight;
+    }
+
+    iconNode = h(Icon, {
+      icon: option.icon,
+      color,
+      width: '1.2rem',
+      rotate: option.iconRotate,
+      style: { marginRight: '12px' },
+    });
+  } else {
+    iconNode = null;
+  }
 
   let descNode;
+
   if (option.description) {
     descNode = h(
       NText,
       { depth: 3, tag: 'div', style: { marginLeft: '1rem' } },
-      { default: () => option.description || '' }
+      { default: () => option.description || '' },
     );
   }
 
@@ -75,12 +76,12 @@ export const useRenderDropdownLabel = (option) => {
 };
 
 export const renderSelectTagWithDescription = ({ option }) => {
-  return h(
+  const tag = h(
     'div',
     { style: { display: 'flex', alignItems: 'center' } },
     {
-      default: () =>
-        `${option.pallet ? `${option.pallet}.` : ''}${option.name}`,
-    }
+      default: () => `${option.pallet ? `${option.pallet}.` : ''}${option.name}`,
+    },
   );
+  return tag;
 };

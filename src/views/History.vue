@@ -3,20 +3,9 @@
     <PageHeader :module="'history'" :statusOptions="useLogStatuses" />
 
     <n-space :wrapItem="false">
-      <n-data-table
-        :columns="columns"
-        :data="logs"
-        :render-cell="useRenderCell"
-        :loading="loading"
-        @update:sorter="handleSort"
-      >
+      <n-data-table :columns="columns" :data="logs" :loading="loading" @update:sorter="handleSort">
         <template #empty>
-          <n-empty
-            description="No data available"
-            :show-icon="false"
-            :size="'small'"
-          >
-          </n-empty>
+          <n-empty description="No data available" :show-icon="false" :size="'small'"> </n-empty>
         </template>
       </n-data-table>
 
@@ -40,13 +29,7 @@ import { ref, h, provide, computed } from 'vue';
 import { useStore } from 'vuex';
 import { NAvatar } from 'naive-ui';
 import moment from 'moment';
-import {
-  useQuery,
-  useRenderSortIcon,
-  useRenderCell,
-  useLogStatuses,
-  useGetChainImg,
-} from '@/composables';
+import { useQuery, useRenderSortIcon, useLogStatuses, useGetChainImg } from '@/composables';
 
 const store = useStore();
 const chains = computed(() => store.state.chain.chains);
@@ -61,7 +44,6 @@ const columns = ref([
   {
     title: 'Status',
     key: 'updatedAt',
-    sorter: false,
     width: '10%',
     ellipsis: { tooltip: true },
     render: ({ status }) => {
@@ -77,7 +59,7 @@ const columns = ref([
     title: 'Workflow Name',
     key: 'name',
     className: 'text-bold',
-    width: '30%',
+    width: '25%',
     ellipsis: { tooltip: true },
     sorter: true,
     sortOrder: false,
@@ -86,11 +68,8 @@ const columns = ref([
   {
     title: 'Chain',
     key: 'chain',
-    width: '20%',
+    width: '25%',
     ellipsis: { tooltip: true },
-    sorter: true,
-    sortOrder: false,
-    renderSorterIcon: useRenderSortIcon,
     render: ({ chain }) => {
       return h('div', { style: { display: 'flex', alignItems: 'center' } }, [
         h(NAvatar, {
@@ -100,49 +79,38 @@ const columns = ref([
           size: 'small',
           color: 'white',
         }),
-        h(
-          'div',
-          { style: { marginLeft: '12px', padding: '4px 0' } },
-          chain.name
-        ),
+        h('div', { style: { marginLeft: '12px', padding: '4px 0' } }, chain.name),
       ]);
     },
   },
   {
     title: 'Started at',
-    key: 'started_at',
+    key: 'startedAt',
     width: '20%',
     ellipsis: { tooltip: true },
     sorter: true,
     sortOrder: false,
     renderSorterIcon: useRenderSortIcon,
-    render: ({ started_at }) => {
-      return moment(started_at).format('MMM Do YYYY, HH:mm:ss');
+    render: ({ startedAt }) => {
+      return moment(startedAt).format('MMM Do YYYY, HH:mm:ss');
     },
   },
   {
     title: 'Finished at',
-    key: 'finished_at',
+    key: 'finishedAt',
     width: '20%',
     ellipsis: { tooltip: true },
     sorter: true,
     sortOrder: false,
     renderSorterIcon: useRenderSortIcon,
-    render: ({ finished_at }) => {
-      return moment(finished_at).format('MMM Do YYYY, HH:mm:ss');
+    render: ({ finishedAt }) => {
+      return moment(finishedAt).format('MMM Do YYYY, HH:mm:ss');
     },
   },
 ]);
 
 const [
-  {
-    query,
-    searchText,
-    loading,
-    tablePagination,
-    selectedChain,
-    selectedStatus,
-  },
+  { query, searchText, loading, tablePagination, selectedChain, selectedStatus },
   {
     onDebouncedSearch,
     handleSort,

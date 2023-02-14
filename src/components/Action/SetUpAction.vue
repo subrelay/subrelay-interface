@@ -4,9 +4,7 @@
 
     <n-empty description="No set up found" v-else>
       <template #extra>
-        <n-button size="small" @click="emits('back')">
-          Select a channel first
-        </n-button>
+        <n-button size="small" @click="emits('back')"> Select a channel first </n-button>
       </template>
     </n-empty>
   </div>
@@ -21,16 +19,11 @@ const emits = defineEmits(['back', 'continue']);
 
 const actionIdx = computed(() => EditorData.actionIdx);
 
-const channel = computed(
-  () => EditorData.workflow.tasks[actionIdx.value].config.channel
-);
+const channel = computed(() => EditorData.workflow.tasks[actionIdx.value].config.channel);
 
 const actionComponent = shallowRef({
   webhook: WebhookSetup,
 });
 
-function emitContinue() {
-  emits('continue');
-}
-provide('emitContinue', emitContinue);
+provide('emits', emits);
 </script>

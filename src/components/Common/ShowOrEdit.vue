@@ -4,7 +4,7 @@
 
     <div v-else class="show-area">
       <ShowNode />
-      <Icon icon="line-md:edit" class="edit-icon" />
+      <SubIcon icon="line-md:edit" class="edit-icon" />
     </div>
   </div>
 </template>
@@ -14,6 +14,7 @@ import { h, ref, defineComponent, nextTick } from 'vue';
 import { NInput, NEllipsis, NText } from 'naive-ui';
 
 const props = defineProps({
+  loading: Boolean,
   value: [String],
   onUpdateValue: [Function, Array],
 });
@@ -23,6 +24,7 @@ const inputRef = ref(null);
 const inputValue = ref(props.value);
 
 function handleOnClick() {
+  if (props.loading) return;
   isEdit.value = true;
   nextTick(() => {
     inputRef.value.focus();
@@ -46,9 +48,9 @@ const ShowNode = defineComponent({
             h(
               NText,
               { class: 'workflow-name' },
-              { default: () => (props.value ? props.value : 'Untitled') }
+              { default: () => (props.value ? props.value : 'Untitled') },
             ),
-        }
+        },
       );
   },
 });

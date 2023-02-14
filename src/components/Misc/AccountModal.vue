@@ -18,12 +18,12 @@
     >
       <template #header-extra>
         <n-button text @click="emits('update:modelValue', false)">
-          <Icon icon="gg:close" :inline="true" width="20" />
+          <SubIcon icon="gg:close" :inline="true" width="20" />
         </n-button>
       </template>
 
       <n-scrollbar style="max-height: 50vh" trigger="none">
-        <n-space vertical>
+        <n-space vertical v-if="accounts.length">
           <n-card
             small
             hoverable
@@ -55,7 +55,7 @@
                 </div>
               </n-space>
 
-              <Icon
+              <SubIcon
                 width="16"
                 icon="line-md:confirm"
                 v-if="currentAcc.address === account.address"
@@ -63,17 +63,19 @@
             </n-space>
           </n-card>
         </n-space>
+
+        <div v-else>No account found. Please check your Polkadot wallet again.</div>
       </n-scrollbar>
 
       <template #action>
         <div style="text-align: right">
           <n-button
             type="primary"
-            :loading="loading"
             @click="onConfirm"
-            :disabled="!currentAcc.address || loading"
+            :loading="loading"
+            :disabled="(!!accounts.length && !currentAcc.address) || loading"
           >
-            Confirm
+            {{ accounts.length ? 'Confirm' : 'OK' }}
           </n-button>
         </div>
       </template>
@@ -89,15 +91,12 @@ import { useMessage } from 'naive-ui';
 import { computed, ref, watch } from 'vue';
 import { generateGetToken } from '@/api';
 
-const props = defineProps({
-  modelValue: { type: Boolean },
-});
+const props = defineProps({ modelValue: { type: Boolean } });
 const emits = defineEmits(['update:modelValue']);
 
 const store = useStore();
 const router = useRouter();
 const message = useMessage();
-
 const currentAcc = ref({});
 const loading = ref(false);
 const storedAccount = computed(() => store.state.account.selected);
@@ -109,6 +108,11 @@ function onSelectAccount(account) {
 }
 
 async function onConfirm() {
+  if (!accounts.value.length) {
+    emits('update:modelValue', false);
+    return;
+  }
+
   store.commit('account/setSelected', currentAcc.value);
 
   try {
@@ -122,6 +126,7 @@ async function onConfirm() {
     loading.value = false;
   }
 }
+
 function onCopy({ address }) {
   navigator.clipboard.writeText(address);
   message.success('Copied!');
@@ -133,7 +138,7 @@ watch(
     if (isOpen) {
       currentAcc.value = storedAccount.value || {};
     }
-  }
+  },
 );
 </script>
 
