@@ -9,7 +9,6 @@
         :data="workflows"
         :row-key="({ id }) => id"
         :row-props="rowProps"
-        :render-cell="useRenderCell"
         :loading="loading"
         @update:sorter="handleSort"
       >
@@ -45,7 +44,6 @@ import Api from '@/api';
 import {
   useQuery,
   useRenderSortIcon,
-  useRenderCell,
   useGetChainImg,
   useWorkflowStatuses,
   useShowError,

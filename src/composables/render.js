@@ -4,26 +4,17 @@ import { Icon } from '@iconify/vue';
 import { useStore } from 'vuex';
 
 export const useRenderSortIcon = ({ order }) => {
-  if (order === false) return '';
+  if (order === false) return h('div', '');
   return h(
     NIcon,
     {
       style: {
         transform: order === 'ascend' ? 'rotate(-180deg) ' : '',
         transition: '0.2s transform ease-out',
-        'margin-left': '2rem',
       },
     },
     { default: () => h(Icon, { icon: 'akar-icons:arrow-down' }) },
   );
-};
-
-export const useRenderCell = (value) => {
-  if (!value) {
-    return '--';
-  }
-
-  return value;
 };
 
 export const useRenderDropdownLabel = (option) => {

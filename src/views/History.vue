@@ -3,20 +3,9 @@
     <PageHeader :module="'history'" :statusOptions="useLogStatuses" />
 
     <n-space :wrapItem="false">
-      <n-data-table
-        :columns="columns"
-        :data="logs"
-        :render-cell="useRenderCell"
-        :loading="loading"
-        @update:sorter="handleSort"
-      >
+      <n-data-table :columns="columns" :data="logs" :loading="loading" @update:sorter="handleSort">
         <template #empty>
-          <n-empty
-            description="No data available"
-            :show-icon="false"
-            :size="'small'"
-          >
-          </n-empty>
+          <n-empty description="No data available" :show-icon="false" :size="'small'"> </n-empty>
         </template>
       </n-data-table>
 
@@ -40,13 +29,7 @@ import { ref, h, provide, computed } from 'vue';
 import { useStore } from 'vuex';
 import { NAvatar } from 'naive-ui';
 import moment from 'moment';
-import {
-  useQuery,
-  useRenderSortIcon,
-  useRenderCell,
-  useLogStatuses,
-  useGetChainImg,
-} from '@/composables';
+import { useQuery, useRenderSortIcon, useLogStatuses, useGetChainImg } from '@/composables';
 
 const store = useStore();
 const chains = computed(() => store.state.chain.chains);
@@ -76,7 +59,7 @@ const columns = ref([
     title: 'Workflow Name',
     key: 'name',
     className: 'text-bold',
-    width: '30%',
+    width: '25%',
     ellipsis: { tooltip: true },
     sorter: true,
     sortOrder: false,
@@ -85,7 +68,7 @@ const columns = ref([
   {
     title: 'Chain',
     key: 'chain',
-    width: '20%',
+    width: '25%',
     ellipsis: { tooltip: true },
     render: ({ chain }) => {
       return h('div', { style: { display: 'flex', alignItems: 'center' } }, [
@@ -96,11 +79,7 @@ const columns = ref([
           size: 'small',
           color: 'white',
         }),
-        h(
-          'div',
-          { style: { marginLeft: '12px', padding: '4px 0' } },
-          chain.name
-        ),
+        h('div', { style: { marginLeft: '12px', padding: '4px 0' } }, chain.name),
       ]);
     },
   },
@@ -131,14 +110,7 @@ const columns = ref([
 ]);
 
 const [
-  {
-    query,
-    searchText,
-    loading,
-    tablePagination,
-    selectedChain,
-    selectedStatus,
-  },
+  { query, searchText, loading, tablePagination, selectedChain, selectedStatus },
   {
     onDebouncedSearch,
     handleSort,

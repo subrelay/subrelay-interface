@@ -77,7 +77,6 @@ export default function useQuery(module, columns, fetchData = () => {}) {
     }
 
     const queryBySort = { order, sort };
-
     pushQueryToRoute({ ...query.value, ...queryBySort });
   }
 
@@ -134,9 +133,10 @@ export default function useQuery(module, columns, fetchData = () => {}) {
       const nextSortIndex = findIndex(columns.value, { key: order });
 
       let tableSort;
+
       if (sort === 'ASC') {
         tableSort = 'ascend';
-      } else if (sort === 'descend') {
+      } else if (sort === 'DESC') {
         tableSort = 'descend';
       } else {
         tableSort = false;
@@ -190,9 +190,10 @@ export default function useQuery(module, columns, fetchData = () => {}) {
       const index = findIndex(columns.value, { key: order });
 
       let tableSort;
+
       if (sort === 'ASC') {
         tableSort = 'ascend';
-      } else if (sort === 'descend') {
+      } else if (sort === 'DESC') {
         tableSort = 'descend';
       } else {
         tableSort = false;

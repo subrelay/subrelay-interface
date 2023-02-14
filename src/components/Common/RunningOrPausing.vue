@@ -18,6 +18,7 @@
 import { useStore } from 'vuex';
 import { ref, computed } from 'vue';
 import { useMessage } from 'naive-ui';
+import { useShowError } from '@/composables';
 import Api from '@/api';
 
 const store = useStore();
@@ -54,9 +55,13 @@ async function onUpdateStatus(newStt) {
     }
 
     message.success('Status updated successfully');
-  } catch (error) {
-    console.error(error);
-    message.error('Error:', error.message);
+  } catch (e) {
+    const errMsg = e.message;
+    if (errMsg === 'Cancelled') {
+      return;
+    } else {
+      useShowError(e);
+    }
   } finally {
     loading.value = false;
   }

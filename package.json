@@ -39,7 +39,7 @@
     "eslint-import-resolver-alias": "^1.1.2",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-vue": "^9.9.0",
-    "naive-ui": "^2.33.5",
+    "naive-ui": "^2.34.3",
     "sass": "1.32.12",
     "start-server-and-test": "^1.14.0",
     "vfonts": "^0.0.3",
