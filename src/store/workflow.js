@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { pickBy } from 'lodash';
 import Api from '@/api';
 
@@ -14,17 +13,27 @@ export default {
   }),
 
   mutations: {
-    getWorkflows: (state, workflows) => (state.workflows = workflows),
-    getItemCount: (state, itemCount) => (state.itemCount = itemCount),
-    getWorkflow: (state, workflow) => (state.workflow = workflow),
-    saveQuery: (state, query) => (state.query = query),
-    setLoading: (state, isLoading) => (state.loading = isLoading),
+    getWorkflows: (state, workflows) => {
+      state.workflows = workflows;
+    },
+    getItemCount: (state, itemCount) => {
+      state.itemCount = itemCount;
+    },
+    getWorkflow: (state, workflow) => {
+      state.workflow = workflow;
+    },
+    saveQuery: (state, query) => {
+      state.query = query;
+    },
+    setLoading: (state, isLoading) => {
+      state.loading = isLoading;
+    },
   },
 
   actions: {
     async getWorkflows(
       { commit, state, rootState },
-      { showLoading = true } = {},
+      { showLoading = true } = {}
     ) {
       if (rootState.account.selected) {
         if (showLoading) commit('setLoading', true);
