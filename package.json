@@ -10,7 +10,8 @@
     "test:e2e": "start-server-and-test preview :4173 'cypress run --e2e'",
     "test:e2e:dev": "start-server-and-test 'vite dev --port 4173' :4173 'cypress open --e2e'",
     "test:unit": "cypress run --component",
-    "test:unit:dev": "cypress open --component"
+    "test:unit:dev": "cypress open --component",
+    "eslint": "eslint src"
   },
   "dependencies": {
     "@iconify/vue": "^4.0.0",
@@ -33,6 +34,10 @@
     "@vitejs/plugin-vue": "^3.2.0",
     "@vitejs/plugin-vue-jsx": "^2.0.1",
     "cypress": "^10.10.0",
+    "eslint": "^7.32.0 || ^8.2.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-vue": "^9.9.0",
     "naive-ui": "^2.33.5",
     "sass": "1.32.12",
     "start-server-and-test": "^1.14.0",

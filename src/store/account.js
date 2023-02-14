@@ -64,7 +64,7 @@ export default {
 
         if (state.selected) {
           const isAccountExisted = !!accounts.find(
-            ({ address }) => address === state.selected.address
+            ({ address }) => address === state.selected.address,
           );
           if (!isAccountExisted) {
             commit('setSelected', null);

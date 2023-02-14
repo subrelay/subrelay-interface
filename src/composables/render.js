@@ -14,7 +14,7 @@ export const useRenderSortIcon = ({ order }) => {
         'margin-left': '2rem',
       },
     },
-    { default: () => h(Icon, { icon: 'akar-icons:arrow-down' }) }
+    { default: () => h(Icon, { icon: 'akar-icons:arrow-down' }) },
   );
 };
 
@@ -31,32 +31,32 @@ export const useRenderDropdownLabel = (option) => {
 
   const iconNode = option.imageUrl
     ? h(NAvatar, {
-        src: option.imageUrl,
-        round: true,
-        size: 'small',
-        color: 'transparent',
-        style: { marginRight: '12px' },
-      })
+      src: option.imageUrl,
+      round: true,
+      size: 'small',
+      color: 'transparent',
+      style: { marginRight: '12px' },
+    })
     : option.icon
-    ? h(Icon, {
+      ? h(Icon, {
         icon: option.icon,
         color: option.iconColor
           ? option.iconColor
           : store.state.global.isDarkMode
-          ? option.iconColorDark
-          : option.iconColorLight,
+            ? option.iconColorDark
+            : option.iconColorLight,
         width: '1.2rem',
         rotate: option.iconRotate,
         style: { marginRight: '12px' },
       })
-    : null;
+      : null;
 
   let descNode;
   if (option.description) {
     descNode = h(
       NText,
       { depth: 3, tag: 'div', style: { marginLeft: '1rem' } },
-      { default: () => option.description || '' }
+      { default: () => option.description || '' },
     );
   }
 
@@ -74,13 +74,10 @@ export const useRenderDropdownLabel = (option) => {
   ]);
 };
 
-export const renderSelectTagWithDescription = ({ option }) => {
-  return h(
-    'div',
-    { style: { display: 'flex', alignItems: 'center' } },
-    {
-      default: () =>
-        `${option.pallet ? `${option.pallet}.` : ''}${option.name}`,
-    }
-  );
-};
+export const renderSelectTagWithDescription = ({ option }) => h(
+  'div',
+  { style: { display: 'flex', alignItems: 'center' } },
+  {
+    default: () => `${option.pallet ? `${option.pallet}.` : ''}${option.name}`,
+  },
+);

@@ -1,6 +1,6 @@
 import axios from 'axios';
-import Api from '@/api';
 import { pickBy } from 'lodash';
+import Api from '@/api';
 
 export default {
   namespaced: true,
@@ -24,7 +24,7 @@ export default {
   actions: {
     async getWorkflows(
       { commit, state, rootState },
-      { showLoading = true } = {}
+      { showLoading = true } = {},
     ) {
       if (rootState.account.selected) {
         if (showLoading) commit('setLoading', true);

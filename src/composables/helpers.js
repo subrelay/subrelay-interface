@@ -1,6 +1,4 @@
-export const useDropdownFilter = (string, option) => {
-  return option.name.toLowerCase().includes(string.toLowerCase());
-};
+export const useDropdownFilter = (string, option) => option.name.toLowerCase().includes(string.toLowerCase());
 
 export const useParsePascalCaseStr = (string) => {
   if (!string) return;

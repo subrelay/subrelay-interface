@@ -20,8 +20,7 @@ export default {
     },
     getEvents: (state, events) => (state.events = events),
     getEvent: (state, event) => (state.event = event),
-    setLoading: (state, data) =>
-      (state.loading = { ...state.loading, ...data }),
+    setLoading: (state, data) => (state.loading = { ...state.loading, ...data }),
   },
 
   actions: {

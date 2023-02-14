@@ -54,7 +54,7 @@ export const generateGetToken = async ({ account, signer }) => {
   });
 
   const token = window.btoa(
-    JSON.stringify({ address: account.address, timestamp, signature })
+    JSON.stringify({ address: account.address, timestamp, signature }),
   );
 
   saveAuthToken(account.address, token, timestamp);
@@ -62,7 +62,9 @@ export const generateGetToken = async ({ account, signer }) => {
   return token;
 };
 
-const generateToken = async ({ account, signer, endpoint, method, body }) => {
+const generateToken = async ({
+  account, signer, endpoint, method, body,
+}) => {
   const timestamp = Date.now();
   const data = {
     endpoint,
@@ -80,11 +82,13 @@ const generateToken = async ({ account, signer, endpoint, method, body }) => {
   });
 
   return window.btoa(
-    JSON.stringify({ address: account.address, timestamp, signature })
+    JSON.stringify({ address: account.address, timestamp, signature }),
   );
 };
 
-const request = async ({ account, signer, endpoint, method, body }) => {
+const request = async ({
+  account, signer, endpoint, method, body,
+}) => {
   if (method === 'get') {
     const getToken = await generateGetToken({ account, signer });
 
@@ -115,9 +119,7 @@ const request = async ({ account, signer, endpoint, method, body }) => {
   });
 };
 
-const buildQueryStr = (params) => {
-  return '?' + new URLSearchParams(params).toString();
-};
+const buildQueryStr = (params) => `?${new URLSearchParams(params).toString()}`;
 
 export default {
   async getChains() {
@@ -139,7 +141,7 @@ export default {
   },
 
   async getOperators() {
-    const response = await instance.get(`/tasks/operators`);
+    const response = await instance.get('/tasks/operators');
 
     return response.data;
   },
@@ -159,7 +161,7 @@ export default {
       account,
       signer,
       method: 'get',
-      endpoint: '/workflows' + buildQueryStr(params),
+      endpoint: `/workflows${buildQueryStr(params)}`,
     });
   },
 
@@ -182,7 +184,9 @@ export default {
     });
   },
 
-  async editWorkflow({ account, signer, id, body }) {
+  async editWorkflow({
+    account, signer, id, body,
+  }) {
     return request({
       account,
       signer,
@@ -206,7 +210,7 @@ export default {
       account,
       signer,
       method: 'get',
-      endpoint: '/workflow-logs' + buildQueryStr(params),
+      endpoint: `/workflow-logs${buildQueryStr(params)}`,
     });
   },
 };

@@ -35,20 +35,20 @@ const editor = reactive({
 
   setError(taskName, isError) {
     const index = this.workflow.tasks.findIndex(
-      (task) => task.name === taskName
+      (task) => task.name === taskName,
     );
     this.workflow.tasks[index].isError = isError;
   },
 
   setComplete(taskName, isCompleted) {
     const index = this.workflow.tasks.findIndex(
-      (task) => task.name === taskName
+      (task) => task.name === taskName,
     );
     this.workflow.tasks[index].isCompleted = isCompleted;
   },
 
   setName(name) {
-    this.workflow.name = name ? name : 'Untitled';
+    this.workflow.name = name || 'Untitled';
   },
 
   setChainUuid(chainUuid) {
@@ -62,9 +62,9 @@ const editor = reactive({
     this.setComplete(
       'trigger',
       !!(
-        this.workflow.tasks[this.triggerIdx].config.eventId &&
-        this.workflow.chainUuid
-      )
+        this.workflow.tasks[this.triggerIdx].config.eventId
+        && this.workflow.chainUuid
+      ),
     );
   },
 
@@ -88,26 +88,25 @@ const editor = reactive({
     } else {
       this.workflow.tasks[0].config.conditions[groupIdx].splice(
         conditionIdx,
-        1
+        1,
       );
     }
   },
 
   updateCondition(payload, groupIdx, conditionIdx) {
     const { value, prop } = payload;
-    this.workflow.tasks[0].config.conditions[groupIdx][conditionIdx][prop] =
-      value;
+    this.workflow.tasks[0].config.conditions[groupIdx][conditionIdx][prop] = value;
   },
 
   loadWorkflow(data) {
-    this.workflow = data ? data : defaultConfig();
+    this.workflow = data || defaultConfig();
 
     this.triggerIdx = this.workflow.tasks.findIndex(
-      (task) => task.type === 'trigger'
+      (task) => task.type === 'trigger',
     );
 
     this.actionIdx = this.workflow.tasks.findIndex(
-      (task) => task.type === 'notification'
+      (task) => task.type === 'notification',
     );
 
     // Add flag for error validator
@@ -128,9 +127,7 @@ const editor = reactive({
     });
 
     // Add key to each condition
-    this.workflow.tasks[this.triggerIdx].config.conditions.forEach((group) =>
-      group.forEach((condition) => (condition.key = randomKey()))
-    );
+    this.workflow.tasks[this.triggerIdx].config.conditions.forEach((group) => group.forEach((condition) => (condition.key = randomKey())));
   },
 
   cleanUpWorkflow() {

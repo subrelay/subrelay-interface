@@ -1,5 +1,5 @@
-import EditorData from '@/store/localStore/EditorData';
 import { ref } from 'vue';
+import EditorData from '@/store/localStore/EditorData';
 
 export const useFormValidation = (taskName, emits) => {
   const formRef = ref(null);

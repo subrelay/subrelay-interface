@@ -1,4 +1,6 @@
-import { ref, onMounted, computed, watch } from 'vue';
+import {
+  ref, onMounted, computed, watch,
+} from 'vue';
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router';
 import { debounce, isEmpty, findIndex } from 'lodash';
 import { useStore } from 'vuex';
@@ -13,7 +15,8 @@ export const useQuery = (module, columns, fetchData = () => {}) => {
   const selectedChain = ref(undefined);
   const selectedStatus = ref(undefined);
 
-  let sortingIndex, prevSortIndex;
+  let sortingIndex; let
+    prevSortIndex;
 
   const query = computed(() => store.state[module].query);
   const loading = computed(() => store.state[module].loading);
@@ -65,10 +68,9 @@ export const useQuery = (module, columns, fetchData = () => {}) => {
     columns.value[sortingIndex].sortOrder = tableSort;
 
     const order = tableSort ? tableOrder : undefined;
-    const sort =
-      tableSort === 'descend'
-        ? 'DESC'
-        : tableSort === 'ascend'
+    const sort = tableSort === 'descend'
+      ? 'DESC'
+      : tableSort === 'ascend'
         ? 'ASC'
         : undefined;
 
@@ -118,7 +120,9 @@ export const useQuery = (module, columns, fetchData = () => {}) => {
     const params = getQueryFromRoute(to.query);
     store.commit(`${module}/saveQuery`, params);
 
-    const { order, sort, search, chainUuid, status } = to.query;
+    const {
+      order, sort, search, chainUuid, status,
+    } = to.query;
     searchText.value = search || '';
     selectedChain.value = chainUuid;
     selectedStatus.value = status;
@@ -130,8 +134,7 @@ export const useQuery = (module, columns, fetchData = () => {}) => {
       const nextSortIndex = findIndex(columns.value, { key: order });
       const tableSort = sort === 'ASC' ? 'ascend' : 'DESC' ? 'descend' : false;
       if (sortingIndex !== -1) columns.value[sortingIndex].sortOrder = false;
-      if (nextSortIndex !== -1)
-        columns.value[nextSortIndex].sortOrder = tableSort;
+      if (nextSortIndex !== -1) columns.value[nextSortIndex].sortOrder = tableSort;
     }
 
     if (!isEmpty(from.query)) fetchData();
@@ -150,7 +153,7 @@ export const useQuery = (module, columns, fetchData = () => {}) => {
         pageSize: limit,
       };
     },
-    { deep: true }
+    { deep: true },
   );
 
   watch(
@@ -158,18 +161,20 @@ export const useQuery = (module, columns, fetchData = () => {}) => {
     (itemCount) => {
       tablePagination.value = { ...tablePagination.value, itemCount };
     },
-    { immediate: true }
+    { immediate: true },
   );
 
   watch(selectedAccount, () => {
-    if (selectedAccount) fetchData();
+    if (selectedAccount.value) fetchData();
   });
 
   function initQuery() {
     const params = query.value || getQueryFromRoute(route.query);
     store.commit(`${module}/saveQuery`, params);
 
-    const { order, sort, search, chainUuid, status } = route.query;
+    const {
+      order, sort, search, chainUuid, status,
+    } = route.query;
     searchText.value = search || '';
     selectedChain.value = chainUuid;
     selectedStatus.value = status;

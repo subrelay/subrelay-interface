@@ -16,11 +16,9 @@ export default {
     getOperators: (state, operators) => (state.operators = operators),
     setLoading: (state, isLoading) => (state.loading = isLoading),
 
-    setRunningTest: (state, data) =>
-      (state.runningTest = { ...state.runningTest, ...data }),
+    setRunningTest: (state, data) => (state.runningTest = { ...state.runningTest, ...data }),
     setTested: (state, data) => (state.tested = { ...state.tested, ...data }),
-    setTestResult: (state, data) =>
-      (state.testResult = { ...state.tested, ...data }),
+    setTestResult: (state, data) => (state.testResult = { ...state.tested, ...data }),
     reset: (state) => {
       state.runningTest = {};
       state.testResult = {};

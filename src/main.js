@@ -10,6 +10,7 @@ import 'vue3-json-viewer/dist/index.css';
 import './assets/main.scss';
 
 import mitt from 'mitt';
+
 const eventBus = mitt();
 
 const app = createApp(App);
