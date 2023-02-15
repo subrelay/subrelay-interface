@@ -239,17 +239,12 @@ flex-1 {
 }
 .table-pagination {
   margin-left: auto;
+  margin-bottom: 5vh;
 }
 
 .full-page {
   min-height: calc(100vh - 50px);
 }
-
-// .n-data-table-th {
-//   overflow: hidden;
-//   white-space: nowrap;
-//   text-overflow: ellipsis;
-// }
 
 .n-data-table-empty {
   padding: 1rem !important;
