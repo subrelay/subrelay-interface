@@ -73,23 +73,5 @@ export default {
         }
       }
     },
-
-    async postWorkflow({ commit, rootState, dispatch }, data) {
-      commit('setLoading', true);
-
-      try {
-        await Api.createWorkflow({
-          account: rootState.account.selected,
-          signer: rootState.account.signer,
-          body: data,
-        });
-
-        dispatch('getWorkflows');
-      } catch (e) {
-        console.error(e);
-      } finally {
-        commit('setLoading', false);
-      }
-    },
   },
 };
