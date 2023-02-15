@@ -44,7 +44,7 @@ const columns = ref([
   {
     title: 'Status',
     key: 'updatedAt',
-    width: '10%',
+    width: 50,
     ellipsis: { tooltip: true },
     render: ({ status }) => {
       const isSuccess = status === 'success';

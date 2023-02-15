@@ -54,5 +54,5 @@ export const defaultQuery = {
   chainUuid: undefined,
   status: undefined,
   offset: 0,
-  limit: 5,
+  limit: 10,
 };

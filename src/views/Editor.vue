@@ -276,7 +276,7 @@ async function createWorkflow() {
       useShowError(e);
     }
   } finally {
-    loading.value = true;
+    loading.value = false;
   }
 }
 

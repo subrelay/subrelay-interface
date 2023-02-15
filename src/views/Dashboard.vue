@@ -1,18 +1,18 @@
 <template>
-  <div style="height: 100vh; position: relative">
-    <n-layout position="absolute">
-      <n-layout-header style="padding: 5px 3rem" bordered>
-        <n-space align="center" justify="space-between">
-          <Logo @click="goToHomePage" />
+  <n-layout style="height: 100vh">
+    <n-layout-header style="padding: 5px 3rem" bordered>
+      <n-space align="center" justify="space-between">
+        <Logo @click="goToHomePage" />
 
-          <n-space align="center" :size="32">
-            <DarkmodeSwitch />
-            <AccountDropdown />
-          </n-space>
+        <n-space align="center" :size="32">
+          <DarkmodeSwitch />
+          <AccountDropdown />
         </n-space>
-      </n-layout-header>
+      </n-space>
+    </n-layout-header>
 
-      <n-layout has-sider class="home_layout">
+    <n-layout-content>
+      <n-layout has-sider>
         <n-layout-sider
           bordered
           show-trigger="bar"
@@ -42,8 +42,8 @@
           <RouterView />
         </n-layout-content>
       </n-layout>
-    </n-layout>
-  </div>
+    </n-layout-content>
+  </n-layout>
 </template>
 
 <script setup>
@@ -111,7 +111,9 @@ function onUpdateActive(value) {
 function renderIcon(icon, isButton = false) {
   if (isButton) {
     return () =>
-      collapsed.value ? h(NButton, { type: 'primary' }, { default: () => h(Icon, { icon, inline: true }) }) : '';
+      collapsed.value
+        ? h(NButton, { type: 'primary' }, { default: () => h(Icon, { icon, inline: true }) })
+        : '';
   }
   return () => h(Icon, { icon, inline: true });
 }
@@ -145,5 +147,10 @@ function renderIcon(icon, isButton = false) {
 
 .home_layout {
   height: calc(100vh - 78px);
+}
+
+.n-layout-scroll-container {
+  display: flex;
+  flex-direction: column;
 }
 </style>

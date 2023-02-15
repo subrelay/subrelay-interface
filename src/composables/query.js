@@ -88,14 +88,13 @@ export default function useQuery(module, columns, fetchData = () => {}) {
   function handleSelectChain(chainUuid) {
     selectedChain.value = chainUuid || undefined;
 
-    pushQueryToRoute({ ...query.value, chainUuid: selectedChain.value });
+    pushQueryToRoute({ ...query.value, offset: 0, chainUuid: selectedChain.value });
   }
 
   function handleSelectStatus(status) {
     selectedStatus.value = status || undefined;
-    router.push({
-      query: { ...query.value, status: selectedStatus.value },
-    });
+
+    pushQueryToRoute({ ...query.value, offset: 0, status: selectedStatus.value });
   }
 
   function clearAllFilters() {

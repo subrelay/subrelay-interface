@@ -90,6 +90,7 @@ import { useRouter } from 'vue-router';
 import { useMessage } from 'naive-ui';
 import { computed, ref, watch } from 'vue';
 import { generateGetToken } from '@/api';
+import { useShowError } from '@/composables';
 
 const props = defineProps({ modelValue: { type: Boolean } });
 const emits = defineEmits(['update:modelValue']);
@@ -113,16 +114,20 @@ async function onConfirm() {
     return;
   }
 
-  store.commit('account/setSelected', currentAcc.value);
-
   try {
     loading.value = true;
-    await generateGetToken({ account: storedAccount.value, signer: signer.value });
-    emits('update:modelValue', false);
+    await generateGetToken({ account: currentAcc.value, signer: signer.value });
+    store.commit('account/setSelected', currentAcc.value);
     router.push({ name: 'workflows' });
-  } catch (err) {
-    console.log(err);
+  } catch (e) {
+    const errMsg = e.message;
+    if (errMsg === 'Cancelled') {
+      return;
+    } else {
+      useShowError(e);
+    }
   } finally {
+    emits('update:modelValue', false);
     loading.value = false;
   }
 }
