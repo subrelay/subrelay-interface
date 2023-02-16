@@ -1,10 +1,7 @@
 <template>
   <n-space vertical :size="24">
     <!-- DETAILS -->
-    <n-card
-      header-style="padding-bottom: 0.5rem"
-      :segmented="{ content: 'soft' }"
-    >
+    <n-card header-style="padding-bottom: 0.5rem" :segmented="{ content: 'soft' }">
       <template #header>
         <div class="font-size-1rem">Details</div>
       </template>
@@ -13,11 +10,7 @@
         <n-gi>
           <n-space vertical>
             <div class="text-semi-bold">Status</div>
-            <RunningOrPausing
-              :id="props.id"
-              :status="workflow.status"
-              fetchOne
-            />
+            <RunningOrPausing :id="props.id" :status="workflow.status" fetchOne />
           </n-space>
         </n-gi>
 
@@ -42,10 +35,7 @@
     </n-card>
 
     <!-- TRIGGER -->
-    <n-card
-      header-style="padding-bottom: 0.5rem"
-      :segmented="{ content: 'soft' }"
-    >
+    <n-card header-style="padding-bottom: 0.5rem" :segmented="{ content: 'soft' }">
       <template #header>
         <div class="title">Trigger</div>
       </template>
@@ -72,23 +62,15 @@
           <div class="text-semi-bold">Filters</div>
 
           <n-space vertical>
-            <div
-              v-for="(conditionGroup, index) in filtersCondition"
-              :key="index"
-            >
+            <div v-for="(conditionGroup, index) in filtersCondition" :key="index">
               <b v-if="index !== 0" style="margin-right: 4px">OR</b>
 
-              <span
-                v-for="(condition, subIndex) in conditionGroup"
-                :key="subIndex"
-              >
+              <span v-for="(condition, subIndex) in conditionGroup" :key="subIndex">
                 <b v-if="subIndex !== 0" style="margin-left: 4px"> AND </b>
                 <i> {{ condition.variable }} </i>
                 <span>
                   {{
-                    ['greaterThan', 'greaterThanEqual', 'lessThan'].includes(
-                      condition.operator
-                    )
+                    ['greaterThan', 'greaterThanEqual', 'lessThan'].includes(condition.operator)
                       ? ' is '
                       : ' '
                   }}
@@ -104,10 +86,7 @@
       </n-space>
     </n-card>
 
-    <n-card
-      header-style="padding-bottom: 0.5rem"
-      :segmented="{ content: 'soft' }"
-    >
+    <n-card header-style="padding-bottom: 0.5rem" :segmented="{ content: 'soft' }">
       <template #header>
         <div class="title">Action</div>
       </template>

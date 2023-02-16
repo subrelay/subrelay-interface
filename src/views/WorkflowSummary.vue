@@ -1,33 +1,42 @@
 <template>
-  <n-space
-    align="center"
-    justify="center"
-    style="height: 80vh; width: 100%"
-    v-if="loading"
-  >
+  <n-space align="center" justify="center" style="height: 80vh; width: 100%" v-if="loading">
     <n-spin description="Loading data... Please wait" size="small" />
   </n-space>
 
-  <n-space vertical :size="30" v-else>
-    <div v-if="workflow" class="page_title">{{ workflow.name }}</div>
-
-    <n-tabs
-      v-if="workflow && workflow.tasks"
-      default-value="overview"
-      justify-content="space-evenly"
-      type="card"
-      :pane-class="`tab-content ${darkMode ? 'dark' : ''}`"
-      :value="activeTab"
-      @update:value="onChangeTab"
+  <n-space v-else vertical>
+    <n-result
+      style="margin-top: 20vh"
+      v-if="workflow === 'Workflow not found'"
+      status="error"
+      title="Workflow Not Found"
+      description="The workflow you are looking for is not existed. Let's back to the home page."
     >
-      <n-tab-pane name="overview" tab="Overview">
-        <router-view :key="activeTab" />
-      </n-tab-pane>
+      <template #footer>
+        <n-button @click="router.push('/')">Go to home page</n-button>
+      </template>
+    </n-result>
 
-      <!-- <n-tab-pane name="logs" tab="Logs">
-        <router-view :key="activeTab" />
-      </n-tab-pane> -->
-    </n-tabs>
+    <n-space vertical :size="30" v-else style="margin-bottom: 5vh">
+      <div class="page_title">{{ workflow.name }}</div>
+
+      <n-tabs
+        v-if="workflow.tasks"
+        default-value="overview"
+        justify-content="space-evenly"
+        type="card"
+        :pane-class="`tab-content ${darkMode ? 'dark' : ''}`"
+        :value="activeTab"
+        @update:value="onChangeTab"
+      >
+        <n-tab-pane name="overview" tab="Overview">
+          <router-view :key="activeTab" />
+        </n-tab-pane>
+
+        <!-- <n-tab-pane name="logs" tab="Logs">
+          <router-view :key="activeTab" />
+        </n-tab-pane> -->
+      </n-tabs>
+    </n-space>
   </n-space>
 </template>
 
@@ -61,7 +70,7 @@ watch(
       store.dispatch('workflow/getWorkflow', { id: +props.id });
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 onBeforeMount(async () => {

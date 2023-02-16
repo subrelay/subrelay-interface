@@ -20,6 +20,6 @@ export function useShowError(e) {
 
   const displayMsg = responseMsg || e.message || e;
 
-  if (displayMsg === 'Cancelled') return;
+  if (displayMsg === 'Cancelled' || 'Workflow Not Found') return;
   window.$message.error(displayMsg);
 }
