@@ -46,10 +46,7 @@ async function onUpdateStatus(newStt) {
     });
 
     if (props.fetchOne) {
-      await store.dispatch('workflow/getWorkflow', {
-        showLoading: false,
-        id: props.id,
-      });
+      await store.dispatch('workflow/getWorkflow', { showLoading: false, id: props.id });
     } else {
       await store.dispatch('workflow/getWorkflows', { showLoading: false });
     }

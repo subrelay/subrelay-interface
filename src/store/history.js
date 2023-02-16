@@ -24,6 +24,11 @@ export default {
     getItemCount: (state, itemCount) => {
       state.itemCount = itemCount;
     },
+    reset: (state) => {
+      state.query = {};
+      state.logs = [];
+      state.itemCount = null;
+    },
   },
 
   actions: {

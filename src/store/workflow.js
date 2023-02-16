@@ -1,13 +1,14 @@
 import { pickBy } from 'lodash';
+import { useShowError } from '@/composables';
 import Api from '@/api';
 
 export default {
   namespaced: true,
 
   state: () => ({
+    workflow: {},
     workflows: [],
     itemCount: null,
-    workflow: {},
     query: null,
     loading: null,
   }),
@@ -27,6 +28,12 @@ export default {
     },
     setLoading: (state, isLoading) => {
       state.loading = isLoading;
+    },
+    reset: (state) => {
+      state.workflow = {};
+      state.workflows = [];
+      state.itemCount = null;
+      state.query = {};
     },
   },
 
@@ -65,9 +72,10 @@ export default {
             id,
           });
           commit('getWorkflow', workflow);
-        } catch (error) {
-          commit('getWorkflow', {});
-          console.error(error);
+        } catch (e) {
+          const displayMsg = e.response?.data.message || e.message;
+          useShowError(e);
+          commit('getWorkflow', displayMsg);
         } finally {
           commit('setLoading', false);
         }

@@ -117,8 +117,13 @@ async function onConfirm() {
   try {
     loading.value = true;
     await generateGetToken({ account: currentAcc.value, signer: signer.value });
-    store.commit('account/setSelected', currentAcc.value);
-    router.push({ name: 'workflows' });
+
+    const isAccChanged = storedAccount.value?.address !== currentAcc.value?.address;
+    if (isAccChanged) {
+      store.commit('account/setSelected', currentAcc.value);
+      store.commit('history/reset');
+      store.commit('workflow/reset');
+    }
   } catch (e) {
     const errMsg = e.message;
     if (errMsg === 'Cancelled') {
