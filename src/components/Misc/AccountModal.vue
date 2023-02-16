@@ -117,10 +117,13 @@ async function onConfirm() {
   try {
     loading.value = true;
     await generateGetToken({ account: currentAcc.value, signer: signer.value });
-    store.commit('account/setSelected', currentAcc.value);
-    store.commit('history/reset');
-    store.commit('workflow/reset');
-    // router.push({ name: 'workflows' }); // check if standing in workflows or history then still stand in that place, else push to workflows page
+
+    const isAccChanged = storedAccount.value?.address !== currentAcc.value?.address;
+    if (isAccChanged) {
+      store.commit('account/setSelected', currentAcc.value);
+      store.commit('history/reset');
+      store.commit('workflow/reset');
+    }
   } catch (e) {
     const errMsg = e.message;
     if (errMsg === 'Cancelled') {
