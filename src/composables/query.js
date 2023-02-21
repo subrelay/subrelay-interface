@@ -13,7 +13,8 @@ export default function useQuery(module, columns, fetchData = () => {}) {
   const selectedChain = ref(undefined);
   const selectedStatus = ref(undefined);
 
-  let sortingIndex, prevSortIndex;
+  let sortingIndex;
+  let prevSortIndex;
 
   const query = computed(() => store.state[module].query);
   const loading = computed(() => store.state[module].loading);
@@ -141,12 +142,12 @@ export default function useQuery(module, columns, fetchData = () => {}) {
 
   watch(
     itemCount,
-    (itemCount) => {
+    (val) => {
       const offset = query.value?.offset;
-      if (offset > itemCount) {
+      if (offset > val) {
         pushQueryToRoute({ ...query.value, offset: 0 });
       }
-      tablePagination.value = { ...tablePagination.value, itemCount: itemCount };
+      tablePagination.value = { ...tablePagination.value, itemCount: val };
     },
     { immediate: true },
   );
@@ -165,7 +166,7 @@ export default function useQuery(module, columns, fetchData = () => {}) {
     selectedStatus.value = status;
 
     if (order) {
-      const sortingIndex = findIndex(columns.value, { key: order });
+      sortingIndex = findIndex(columns.value, { key: order });
       prevSortIndex = sortingIndex;
       let tableSort;
 
