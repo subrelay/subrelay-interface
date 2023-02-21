@@ -32,7 +32,7 @@
 
 <script setup>
 import ButtonWithPopConfirm from '@/components/Common/ButtonWithPopConfirm';
-import RunningOrPausing from '@/components/Common/RunningOrPausing';
+import WorkflowSwitch from '@/components/Common/WorkflowSwitch';
 import PageHeader from '@/components/Common/PageHeader';
 import { NAvatar, useMessage } from 'naive-ui';
 import { Icon } from '@iconify/vue';
@@ -149,7 +149,7 @@ const columns = ref([
       h(
         'div',
         { onClick: (e) => e.stopPropagation() },
-        h(RunningOrPausing, { status, id, fetchOne: false }),
+        h(WorkflowSwitch, { status, id, fetchOne: false }),
       ),
   },
   {

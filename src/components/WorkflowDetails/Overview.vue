@@ -10,7 +10,7 @@
         <n-gi>
           <n-space vertical>
             <div class="text-semi-bold">Status</div>
-            <RunningOrPausing :id="props.id" :status="workflow.status" fetchOne />
+            <WorkflowSwitch :id="props.id" :status="workflow.status" fetchOne />
           </n-space>
         </n-gi>
 
@@ -115,7 +115,7 @@
 
 <script setup>
 import WebhookInput from '@/components/Action/WebhookInput';
-import RunningOrPausing from '@/components/Common/RunningOrPausing';
+import WorkflowSwitch from '@/components/Common/WorkflowSwitch';
 import { useParsePascalCaseStr } from '@/composables';
 import { computed, onMounted, ref } from 'vue';
 import { useStore } from 'vuex';

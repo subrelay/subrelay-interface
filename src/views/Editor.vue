@@ -6,7 +6,7 @@
       <!-- HEADER -->
       <n-space align="center" justify="space-between">
         <!-- Name -->
-        <ShowOrEdit :onUpdateValue="onUpdateName" :value="EditorData.workflow.name" />
+        <EditableText :onUpdateValue="onUpdateName" :value="EditorData.workflow.name" />
 
         <!-- Logo -->
         <Logo @click="quitEditor" />
@@ -108,7 +108,7 @@
 <script setup>
 import EditorData from '@/store/localStore/EditorData';
 import Logo from '@/components/Common/Logo';
-import ShowOrEdit from '@/components/Common/ShowOrEdit';
+import EditableText from '@/components/Common/EditableText';
 import Trigger from '@/components/Trigger/Trigger';
 import Action from '@/components/Action/Action';
 import { ThunderboltOutlined, BellOutlined } from '@vicons/antd';
