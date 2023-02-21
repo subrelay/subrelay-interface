@@ -22,12 +22,12 @@ const router = createRouter({
             {
               path: 'history',
               name: 'history',
-              component: () => import('../views/History.vue'),
+              component: () => import('@/views/History.vue'),
             },
             {
               path: '/workflow-summary/:id',
               props: true,
-              component: () => import('../views/WorkflowSummary.vue'),
+              component: () => import('@/views/WorkflowSummary.vue'),
               meta: { title: 'Workflow Summary' },
               children: [
                 { path: '', redirect: { name: 'overview' } },
@@ -35,12 +35,12 @@ const router = createRouter({
                   props: true,
                   path: 'overview',
                   name: 'overview',
-                  component: () => import('@/components/WorkflowDetails/Overview.vue'),
+                  component: () => import('@/views/WorkflowDetails/Overview.vue'),
                 },
                 {
                   path: 'logs',
                   name: 'logs',
-                  component: () => import('@/components/WorkflowDetails/WorkflowLogs.vue'),
+                  component: () => import('@/views/WorkflowDetails/WorkflowLogs.vue'),
                 },
               ],
             },
@@ -49,19 +49,19 @@ const router = createRouter({
         {
           path: '/editor/:id',
           props: true,
-          component: () => import('../views/Editor.vue'),
+          component: () => import('@/views/Editor/Editor.vue'),
           meta: { title: 'Editor', signInRequired: true },
           children: [
             { path: '', redirect: { name: 'trigger' } },
             {
               path: 'trigger',
               name: 'trigger',
-              component: () => import('@/components/Trigger/Trigger.vue'),
+              component: () => import('@/views/Editor/Trigger/Trigger.vue'),
             },
             {
               path: 'action',
               name: 'action',
-              component: () => import('@/components/Action/Action.vue'),
+              component: () => import('@/views/Editor/Action/Action.vue'),
             },
           ],
         },
@@ -70,14 +70,14 @@ const router = createRouter({
     {
       path: '/welcome',
       name: 'welcome',
-      component: () => import('../views/WelcomeScreen.vue'),
+      component: () => import('@/views/WelcomeScreen.vue'),
       meta: { title: 'Welcome' },
     },
 
     {
       path: '/:pathMatch(.*)*',
       name: 'notfound',
-      component: () => import('../views/NotFound.vue'),
+      component: () => import('@/views/NotFound.vue'),
       meta: { title: '404 Not Found' },
     },
   ],

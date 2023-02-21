@@ -114,8 +114,8 @@
 </template>
 
 <script setup>
-import WebhookInput from '@/components/Action/WebhookInput';
-import WorkflowSwitch from '@/components/Common/WorkflowSwitch';
+import WebhookInput from '@/views/Editor/Action/WebhookInput';
+import WorkflowSwitch from '@/components/WorkflowSwitch';
 import { useParsePascalCaseStr } from '@/composables';
 import { computed, onMounted, ref } from 'vue';
 import { useStore } from 'vuex';

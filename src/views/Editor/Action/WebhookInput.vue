@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-// import JsonEventSample from '@/components/Common/JsonEventSample';
+// import JsonEventSample from '@/components/JsonEventSample';
 import { computed } from 'vue';
 
 const props = defineProps({ config: Object });

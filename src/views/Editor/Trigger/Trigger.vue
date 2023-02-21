@@ -4,11 +4,11 @@
 
 <script setup>
 import { shallowRef, inject } from 'vue';
-import SelectChain from '@/components/Trigger/SelectChain.vue';
-import SelectEvent from '@/components/Trigger/SelectEvent.vue';
-import Filters from '@/components/Trigger/Filters.vue';
-import TestFilter from '@/components/Trigger/TestFilter.vue';
-import Accordion from '@/components/Misc/Accordion.vue';
+import SelectChain from '@/views/Editor/Trigger/SelectChain.vue';
+import SelectEvent from '@/views/Editor/Trigger/SelectEvent.vue';
+import Filters from '@/views/Editor/Trigger/Filters.vue';
+import TestFilter from '@/views/Editor/Trigger/TestFilter.vue';
+import Accordion from '@/components/Accordion.vue';
 
 const steps = shallowRef([
   { title: 'Select Chain', name: '1', component: SelectChain },

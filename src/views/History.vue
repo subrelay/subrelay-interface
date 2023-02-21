@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import PageHeader from '@/components/Common/PageHeader';
+import PageHeader from '@/components/PageHeader';
 import { Icon } from '@iconify/vue';
 import { ref, h, provide, computed } from 'vue';
 import { useStore } from 'vuex';

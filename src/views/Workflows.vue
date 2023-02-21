@@ -31,9 +31,9 @@
 </template>
 
 <script setup>
-import ButtonWithPopConfirm from '@/components/Common/ButtonWithPopConfirm';
-import WorkflowSwitch from '@/components/Common/WorkflowSwitch';
-import PageHeader from '@/components/Common/PageHeader';
+import ButtonWithPopConfirm from '@/components/ButtonWithPopConfirm';
+import WorkflowSwitch from '@/components/WorkflowSwitch';
+import PageHeader from '@/components/PageHeader';
 import { NAvatar, useMessage } from 'naive-ui';
 import { Icon } from '@iconify/vue';
 import { ref, h, provide, computed } from 'vue';

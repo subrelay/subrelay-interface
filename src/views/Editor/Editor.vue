@@ -107,10 +107,10 @@
 
 <script setup>
 import EditorData from '@/store/localStore/EditorData';
-import Logo from '@/components/Common/Logo';
-import EditableText from '@/components/Common/EditableText';
-import Trigger from '@/components/Trigger/Trigger';
-import Action from '@/components/Action/Action';
+import Logo from '@/components/Logo';
+import EditableText from '@/components/EditableText';
+import Trigger from '@/views/Editor/Trigger/Trigger';
+import Action from '@/views/Editor/Action/Action';
 import { ThunderboltOutlined, BellOutlined } from '@vicons/antd';
 import { h, ref, inject, computed, onBeforeMount, onBeforeUnmount, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';

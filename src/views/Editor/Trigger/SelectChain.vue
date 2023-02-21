@@ -18,15 +18,13 @@
       />
     </n-form-item>
 
-    <n-button class="action_button" type="primary" @click="validateForm">
-      Continue
-    </n-button>
+    <n-button class="action_button" type="primary" @click="validateForm"> Continue </n-button>
   </n-form>
 </template>
 
 <script setup>
 import EditorData from '@/store/localStore/EditorData';
-import ChainDropdown from '@/components/Common/ChainDropdown';
+import ChainDropdown from '@/components/ChainDropdown';
 import { useFormValidation } from '@/composables';
 import { useStore } from 'vuex';
 import { inject } from 'vue';

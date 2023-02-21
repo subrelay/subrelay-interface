@@ -28,8 +28,8 @@ import { ref, computed, watch, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import { useMessage } from 'naive-ui';
-import Logo from '@/components/Common/Logo';
-import AccountModal from '@/components/Misc/AccountModal';
+import Logo from '@/components/Logo';
+import AccountModal from '@/components/AccountModal';
 
 const router = useRouter();
 

@@ -31,7 +31,7 @@
 </template>
 
 <script setup>
-import AccountModal from '@/components/Misc/AccountModal';
+import AccountModal from '@/components/AccountModal';
 import { ref, computed, h } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';

@@ -84,7 +84,7 @@
 </template>
 
 <script setup>
-import PolkadotAccountIcon from '@/components/Misc/PolkadotAccountIcon';
+import PolkadotAccountIcon from '@/components/PolkadotAccountIcon';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import { useMessage } from 'naive-ui';
