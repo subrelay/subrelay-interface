@@ -12,25 +12,25 @@ const router = createRouter({
         {
           path: '',
           redirect: { name: 'workflows' },
-          component: () => import('@/views/Dashboard.vue'),
+          component: () => import('@/views/Dashboard/Dashboard.vue'),
           meta: { signInRequired: true },
           children: [
             {
               path: 'workflows',
               name: 'workflows',
-              component: () => import('../views/Workflows.vue'),
+              component: () => import('@/views/Dashboard/Workflows.vue'),
               meta: { title: 'Workflows' },
             },
             {
               path: 'history',
               name: 'history',
-              component: () => import('@/views/History.vue'),
+              component: () => import('@/views/Dashboard/History.vue'),
               meta: { title: 'History' },
             },
             {
               path: '/workflow-summary/:id',
               props: true,
-              component: () => import('@/views/WorkflowSummary.vue'),
+              component: () => import('@/views/WorkflowSummary/WorkflowSummary.vue'),
               meta: { title: 'Workflow Summary' },
               children: [
                 { path: '', redirect: { name: 'overview' } },
@@ -38,12 +38,12 @@ const router = createRouter({
                   props: true,
                   path: 'overview',
                   name: 'overview',
-                  component: () => import('@/views/WorkflowDetails/Overview.vue'),
+                  component: () => import('@/views/WorkflowSummary/Overview.vue'),
                 },
                 {
                   path: 'logs',
                   name: 'logs',
-                  component: () => import('@/views/WorkflowDetails/WorkflowLogs.vue'),
+                  component: () => import('@/views/WorkflowSummary/WorkflowLogs.vue'),
                 },
               ],
             },

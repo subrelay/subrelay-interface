@@ -86,6 +86,4 @@ export const renderSelectTagWithDescription = ({ option }) => {
   return tag;
 };
 
-export const useRenderIcon = (icon) => {
-  return () => h(Icon, { icon, inline: true });
-};
+export const useRenderIcon = (icon) => () => h(Icon, { icon, inline: true });
