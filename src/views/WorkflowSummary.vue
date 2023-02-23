@@ -41,7 +41,7 @@
 </template>
 
 <script setup>
-import Overview from '@/components/WorkflowDetails/Overview.vue';
+import Overview from '@/views/WorkflowDetails/Overview.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { onBeforeMount, ref, computed, watch } from 'vue';

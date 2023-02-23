@@ -33,7 +33,7 @@ export default {
       state.workflow = {};
       state.workflows = [];
       state.itemCount = null;
-      state.query = {};
+      state.query = null;
     },
   },
 
