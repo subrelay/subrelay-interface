@@ -7,22 +7,25 @@ const router = createRouter({
     {
       path: '',
       component: async () => import('@/views/Home.vue'),
+      meta: { signInRequired: true },
       children: [
         {
           path: '',
           redirect: { name: 'workflows' },
           component: () => import('@/views/Dashboard.vue'),
-          meta: { title: 'Dashboard', signInRequired: true },
+          meta: { signInRequired: true },
           children: [
             {
               path: 'workflows',
               name: 'workflows',
               component: () => import('../views/Workflows.vue'),
+              meta: { title: 'Workflows' },
             },
             {
               path: 'history',
               name: 'history',
               component: () => import('@/views/History.vue'),
+              meta: { title: 'History' },
             },
             {
               path: '/workflow-summary/:id',
