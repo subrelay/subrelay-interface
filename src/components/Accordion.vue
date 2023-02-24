@@ -2,9 +2,9 @@
   <n-card class="page_container accordion" content-style="padding: 0px 10px;">
     <n-collapse
       accordion
+      display-directive="show"
       :expanded-names="expandedNames"
       @update:expanded-names="updateExpanded"
-      display-directive="show"
     >
       <n-collapse-item
         v-for="(step, index) in props.steps"
@@ -19,11 +19,7 @@
         </template>
 
         <template #default>
-          <component
-            :is="step.component"
-            @continue="nextStep"
-            @back="backStep"
-          />
+          <component :is="step.component" @continue="nextStep" @back="backStep" />
         </template>
       </n-collapse-item>
     </n-collapse>
@@ -33,7 +29,6 @@
 <script setup>
 import { ref } from 'vue';
 const props = defineProps({ steps: Array });
-
 const expandedNames = ref('1');
 
 function updateExpanded(val) {
