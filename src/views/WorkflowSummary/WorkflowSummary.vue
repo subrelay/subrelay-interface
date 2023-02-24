@@ -29,7 +29,7 @@
         @update:value="onChangeTab"
       >
         <n-tab-pane name="overview" tab="Overview">
-          <router-view :key="activeTab" />
+          <RouterView :key="activeTab" />
         </n-tab-pane>
 
         <!-- <n-tab-pane name="logs" tab="Logs">
@@ -41,7 +41,7 @@
 </template>
 
 <script setup>
-import Overview from '@/components/WorkflowDetails/Overview.vue';
+import Overview from '@/views/WorkflowSummary/Overview.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { onBeforeMount, ref, computed, watch } from 'vue';

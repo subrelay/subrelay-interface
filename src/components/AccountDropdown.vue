@@ -31,12 +31,14 @@
 </template>
 
 <script setup>
-import AccountModal from '@/components/Misc/AccountModal';
+import AccountModal from '@/components/AccountModal';
 import { ref, computed, h } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { useMessage } from 'naive-ui';
 import { Icon } from '@iconify/vue';
+import truncate from '@/utils/truncate';
+import { useRenderIcon as renderIcon } from '@/composables';
 
 const store = useStore();
 const router = useRouter();
@@ -63,10 +65,6 @@ const profileOptions = ref([
 
 const walletAccount = computed(() => store.state.account.selected || {});
 
-function renderIcon(icon) {
-  return () => h(Icon, { icon, inline: true });
-}
-
 function onSelectProfileOption(key) {
   if (key === 'copyAddress') {
     navigator.clipboard.writeText(walletAccount.value.address);
@@ -82,11 +80,6 @@ function onSelectProfileOption(key) {
     store.commit('account/setSelected', null);
     router.push({ name: 'welcome' });
   }
-}
-
-function truncate({ address }) {
-  if (!address) return '';
-  return `${address.slice(0, 5)} ... ${address.slice(-5)}`;
 }
 </script>
 

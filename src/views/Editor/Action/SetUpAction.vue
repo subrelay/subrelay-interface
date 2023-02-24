@@ -12,7 +12,7 @@
 
 <script setup>
 import { computed, shallowRef, provide } from 'vue';
-import WebhookSetup from '@/components/Action/WebhookSetup';
+import WebhookSetup from '@/views/Editor/Action/WebhookSetup';
 import EditorData from '@/store/localStore/EditorData';
 
 const emits = defineEmits(['back', 'continue']);

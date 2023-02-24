@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import ChainDropdown from '@/components/Common/ChainDropdown';
+import ChainDropdown from '@/components/ChainDropdown';
 import EditorData from '@/store/localStore/EditorData';
 import { useFormValidation } from '@/composables';
 import { ref, computed, inject } from 'vue';

@@ -53,7 +53,7 @@
 </template>
 
 <script setup>
-import FilterConditionInput from '@/components/Trigger/FilterConditionInput';
+import FilterConditionInput from '@/views/Editor/Trigger/FilterConditionInput';
 import EditorData from '@/store/localStore/EditorData';
 import { useFormValidation } from '@/composables';
 import { inject, computed, provide } from 'vue';

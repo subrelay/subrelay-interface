@@ -6,7 +6,7 @@
       <!-- HEADER -->
       <n-space align="center" justify="space-between">
         <!-- Name -->
-        <ShowOrEdit :onUpdateValue="onUpdateName" :value="EditorData.workflow.name" />
+        <EditableText :onUpdateValue="onUpdateName" :value="EditorData.workflow.name" />
 
         <!-- Logo -->
         <Logo @click="quitEditor" />
@@ -107,10 +107,10 @@
 
 <script setup>
 import EditorData from '@/store/localStore/EditorData';
-import Logo from '@/components/Common/Logo';
-import ShowOrEdit from '@/components/Common/ShowOrEdit';
-import Trigger from '@/components/Trigger/Trigger';
-import Action from '@/components/Action/Action';
+import Logo from '@/components/Logo';
+import EditableText from '@/components/EditableText';
+import Trigger from '@/views/Editor/Trigger/Trigger';
+import Action from '@/views/Editor/Action/Action';
 import { ThunderboltOutlined, BellOutlined } from '@vicons/antd';
 import { h, ref, inject, computed, onBeforeMount, onBeforeUnmount, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -126,13 +126,11 @@ const store = useStore();
 const dialog = useDialog();
 const message = useMessage();
 const currentStep = ref(null);
+const loading = ref(false);
 const account = computed(() => store.state.account.selected);
 const signer = computed(() => store.state.account.signer);
 
 onMounted(() => (window.$message = useMessage()));
-onBeforeMount(() => {
-  window.addEventListener('beforeunload', (e) => handleReload(e));
-});
 
 function handleNextStep() {
   onChangeStep(2);
@@ -156,7 +154,6 @@ function onChangeStep(step) {
 // BUILD WORKFLOW DATA
 const triggerStatus = ref(null);
 const actionStatus = ref(null);
-
 const triggerIdx = computed(() => EditorData.triggerIdx);
 const actionIdx = computed(() => EditorData.actionIdx);
 
@@ -188,12 +185,6 @@ const hasUpdates = computed(() => changedToTrigger.value || changedToAction.valu
 const hasError = computed(() =>
   EditorData.workflow.tasks.some((task) => task.isError || !task.isCompleted),
 );
-
-function handleReload(e) {
-  if (!hasUpdates.value) return;
-  e.preventDefault();
-  e.returnValue = '';
-}
 
 function setStepStatus(step) {
   // Switch from trigger to action
@@ -253,7 +244,11 @@ async function quitEditor() {
   }
 }
 
-const loading = ref(false);
+function handleReload(e) {
+  if (!hasUpdates.value) return;
+  e.preventDefault();
+  e.returnValue = '';
+}
 
 async function createWorkflow() {
   loading.value = true;
@@ -284,6 +279,7 @@ onBeforeUnmount(() => {
   EditorData.loadWorkflow();
   store.commit('task/reset');
   eventBus.off('nextStep', handleNextStep);
+  window.removeEventListener('beforeunload', (e) => handleReload(e));
 });
 
 onBeforeMount(async () => {
@@ -321,6 +317,8 @@ onBeforeMount(async () => {
 
   currentStep.value = route.name === 'trigger' ? 1 : 2;
   setStepStatus(currentStep.value);
+
+  window.addEventListener('beforeunload', (e) => handleReload(e));
 });
 </script>
 

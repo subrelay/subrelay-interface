@@ -47,9 +47,9 @@
 </template>
 
 <script setup>
-import DarkmodeSwitch from '@/components/Misc/DarkmodeSwitch';
-import AccountDropdown from '@/components/Misc/AccountDropdown';
-import Logo from '@/components/Common/Logo';
+import DarkmodeSwitch from '@/components/DarkmodeSwitch';
+import AccountDropdown from '@/components/AccountDropdown';
+import Logo from '@/components/Logo';
 import { computed, h, ref, watch, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import { Icon } from '@iconify/vue';
