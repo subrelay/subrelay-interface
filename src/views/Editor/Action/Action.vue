@@ -1,13 +1,34 @@
 <template>
-  <Accordion :steps="steps" />
+  <n-card class="page_container accordion" content-style="padding: 16px 10px;">
+    <n-collapse
+      accordion
+      display-directive="show"
+      :expanded-names="expandedNames"
+      @update:expanded-names="updateExpanded"
+    >
+      <n-collapse-item
+        v-for="(step, index) in steps"
+        :key="`${step}${index}`"
+        :name="step.name"
+        :disabled="step.isDisabled"
+        :title="step.title"
+      >
+        <template #default>
+          <component :is="step.component" @continue="nextStep" @back="backStep" />
+        </template>
+      </n-collapse-item>
+    </n-collapse>
+  </n-card>
 </template>
 
 <script setup>
 import { shallowRef, inject } from 'vue';
+import { useStepper } from '@/composables';
 import SelectChannel from '@/views/Editor/Action/SelectChannel.vue';
 import SetUpAction from '@/views/Editor/Action/SetUpAction.vue';
 import TestAction from '@/views/Editor/Action/TestAction.vue';
-import Accordion from '@/components/Accordion.vue';
+
+const [{ expandedNames }, { nextStep, backStep, updateExpanded }] = useStepper('action');
 
 const steps = shallowRef([
   { title: 'Select Application', name: '1', component: SelectChannel },

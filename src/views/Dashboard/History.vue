@@ -28,8 +28,8 @@ import { Icon } from '@iconify/vue';
 import { ref, h, provide, computed } from 'vue';
 import { useStore } from 'vuex';
 import { NAvatar } from 'naive-ui';
-import moment from 'moment';
 import { useQuery, useRenderSortIcon, useLogStatuses, useGetChainImg } from '@/composables';
+import moment from 'moment';
 
 const store = useStore();
 const chains = computed(() => store.state.chain.chains);

@@ -64,7 +64,8 @@ const darkMode = computed(() => store.state.global.isDarkMode);
 
 const eventBus = inject('eventBus');
 const emits = defineEmits(['continue']);
-const [{ formRef }, { validateForm }] = useFormValidation('trigger', emits);
+
+const [{ formRef }, { validateForm }] = useFormValidation('trigger', emits); // todo: remove emits ^
 provide('validateForm', validateForm);
 
 const conditionLength = computed(() => {
