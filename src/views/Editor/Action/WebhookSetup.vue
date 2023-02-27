@@ -40,13 +40,26 @@ const [{ formRef }, { validateForm }] = useFormValidation('action', emits);
 
 const actionIdx = computed(() => EditorData.actionIdx);
 
+const headerKey = computed(
+  () => EditorData.workflow.tasks[actionIdx.value].config.config.headers[0].key,
+);
+const headerValue = computed(
+  () => EditorData.workflow.tasks[actionIdx.value].config.config.headers[0].value,
+);
+
 const keyRule = ref({
   trigger: ['input'],
   validator(_rule, value) {
     eventBus.emit('toggleTestAction', { isDisabled: true });
+
+    if (headerValue.value && !value) {
+      return new Error('Required!');
+    }
+
     if (/(-_)+|(_-)+|(-{2,})|(_{2,})|[^a-zA-Z0-9_-]/g.test(value)) {
       return new Error('Invalid value');
     }
+
     return true;
   },
 });
@@ -56,9 +69,15 @@ const valueRule = ref({
   type: ['string', 'number'],
   validator(_rule, value) {
     eventBus.emit('toggleTestAction', { isDisabled: true });
+
+    if (headerKey.value && !value) {
+      return new Error('Required!');
+    }
+
     if (/(\W{2,})|[^a-zA-Z0-9\W-_] /.test(value)) {
       return new Error('Invalid value');
     }
+
     return true;
   },
 });

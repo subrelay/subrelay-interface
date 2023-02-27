@@ -92,7 +92,7 @@ function onContinue(e) {
   e.preventDefault();
 
   validateForm({}, () => {
-    eventBus.emit('nextStep');
+    store.commit('editor/setStep', 2);
 
     // TODO: phase 3
     /*

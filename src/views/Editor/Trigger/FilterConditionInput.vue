@@ -35,6 +35,7 @@
             filterable
             clearable
             placeholder="Select Operator"
+            :consistent-menu-width="false"
             :render-label="renderLabel"
             :loading="isLoading || getOperatorsLoading"
             :disabled="isLoading || getOperatorsLoading"
@@ -107,7 +108,7 @@ const validateForm = inject('validateForm');
 const emits = defineEmits(['remove', 'input']);
 const isLoading = ref(false);
 const propertyOptions = computed(() => {
-  return store.state.chain.event.fields.map((e) => ({
+  return (store.state.chain.event.fields || []).map((e) => ({
     ...e,
     disabled: e.type === 'unknown',
   }));

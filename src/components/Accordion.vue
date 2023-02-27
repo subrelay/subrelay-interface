@@ -11,13 +11,8 @@
         :key="`${step}${index}`"
         :name="step.name"
         :disabled="step.isDisabled"
+        :title="step.title"
       >
-        <template #header="{ collapsed }">
-          <div :class="{ 'text-bold': !collapsed }" class="collapse_header">
-            {{ step.title }}
-          </div>
-        </template>
-
         <template #default>
           <component :is="step.component" @continue="nextStep" @back="backStep" />
         </template>
@@ -47,23 +42,5 @@ function backStep() {
 <style lang="scss">
 .accordion {
   margin-bottom: 5rem;
-}
-
-.n-collapse-item__header {
-  padding: 0 !important;
-}
-
-.n-collapse-item {
-  margin-top: 0 !important;
-}
-
-.collapse_header {
-  width: 100%;
-  height: 100%;
-  height: 3rem;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  font-size: 1rem;
 }
 </style>

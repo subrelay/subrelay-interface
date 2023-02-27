@@ -76,7 +76,6 @@ const router = createRouter({
       component: () => import('@/views/WelcomeScreen.vue'),
       meta: { title: 'Welcome' },
     },
-
     {
       path: '/:pathMatch(.*)*',
       name: 'notfound',

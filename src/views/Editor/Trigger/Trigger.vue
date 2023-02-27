@@ -1,14 +1,48 @@
 <template>
-  <Accordion :steps="steps" />
+  <div>
+    <n-card class="page_container accordion" content-style="padding: 16px 10px;">
+      <n-collapse
+        accordion
+        display-directive="show"
+        :expanded-names="expandedNames"
+        @update:expanded-names="updateExpanded"
+      >
+        <n-collapse-item
+          v-for="(step, index) in steps"
+          :key="`${step}${index}`"
+          :name="step.name"
+          :disabled="step.isDisabled"
+          :title="step.title"
+        >
+          <template #default>
+            <component :is="step.component" @continue="nextStep" @back="backStep" />
+          </template>
+        </n-collapse-item>
+      </n-collapse>
+    </n-card>
+  </div>
 </template>
 
 <script setup>
-import { shallowRef, inject } from 'vue';
+import { shallowRef, inject, ref } from 'vue';
 import SelectChain from '@/views/Editor/Trigger/SelectChain.vue';
 import SelectEvent from '@/views/Editor/Trigger/SelectEvent.vue';
 import Filters from '@/views/Editor/Trigger/Filters.vue';
 import TestFilter from '@/views/Editor/Trigger/TestFilter.vue';
 import Accordion from '@/components/Accordion.vue';
+const expandedNames = ref('1');
+
+function nextStep() {
+  expandedNames.value = (parseInt(expandedNames.value) + 1).toString();
+}
+
+function backStep() {
+  expandedNames.value = (parseInt(expandedNames.value) - 1).toString();
+}
+
+function updateExpanded(val) {
+  expandedNames.value = val[0];
+}
 
 const steps = shallowRef([
   { title: 'Select Chain', name: '1', component: SelectChain },

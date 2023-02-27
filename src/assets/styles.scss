@@ -257,3 +257,11 @@ flex-1 {
 .pointer-cursor {
   cursor: pointer;
 }
+
+.n-collapse-item--active {
+  .n-collapse-item__header {
+    .n-collapse-item__header-main {
+      font-weight: bold !important;
+    }
+  }
+}
