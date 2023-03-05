@@ -92,18 +92,6 @@ const signer = computed(() => store.state.account.signer);
 
 onMounted(() => (window.$message = useMessage()));
 
-function onChangeStep(step) {
-  store.commit('editor/setStep', step);
-}
-
-watch(step, (newStep) => {
-  setStepStatus(step);
-  router.push({
-    name: newStep == 1 ? 'trigger' : 'action',
-    params: { id: +props.id || 'new-flow' },
-  });
-});
-
 // BUILD WORKFLOW DATA
 const triggerStatus = ref(null);
 const actionStatus = ref(null);
@@ -162,6 +150,18 @@ function setStepStatus(step) {
     }
   }
 }
+
+function onChangeStep(step) {
+  store.commit('editor/setStep', step);
+}
+
+watch(step, (newStep) => {
+  setStepStatus(newStep);
+  router.push({
+    name: newStep == 1 ? 'trigger' : 'action',
+    params: { id: +props.id || 'new-flow' },
+  });
+});
 
 function onUpdateName(value) {
   EditorData.setName(value);

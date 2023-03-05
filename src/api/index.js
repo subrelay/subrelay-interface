@@ -21,6 +21,7 @@ export const getSavedAuthToken = (address) => {
     localStorage.removeItem(address);
   }
 
+  localStorage.removeItem('polkadot-js-connected');
   return null;
 };
 
@@ -38,12 +39,7 @@ export const generateGetToken = async ({ account, signer }) => {
   }
 
   const timestamp = Date.now();
-  const data = {
-    endpoint: '/*',
-    method: 'GET',
-    body: {},
-    timestamp,
-  };
+  const data = { endpoint: '/*', method: 'GET', body: {}, timestamp };
 
   const message = JSON.stringify(data);
 

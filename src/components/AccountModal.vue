@@ -119,6 +119,7 @@ async function onConfirm() {
     await generateGetToken({ account: currentAcc.value, signer: signer.value });
 
     const isAccChanged = storedAccount.value?.address !== currentAcc.value?.address;
+
     if (isAccChanged) {
       store.commit('account/setSelected', currentAcc.value);
       store.commit('history/reset');
