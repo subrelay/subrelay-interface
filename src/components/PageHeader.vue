@@ -50,6 +50,7 @@ import { NAvatar } from 'naive-ui';
 import { Icon } from '@iconify/vue';
 import { useRenderDropdownLabel } from '@/composables';
 import ChainDropdown from '@/components/ChainDropdown';
+
 const {
   selectedChain,
   selectedStatus,

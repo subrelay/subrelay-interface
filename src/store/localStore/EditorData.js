@@ -5,13 +5,18 @@ const conditionFormat = { variable: null, operator: null, value: null };
 
 const defaultConfig = () => ({
   name: null,
-  chainUuid: null,
+  chainUuid: '94fb71e7-eb61-4245-a894-dbfb8547d011',
+  // chainUuid: null,
   tasks: [
     {
       name: 'trigger',
       type: 'trigger',
       dependOnName: null,
-      config: { eventId: null, conditions: [] },
+      config: {
+        // eventId: null,
+        eventId: 675,
+        conditions: [],
+      },
     },
     {
       name: 'action',
@@ -54,8 +59,10 @@ const editor = reactive({
   },
 
   setTrigger(data) {
-    const [prop, value] = Object.entries(data)[0];
-    this.workflow.tasks[this.triggerIdx].config[prop] = value;
+    this.workflow.tasks[this.triggerIdx].config = {
+      ...this.workflow.tasks[this.triggerIdx].config,
+      ...data,
+    };
 
     this.setComplete(
       'trigger',

@@ -4,7 +4,7 @@
       accordion
       display-directive="show"
       :expanded-names="expandedNames"
-      @update:expanded-names="updateExpanded"
+      @update:expanded-names="(val) => setExpand(val[0])"
     >
       <n-collapse-item
         v-for="(step, index) in steps"
@@ -23,12 +23,12 @@
 
 <script setup>
 import { shallowRef, inject } from 'vue';
-import { useStepper } from '@/composables';
+import { useAccordion } from '@/composables';
 import SelectChannel from '@/views/Editor/Action/SelectChannel.vue';
 import SetUpAction from '@/views/Editor/Action/SetUpAction.vue';
 import TestAction from '@/views/Editor/Action/TestAction.vue';
 
-const [{ expandedNames }, { nextStep, backStep, updateExpanded }] = useStepper('action');
+const [{ expandedNames }, { nextStep, backStep, setExpand }] = useAccordion('action');
 
 const steps = shallowRef([
   { title: 'Select Application', name: '1', component: SelectChannel },

@@ -89,13 +89,16 @@ const urlRule = ref({
     eventBus.emit('toggleTestAction', { isDisabled: true });
     if (!value) {
       return new Error('Required!');
-    } else if (
+    }
+
+    if (
       !/^(http(s)?:\/\/.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/.test(
         value,
       )
     ) {
       return new Error('Invalid URL');
     }
+
     return true;
   },
 });

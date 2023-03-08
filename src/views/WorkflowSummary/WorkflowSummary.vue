@@ -66,7 +66,7 @@ function onChangeTab(tab) {
 watch(
   selectedAccount,
   () => {
-    if (selectedAccount) {
+    if (selectedAccount.value) {
       store.dispatch('workflow/getWorkflow', { id: +props.id });
     }
   },

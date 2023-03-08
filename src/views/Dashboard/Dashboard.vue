@@ -72,19 +72,18 @@ onMounted(() => (window.$message = useMessage()));
 
 const siderOptions = ref([
   {
-    label: () =>
-      collapsed.value
-        ? h('div', {}, { default: () => 'New workflow' })
-        : h(
-            NButton,
-            { block: true, type: 'primary', round: true },
-            {
-              default: () => [
-                h(Icon, { icon: 'fluent:add-12-filled', inline: true }),
-                h('div', { style: 'margin-left: 0.6rem' }, 'New workflow'),
-              ],
-            },
-          ),
+    label: () => (collapsed.value
+      ? h('div', {}, { default: () => 'New workflow' })
+      : h(
+        NButton,
+        { block: true, type: 'primary', round: true },
+        {
+          default: () => [
+            h(Icon, { icon: 'fluent:add-12-filled', inline: true }),
+            h('div', { style: 'margin-left: 0.6rem' }, 'New workflow'),
+          ],
+        },
+      )),
     key: 'editor',
     icon: renderIcon('fluent:add-12-filled', true),
   },
@@ -115,10 +114,9 @@ function onUpdateActive(value) {
 
 function renderIcon(icon, isButton = false) {
   if (isButton) {
-    return () =>
-      collapsed.value
-        ? h(NButton, { type: 'primary' }, { default: () => h(Icon, { icon, inline: true }) })
-        : '';
+    return () => (collapsed.value
+      ? h(NButton, { type: 'primary' }, { default: () => h(Icon, { icon, inline: true }) })
+      : '');
   }
   return () => h(Icon, { icon, inline: true });
 }

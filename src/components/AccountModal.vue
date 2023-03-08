@@ -129,9 +129,8 @@ async function onConfirm() {
     const errMsg = e.message;
     if (errMsg === 'Cancelled') {
       return;
-    } else {
-      useShowError(e);
     }
+    useShowError(e);
   } finally {
     emits('update:modelValue', false);
     loading.value = false;

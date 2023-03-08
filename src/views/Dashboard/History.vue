@@ -70,18 +70,16 @@ const columns = ref([
     key: 'chain',
     width: '25%',
     ellipsis: { tooltip: true },
-    render: ({ chain }) => {
-      return h('div', { style: { display: 'flex', alignItems: 'center' } }, [
-        h(NAvatar, {
-          style: { background: 'transparent' },
-          src: useGetChainImg(chain.name, chains.value),
-          round: true,
-          size: 'small',
-          color: 'white',
-        }),
-        h('div', { style: { marginLeft: '12px', padding: '4px 0' } }, chain.name),
-      ]);
-    },
+    render: ({ chain }) => h('div', { style: { display: 'flex', alignItems: 'center' } }, [
+      h(NAvatar, {
+        style: { background: 'transparent' },
+        src: useGetChainImg(chain.name, chains.value),
+        round: true,
+        size: 'small',
+        color: 'white',
+      }),
+      h('div', { style: { marginLeft: '12px', padding: '4px 0' } }, chain.name),
+    ]),
   },
   {
     title: 'Started at',
@@ -91,9 +89,7 @@ const columns = ref([
     sorter: true,
     sortOrder: false,
     renderSorterIcon: useRenderSortIcon,
-    render: ({ startedAt }) => {
-      return moment(startedAt).format('MMM Do YYYY, HH:mm:ss');
-    },
+    render: ({ startedAt }) => moment(startedAt).format('MMM Do YYYY, HH:mm:ss'),
   },
   {
     title: 'Finished at',
@@ -103,9 +99,7 @@ const columns = ref([
     sorter: true,
     sortOrder: false,
     renderSorterIcon: useRenderSortIcon,
-    render: ({ finishedAt }) => {
-      return moment(finishedAt).format('MMM Do YYYY, HH:mm:ss');
-    },
+    render: ({ finishedAt }) => moment(finishedAt).format('MMM Do YYYY, HH:mm:ss'),
   },
 ]);
 

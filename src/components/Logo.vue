@@ -16,15 +16,11 @@ const props = defineProps({
 
 const emits = defineEmits(['click']);
 
-const classes = computed(() => {
-  return {};
-});
+const classes = computed(() => ({}));
 
-const style = computed(() => {
-  return {
-    color: props.color,
-  };
-});
+const style = computed(() => ({
+  color: props.color,
+}));
 </script>
 
 <style lang="scss">

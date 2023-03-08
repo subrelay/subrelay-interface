@@ -130,17 +130,13 @@ const loading = computed(() => store.state.workflow.loading);
 const eventString = ref(null);
 const filtersCondition = ref([]);
 
-const triggerTask = computed(() => {
-  return workflow.value.tasks.find((task) => task.type === 'trigger');
-});
+const triggerTask = computed(() => workflow.value.tasks.find((task) => task.type === 'trigger'));
 
-const actionTask = computed(() => {
-  return workflow.value.tasks.find((task) => task.type === 'notification');
-});
+const actionTask = computed(() => workflow.value.tasks.find((task) => task.type === 'notification'));
 
 onMounted(async () => {
   const { eventId, conditions } = triggerTask.value.config;
-  const chainUuid = workflow.value.chainUuid;
+  const { chainUuid } = workflow.value;
 
   if (eventId) {
     const event = await API.getEvent(chainUuid, eventId);

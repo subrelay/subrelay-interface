@@ -3,8 +3,8 @@
     <n-grid cols="3" x-gap="20" class="grid_area">
       <n-gi>
         <n-form-item
-          :rule="requiredRule"
-          :path="`conditions[${props.index}][${props.conditionIdx}].variable`"
+          :rule="{ ...requiredRule, key: `filterCond_variable_${index}_${conditionIdx}` }"
+          :path="`tasks[0].config.conditions[${props.index}][${props.conditionIdx}].variable`"
         >
           <n-select
             filterable
@@ -28,8 +28,8 @@
 
       <n-gi>
         <n-form-item
-          :rule="requiredRule"
-          :path="`conditions[${props.index}][${props.conditionIdx}].operator`"
+          :rule="{ ...requiredRule, key: `filterCond_operator_${index}_${conditionIdx}` }"
+          :path="`tasks[0].config.conditions[${props.index}][${conditionIdx}].operator`"
         >
           <n-select
             filterable
@@ -53,8 +53,12 @@
 
       <n-gi v-if="inputType !== 'boolean'">
         <n-form-item
-          :rule="{ ...requiredRule, type: 'number' }"
-          :path="`conditions[${props.index}][${props.conditionIdx}].value`"
+          :rule="{
+            ...requiredRule,
+            type: 'number',
+            key: `filterCond_value_${index}_${conditionIdx}`,
+          }"
+          :path="`tasks[0].config.conditions[${props.index}][${props.conditionIdx}].value`"
         >
           <n-input
             v-if="inputType === 'string'"
@@ -89,11 +93,9 @@ import EditorData from '@/store/localStore/EditorData';
 import { ref, computed, watch, inject, h, onBeforeMount } from 'vue';
 import { useStore } from 'vuex';
 import { isEmpty } from 'lodash';
-import {
-  useRenderDropdownLabel,
+import { useRenderDropdownLabel,
   useDropdownFilter,
-  renderSelectTagWithDescription,
-} from '@/composables';
+  renderSelectTagWithDescription } from '@/composables';
 
 const store = useStore();
 
@@ -104,15 +106,12 @@ const props = defineProps({
 });
 
 const eventBus = inject('eventBus');
-const validateForm = inject('validateForm');
 const emits = defineEmits(['remove', 'input']);
 const isLoading = ref(false);
-const propertyOptions = computed(() => {
-  return (store.state.chain.event.fields || []).map((e) => ({
-    ...e,
-    disabled: e.type === 'unknown',
-  }));
-});
+const propertyOptions = computed(() => (store.state.chain.event.fields || []).map((e) => ({
+  ...e,
+  disabled: e.type === 'unknown',
+})));
 
 const requiredRule = ref({
   trigger: ['input'],
@@ -135,7 +134,6 @@ function onSelectProp(val, options) {
   onInput('variable', val);
 
   if (!val) {
-    validateForm({ changeStep: false });
     onInput('operator', null);
     onInput('value', null);
   }
@@ -152,12 +150,10 @@ function onSelectProp(val, options) {
 function onSelectOperator(val) {
   onInput('operator', val);
   // EditorData.setError('trigger', !!val);
-  // validateForm({ changeStep: false });
 }
 
 function onValueInput(val) {
   onInput('value', val);
-  // validateForm({ changeStep: false });
 }
 
 function onInput(prop, value) {

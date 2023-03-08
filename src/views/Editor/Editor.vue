@@ -109,10 +109,10 @@ const isActionCompleted = computed(() => EditorData.workflow.tasks[actionIdx.val
 const changedToTrigger = computed(() => {
   const task = EditorData.workflow.tasks[triggerIdx.value];
   return (
-    typeof task.isError === 'boolean' ||
-    typeof task.isCompleted === 'boolean' ||
-    !!task.config.eventId ||
-    !!task.chainUuid
+    typeof task.isError === 'boolean'
+    || typeof task.isCompleted === 'boolean'
+    || !!task.config.eventId
+    || !!task.chainUuid
   );
 });
 
@@ -123,9 +123,7 @@ const changedToAction = computed(() => {
 
 const hasUpdates = computed(() => changedToTrigger.value || changedToAction.value);
 
-const hasError = computed(() =>
-  EditorData.workflow.tasks.some((task) => task.isError || !task.isCompleted),
-);
+const hasError = computed(() => EditorData.workflow.tasks.some((task) => task.isError || !task.isCompleted));
 
 function setStepStatus(step) {
   // Switch from trigger to action
@@ -170,11 +168,10 @@ function onUpdateName(value) {
 function showExitWarning() {
   dialog.warning({
     title: 'Confirm quit',
-    content: () =>
-      h('div', { style: { fontSize: '0.85rem' } }, [
-        h('div', 'Changes you made will be discarded because the workflow is not yet completed.'),
-        h('div', { style: { marginTop: '1rem' } }, 'You can’t undo this action.'),
-      ]),
+    content: () => h('div', { style: { fontSize: '0.85rem' } }, [
+      h('div', 'Changes you made will be discarded because the workflow is not yet completed.'),
+      h('div', { style: { marginTop: '1rem' } }, 'You can’t undo this action.'),
+    ]),
 
     positiveText: 'Leave',
     negativeText: 'Stay',
@@ -220,9 +217,8 @@ async function createWorkflow() {
     const errMsg = e.message;
     if (errMsg === 'Cancelled') {
       return;
-    } else {
-      useShowError(e);
     }
+    useShowError(e);
   } finally {
     loading.value = false;
   }
@@ -257,8 +253,8 @@ onBeforeMount(async () => {
   // before data is completely loaded
   EditorData.loadWorkflow(data);
 
-  const chainUuid = EditorData.workflow.chainUuid;
-  const eventId = EditorData.workflow.tasks[0].config.eventId;
+  const { chainUuid } = EditorData.workflow;
+  const { eventId } = EditorData.workflow.tasks[0].config;
 
   if (chainUuid) {
     store.dispatch('chain/getEvents', chainUuid);
