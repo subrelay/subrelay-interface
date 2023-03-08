@@ -32,7 +32,6 @@ import Logo from '@/components/Logo';
 import AccountModal from '@/components/AccountModal';
 
 const router = useRouter();
-
 const store = useStore();
 const showModal = ref(false);
 const loading = computed(() => store.state.account.loading);

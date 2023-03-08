@@ -62,6 +62,11 @@ const store = useStore();
 const activeKey = ref(null);
 const collapsed = computed(() => store.state.global.isSiderCollapsed);
 const query = computed(() => store.state.global.defaultQuery);
+const selectedAccount = computed(() => store.state.account.selected);
+
+watch(selectedAccount, (acc) => {
+  if (!acc) router.push('/welcome');
+});
 
 onMounted(() => (window.$message = useMessage()));
 
