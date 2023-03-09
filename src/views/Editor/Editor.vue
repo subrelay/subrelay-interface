@@ -56,8 +56,10 @@
         </n-steps>
 
         <!-- Use v-show to preserve the data when switching steps -->
-        <Trigger v-show="step == 1" />
-        <Action v-show="step == 2" />
+        <n-form ref="formRef" :model="EditorData.workflow" :show-label="false">
+          <Trigger v-show="step == 1" @validate="validateForm" />
+          <Action v-show="step == 2" @validate="validateForm" />
+        </n-form>
       </div>
     </n-layout-content>
 
@@ -66,6 +68,7 @@
 </template>
 
 <script setup>
+import { useFormValidation } from '@/composables';
 import EditorData from '@/store/localStore/EditorData';
 import Logo from '@/components/Logo';
 import EditableText from '@/components/EditableText';
@@ -109,10 +112,10 @@ const isActionCompleted = computed(() => EditorData.workflow.tasks[actionIdx.val
 const changedToTrigger = computed(() => {
   const task = EditorData.workflow.tasks[triggerIdx.value];
   return (
-    typeof task.isError === 'boolean'
-    || typeof task.isCompleted === 'boolean'
-    || !!task.config.eventId
-    || !!task.chainUuid
+    typeof task.isError === 'boolean' ||
+    typeof task.isCompleted === 'boolean' ||
+    !!task.config.eventId ||
+    !!task.chainUuid
   );
 });
 
@@ -123,18 +126,26 @@ const changedToAction = computed(() => {
 
 const hasUpdates = computed(() => changedToTrigger.value || changedToAction.value);
 
-const hasError = computed(() => EditorData.workflow.tasks.some((task) => task.isError || !task.isCompleted));
+const hasError = computed(() =>
+  EditorData.workflow.tasks.some((task) => task.isError || !task.isCompleted),
+);
 
+const [{ formRef }, { validateForm }] = useFormValidation();
 function setStepStatus(step) {
   // Switch from trigger to action
   if (step === 2) {
-    actionStatus.value = 'process';
-    triggerStatus.value = 'wait';
-
     if (changedToTrigger.value) {
+      validateForm({
+        keys: ['filterCond', 'selectChain', 'selectEvent'],
+        changeStep: false,
+        taskName: 'trigger',
+      });
       if (isErrorWithTrigger.value) return (triggerStatus.value = 'error');
       if (isTriggerCompleted.value) return (triggerStatus.value = 'finish');
     }
+
+    actionStatus.value = 'process';
+    triggerStatus.value = 'wait';
   }
 
   // Switch from action to trigger
@@ -149,17 +160,14 @@ function setStepStatus(step) {
   }
 }
 
-function onChangeStep(step) {
-  store.commit('editor/setStep', step);
-}
-
-watch(step, (newStep) => {
-  setStepStatus(newStep);
+function onChangeStep(nextStep) {
+  store.commit('editor/setStep', nextStep);
+  setStepStatus(nextStep);
   router.push({
-    name: newStep == 1 ? 'trigger' : 'action',
+    name: nextStep == 1 ? 'trigger' : 'action',
     params: { id: +props.id || 'new-flow' },
   });
-});
+}
 
 function onUpdateName(value) {
   EditorData.setName(value);
@@ -168,10 +176,11 @@ function onUpdateName(value) {
 function showExitWarning() {
   dialog.warning({
     title: 'Confirm quit',
-    content: () => h('div', { style: { fontSize: '0.85rem' } }, [
-      h('div', 'Changes you made will be discarded because the workflow is not yet completed.'),
-      h('div', { style: { marginTop: '1rem' } }, 'You can’t undo this action.'),
-    ]),
+    content: () =>
+      h('div', { style: { fontSize: '0.85rem' } }, [
+        h('div', 'Changes you made will be discarded because the workflow is not yet completed.'),
+        h('div', { style: { marginTop: '1rem' } }, 'You can’t undo this action.'),
+      ]),
 
     positiveText: 'Leave',
     negativeText: 'Stay',

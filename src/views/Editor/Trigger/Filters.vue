@@ -47,26 +47,16 @@
 <script setup>
 import FilterConditionInput from '@/views/Editor/Trigger/FilterConditionInput';
 import EditorData from '@/store/localStore/EditorData';
-import { useContinueWithValidation } from '@/composables';
+import { useFormValidation } from '@/composables';
 import { inject, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
 const darkMode = computed(() => store.state.global.isDarkMode);
-const step = computed(() => store.state.editor.step);
-
-watch(step, (newStep) => {
-  validateForm({ changeStep: false });
-});
-
-const emits = defineEmits(['continue']);
-
-const [{ formRef }, { validateForm }] = useContinueWithValidation('trigger');
 
 const conditionLength = computed(() => EditorData.workflow.tasks[0].config.conditions.length);
 
 function removeItem(groupIdx, conditionIdx) {
-  formRef.value.restoreValidation();
   EditorData.setError('trigger', false);
   EditorData.removeCondition(groupIdx, conditionIdx);
 

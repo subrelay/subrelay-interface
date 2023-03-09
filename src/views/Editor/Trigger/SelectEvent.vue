@@ -1,7 +1,13 @@
 <template>
   <n-form-item
     :path="`tasks[${EditorData.triggerIdx}].config.eventId`"
-    :rule="{ required: true, trigger: 'input', type: 'any', key: 'selectEvent' }"
+    :rule="{
+      required: true,
+      trigger: 'input',
+      type: 'any',
+      key: 'selectEvent',
+      message: 'Required!',
+    }"
   >
     <n-select
       clearable
@@ -48,6 +54,7 @@ function onBack() {
 }
 
 function handleSelectEvent(eventId) {
+  EditorData.setError('trigger', !eventId);
   EditorData.setTrigger({ conditions: [] });
 
   if (eventId) {

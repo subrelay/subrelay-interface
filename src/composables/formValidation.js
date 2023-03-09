@@ -2,31 +2,11 @@ import { ref } from 'vue';
 import { useStore } from 'vuex';
 import EditorData from '@/store/localStore/EditorData';
 
-export function useFormValidation(taskName, emits) {
-  const formRef = ref(null);
-
-  function validateForm({ changeStep = true } = {}, callback = () => {}) {
-    formRef.value.validate(async (errors) => {
-      if (errors) {
-        EditorData.setError(taskName, true);
-        return;
-      }
-
-      EditorData.setError(taskName, false);
-      callback();
-
-      if (changeStep) emits('continue');
-    });
-  }
-
-  return [{ formRef }, { validateForm }];
-}
-
-export function useContinueWithValidation(taskName) {
+export function useFormValidation() {
   const store = useStore();
   const formRef = ref(null);
 
-  function validateForm({ changeStep = true, key, nextExpand } = {}) {
+  function validateForm({ changeStep = true, keys, nextExpand, taskName } = {}) {
     formRef.value?.validate(
       async (errors) => {
         if (errors) {
@@ -40,11 +20,16 @@ export function useContinueWithValidation(taskName) {
           if (nextExpand) {
             store.commit('editor/setExpand', { [taskName]: nextExpand });
           } else {
-            // store.commit('editor/setStep', 2);
+            store.commit('editor/setStep', 2);
           }
         }
       },
-      (rule) => rule.key.includes('filterCond') || rule.key === key,
+      (rule) => {
+        return (
+          keys.includes(rule.key) ||
+          (rule.key.includes('filterCond') && keys.includes('filterCond'))
+        );
+      },
     );
   }
 

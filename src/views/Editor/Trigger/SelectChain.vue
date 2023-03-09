@@ -20,6 +20,7 @@ import { useStore } from 'vuex';
 const store = useStore();
 
 function handleSelectChain(chainUuid) {
+  EditorData.setError('trigger', !chainUuid);
   EditorData.setTrigger({ eventId: null, conditions: [] });
 
   if (chainUuid) {
