@@ -68,7 +68,7 @@
 </template>
 
 <script setup>
-import { useFormValidation } from '@/composables';
+import { useFormValidation, useShowError } from '@/composables';
 import EditorData from '@/store/localStore/EditorData';
 import Logo from '@/components/Logo';
 import EditableText from '@/components/EditableText';
@@ -78,7 +78,6 @@ import { ThunderboltOutlined, BellOutlined } from '@vicons/antd';
 import { h, ref, inject, computed, onBeforeMount, onBeforeUnmount, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useDialog, useMessage } from 'naive-ui';
-import { useShowError } from '@/composables';
 import { useStore } from 'vuex';
 import Api from '@/api';
 
@@ -112,10 +111,10 @@ const isActionCompleted = computed(() => EditorData.workflow.tasks[actionIdx.val
 const changedToTrigger = computed(() => {
   const task = EditorData.workflow.tasks[triggerIdx.value];
   return (
-    typeof task.isError === 'boolean' ||
-    typeof task.isCompleted === 'boolean' ||
-    !!task.config.eventId ||
-    !!task.chainUuid
+    typeof task.isError === 'boolean'
+    || typeof task.isCompleted === 'boolean'
+    || !!task.config.eventId
+    || !!task.chainUuid
   );
 });
 
@@ -126,9 +125,7 @@ const changedToAction = computed(() => {
 
 const hasUpdates = computed(() => changedToTrigger.value || changedToAction.value);
 
-const hasError = computed(() =>
-  EditorData.workflow.tasks.some((task) => task.isError || !task.isCompleted),
-);
+const hasError = computed(() => EditorData.workflow.tasks.some((task) => task.isError || !task.isCompleted));
 
 const [{ formRef }, { validateForm }] = useFormValidation();
 function setStepStatus(step) {
@@ -176,11 +173,10 @@ function onUpdateName(value) {
 function showExitWarning() {
   dialog.warning({
     title: 'Confirm quit',
-    content: () =>
-      h('div', { style: { fontSize: '0.85rem' } }, [
-        h('div', 'Changes you made will be discarded because the workflow is not yet completed.'),
-        h('div', { style: { marginTop: '1rem' } }, 'You can’t undo this action.'),
-      ]),
+    content: () => h('div', { style: { fontSize: '0.85rem' } }, [
+      h('div', 'Changes you made will be discarded because the workflow is not yet completed.'),
+      h('div', { style: { marginTop: '1rem' } }, 'You can’t undo this action.'),
+    ]),
 
     positiveText: 'Leave',
     negativeText: 'Stay',

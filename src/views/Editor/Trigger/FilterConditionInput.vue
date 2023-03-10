@@ -93,11 +93,9 @@ import EditorData from '@/store/localStore/EditorData';
 import { ref, computed, watch, inject, h, onBeforeMount } from 'vue';
 import { useStore } from 'vuex';
 import { isEmpty } from 'lodash';
-import {
-  useRenderDropdownLabel,
+import { useRenderDropdownLabel,
   useDropdownFilter,
-  renderSelectTagWithDescription,
-} from '@/composables';
+  renderSelectTagWithDescription } from '@/composables';
 
 const store = useStore();
 
@@ -109,12 +107,10 @@ const props = defineProps({
 
 const emits = defineEmits(['remove', 'input']);
 const isLoading = ref(false);
-const propertyOptions = computed(() =>
-  (store.state.chain.event.fields || []).map((e) => ({
-    ...e,
-    disabled: e.type === 'unknown',
-  })),
-);
+const propertyOptions = computed(() => (store.state.chain.event.fields || []).map((e) => ({
+  ...e,
+  disabled: e.type === 'unknown',
+})));
 
 const requiredRule = ref({
   trigger: ['input'],
