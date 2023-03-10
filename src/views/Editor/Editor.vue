@@ -56,7 +56,7 @@
         </n-steps>
 
         <!-- Use v-show to preserve the data when switching steps -->
-        <n-form ref="formRef" :model="EditorData.workflow" :show-label="false">
+        <n-form ref="formRef" :model="EditorData.workflow">
           <Trigger v-show="step == 1" @validate="validateForm" />
           <Action v-show="step == 2" @validate="validateForm" />
         </n-form>

@@ -1,43 +1,38 @@
 <template>
-  <n-form
-    ref="formRef"
-    label-placement="top"
-    label-width="auto"
-    @keyup.enter="onContinue"
-    :model="EditorData.workflow.tasks[actionIdx].config.config"
+  <n-form-item :path="`tasks[${actionIdx}].config.config.url`" label="URL" :rule="urlRule">
+    <n-input clearable v-model:value="EditorData.workflow.tasks[1].config.config.url" />
+  </n-form-item>
+
+  <n-form-item
+    label="Header key"
+    :path="`tasks[${actionIdx}].config.config.headers[0].key`"
+    :rule="keyRule"
   >
-    <n-form-item path="url" label="URL" :rule="urlRule">
-      <n-input clearable v-model:value="EditorData.workflow.tasks[1].config.config.url" />
-    </n-form-item>
+    <n-input
+      clearable
+      v-model:value="EditorData.workflow.tasks[actionIdx].config.config.headers[0].key"
+    />
+  </n-form-item>
 
-    <n-form-item path="headers[0].key" label="Header key" :rule="keyRule">
-      <n-input
-        clearable
-        v-model:value="EditorData.workflow.tasks[actionIdx].config.config.headers[0].key"
-      />
-    </n-form-item>
-
-    <n-form-item path="headers[0].value" label="Header value" :rule="valueRule">
-      <n-input
-        clearable
-        v-model:value="EditorData.workflow.tasks[actionIdx].config.config.headers[0].value"
-      />
-    </n-form-item>
-    <n-button class="action_button" type="primary" @click="onContinue"> Continue </n-button>
-  </n-form>
+  <n-form-item
+    label="Header value"
+    :path="`tasks[${actionIdx}].config.config.headers[0].value`"
+    :rule="valueRule"
+  >
+    <n-input
+      clearable
+      v-model:value="EditorData.workflow.tasks[actionIdx].config.config.headers[0].value"
+    />
+  </n-form-item>
 </template>
 
 <script setup>
 import ChainDropdown from '@/components/ChainDropdown';
 import EditorData from '@/store/localStore/EditorData';
-import { useFormValidation } from '@/composables';
 import { ref, computed, inject } from 'vue';
+import { useStore } from 'vuex';
 
-const emits = inject('emits');
-const eventBus = inject('eventBus');
-
-const [{ formRef }, { validateForm }] = useFormValidation('action', emits);
-
+const store = useStore();
 const actionIdx = computed(() => EditorData.actionIdx);
 
 const headerKey = computed(
@@ -48,9 +43,10 @@ const headerValue = computed(
 );
 
 const keyRule = ref({
+  key: 'setupAction_key',
   trigger: ['input'],
   validator(_rule, value) {
-    eventBus.emit('toggleTestAction', { isDisabled: true });
+    store.commit('editor/disableTestAction', true);
 
     if (headerValue.value && !value) {
       return new Error('Required!');
@@ -65,10 +61,11 @@ const keyRule = ref({
 });
 
 const valueRule = ref({
+  key: 'setupAction_value',
   trigger: ['input'],
   type: ['string', 'number'],
   validator(_rule, value) {
-    eventBus.emit('toggleTestAction', { isDisabled: true });
+    store.commit('editor/disableTestAction', true);
 
     if (headerKey.value && !value) {
       return new Error('Required!');
@@ -85,8 +82,10 @@ const valueRule = ref({
 const urlRule = ref({
   required: true,
   trigger: ['input'],
+  key: 'setupAction_url',
   validator(_rule, value) {
-    eventBus.emit('toggleTestAction', { isDisabled: true });
+    store.commit('editor/disableTestAction', true);
+
     if (!value) {
       return new Error('Required!');
     }
@@ -102,13 +101,4 @@ const urlRule = ref({
     return true;
   },
 });
-
-function onContinue(e) {
-  e.preventDefault();
-
-  validateForm({}, () => {
-    eventBus.emit('toggleTestAction', { isDisabled: false });
-    EditorData.setComplete('action', true);
-  });
-}
 </script>

@@ -6,7 +6,13 @@ export function useFormValidation() {
   const store = useStore();
   const formRef = ref(null);
 
-  function validateForm({ changeStep = true, keys, nextExpand, taskName } = {}) {
+  function validateForm({
+    changeStep = true,
+    keys,
+    nextExpand,
+    taskName,
+    callback = () => {},
+  } = {}) {
     formRef.value?.validate(
       async (errors) => {
         if (errors) {
@@ -15,6 +21,7 @@ export function useFormValidation() {
         }
 
         EditorData.setError(taskName, false);
+        callback();
 
         if (changeStep) {
           if (nextExpand) {
@@ -27,7 +34,8 @@ export function useFormValidation() {
       (rule) => {
         return (
           keys.includes(rule.key) ||
-          (rule.key.includes('filterCond') && keys.includes('filterCond'))
+          (rule.key.includes('filterCond') && keys.includes('filterCond')) ||
+          (rule.key.includes('setupAction') && keys.includes('setupAction'))
         );
       },
     );

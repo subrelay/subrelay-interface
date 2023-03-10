@@ -1,5 +1,5 @@
 <template>
-  <n-card class="page_container accordion" content-style="padding: 1.5rem">
+  <n-card class="page_container accordion" content-style="padding: 16px 10px">
     <n-collapse
       accordion
       display-directive="show"

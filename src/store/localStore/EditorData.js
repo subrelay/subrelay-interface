@@ -5,16 +5,16 @@ const conditionFormat = { variable: null, operator: null, value: null };
 
 const defaultConfig = () => ({
   name: null,
-  chainUuid: '94fb71e7-eb61-4245-a894-dbfb8547d011',
-  // chainUuid: null,
+  // chainUuid: '94fb71e7-eb61-4245-a894-dbfb8547d011',
+  chainUuid: null,
   tasks: [
     {
       name: 'trigger',
       type: 'trigger',
       dependOnName: null,
       config: {
-        // eventId: null,
-        eventId: 675,
+        eventId: null,
+        // eventId: 675,
         conditions: [],
       },
     },
@@ -24,7 +24,11 @@ const defaultConfig = () => ({
       dependOnName: 'trigger',
       config: {
         channel: null,
-        config: { headers: [{ key: null, value: null }], url: null },
+        config: {
+          headers: [{ key: null, value: null }],
+          url: null,
+          // url: 'https://typedwebhook.tools/webhook/f43136d0-e0c1-4757-a05c-247a756b545d',
+        },
       },
     },
   ],

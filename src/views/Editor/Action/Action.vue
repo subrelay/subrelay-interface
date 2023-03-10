@@ -6,40 +6,64 @@
       :expanded-names="expandedNames"
       @update:expanded-names="(val) => setExpand(val[0])"
     >
-      <n-collapse-item
-        v-for="(step, index) in steps"
-        :key="`${step}${index}`"
-        :name="step.name"
-        :disabled="step.isDisabled"
-        :title="step.title"
-      >
-        <template #default>
-          <component :is="step.component" @continue="nextStep" @back="backStep" />
-        </template>
+      <n-collapse-item name="1" title="Select Application">
+        <div class="step_container">
+          <SelectChannel />
+
+          <n-button
+            class="action_button"
+            type="primary"
+            @click="
+              emits('validate', { taskName: 'action', keys: ['selectChannel'], nextExpand: '2' })
+            "
+          >
+            Continue
+          </n-button>
+        </div>
+      </n-collapse-item>
+
+      <n-collapse-item name="2" title="Set Up Action">
+        <div class="step_container">
+          <SetUpAction />
+          <n-button class="action_button" type="primary" @click="validateSetupAction">
+            Continue
+          </n-button>
+        </div>
+      </n-collapse-item>
+
+      <n-collapse-item name="3" title="Test Action" :disabled="isDisabledTest">
+        <div class="step_container">
+          <TestAction @continue="nextStep" @back="backStep" />
+          <n-button class="action_button" type="primary" @click="validateSetupAction">
+            Continue
+          </n-button>
+        </div>
       </n-collapse-item>
     </n-collapse>
   </n-card>
 </template>
 
 <script setup>
-import { shallowRef, inject } from 'vue';
+import { shallowRef, inject, ref, computed } from 'vue';
+import { useStore } from 'vuex';
 import { useAccordion } from '@/composables';
+import EditorData from '@/store/localStore/EditorData';
 import SelectChannel from '@/views/Editor/Action/SelectChannel.vue';
 import SetUpAction from '@/views/Editor/Action/SetUpAction.vue';
 import TestAction from '@/views/Editor/Action/TestAction.vue';
 
 const [{ expandedNames }, { nextStep, backStep, setExpand }] = useAccordion('action');
 
-const steps = shallowRef([
-  { title: 'Select Application', name: '1', component: SelectChannel },
-  { title: 'Set Up Action', name: '2', component: SetUpAction },
-  { title: 'Test Action', name: '3', component: TestAction, isDisabled: true },
-]);
+const store = useStore();
+const emits = defineEmits(['validate']);
+const isDisabledTest = computed(() => store.state.editor.isTestActionDisabled);
 
-const eventBus = inject('eventBus');
-eventBus.on('toggleTestAction', ({ isDisabled }) => {
-  steps.value = [...steps.value.slice(0, 2), { ...steps.value[2], isDisabled }];
-});
+function validateSetupAction() {
+  const callback = () => {
+    store.commit('editor/disableTestAction', false);
+    EditorData.setComplete('action', true);
+  };
+
+  emits('validate', { taskName: 'action', keys: ['setupAction'], nextExpand: '3', callback });
+}
 </script>
-
-<style lang="scss"></style>

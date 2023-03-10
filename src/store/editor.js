@@ -3,10 +3,8 @@ export default {
 
   state: () => ({
     step: null,
-    expand: {
-      trigger: '1',
-      action: '1',
-    },
+    expand: { trigger: '1', action: '1' },
+    isTestActionDisabled: true,
   }),
 
   mutations: {
@@ -16,6 +14,10 @@ export default {
 
     setExpand(state, data) {
       state.expand = { ...state.expand, ...data };
+    },
+
+    disableTestAction(state, isDisabled) {
+      state.isTestActionDisabled = isDisabled;
     },
   },
 
