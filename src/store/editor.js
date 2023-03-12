@@ -19,6 +19,12 @@ export default {
     disableTestAction(state, isDisabled) {
       state.isTestActionDisabled = isDisabled;
     },
+
+    reset: (state) => {
+      state.step = null;
+      state.expand = { trigger: '1', action: '1' };
+      state.isTestActionDisabled = true;
+    },
   },
 
   actions: {},

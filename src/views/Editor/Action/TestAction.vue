@@ -73,10 +73,6 @@ const workflowLoading = computed(() => store.state.workflow.loading);
 const isTested = computed(() => store.state.task.tested[type.value]);
 const testResult = computed(() => store.state.task.testResult[type.value]);
 
-const eventBus = inject('eventBus');
-eventBus.on('toggleTestAction', resetTest);
-onBeforeUnmount(() => eventBus.off('toggleTestAction', resetTest));
-
 function resetTest({ isDisabled }) {
   if (isDisabled) {
     store.commit('task/setTested', false);
