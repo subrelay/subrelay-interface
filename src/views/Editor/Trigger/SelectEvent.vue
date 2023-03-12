@@ -1,84 +1,61 @@
 <template>
-  <n-form
-    class="step_container"
-    ref="formRef"
-    @keyup.enter="validateForm"
-    :model="EditorData.workflow.tasks[EditorData.triggerIdx].config"
-    :show-label="false"
+  <n-form-item
+    :path="`tasks[${EditorData.triggerIdx}].config.eventId`"
+    :rule="{
+      required: true,
+      trigger: 'input',
+      type: 'any',
+      key: 'selectEvent',
+      message: 'Required!',
+    }"
   >
-    <n-form-item
-      path="eventId"
-      class="w-100"
-      :rule="{
-        required: true,
-        trigger: 'input',
-        type: 'number',
-        message: 'Required!',
-      }"
+    <n-select
+      clearable
+      filterable
+      placeholder="Select Event"
+      :loading="loading"
+      :disabled="loading"
+      :options="options"
+      :value-field="'id'"
+      :render-label="useRenderDropdownLabel"
+      :render-tag="renderSelectTagWithDescription"
+      :filter="eventFilter"
+      v-model:show="isShown"
+      v-model:value="EditorData.workflow.tasks[EditorData.triggerIdx].config.eventId"
+      @update:value="handleSelectEvent"
     >
-      <n-select
-        clearable
-        filterable
-        placeholder="Select Event"
-        v-model:show="isShown"
-        @update:value="handleSelectEvent"
-        :loading="loading"
-        :disabled="loading"
-        :value="EditorData.workflow.tasks[EditorData.triggerIdx].config.eventId"
-        :options="options"
-        :value-field="'id'"
-        :render-label="useRenderDropdownLabel"
-        :render-tag="renderSelectTagWithDescription"
-        :filter="eventFilter"
-      >
-        <template #empty>
-          <n-empty description="No event found">
-            <template #extra v-if="!EditorData.workflow.chainUuid">
-              <n-button size="small" @click="onBack">
-                Select a chain first
-              </n-button>
-            </template>
-          </n-empty>
-        </template>
-      </n-select>
-    </n-form-item>
-
-    <n-button class="action_button" type="primary" @click="validateForm">
-      Continue
-    </n-button>
-  </n-form>
+      <template #empty>
+        <n-empty description="No event found">
+          <template #extra v-if="!EditorData.workflow.chainUuid">
+            <n-button size="small" @click="onBack"> Select a chain first </n-button>
+          </template>
+        </n-empty>
+      </template>
+    </n-select>
+  </n-form-item>
 </template>
 
 <script setup>
 import EditorData from '@/store/localStore/EditorData';
-import { ref, computed, inject } from 'vue';
+import { ref, computed } from 'vue';
 import { useStore } from 'vuex';
-import {
-  useRenderDropdownLabel,
-  renderSelectTagWithDescription,
-  useFormValidation,
-} from '@/composables';
-
-const emits = defineEmits(['continue', 'back']);
-const [{ formRef }, { validateForm }] = useFormValidation('trigger', emits);
+import { useRenderDropdownLabel, renderSelectTagWithDescription } from '@/composables';
 
 const store = useStore();
 const isShown = ref(false);
-const eventBus = inject('eventBus');
+
 const options = computed(() => store.state.chain.events);
 const chainUuid = computed(() => EditorData.workflow.chainUuid);
 const loading = computed(() => store.state.chain.loading.getEventsLoading);
 
 function onBack() {
   isShown.value = false;
-  emits('back');
+  store.commit('editor/setExpand', { trigger: '1' });
 }
 
 function handleSelectEvent(eventId) {
-  EditorData.setTrigger({ eventId });
+  EditorData.setError('trigger', !eventId);
   EditorData.setTrigger({ conditions: [] });
-  eventBus.emit('toggleTestFilter', { isDisabled: true });
-  validateForm({ changeStep: false });
 
   if (eventId) {
     store.dispatch('chain/getEvent', { chainUuid: chainUuid.value, eventId });

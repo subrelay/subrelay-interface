@@ -149,22 +149,19 @@ body {
 }
 
 .page_container {
-  max-width: 70vw;
+  width: 70vw;
+  max-width: 1000px;
+  min-width: 500px;
   margin: 0 auto;
   padding: 0 !important;
 }
 
 .step_container {
   width: 100%;
-  padding: 0 2rem 1.5rem 2rem;
+  padding: 0 1.5rem 1.5rem 1.5rem;
   margin: auto;
   display: flex;
   flex-direction: column;
-
-  .title {
-    font-size: 0.8rem;
-    font-weight: 700;
-  }
 
   .action_button {
     display: flex;
@@ -256,4 +253,12 @@ flex-1 {
 
 .pointer-cursor {
   cursor: pointer;
+}
+
+.n-collapse-item--active {
+  .n-collapse-item__header {
+    .n-collapse-item__header-main {
+      font-weight: bold !important;
+    }
+  }
 }

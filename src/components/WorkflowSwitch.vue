@@ -56,9 +56,8 @@ async function onUpdateStatus(newStt) {
     const errMsg = e.message;
     if (errMsg === 'Cancelled') {
       return;
-    } else {
-      useShowError(e);
     }
+    useShowError(e);
   } finally {
     loading.value = false;
   }

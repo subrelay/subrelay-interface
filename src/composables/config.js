@@ -41,10 +41,10 @@ export const useWorkflowStatuses = ref([
 ]);
 
 export const useChannels = ref([
-  { value: 'webhook', label: 'Webhook', icon: 'logos:webhooks' },
-  { value: 'email', label: 'Email', icon: 'fluent-emoji-flat:e-mail' },
-  { value: 'telegram', label: 'Telegram', icon: 'logos:telegram' },
-  { value: 'discord', label: 'Discord', icon: 'logos:discord-icon' },
+  { value: 'webhook', label: 'Webhook', disabled: false, icon: 'logos:webhooks' },
+  { value: 'email', label: 'Email', disabled: false, icon: 'fluent-emoji-flat:e-mail' },
+  { value: 'telegram', label: 'Telegram', disabled: true, icon: 'logos:telegram' },
+  { value: 'discord', label: 'Discord', disabled: true, icon: 'logos:discord-icon' },
 ]);
 
 export const defaultQuery = {

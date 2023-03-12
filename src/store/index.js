@@ -5,6 +5,7 @@ import chain from './chain';
 import history from './history';
 import task from './task';
 import account from './account';
+import editor from './editor';
 
 export default createStore({
   modules: {
@@ -14,6 +15,7 @@ export default createStore({
     chain,
     task,
     account,
+    editor,
   },
 
   strict: true,

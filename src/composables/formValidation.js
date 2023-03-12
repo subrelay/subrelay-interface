@@ -1,23 +1,48 @@
 import { ref } from 'vue';
+import { useStore } from 'vuex';
 import EditorData from '@/store/localStore/EditorData';
 
-export default function useFormValidation(taskName, emits) {
+export function useFormValidation() {
+  const store = useStore();
   const formRef = ref(null);
 
-  function validateForm({ changeStep = true } = {}, callback = () => {}) {
-    formRef.value.validate(async (errors) => {
-      if (errors) {
-        EditorData.setError(taskName, true);
-        // EditorData.setComplete(taskName, false);
-        return;
+  async function validateForm({
+    changeStep = true,
+    keys,
+    nextExpand,
+    taskName,
+    callback = () => {},
+  } = {}) {
+    try {
+      await new Promise((resolve, reject) => {
+        formRef.value.validate(
+          (errors) => {
+            if (errors) {
+              EditorData.setError(taskName, true);
+              reject(new Error('Form validation failed'));
+            } else {
+              EditorData.setError(taskName, false);
+              callback();
+              resolve();
+            }
+          },
+          (rule) =>
+            keys.includes(rule.key) ||
+            (rule.key.includes('filterCond') && keys.includes('filterCond')) ||
+            (rule.key.includes('setupAction') && keys.includes('setupAction')),
+        );
+      });
+
+      if (changeStep) {
+        if (nextExpand) {
+          store.commit('editor/setExpand', { [taskName]: nextExpand });
+        } else {
+          store.commit('editor/setStep', 2);
+        }
       }
-
-      EditorData.setError(taskName, false);
-
-      callback();
-
-      if (changeStep) emits('continue');
-    });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return [{ formRef }, { validateForm }];

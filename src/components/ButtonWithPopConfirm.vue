@@ -56,6 +56,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useStore } from 'vuex';
+
 const store = useStore();
 
 const props = defineProps({

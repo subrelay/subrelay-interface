@@ -129,7 +129,7 @@ export default function useQuery(module, columns, fetchData = () => {}) {
   watch(
     query,
     () => {
-      const { offset, limit } = query.value;
+      const { offset, limit } = query.value || {};
 
       tablePagination.value = {
         ...tablePagination.value,

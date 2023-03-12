@@ -1,30 +1,72 @@
 <template>
-  <Accordion :steps="steps" />
+  <n-card class="page_container accordion" content-style="padding: 16px 10px">
+    <n-collapse
+      accordion
+      display-directive="show"
+      :expanded-names="expandedNames"
+      @update:expanded-names="(val) => setExpand(val[0])"
+    >
+      <n-collapse-item name="1" title="Select Chain">
+        <div class="step_container">
+          <SelectChain />
+          <n-button
+            class="action_button"
+            type="primary"
+            @click="
+              emits('validate', { taskName: 'trigger', keys: ['selectChain'], nextExpand: '2' })
+            "
+          >
+            Continue
+          </n-button>
+        </div>
+      </n-collapse-item>
+
+      <n-collapse-item name="2" title="Select Event">
+        <div class="step_container">
+          <SelectEvent />
+
+          <n-button
+            class="action_button"
+            type="primary"
+            @click="
+              emits('validate', { taskName: 'trigger', keys: ['selectEvent'], nextExpand: '3' })
+            "
+          >
+            Continue
+          </n-button>
+        </div>
+      </n-collapse-item>
+
+      <n-collapse-item name="3" title="Filters">
+        <div class="step_container">
+          <Filters />
+
+          <n-button
+            class="action_button"
+            type="primary"
+            @click="emits('validate', { taskName: 'trigger', keys: ['filterCond'] })"
+          >
+            {{ conditionLength ? 'Continue' : 'Skip filter' }}
+          </n-button>
+        </div>
+      </n-collapse-item>
+    </n-collapse>
+  </n-card>
 </template>
 
 <script setup>
-import { shallowRef, inject } from 'vue';
+import { useAccordion, useFormValidation } from '@/composables';
+import { computed, watch } from 'vue';
+import EditorData from '@/store/localStore/EditorData';
 import SelectChain from '@/views/Editor/Trigger/SelectChain.vue';
 import SelectEvent from '@/views/Editor/Trigger/SelectEvent.vue';
 import Filters from '@/views/Editor/Trigger/Filters.vue';
 import TestFilter from '@/views/Editor/Trigger/TestFilter.vue';
-import Accordion from '@/components/Accordion.vue';
 
-const steps = shallowRef([
-  { title: 'Select Chain', name: '1', component: SelectChain },
-  { title: 'Select Event', name: '2', component: SelectEvent },
-  { title: 'Filter Setup', name: '3', component: Filters },
-  // { title: 'Test Filter', name: '4', component: TestFilter, isDisabled: true }, // TODO: Test filter in phase 3
-]);
+const [{ expandedNames }, { setExpand }] = useAccordion('trigger');
+const emits = defineEmits(['validate']);
 
-/* TODO: phase 3
-const eventBus = inject('eventBus');
-eventBus.on('toggleTestFilter', ({ isDisabled }) => {
-  steps.value = [...steps.value.slice(0, 3), { ...steps.value[3], isDisabled }];
-  // shallowRef can only update data in this way, check vue 3 docs
-  // https://vuejs.org/guide/best-practices/performance.html#reduce-reactivity-overhead-for-large-immutable-structures
-});
-*/
+const conditionLength = computed(() => EditorData.workflow.tasks[0].config.conditions.length);
 </script>
 
 <style lang="scss"></style>

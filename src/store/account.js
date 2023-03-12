@@ -1,4 +1,5 @@
 import { useShowError } from '@/composables';
+import { getSavedAuthToken } from '../api';
 
 const MAX_RETRY = 10;
 const CONNECTED_ACCOUNT = 'polkadot-js-connected';
@@ -33,7 +34,7 @@ export default {
   state: () => ({
     accounts: [],
     signer: null,
-    selected: null,
+    selected: {},
     loading: null,
   }),
 
@@ -62,9 +63,11 @@ export default {
   },
 
   actions: {
-    async loadAccounts({ commit, state }) {
+    async loadAccounts({ commit }) {
       commit('setLoading', true);
       try {
+        const connectedAccount = localStorage.getItem(CONNECTED_ACCOUNT);
+
         const extension = await getInjectedExtension();
         const result = await extension.enable();
         const accounts = await result.accounts.get();
@@ -72,13 +75,25 @@ export default {
         commit('setAccounts', accounts);
         commit('setSigner', result.signer);
 
-        if (state.selected) {
+        if (connectedAccount) {
+          const connected = JSON.parse(connectedAccount);
+          const savedToken = getSavedAuthToken(connected.address);
+
+          // Case: time expired 24hrs
+          if (!savedToken) {
+            commit('setSelected', null);
+            return;
+          }
+
+          // Case: acc deleted from polkadot wallet
           const isAccountExisted = !!accounts.find(({ address }) => {
-            const cond = address === state.selected.address;
+            const cond = address === connected.address;
             return cond;
           });
 
-          if (!isAccountExisted) {
+          if (isAccountExisted) {
+            commit('setSelected', connected);
+          } else {
             commit('setSelected', null);
           }
         }
@@ -86,14 +101,6 @@ export default {
         console.error('e', e);
       } finally {
         commit('setLoading', false);
-      }
-    },
-
-    loadConnectedAccount({ commit, dispatch }) {
-      const connectedAccount = localStorage.getItem(CONNECTED_ACCOUNT);
-      if (connectedAccount) {
-        commit('setSelected', JSON.parse(connectedAccount));
-        dispatch('loadAccounts');
       }
     },
   },

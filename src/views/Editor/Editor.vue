@@ -5,15 +5,12 @@
     <n-layout-header style="padding: 5px 3rem" bordered>
       <!-- HEADER -->
       <n-space align="center" justify="space-between">
-        <!-- Name -->
         <EditableText :onUpdateValue="onUpdateName" :value="EditorData.workflow.name" />
 
-        <!-- Logo -->
         <Logo @click="quitEditor" />
 
-        <!-- Buttons -->
         <n-space>
-          <n-button type="primary" class="action-button" icon-placement="left" @click="quitEditor">
+          <n-button type="primary" class="action-button" @click="quitEditor">
             <template #icon>
               <SubIcon icon="line-md:home-md" :inline="true" class="icon" />
             </template>
@@ -23,99 +20,64 @@
           <n-button
             type="primary"
             class="action-button"
-            icon-placement="right"
-            @click="onChangeStep(2)"
-            v-if="currentStep == 1"
+            @click="createWorkflow"
+            :disabled="
+              !isTriggerCompleted || !isActionCompleted || isErrorWithTrigger || isErrorWithAction
+            "
           >
-            Next
+            Finish
             <template #icon>
-              <SubIcon icon="line-md:chevron-small-double-right" class="icon" />
+              <SubIcon icon="line-md:confirm" class="icon" />
             </template>
           </n-button>
-
-          <div v-else>
-            <n-space>
-              <n-button
-                type="primary"
-                class="action-button"
-                icon-placement="right"
-                @click="onChangeStep(1)"
-              >
-                Back
-                <template #icon>
-                  <SubIcon icon="line-md:chevron-small-double-left" class="icon" />
-                </template>
-              </n-button>
-
-              <n-button
-                type="primary"
-                class="action-button"
-                icon-placement="right"
-                @click="createWorkflow"
-                :disabled="
-                  !isTriggerCompleted ||
-                  !isActionCompleted ||
-                  isErrorWithTrigger ||
-                  isErrorWithAction
-                "
-              >
-                Finish
-                <template #icon>
-                  <SubIcon icon="line-md:confirm" class="icon" />
-                </template>
-              </n-button>
-            </n-space>
-          </div>
         </n-space>
       </n-space>
     </n-layout-header>
 
     <n-layout-content content-style="padding-top: 50px;" class="full-page">
-      <n-space :size="50" vertical>
-        <!-- STEPPER -->
-        <div class="page_container">
-          <n-steps :current="currentStep" @update:current="onChangeStep" class="stepper">
-            <n-step
-              title="TRIGGER"
-              description="This is what starts the app"
-              :status="triggerStatus"
-            >
-              <template #icon>
-                <n-icon><ThunderboltOutlined /> </n-icon>
-              </template>
-            </n-step>
+      <!-- STEPPER -->
+      <div class="page_container">
+        <n-steps :current="step" @update:current="onChangeStep" class="stepper">
+          <n-step title="TRIGGER" description="This is what starts the app" :status="triggerStatus">
+            <template #icon>
+              <n-icon><ThunderboltOutlined /> </n-icon>
+            </template>
+          </n-step>
 
-            <n-step
-              title="ACTION"
-              description="Action will perform when the app has started"
-              :status="actionStatus"
-            >
-              <template #icon>
-                <n-icon><BellOutlined /> </n-icon>
-              </template>
-            </n-step>
-          </n-steps>
-        </div>
+          <n-step
+            title="ACTION"
+            description="Action will perform when the app has started"
+            :status="actionStatus"
+          >
+            <template #icon>
+              <n-icon><BellOutlined /> </n-icon>
+            </template>
+          </n-step>
+        </n-steps>
 
         <!-- Use v-show to preserve the data when switching steps -->
-        <Trigger v-show="currentStep == 1" />
-        <Action v-show="currentStep == 2" />
-      </n-space>
+        <n-form ref="formRef" :model="EditorData.workflow">
+          <Trigger v-show="step == 1" @validate="validateForm" />
+          <Action v-show="step == 2" @validate="validateForm" />
+        </n-form>
+      </div>
     </n-layout-content>
+
+    <pre>{{ EditorData }} </pre>
   </n-layout>
 </template>
 
 <script setup>
+import { useFormValidation, useShowError } from '@/composables';
 import EditorData from '@/store/localStore/EditorData';
 import Logo from '@/components/Logo';
 import EditableText from '@/components/EditableText';
 import Trigger from '@/views/Editor/Trigger/Trigger';
 import Action from '@/views/Editor/Action/Action';
 import { ThunderboltOutlined, BellOutlined } from '@vicons/antd';
-import { h, ref, inject, computed, onBeforeMount, onBeforeUnmount, onMounted } from 'vue';
+import { h, ref, inject, computed, onBeforeMount, onBeforeUnmount, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useDialog, useMessage } from 'naive-ui';
-import { useShowError } from '@/composables';
 import { useStore } from 'vuex';
 import Api from '@/api';
 
@@ -125,31 +87,12 @@ const route = useRoute();
 const store = useStore();
 const dialog = useDialog();
 const message = useMessage();
-const currentStep = ref(null);
 const loading = ref(false);
+const step = computed(() => store.state.editor.step);
 const account = computed(() => store.state.account.selected);
 const signer = computed(() => store.state.account.signer);
 
 onMounted(() => (window.$message = useMessage()));
-
-function handleNextStep() {
-  onChangeStep(2);
-}
-
-// TODO: Replace event bus by local state
-const eventBus = inject('eventBus');
-eventBus.on('nextStep', handleNextStep);
-
-function onChangeStep(step) {
-  currentStep.value = step;
-
-  setStepStatus(step);
-
-  router.push({
-    name: step == 1 ? 'trigger' : 'action',
-    params: { id: +props.id || 'new-flow' },
-  });
-}
 
 // BUILD WORKFLOW DATA
 const triggerStatus = ref(null);
@@ -186,28 +129,51 @@ const hasError = computed(() =>
   EditorData.workflow.tasks.some((task) => task.isError || !task.isCompleted),
 );
 
-function setStepStatus(step) {
+const [{ formRef }, { validateForm }] = useFormValidation();
+
+async function setStepStatus(step) {
+  // Switch from action to trigger
+
+  if (step === 1) {
+    actionStatus.value = 'wait';
+    triggerStatus.value = 'process';
+
+    if (changedToAction.value) {
+      await validateForm({
+        keys: ['selectChannel', 'setupAction'],
+        changeStep: false,
+        taskName: 'action',
+      });
+
+      if (isErrorWithAction.value) return (actionStatus.value = 'error');
+      if (isActionCompleted.value) return (actionStatus.value = 'finish');
+    }
+  }
+
   // Switch from trigger to action
   if (step === 2) {
     actionStatus.value = 'process';
     triggerStatus.value = 'wait';
 
     if (changedToTrigger.value) {
+      await validateForm({
+        keys: ['filterCond', 'selectChain', 'selectEvent'],
+        changeStep: false,
+        taskName: 'trigger',
+      });
       if (isErrorWithTrigger.value) return (triggerStatus.value = 'error');
       if (isTriggerCompleted.value) return (triggerStatus.value = 'finish');
     }
   }
+}
 
-  // Switch from action to trigger
-  if (step === 1) {
-    actionStatus.value = 'wait';
-    triggerStatus.value = 'process';
-
-    if (changedToAction.value) {
-      if (isErrorWithAction.value) return (actionStatus.value = 'error');
-      if (isActionCompleted.value) return (actionStatus.value = 'finish');
-    }
-  }
+function onChangeStep(nextStep) {
+  store.commit('editor/setStep', nextStep);
+  setStepStatus(nextStep);
+  router.push({
+    name: nextStep == 1 ? 'trigger' : 'action',
+    params: { id: +props.id || 'new-flow' },
+  });
 }
 
 function onUpdateName(value) {
@@ -267,9 +233,8 @@ async function createWorkflow() {
     const errMsg = e.message;
     if (errMsg === 'Cancelled') {
       return;
-    } else {
-      useShowError(e);
     }
+    useShowError(e);
   } finally {
     loading.value = false;
   }
@@ -278,7 +243,7 @@ async function createWorkflow() {
 onBeforeUnmount(() => {
   EditorData.loadWorkflow();
   store.commit('task/reset');
-  eventBus.off('nextStep', handleNextStep);
+  store.commit('editor/reset');
   window.removeEventListener('beforeunload', (e) => handleReload(e));
 });
 
@@ -305,8 +270,8 @@ onBeforeMount(async () => {
   // before data is completely loaded
   EditorData.loadWorkflow(data);
 
-  const chainUuid = EditorData.workflow.chainUuid;
-  const eventId = EditorData.workflow.tasks[0].config.eventId;
+  const { chainUuid } = EditorData.workflow;
+  const { eventId } = EditorData.workflow.tasks[0].config;
 
   if (chainUuid) {
     store.dispatch('chain/getEvents', chainUuid);
@@ -315,9 +280,7 @@ onBeforeMount(async () => {
     }
   }
 
-  currentStep.value = route.name === 'trigger' ? 1 : 2;
-  setStepStatus(currentStep.value);
-
+  store.commit('editor/setStep', route.name === 'trigger' ? 1 : 2);
   window.addEventListener('beforeunload', (e) => handleReload(e));
 });
 </script>
@@ -326,6 +289,7 @@ onBeforeMount(async () => {
 .stepper {
   width: 70%;
   margin: auto;
+  padding-bottom: 5vh;
 }
 
 .cover-layout {
@@ -337,5 +301,9 @@ onBeforeMount(async () => {
   top: 0;
   left: 0;
   cursor: wait;
+}
+
+.n-step-content__description {
+  font-size: 0.8em;
 }
 </style>

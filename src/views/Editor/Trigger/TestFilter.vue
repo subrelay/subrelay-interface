@@ -114,9 +114,7 @@ const runningTest = computed(() => store.state.task.runningTest[type.value]);
 const isTested = computed(() => store.state.task.tested[type.value]);
 const testResult = computed(() => store.state.task.testResult[type.value]);
 
-const conditions = computed(() => {
-  return EditorData.workflow.tasks[0].config.conditions;
-});
+const conditions = computed(() => EditorData.workflow.tasks[0].config.conditions);
 
 function resetTest({ isDisabled }) {
   if (isDisabled) isTested.value = false;

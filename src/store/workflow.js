@@ -1,4 +1,4 @@
-import { pickBy } from 'lodash';
+import { pickBy, isEmpty } from 'lodash';
 import { useShowError } from '@/composables';
 import Api from '@/api';
 
@@ -39,10 +39,9 @@ export default {
 
   actions: {
     async getWorkflows({ commit, state, rootState }, { showLoading = true } = {}) {
-      if (rootState.account.selected) {
-        if (showLoading) {
-          commit('setLoading', true);
-        }
+      if (!isEmpty(rootState.account.selected)) {
+        if (showLoading) commit('setLoading', true);
+
         try {
           const {
             data: { workflows, total },

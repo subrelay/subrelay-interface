@@ -41,13 +41,11 @@ import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import moment from 'moment';
 import Api from '@/api';
-import {
-  useQuery,
+import { useQuery,
   useRenderSortIcon,
   useGetChainImg,
   useWorkflowStatuses,
-  useShowError,
-} from '@/composables';
+  useShowError } from '@/composables';
 
 const message = useMessage();
 const store = useStore();
@@ -70,7 +68,7 @@ async function deleteWorkflow({ id, name }) {
   } catch (e) {
     const errMsg = e.message;
     if (errMsg === 'Cancelled') {
-      return;
+
     } else {
       useShowError(e);
     }
@@ -81,11 +79,9 @@ function fetchData() {
   store.dispatch('workflow/getWorkflows');
 }
 
-const rowProps = ({ id }) => {
-  return {
-    onClick: () => router.push({ name: 'overview', params: { id } }),
-  };
-};
+const rowProps = ({ id }) => ({
+  onClick: () => router.push({ name: 'overview', params: { id } }),
+});
 
 const columns = ref([
   {
@@ -103,18 +99,16 @@ const columns = ref([
     key: 'chain',
     width: '20%',
     ellipsis: { tooltip: true },
-    render: ({ chain }) => {
-      return h('div', { style: { display: 'flex', alignItems: 'center' } }, [
-        h(NAvatar, {
-          style: { background: 'transparent' },
-          src: useGetChainImg(chain.name, chains.value),
-          round: true,
-          size: 'small',
-          color: 'white',
-        }),
-        h('div', { style: { marginLeft: '12px', padding: '4px 0' } }, chain.name),
-      ]);
-    },
+    render: ({ chain }) => h('div', { style: { display: 'flex', alignItems: 'center' } }, [
+      h(NAvatar, {
+        style: { background: 'transparent' },
+        src: useGetChainImg(chain.name, chains.value),
+        round: true,
+        size: 'small',
+        color: 'white',
+      }),
+      h('div', { style: { marginLeft: '12px', padding: '4px 0' } }, chain.name),
+    ]),
   },
   {
     title: 'Created at',
@@ -124,9 +118,7 @@ const columns = ref([
     sorter: true,
     sortOrder: false,
     renderSorterIcon: useRenderSortIcon,
-    render: ({ createdAt }) => {
-      return moment(createdAt).format('MMM Do YYYY, HH:mm:ss');
-    },
+    render: ({ createdAt }) => moment(createdAt).format('MMM Do YYYY, HH:mm:ss'),
   },
   {
     title: 'Updated at',
@@ -136,21 +128,18 @@ const columns = ref([
     sorter: true,
     sortOrder: false,
     renderSorterIcon: useRenderSortIcon,
-    render: ({ updatedAt }) => {
-      return moment(updatedAt).format('MMM Do YYYY, HH:mm:ss');
-    },
+    render: ({ updatedAt }) => moment(updatedAt).format('MMM Do YYYY, HH:mm:ss'),
   },
   {
     title: 'Status',
     key: 'status',
     width: '20%',
     ellipsis: { tooltip: true },
-    render: ({ id, status }) =>
-      h(
-        'div',
-        { onClick: (e) => e.stopPropagation() },
-        h(WorkflowSwitch, { status, id, fetchOne: false }),
-      ),
+    render: ({ id, status }) => h(
+      'div',
+      { onClick: (e) => e.stopPropagation() },
+      h(WorkflowSwitch, { status, id, fetchOne: false }),
+    ),
   },
   {
     key: 'edit',
@@ -169,8 +158,7 @@ const columns = ref([
             confirmText: 'Are you sure to delete this workflow?',
           },
           {
-            'trigger-content': () =>
-              h(Icon, { icon: 'bi:trash', style: { 'margin-right': '1rem' } }),
+            'trigger-content': () => h(Icon, { icon: 'bi:trash', style: { 'margin-right': '1rem' } }),
           },
         ),
       ]);

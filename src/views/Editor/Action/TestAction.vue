@@ -1,5 +1,5 @@
 <template>
-  <n-space vertical :size="30" class="step_container">
+  <n-space vertical :size="30">
     <n-card :segmented="{ content: 'soft' }" header-style="padding-bottom: 0.5rem">
       <template #header>
         <div class="title">Input</div>
@@ -72,10 +72,6 @@ const runningTest = computed(() => store.state.task.runningTest[type.value]);
 const workflowLoading = computed(() => store.state.workflow.loading);
 const isTested = computed(() => store.state.task.tested[type.value]);
 const testResult = computed(() => store.state.task.testResult[type.value]);
-
-const eventBus = inject('eventBus');
-eventBus.on('toggleTestAction', resetTest);
-onBeforeUnmount(() => eventBus.off('toggleTestAction', resetTest));
 
 function resetTest({ isDisabled }) {
   if (isDisabled) {
