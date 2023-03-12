@@ -2,7 +2,8 @@
   <n-space vertical :size="10">
     <div class="input-item">
       <div class="title">URL:</div>
-      <n-text code>{{ config.url }}</n-text>
+
+      <n-text code class="text-ellipsis">{{ config.url }}</n-text>
     </div>
 
     <div class="input-item">

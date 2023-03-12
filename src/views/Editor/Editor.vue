@@ -111,10 +111,10 @@ const isActionCompleted = computed(() => EditorData.workflow.tasks[actionIdx.val
 const changedToTrigger = computed(() => {
   const task = EditorData.workflow.tasks[triggerIdx.value];
   return (
-    typeof task.isError === 'boolean'
-    || typeof task.isCompleted === 'boolean'
-    || !!task.config.eventId
-    || !!task.chainUuid
+    typeof task.isError === 'boolean' ||
+    typeof task.isCompleted === 'boolean' ||
+    !!task.config.eventId ||
+    !!task.chainUuid
   );
 });
 
@@ -125,34 +125,44 @@ const changedToAction = computed(() => {
 
 const hasUpdates = computed(() => changedToTrigger.value || changedToAction.value);
 
-const hasError = computed(() => EditorData.workflow.tasks.some((task) => task.isError || !task.isCompleted));
+const hasError = computed(() =>
+  EditorData.workflow.tasks.some((task) => task.isError || !task.isCompleted),
+);
 
 const [{ formRef }, { validateForm }] = useFormValidation();
-function setStepStatus(step) {
+
+async function setStepStatus(step) {
+  // Switch from action to trigger
+
+  if (step === 1) {
+    actionStatus.value = 'wait';
+    triggerStatus.value = 'process';
+
+    if (changedToAction.value) {
+      await validateForm({
+        keys: ['selectChannel', 'setupAction'],
+        changeStep: false,
+        taskName: 'action',
+      });
+
+      if (isErrorWithAction.value) return (actionStatus.value = 'error');
+      if (isActionCompleted.value) return (actionStatus.value = 'finish');
+    }
+  }
+
   // Switch from trigger to action
   if (step === 2) {
+    actionStatus.value = 'process';
+    triggerStatus.value = 'wait';
+
     if (changedToTrigger.value) {
-      validateForm({
+      await validateForm({
         keys: ['filterCond', 'selectChain', 'selectEvent'],
         changeStep: false,
         taskName: 'trigger',
       });
       if (isErrorWithTrigger.value) return (triggerStatus.value = 'error');
       if (isTriggerCompleted.value) return (triggerStatus.value = 'finish');
-    }
-
-    actionStatus.value = 'process';
-    triggerStatus.value = 'wait';
-  }
-
-  // Switch from action to trigger
-  if (step === 1) {
-    actionStatus.value = 'wait';
-    triggerStatus.value = 'process';
-
-    if (changedToAction.value) {
-      if (isErrorWithAction.value) return (actionStatus.value = 'error');
-      if (isActionCompleted.value) return (actionStatus.value = 'finish');
     }
   }
 }
@@ -173,10 +183,11 @@ function onUpdateName(value) {
 function showExitWarning() {
   dialog.warning({
     title: 'Confirm quit',
-    content: () => h('div', { style: { fontSize: '0.85rem' } }, [
-      h('div', 'Changes you made will be discarded because the workflow is not yet completed.'),
-      h('div', { style: { marginTop: '1rem' } }, 'You can’t undo this action.'),
-    ]),
+    content: () =>
+      h('div', { style: { fontSize: '0.85rem' } }, [
+        h('div', 'Changes you made will be discarded because the workflow is not yet completed.'),
+        h('div', { style: { marginTop: '1rem' } }, 'You can’t undo this action.'),
+      ]),
 
     positiveText: 'Leave',
     negativeText: 'Stay',
@@ -290,5 +301,9 @@ onBeforeMount(async () => {
   top: 0;
   left: 0;
   cursor: wait;
+}
+
+.n-step-content__description {
+  font-size: 0.8em;
 }
 </style>

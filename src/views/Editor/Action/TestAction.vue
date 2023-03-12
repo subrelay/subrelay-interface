@@ -1,5 +1,5 @@
 <template>
-  <n-space vertical :size="30" class="step_container">
+  <n-space vertical :size="30">
     <n-card :segmented="{ content: 'soft' }" header-style="padding-bottom: 0.5rem">
       <template #header>
         <div class="title">Input</div>

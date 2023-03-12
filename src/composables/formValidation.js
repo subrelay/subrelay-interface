@@ -6,35 +6,43 @@ export function useFormValidation() {
   const store = useStore();
   const formRef = ref(null);
 
-  function validateForm({
+  async function validateForm({
     changeStep = true,
     keys,
     nextExpand,
     taskName,
     callback = () => {},
   } = {}) {
-    formRef.value?.validate(
-      async (errors) => {
-        if (errors) {
-          EditorData.setError(taskName, true);
-          return;
-        }
+    try {
+      await new Promise((resolve, reject) => {
+        formRef.value.validate(
+          (errors) => {
+            if (errors) {
+              EditorData.setError(taskName, true);
+              reject(new Error('Form validation failed'));
+            } else {
+              EditorData.setError(taskName, false);
+              callback();
+              resolve();
+            }
+          },
+          (rule) =>
+            keys.includes(rule.key) ||
+            (rule.key.includes('filterCond') && keys.includes('filterCond')) ||
+            (rule.key.includes('setupAction') && keys.includes('setupAction')),
+        );
+      });
 
-        EditorData.setError(taskName, false);
-        callback();
-
-        if (changeStep) {
-          if (nextExpand) {
-            store.commit('editor/setExpand', { [taskName]: nextExpand });
-          } else {
-            store.commit('editor/setStep', 2);
-          }
+      if (changeStep) {
+        if (nextExpand) {
+          store.commit('editor/setExpand', { [taskName]: nextExpand });
+        } else {
+          store.commit('editor/setStep', 2);
         }
-      },
-      (rule) => keys.includes(rule.key)
-        || (rule.key.includes('filterCond') && keys.includes('filterCond'))
-        || (rule.key.includes('setupAction') && keys.includes('setupAction')),
-    );
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return [{ formRef }, { validateForm }];

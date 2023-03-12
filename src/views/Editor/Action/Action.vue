@@ -34,9 +34,6 @@
       <n-collapse-item name="3" title="Test Action" :disabled="isDisabledTest">
         <div class="step_container">
           <TestAction @continue="nextStep" @back="backStep" />
-          <n-button class="action_button" type="primary" @click="validateSetupAction">
-            Continue
-          </n-button>
         </div>
       </n-collapse-item>
     </n-collapse>
