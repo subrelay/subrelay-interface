@@ -22,7 +22,7 @@
     <template #default>
       <div v-if="showConfirm">
         <div class="confirm_content">
-          <SubIcon icon="ep:warning-filled" class="icon" color="#e6c260" />
+          <Icon icon="ep:warning-filled" class="icon" color="#e6c260" />
           {{ props.confirmText }}
         </div>
 

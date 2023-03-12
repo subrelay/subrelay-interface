@@ -28,6 +28,7 @@
 
       <n-gi>
         <n-form-item
+          label=""
           :rule="{ ...requiredRule, key: `filterCond_operator_${index}_${conditionIdx}` }"
           :path="`tasks[0].config.conditions[${props.index}][${conditionIdx}].operator`"
         >
@@ -61,6 +62,7 @@
           :path="`tasks[0].config.conditions[${props.index}][${props.conditionIdx}].value`"
         >
           <n-input
+            placeholder="Filter value"
             v-if="inputType === 'string'"
             clearable
             class="w-100"
@@ -71,6 +73,7 @@
 
           <n-input-number
             v-else
+            placeholder="Filter value"
             class="w-100"
             clearable
             :show-button="false"
@@ -82,8 +85,8 @@
       </n-gi>
     </n-grid>
 
-    <n-button @click="emits('remove')" text style="padding-bottom: 24px">
-      <SubIcon icon="bi:trash" />
+    <n-button @click="emits('remove')" text>
+      <Icon icon="bi:trash" />
     </n-button>
   </n-space>
 </template>

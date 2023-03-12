@@ -2,6 +2,7 @@
   <n-form-item
     path="chainUuid"
     class="w-100"
+    label="Select Chain"
     :rule="{ required: true, trigger: 'input', message: 'Required', key: 'selectChain' }"
   >
     <ChainDropdown

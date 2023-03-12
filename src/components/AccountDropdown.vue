@@ -17,7 +17,7 @@
           </n-text>
         </n-space>
 
-        <SubIcon
+        <Icon
           icon="akar-icons:chevron-down"
           class="icon"
           :inline="true"

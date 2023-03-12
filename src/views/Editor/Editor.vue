@@ -12,7 +12,7 @@
         <n-space>
           <n-button type="primary" class="action-button" @click="quitEditor">
             <template #icon>
-              <SubIcon icon="line-md:home-md" :inline="true" class="icon" />
+              <Icon icon="line-md:home-md" :inline="true" class="icon" />
             </template>
             Home
           </n-button>
@@ -27,7 +27,7 @@
           >
             Finish
             <template #icon>
-              <SubIcon icon="line-md:confirm" class="icon" />
+              <Icon icon="line-md:confirm" class="icon" />
             </template>
           </n-button>
         </n-space>
@@ -111,10 +111,10 @@ const isActionCompleted = computed(() => EditorData.workflow.tasks[actionIdx.val
 const changedToTrigger = computed(() => {
   const task = EditorData.workflow.tasks[triggerIdx.value];
   return (
-    typeof task.isError === 'boolean' ||
-    typeof task.isCompleted === 'boolean' ||
-    !!task.config.eventId ||
-    !!task.chainUuid
+    typeof task.isError === 'boolean'
+    || typeof task.isCompleted === 'boolean'
+    || !!task.config.eventId
+    || !!task.chainUuid
   );
 });
 
@@ -125,9 +125,7 @@ const changedToAction = computed(() => {
 
 const hasUpdates = computed(() => changedToTrigger.value || changedToAction.value);
 
-const hasError = computed(() =>
-  EditorData.workflow.tasks.some((task) => task.isError || !task.isCompleted),
-);
+const hasError = computed(() => EditorData.workflow.tasks.some((task) => task.isError || !task.isCompleted));
 
 const [{ formRef }, { validateForm }] = useFormValidation();
 
@@ -183,11 +181,10 @@ function onUpdateName(value) {
 function showExitWarning() {
   dialog.warning({
     title: 'Confirm quit',
-    content: () =>
-      h('div', { style: { fontSize: '0.85rem' } }, [
-        h('div', 'Changes you made will be discarded because the workflow is not yet completed.'),
-        h('div', { style: { marginTop: '1rem' } }, 'You can’t undo this action.'),
-      ]),
+    content: () => h('div', { style: { fontSize: '0.85rem' } }, [
+      h('div', 'Changes you made will be discarded because the workflow is not yet completed.'),
+      h('div', { style: { marginTop: '1rem' } }, 'You can’t undo this action.'),
+    ]),
 
     positiveText: 'Leave',
     negativeText: 'Stay',

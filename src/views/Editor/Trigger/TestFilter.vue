@@ -54,7 +54,7 @@
       </n-space>
 
       <n-space align="center" v-else :wrap="false">
-        <SubIcon
+        <Icon
           :icon="isMatched ? 'ep:success-filled' : 'ic:round-cancel'"
           :color="isMatched ? '#18A058FF' : '#D03050FF'"
           :width="'2rem'"

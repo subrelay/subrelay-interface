@@ -41,11 +41,9 @@
 </template>
 
 <script setup>
-import Overview from '@/views/WorkflowSummary/Overview.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { onBeforeMount, ref, computed, watch } from 'vue';
-import { isEmpty } from 'lodash';
 
 const props = defineProps({ id: [String, Number] });
 const route = useRoute();
