@@ -79,11 +79,8 @@ const generateToken = async ({ account, signer, endpoint, method, body }) => {
 const request = async ({ account, signer, endpoint, method, body }) => {
   if (method === 'get') {
     const getToken = await generateGetToken({ account, signer });
-
     return instance[method](endpoint, {
-      headers: {
-        Authorization: getToken,
-      },
+      headers: { Authorization: getToken },
     });
   }
 

@@ -116,6 +116,7 @@ async function onConfirm() {
 
   try {
     loading.value = true;
+
     await generateGetToken({ account: currentAcc.value, signer: signer.value });
 
     const isAccChanged = storedAccount.value?.address !== currentAcc.value?.address;
