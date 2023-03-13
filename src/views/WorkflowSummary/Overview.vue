@@ -125,14 +125,15 @@ import API from '@/api';
 const store = useStore();
 const props = defineProps({ id: [String, Number] });
 const workflow = computed(() => store.state.workflow.workflow);
-const loading = computed(() => store.state.workflow.loading);
 
 const eventString = ref(null);
 const filtersCondition = ref([]);
 
 const triggerTask = computed(() => workflow.value.tasks.find((task) => task.type === 'trigger'));
 
-const actionTask = computed(() => workflow.value.tasks.find((task) => task.type === 'notification'));
+const actionTask = computed(() =>
+  workflow.value.tasks.find((task) => task.type === 'notification'),
+);
 
 onMounted(async () => {
   const { eventId, conditions } = triggerTask.value.config;

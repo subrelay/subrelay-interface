@@ -41,7 +41,6 @@
 </template>
 
 <script setup>
-import Overview from '@/views/WorkflowSummary/Overview.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { onBeforeMount, ref, computed, watch } from 'vue';
@@ -66,7 +65,7 @@ function onChangeTab(tab) {
 watch(
   selectedAccount,
   () => {
-    if (selectedAccount.value) {
+    if (!isEmpty(selectedAccount.value)) {
       store.dispatch('workflow/getWorkflow', { id: +props.id });
     }
   },

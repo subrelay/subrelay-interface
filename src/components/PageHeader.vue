@@ -12,7 +12,7 @@
             @input="onDebouncedSearch"
           >
             <template #suffix>
-              <SubIcon icon="akar-icons:search" style="margin-left: 0.5rem" />
+              <Icon icon="akar-icons:search" style="margin-left: 0.5rem" />
             </template>
           </n-input>
         </n-gi>
@@ -36,7 +36,7 @@
 
       <n-tooltip trigger="hover">
         <template #trigger>
-          <n-button @click="clearAllFilters"> <SubIcon icon="mdi:filter-remove" /></n-button>
+          <n-button @click="clearAllFilters"> <Icon icon="mdi:filter-remove" /></n-button>
         </template>
         Clear all filters
       </n-tooltip>

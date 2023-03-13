@@ -1,5 +1,6 @@
 <template>
   <n-form-item
+    label="Select Event"
     :path="`tasks[${EditorData.triggerIdx}].config.eventId`"
     :rule="{
       required: true,

@@ -13,7 +13,7 @@ const eventBus = mitt();
 
 const app = createApp(App);
 app.provide('eventBus', eventBus);
-app.component('SubIcon', Icon);
+app.component('Icon', Icon);
 app.component('JsonViewer', JsonViewer);
 
 app.use(router);

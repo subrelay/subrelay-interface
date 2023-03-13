@@ -4,7 +4,7 @@
 
     <div v-else class="show-area">
       <ShowNode />
-      <SubIcon icon="line-md:edit" class="edit-icon" />
+      <Icon icon="line-md:edit" class="edit-icon" />
     </div>
   </div>
 </template>

@@ -12,7 +12,7 @@
         <n-space>
           <n-button type="primary" class="action-button" @click="quitEditor">
             <template #icon>
-              <SubIcon icon="line-md:home-md" :inline="true" class="icon" />
+              <Icon icon="line-md:home-md" :inline="true" class="icon" />
             </template>
             Home
           </n-button>
@@ -27,7 +27,7 @@
           >
             Finish
             <template #icon>
-              <SubIcon icon="line-md:confirm" class="icon" />
+              <Icon icon="line-md:confirm" class="icon" />
             </template>
           </n-button>
         </n-space>

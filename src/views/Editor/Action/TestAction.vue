@@ -19,7 +19,7 @@
         <div class="input-item">
           <div class="title">Status:</div>
 
-          <SubIcon
+          <Icon
             :inline="true"
             :icon="testResult.success ? 'ep:success-filled' : 'ic:round-cancel'"
             :color="testResult.success ? '#18A058FF' : '#D03050FF'"

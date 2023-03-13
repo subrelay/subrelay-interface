@@ -18,7 +18,7 @@
     >
       <template #header-extra>
         <n-button text @click="emits('update:modelValue', false)">
-          <SubIcon icon="gg:close" :inline="true" width="20" />
+          <Icon icon="gg:close" :inline="true" width="20" />
         </n-button>
       </template>
 
@@ -55,7 +55,7 @@
                 </div>
               </n-space>
 
-              <SubIcon
+              <Icon
                 width="16"
                 icon="line-md:confirm"
                 v-if="currentAcc.address === account.address"
@@ -116,6 +116,7 @@ async function onConfirm() {
 
   try {
     loading.value = true;
+
     await generateGetToken({ account: currentAcc.value, signer: signer.value });
 
     const isAccChanged = storedAccount.value?.address !== currentAcc.value?.address;

@@ -6,7 +6,7 @@
       :expanded-names="expandedNames"
       @update:expanded-names="(val) => setExpand(val[0])"
     >
-      <n-collapse-item name="1" title="Select Chain">
+      <n-collapse-item name="1" title="Chain">
         <div class="step_container">
           <SelectChain />
           <n-button
@@ -21,7 +21,7 @@
         </div>
       </n-collapse-item>
 
-      <n-collapse-item name="2" title="Select Event">
+      <n-collapse-item name="2" title="Event">
         <div class="step_container">
           <SelectEvent />
 

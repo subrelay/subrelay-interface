@@ -6,7 +6,7 @@
       :expanded-names="expandedNames"
       @update:expanded-names="(val) => setExpand(val[0])"
     >
-      <n-collapse-item name="1" title="Select Application">
+      <n-collapse-item name="1" title="Channel">
         <div class="step_container">
           <SelectChannel />
 
@@ -22,7 +22,7 @@
         </div>
       </n-collapse-item>
 
-      <n-collapse-item name="2" title="Set Up Action">
+      <n-collapse-item name="2" title="Setup Action">
         <div class="step_container">
           <SetUpAction />
           <n-button class="action_button" type="primary" @click="validateSetupAction">
@@ -31,7 +31,7 @@
         </div>
       </n-collapse-item>
 
-      <n-collapse-item name="3" title="Test Action" :disabled="isDisabledTest">
+      <n-collapse-item name="3" title="Test" :disabled="isDisabledTest">
         <div class="step_container">
           <TestAction @continue="nextStep" @back="backStep" />
         </div>

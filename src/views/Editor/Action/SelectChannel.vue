@@ -23,7 +23,7 @@
             :disabled="channel.disabled"
             class="channel_item"
           >
-            <SubIcon :icon="channel.icon" class="icon" />
+            <Icon :icon="channel.icon" class="icon" />
             <span class="text">{{ channel.label }}</span>
           </n-radio-button>
         </n-gi>

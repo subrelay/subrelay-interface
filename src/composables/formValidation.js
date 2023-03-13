@@ -26,10 +26,9 @@ export function useFormValidation() {
               resolve();
             }
           },
-          (rule) =>
-            keys.includes(rule.key) ||
-            (rule.key.includes('filterCond') && keys.includes('filterCond')) ||
-            (rule.key.includes('setupAction') && keys.includes('setupAction')),
+          (rule) => keys.includes(rule.key)
+            || (rule.key.includes('filterCond') && keys.includes('filterCond'))
+            || (rule.key.includes('setupAction') && keys.includes('setupAction')),
         );
       });
 
