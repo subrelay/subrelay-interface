@@ -103,12 +103,14 @@ async function handlePositive() {
 onMounted(() => {
   // Toggle tooltip
   const element = document.querySelector(`#action-${props.positiveText}__key-${props.elementKey}`);
+  if (!element) return;
   element.addEventListener('mouseenter', handleMouseEnter);
   element.addEventListener('mouseleave', handleMouseLeave);
 });
 
 onBeforeUnmount(() => {
   const element = document.querySelector(`#action-${props.positiveText}__key-${props.elementKey}`);
+  if (!element) return;
   element.removeEventListener('mouseenter', handleMouseEnter);
   element.removeEventListener('mouseleave', handleMouseLeave);
 });
