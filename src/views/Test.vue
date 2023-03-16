@@ -12,6 +12,7 @@
     </div>
 
     <div>TEST</div>
+    <div>TEST 2</div>
   </div>
 </template>
 
