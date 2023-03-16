@@ -10,6 +10,8 @@
         <li v-for="value in values" @click="insertValue(value)" :key="value">{{ value }}</li>
       </ul>
     </div>
+
+    <div>TEST</div>
   </div>
 </template>
 
