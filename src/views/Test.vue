@@ -13,6 +13,7 @@
 
     <div>TEST</div>
     <div>TEST 2</div>
+    <div>TEST 3</div>
   </div>
 </template>
 
