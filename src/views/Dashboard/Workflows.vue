@@ -144,7 +144,7 @@ const columns = ref([
     title: 'Name',
     key: 'name',
     className: 'text-bold',
-    width: '20%',
+    width: '30%',
     ellipsis: { tooltip: true },
     sorter: true,
     sortOrder: false,
@@ -199,7 +199,7 @@ const columns = ref([
   {
     title: 'Status',
     key: 'status',
-    width: '20%',
+    width: '10%',
     ellipsis: { tooltip: true },
     render: ({ id, status }) =>
       h(
