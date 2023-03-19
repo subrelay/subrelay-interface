@@ -11,6 +11,8 @@
       <n-text code v-if="config.headers[0].key">
         {{ headerObj }}
       </n-text>
+
+      <div v-else class="font-size-085">No headers</div>
     </div>
 
     <!-- <n-space vertical>

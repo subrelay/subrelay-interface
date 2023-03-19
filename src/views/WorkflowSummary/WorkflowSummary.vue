@@ -29,33 +29,47 @@
         @update:value="onChangeTab"
       >
         <n-tab-pane name="overview" tab="Overview">
-          <RouterView :key="activeTab" />
+          <Overview />
         </n-tab-pane>
 
-        <!-- <n-tab-pane name="logs" tab="Logs">
-          <router-view :key="activeTab" />
-        </n-tab-pane> -->
+        <n-tab-pane name="logs" tab="Logs">
+          <WorkflowLogs />
+        </n-tab-pane>
       </n-tabs>
     </n-space>
   </n-space>
 </template>
 
 <script setup>
+import WorkflowLogs from '@/views/WorkflowSummary/WorkflowLogs';
+import Overview from '@/views/WorkflowSummary/Overview';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-import { onBeforeMount, ref, computed, watch } from 'vue';
+import { onBeforeMount, onMounted, ref, computed, watch } from 'vue';
 import { isEmpty } from 'lodash';
 
 const props = defineProps({ id: [String, Number] });
 const route = useRoute();
 const router = useRouter();
 const store = useStore();
-
 const activeTab = ref(null);
 const workflow = computed(() => store.state.workflow.workflow);
 const loading = computed(() => store.state.workflow.loading);
 const selectedAccount = computed(() => store.state.account.selected);
 const darkMode = computed(() => store.state.global.isDarkMode);
+
+const triggerTask = ref(null);
+
+watch(workflow, (workflow) => {
+  if (workflow.tasks) {
+    triggerTask.value = workflow.tasks.find((task) => task.type === 'trigger');
+    const { eventId } = triggerTask.value.config;
+    const { chainUuid } = workflow;
+    if (eventId) {
+      store.dispatch('chain/getEvent', { chainUuid, eventId });
+    }
+  }
+});
 
 function onChangeTab(tab) {
   activeTab.value = tab;

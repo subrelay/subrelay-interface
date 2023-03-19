@@ -1,4 +1,4 @@
-import { pickBy } from 'lodash';
+import { pickBy, isEmpty } from 'lodash';
 import Api from '@/api';
 
 export default {
@@ -9,6 +9,7 @@ export default {
     logs: [],
     loading: null,
     itemCount: null,
+    log: {},
   }),
 
   mutations: {
@@ -33,7 +34,7 @@ export default {
 
   actions: {
     async getLogs({ commit, state, rootState }) {
-      if (rootState.account.selected) {
+      if (!isEmpty(rootState.account.selected)) {
         commit('setLoading', true);
         try {
           const {

@@ -115,13 +115,11 @@ export default {
 
   async getEvents(chainId) {
     const response = await instance.get(`/chains/${chainId}/events`);
-
     return response.data;
   },
 
   async getEvent(chainId, eventId) {
     const response = await instance.get(`/chains/${chainId}/events/${eventId}`);
-
     return response.data;
   },
 
