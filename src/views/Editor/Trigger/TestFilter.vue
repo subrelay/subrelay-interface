@@ -95,7 +95,6 @@
 </template>
 
 <script setup>
-import API from '@/api';
 import JsonEventSample from '@/components/JsonEventSample';
 import EditorData from '@/store/localStore/EditorData';
 import { computed, ref, inject, onBeforeUnmount } from 'vue';

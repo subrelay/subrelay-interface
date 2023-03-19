@@ -5,53 +5,80 @@ export default {
   namespaced: true,
 
   state: () => ({
-    query: null,
-    logs: [],
-    loading: null,
-    itemCount: null,
     log: {},
+    logs: [],
+    loading: {},
+    itemCount: {},
+    query: {},
   }),
 
   mutations: {
-    saveQuery: (state, query) => {
-      state.query = query;
-    },
     getLogs: (state, logs) => {
       state.logs = logs;
     },
-    setLoading: (state, isLoading) => {
-      state.loading = isLoading;
+
+    getLog: (state, log) => {
+      state.log = log;
     },
-    getItemCount: (state, itemCount) => {
-      state.itemCount = itemCount;
+
+    setLoading: (state, data) => {
+      state.loading = { ...state.loading, ...data };
     },
+
+    saveQuery: (state, data) => (state.query = { ...state.query, ...data }),
+
+    getItemCount: (state, data) => (state.itemCount = { ...state.itemCount, ...data }),
+
     reset: (state) => {
       state.query = {};
       state.logs = [];
-      state.itemCount = null;
+      state.itemCount = {};
     },
   },
 
   actions: {
     async getLogs({ commit, state, rootState }) {
       if (!isEmpty(rootState.account.selected)) {
-        commit('setLoading', true);
+        commit('setLoading', { logs: true });
         try {
           const {
             data: { workflowLogs, total },
           } = await Api.getLogs({
             account: rootState.account.selected,
             signer: rootState.account.signer,
-            params: pickBy(state.query),
+            params: pickBy(state.query.logs),
           });
 
           commit('getLogs', workflowLogs);
-          commit('getItemCount', total);
+          commit('getItemCount', { logs: total });
         } catch (error) {
           commit('getLogs', []);
           console.error(error);
         } finally {
-          commit('setLoading', false);
+          commit('setLoading', { logs: false });
+        }
+      }
+    },
+
+    async getLog({ commit, state, rootState }, workflowId) {
+      if (!isEmpty(rootState.account.selected)) {
+        commit('setLoading', { log: true });
+        try {
+          const {
+            data: { workflowLogs, total },
+          } = await Api.getLogs({
+            account: rootState.account.selected,
+            signer: rootState.account.signer,
+            params: { ...pickBy(state.query.log), workflowId },
+          });
+
+          commit('getLog', workflowLogs);
+          commit('getItemCount', { log: total });
+        } catch (error) {
+          commit('getLogs', []);
+          console.error(error);
+        } finally {
+          commit('setLoading', { log: false });
         }
       }
     },

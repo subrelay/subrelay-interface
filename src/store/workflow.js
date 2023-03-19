@@ -8,39 +8,40 @@ export default {
   state: () => ({
     workflow: {},
     workflows: [],
-    itemCount: null,
-    query: null,
-    loading: null,
+    itemCount: {},
+    query: {},
+    loading: {},
   }),
 
   mutations: {
     getWorkflows: (state, workflows) => {
       state.workflows = workflows;
     },
-    getItemCount: (state, itemCount) => {
-      state.itemCount = itemCount;
-    },
+
     getWorkflow: (state, workflow) => {
       state.workflow = workflow;
     },
-    saveQuery: (state, query) => {
-      state.query = query;
+
+    saveQuery: (state, data) => (state.query = { ...state.query, ...data }),
+
+    getItemCount: (state, data) => (state.itemCount = { ...state.itemCount, ...data }),
+
+    setLoading: (state, data) => {
+      state.loading = { ...state.loading, ...data };
     },
-    setLoading: (state, isLoading) => {
-      state.loading = isLoading;
-    },
+
     reset: (state) => {
       state.workflow = {};
       state.workflows = [];
-      state.itemCount = null;
-      state.query = null;
+      state.itemCount = {};
+      state.query = {};
     },
   },
 
   actions: {
     async getWorkflows({ commit, state, rootState }, { showLoading = true } = {}) {
       if (!isEmpty(rootState.account.selected)) {
-        if (showLoading) commit('setLoading', true);
+        if (showLoading) commit('setLoading', { workflows: true });
 
         try {
           const {
@@ -51,19 +52,19 @@ export default {
             params: pickBy(state.query),
           });
           commit('getWorkflows', workflows);
-          commit('getItemCount', total);
+          commit('getItemCount', { workflows: total });
         } catch (error) {
           commit('getWorkflows', []);
           console.error(error);
         } finally {
-          commit('setLoading', false);
+          commit('setLoading', { workflows: false });
         }
       }
     },
 
     async getWorkflow({ commit, rootState }, { showLoading = true, id } = {}) {
       if (rootState) {
-        if (showLoading) commit('setLoading', true);
+        if (showLoading) commit('setLoading', { workflow: true });
         try {
           const { data: workflow } = await Api.getWorkflow({
             account: rootState.account.selected,
@@ -76,7 +77,7 @@ export default {
           useShowError(e);
           commit('getWorkflow', displayMsg);
         } finally {
-          commit('setLoading', false);
+          commit('setLoading', { workflow: false });
         }
       }
     },

@@ -20,7 +20,6 @@
         <Icon
           icon="akar-icons:chevron-down"
           class="icon"
-          :inline="true"
           :style="{ transform: showMenu ? 'rotate(180deg)' : '' }"
         />
       </n-space>

@@ -119,11 +119,10 @@
 import WebhookInput from '@/views/Editor/Action/WebhookInput';
 import WorkflowSwitch from '@/components/WorkflowSwitch';
 import { useParsePascalCaseStr } from '@/composables';
-import { computed, onMounted, ref, watch, onBeforeUnmount } from 'vue';
+import { computed, ref, watch, onBeforeUnmount } from 'vue';
 import { useStore } from 'vuex';
 import moment from 'moment';
 import { isEmpty } from 'lodash';
-import API from '@/api';
 
 const store = useStore();
 const props = defineProps({ id: [String, Number] });
@@ -135,9 +134,9 @@ const filtersCondition = computed(() => triggerTask.value.config.conditions);
 
 watch(
   event,
-  (event) => {
-    if (!isEmpty(event)) {
-      const { name, pallet } = event;
+  (newEvent) => {
+    if (!isEmpty(newEvent)) {
+      const { name, pallet } = newEvent;
       eventString.value = `${pallet}.${name}`;
     }
   },
@@ -147,9 +146,6 @@ watch(
 const actionTask = computed(() =>
   workflow.value.tasks.find((task) => task.type === 'notification'),
 );
-
-onMounted(() => console.log('overview mount'));
-onBeforeUnmount(() => console.log('overview unmount'));
 </script>
 
 <style lang="scss"></style>

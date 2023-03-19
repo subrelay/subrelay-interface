@@ -4,7 +4,7 @@ import { debounce, isEmpty, findIndex } from 'lodash';
 import { useStore } from 'vuex';
 import { defaultQuery } from '@/composables/config';
 
-export default function useQuery(module, columns, fetchData = () => {}) {
+export default function useQuery(module, path, columns = {}, fetchData = () => {}) {
   const store = useStore();
   const route = useRoute();
   const router = useRouter();
@@ -16,9 +16,9 @@ export default function useQuery(module, columns, fetchData = () => {}) {
   let sortingIndex;
   let prevSortIndex;
 
-  const query = computed(() => store.state[module].query);
-  const loading = computed(() => store.state[module].loading);
-  const itemCount = computed(() => store.state[module].itemCount);
+  const query = computed(() => store.state[module].query[path]);
+  const loading = computed(() => store.state[module].loading[path]);
+  const itemCount = computed(() => store.state[module].itemCount[path]);
   const selectedAccount = computed(() => store.state.account.selected);
 
   const tablePagination = ref({
@@ -118,12 +118,16 @@ export default function useQuery(module, columns, fetchData = () => {}) {
   }
 
   onBeforeRouteUpdate((to, from, next) => {
-    const params = getQueryFromRoute(to.query);
-    store.commit(`${module}/saveQuery`, params);
+    if (from.name !== to.name) {
+      next();
+    } else {
+      const params = getQueryFromRoute(to.query);
+      store.commit(`${module}/saveQuery`, { [path]: params });
 
-    if (!isEmpty(from.query)) fetchData();
+      if (!isEmpty(from.query)) fetchData();
 
-    next();
+      next();
+    }
   });
 
   watch(
@@ -156,9 +160,10 @@ export default function useQuery(module, columns, fetchData = () => {}) {
     if (selectedAccount.value) fetchData();
   });
 
-  function initQuery() {
+  async function initQuery() {
+    console.log('query.value', query.value);
     const params = query.value || getQueryFromRoute(route.query);
-    store.commit(`${module}/saveQuery`, params);
+    store.commit(`${module}/saveQuery`, { [path]: params });
 
     const { order, sort, search, chainUuid, status } = params;
     searchText.value = search || '';
@@ -184,9 +189,11 @@ export default function useQuery(module, columns, fetchData = () => {}) {
     if (isEmpty(route.query)) pushQueryToRoute(params);
   }
 
-  onMounted(() => {
-    initQuery();
-    fetchData();
+  onMounted(async () => {
+    setTimeout(() => {
+      initQuery();
+      fetchData();
+    }, 200);
   });
 
   return [

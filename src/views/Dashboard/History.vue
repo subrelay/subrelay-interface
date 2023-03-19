@@ -33,6 +33,7 @@ import moment from 'moment';
 
 const store = useStore();
 const chains = computed(() => store.state.chain.chains);
+const darkMode = computed(() => store.state.global.isDarkMode);
 
 function fetchData() {
   store.dispatch('history/getLogs');
@@ -48,9 +49,11 @@ const columns = ref([
     ellipsis: { tooltip: true },
     render: ({ status }) => {
       const isSuccess = status === 'success';
+      const sucessColor = darkMode.value ? '#63e2b7' : '18a058ff';
+      const failedColor = darkMode.value ? '#e88080' : 'd03050ff';
       return h(Icon, {
         icon: isSuccess ? 'ep:success-filled' : 'ic:round-cancel',
-        color: isSuccess ? '#18A058FF' : '#D03050FF',
+        color: isSuccess ? sucessColor : failedColor,
         width: '1.2rem',
       });
     },
@@ -113,7 +116,7 @@ const [
     handleSelectStatus,
     clearAllFilters,
   },
-] = useQuery('history', columns, fetchData);
+] = useQuery('history', 'logs', columns, fetchData);
 
 provide('search', {
   selectedChain,

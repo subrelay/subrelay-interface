@@ -47,8 +47,7 @@
 <script setup>
 import FilterConditionInput from '@/views/Editor/Trigger/FilterConditionInput';
 import EditorData from '@/store/localStore/EditorData';
-import { useFormValidation } from '@/composables';
-import { inject, computed, watch } from 'vue';
+import { computed } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();

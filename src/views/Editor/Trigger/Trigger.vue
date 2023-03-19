@@ -55,13 +55,12 @@
 </template>
 
 <script setup>
-import { useAccordion, useFormValidation } from '@/composables';
-import { computed, watch } from 'vue';
+import { useAccordion } from '@/composables';
+import { computed } from 'vue';
 import EditorData from '@/store/localStore/EditorData';
-import SelectChain from '@/views/Editor/Trigger/SelectChain.vue';
-import SelectEvent from '@/views/Editor/Trigger/SelectEvent.vue';
-import Filters from '@/views/Editor/Trigger/Filters.vue';
-import TestFilter from '@/views/Editor/Trigger/TestFilter.vue';
+import SelectChain from '@/views/Editor/Trigger/SelectChain';
+import SelectEvent from '@/views/Editor/Trigger/SelectEvent';
+import Filters from '@/views/Editor/Trigger/Filters';
 
 const [{ expandedNames }, { setExpand }] = useAccordion('trigger');
 const emits = defineEmits(['validate']);

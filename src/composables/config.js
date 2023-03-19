@@ -11,13 +11,15 @@ export const useLogStatuses = ref([
     label: 'Success',
     value: 'success',
     icon: 'ep:success-filled',
-    iconColor: '#18A058FF',
+    iconColorLight: '#18A058FF',
+    iconColorDark: '#63e2b7',
   },
   {
     label: 'Failed',
     value: 'failed',
     icon: 'ic:round-cancel',
-    iconColor: '#D03050FF',
+    iconColorLight: '#d03050ff',
+    iconColorDark: '#e88080',
   },
 ]);
 
