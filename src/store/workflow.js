@@ -63,7 +63,7 @@ export default {
     },
 
     async getWorkflow({ commit, rootState }, { showLoading = true, id } = {}) {
-      if (rootState) {
+      if (!isEmpty(rootState.account.selected)) {
         if (showLoading) commit('setLoading', { workflow: true });
         try {
           const { data: workflow } = await Api.getWorkflow({

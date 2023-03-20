@@ -3,7 +3,14 @@
     <PageHeader :module="'history'" :statusOptions="useLogStatuses" />
 
     <n-space :wrapItem="false">
-      <n-data-table :columns="columns" :data="logs" :loading="loading" @update:sorter="handleSort">
+      <n-data-table
+        :columns="columns"
+        :data="logs"
+        :loading="loading"
+        :row-props="rowProps"
+        @update:sorter="handleSort"
+        row-class-name="pointer-cursor"
+      >
         <template #empty>
           <n-empty description="No data available" :show-icon="false" :size="'small'"> </n-empty>
         </template>
@@ -30,8 +37,10 @@ import { useStore } from 'vuex';
 import { NAvatar } from 'naive-ui';
 import { useQuery, useRenderSortIcon, useLogStatuses, useGetChainImg } from '@/composables';
 import moment from 'moment';
+import { useRouter } from 'vue-router';
 
 const store = useStore();
+const router = useRouter();
 const chains = computed(() => store.state.chain.chains);
 const darkMode = computed(() => store.state.global.isDarkMode);
 
@@ -40,6 +49,10 @@ function fetchData() {
 }
 
 const logs = computed(() => store.state.history.logs);
+
+const rowProps = ({ id }) => ({
+  onClick: () => router.push({ name: 'logDetails', params: { id } }),
+});
 
 const columns = ref([
   {
@@ -62,7 +75,7 @@ const columns = ref([
     title: 'Workflow Name',
     key: 'name',
     className: 'text-bold',
-    width: '25%',
+    width: '22%',
     ellipsis: { tooltip: true },
     sorter: true,
     sortOrder: false,
@@ -71,7 +84,7 @@ const columns = ref([
   {
     title: 'Chain',
     key: 'chain',
-    width: '25%',
+    width: '22%',
     ellipsis: { tooltip: true },
     render: ({ chain }) =>
       h('div', { style: { display: 'flex', alignItems: 'center' } }, [
@@ -104,6 +117,17 @@ const columns = ref([
     sortOrder: false,
     renderSorterIcon: useRenderSortIcon,
     render: ({ finishedAt }) => moment(finishedAt).format('MMM Do YYYY, HH:mm:ss'),
+  },
+  {
+    key: 'view',
+    width: '10%',
+    ellipsis: { tooltip: true },
+    render: ({ id }) => {
+      return h('div', { style: { display: 'flex', alignItems: 'center' } }, [
+        'View',
+        h(Icon, { icon: 'akar-icons:chevron-right', style: { 'margin-left': '4px' } }),
+      ]);
+    },
   },
 ]);
 

@@ -54,7 +54,7 @@ import WorkflowLogItem from '@/components/WorkflowLogItem';
 import { onMounted, computed, onBeforeUnmount } from 'vue';
 import { useQuery, useRenderDropdownLabel, useLogStatuses } from '@/composables';
 import { useStore } from 'vuex';
-import API from '@/api';
+import Api from '@/api';
 
 const store = useStore();
 const account = computed(() => store.state.account.selected);

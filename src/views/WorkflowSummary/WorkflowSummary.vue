@@ -87,6 +87,7 @@ watch(
 );
 
 onBeforeMount(async () => (activeTab.value = route.name));
+
 onBeforeUnmount(() => {
   store.commit('history/getLog', []);
   store.commit('history/getItemCount', { log: null });

@@ -203,7 +203,6 @@ const columns = ref([
         h(WorkflowSwitch, { status, id, fetchOne: false }),
       ),
   },
-
   {
     key: 'action',
     align: 'right',
