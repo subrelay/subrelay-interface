@@ -18,6 +18,7 @@
 
 <script setup>
 import { useStore } from 'vuex';
+
 const store = useStore();
 
 const props = defineProps({

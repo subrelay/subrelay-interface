@@ -6,7 +6,7 @@ export const useDropdownFilter = (string, option) => {
 
 export const useParsePascalCaseStr = (string) => {
   if (!string) return;
-  string.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase();
+  return string.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase();
 };
 
 export function useShowError(e) {

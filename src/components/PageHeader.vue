@@ -10,6 +10,7 @@
             placeholder="Search"
             v-model:value="searchText"
             @input="onDebouncedSearch"
+            :disabled="loading"
           >
             <template #suffix>
               <Icon icon="akar-icons:search" style="margin-left: 0.5rem" />
@@ -18,7 +19,11 @@
         </n-gi>
 
         <n-gi span="2 1150:1">
-          <ChainDropdown v-model="selectedChain" :onSelectChain="handleSelectChain" />
+          <ChainDropdown
+            v-model="selectedChain"
+            :onSelectChain="handleSelectChain"
+            :disabled="loading"
+          />
         </n-gi>
 
         <n-gi span="2 1150:1">
@@ -29,6 +34,7 @@
             :render-label="useRenderDropdownLabel"
             :options="statusOptions"
             :value="selectedStatus"
+            :disabled="loading"
             @update:value="handleSelectStatus"
           />
         </n-gi>
@@ -36,7 +42,9 @@
 
       <n-tooltip trigger="hover">
         <template #trigger>
-          <n-button @click="clearAllFilters"> <Icon icon="mdi:filter-remove" /></n-button>
+          <n-button @click="clearAllFilters" :disabled="loading">
+            <Icon icon="mdi:filter-remove" />
+          </n-button>
         </template>
         Clear all filters
       </n-tooltip>
@@ -64,6 +72,7 @@ const {
 const props = defineProps({
   module: String,
   statusOptions: Array,
+  loading: Boolean,
 });
 </script>
 

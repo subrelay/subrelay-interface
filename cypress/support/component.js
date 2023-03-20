@@ -24,7 +24,7 @@ import '@/assets/styles.scss';
 
 import { mount } from 'cypress/vue';
 
-Cypress.Commands.add('mount', mount);
+// Cypress.Commands.add('mount', mount);
 
 // Example use:
 // cy.mount(MyComponent)

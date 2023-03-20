@@ -33,6 +33,7 @@ import moment from 'moment';
 
 const store = useStore();
 const chains = computed(() => store.state.chain.chains);
+const darkMode = computed(() => store.state.global.isDarkMode);
 
 function fetchData() {
   store.dispatch('history/getLogs');
@@ -48,9 +49,11 @@ const columns = ref([
     ellipsis: { tooltip: true },
     render: ({ status }) => {
       const isSuccess = status === 'success';
+      const sucessColor = darkMode.value ? '#63e2b7' : '#18a058ff';
+      const failedColor = darkMode.value ? '#e88080' : '#d03050ff';
       return h(Icon, {
         icon: isSuccess ? 'ep:success-filled' : 'ic:round-cancel',
-        color: isSuccess ? '#18A058FF' : '#D03050FF',
+        color: isSuccess ? sucessColor : failedColor,
         width: '1.2rem',
       });
     },
@@ -70,16 +73,17 @@ const columns = ref([
     key: 'chain',
     width: '25%',
     ellipsis: { tooltip: true },
-    render: ({ chain }) => h('div', { style: { display: 'flex', alignItems: 'center' } }, [
-      h(NAvatar, {
-        style: { background: 'transparent' },
-        src: useGetChainImg(chain.name, chains.value),
-        round: true,
-        size: 'small',
-        color: 'white',
-      }),
-      h('div', { style: { marginLeft: '12px', padding: '4px 0' } }, chain.name),
-    ]),
+    render: ({ chain }) =>
+      h('div', { style: { display: 'flex', alignItems: 'center' } }, [
+        h(NAvatar, {
+          style: { background: 'transparent' },
+          src: useGetChainImg(chain.name, chains.value),
+          round: true,
+          size: 'small',
+          color: 'white',
+        }),
+        h('div', { style: { marginLeft: '12px', padding: '4px 0' } }, chain.name),
+      ]),
   },
   {
     title: 'Started at',
@@ -113,7 +117,7 @@ const [
     handleSelectStatus,
     clearAllFilters,
   },
-] = useQuery('history', columns, fetchData);
+] = useQuery('history', 'logs', columns, fetchData);
 
 provide('search', {
   selectedChain,

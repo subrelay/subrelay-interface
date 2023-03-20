@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import AppProvider from '@/components/AppProvider.vue';
+import AppProvider from '@/components/AppProvider';
 import { useStore } from 'vuex';
 import { onBeforeMount } from 'vue';
 

@@ -16,7 +16,7 @@
       </template>
     </n-result>
 
-    <n-space vertical :size="30" v-else style="margin-bottom: 5vh">
+    <n-space vertical :size="20" v-else style="margin-bottom: 5vh">
       <div class="page_title">{{ workflow.name }}</div>
 
       <n-tabs
@@ -29,37 +29,51 @@
         @update:value="onChangeTab"
       >
         <n-tab-pane name="overview" tab="Overview">
-          <RouterView :key="activeTab" />
+          <Overview :id="id" />
         </n-tab-pane>
 
-        <!-- <n-tab-pane name="logs" tab="Logs">
-          <router-view :key="activeTab" />
-        </n-tab-pane> -->
+        <n-tab-pane name="logs" tab="Logs">
+          <WorkflowLogs :id="id" />
+        </n-tab-pane>
       </n-tabs>
     </n-space>
   </n-space>
 </template>
 
 <script setup>
+import WorkflowLogs from '@/views/WorkflowSummary/WorkflowLogs';
+import Overview from '@/views/WorkflowSummary/Overview';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-import { onBeforeMount, ref, computed, watch } from 'vue';
+import { onBeforeMount, onBeforeUnmount, ref, computed, watch } from 'vue';
 import { isEmpty } from 'lodash';
 
 const props = defineProps({ id: [String, Number] });
 const route = useRoute();
 const router = useRouter();
 const store = useStore();
-
 const activeTab = ref(null);
 const workflow = computed(() => store.state.workflow.workflow);
-const loading = computed(() => store.state.workflow.loading);
+const loading = computed(() => store.state.workflow.loading.workflow);
 const selectedAccount = computed(() => store.state.account.selected);
 const darkMode = computed(() => store.state.global.isDarkMode);
 
+const triggerTask = ref(null);
+
+watch(workflow, (newWorkflow) => {
+  if (newWorkflow.tasks) {
+    triggerTask.value = newWorkflow.tasks.find((task) => task.type === 'trigger');
+    const { eventId } = triggerTask.value.config;
+    const { chainUuid } = newWorkflow;
+    if (eventId) {
+      store.dispatch('chain/getEvent', { chainUuid, eventId });
+    }
+  }
+});
+
 function onChangeTab(tab) {
   activeTab.value = tab;
-  router.push({ name: tab, params: { id: props.id } });
+  router.push({ name: tab, params: { id: +props.id } });
 }
 
 watch(
@@ -72,8 +86,10 @@ watch(
   { immediate: true },
 );
 
-onBeforeMount(async () => {
-  activeTab.value = route.name;
+onBeforeMount(async () => (activeTab.value = route.name));
+onBeforeUnmount(() => {
+  store.commit('history/getLog', []);
+  store.commit('history/getItemCount', { log: null });
 });
 </script>
 

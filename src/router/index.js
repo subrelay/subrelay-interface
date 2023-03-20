@@ -41,6 +41,7 @@ const router = createRouter({
                   component: () => import('@/views/WorkflowSummary/Overview.vue'),
                 },
                 {
+                  props: true,
                   path: 'logs',
                   name: 'logs',
                   component: () => import('@/views/WorkflowSummary/WorkflowLogs.vue'),

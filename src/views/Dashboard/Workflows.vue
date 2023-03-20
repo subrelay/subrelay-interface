@@ -1,6 +1,6 @@
 <template>
   <n-space vertical :size="32">
-    <PageHeader :module="'workflows'" :statusOptions="useWorkflowStatuses" />
+    <PageHeader :module="'workflows'" :statusOptions="useWorkflowStatuses" :loading="loading" />
 
     <n-space :wrapItem="false">
       <n-data-table
@@ -61,10 +61,6 @@ const chains = computed(() => store.state.chain.chains);
 const account = computed(() => store.state.account.selected);
 const signer = computed(() => store.state.account.signer);
 
-function fetchData() {
-  store.dispatch('workflow/getWorkflows');
-}
-
 const rowProps = ({ id }) => ({
   onClick: () => router.push({ name: 'overview', params: { id } }),
 });
@@ -99,7 +95,6 @@ async function renameWorkflow() {
 }
 
 // HANLDE DELETE
-
 async function deleteWorkflow({ id, name }) {
   try {
     await Api.deleteWorkflow({
@@ -144,7 +139,7 @@ const columns = ref([
     title: 'Name',
     key: 'name',
     className: 'text-bold',
-    width: '20%',
+    width: '30%',
     ellipsis: { tooltip: true },
     sorter: true,
     sortOrder: false,
@@ -199,7 +194,7 @@ const columns = ref([
   {
     title: 'Status',
     key: 'status',
-    width: '20%',
+    width: '10%',
     ellipsis: { tooltip: true },
     render: ({ id, status }) =>
       h(
@@ -256,6 +251,10 @@ const columns = ref([
   },
 ]);
 
+function fetchData() {
+  store.dispatch('workflow/getWorkflows');
+}
+
 const [
   { query, searchText, loading, tablePagination, selectedChain, selectedStatus },
   {
@@ -266,7 +265,7 @@ const [
     handleSelectStatus,
     clearAllFilters,
   },
-] = useQuery('workflow', columns, fetchData);
+] = useQuery('workflow', 'workflows', columns, fetchData);
 
 provide('search', {
   selectedChain,

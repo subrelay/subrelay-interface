@@ -61,7 +61,7 @@
         <n-space vertical>
           <div class="text-semi-bold">Filters</div>
 
-          <n-space vertical>
+          <n-space vertical v-if="filtersCondition.length">
             <div v-for="(conditionGroup, index) in filtersCondition" :key="index">
               <b v-if="index !== 0" style="margin-right: 4px">OR</b>
 
@@ -82,6 +82,8 @@
               </span>
             </div>
           </n-space>
+
+          <div v-else>No filter condition</div>
         </n-space>
       </n-space>
     </n-card>
@@ -117,35 +119,33 @@
 import WebhookInput from '@/views/Editor/Action/WebhookInput';
 import WorkflowSwitch from '@/components/WorkflowSwitch';
 import { useParsePascalCaseStr } from '@/composables';
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref, watch, onBeforeUnmount } from 'vue';
 import { useStore } from 'vuex';
 import moment from 'moment';
-import API from '@/api';
+import { isEmpty } from 'lodash';
 
 const store = useStore();
 const props = defineProps({ id: [String, Number] });
 const workflow = computed(() => store.state.workflow.workflow);
-
+const event = computed(() => store.state.chain.event);
 const eventString = ref(null);
-const filtersCondition = ref([]);
-
 const triggerTask = computed(() => workflow.value.tasks.find((task) => task.type === 'trigger'));
+const filtersCondition = computed(() => triggerTask.value.config.conditions);
+
+watch(
+  event,
+  (newEvent) => {
+    if (!isEmpty(newEvent)) {
+      const { name, pallet } = newEvent;
+      eventString.value = `${pallet}.${name}`;
+    }
+  },
+  { immediate: true },
+);
 
 const actionTask = computed(() =>
   workflow.value.tasks.find((task) => task.type === 'notification'),
 );
-
-onMounted(async () => {
-  const { eventId, conditions } = triggerTask.value.config;
-  const { chainUuid } = workflow.value;
-
-  if (eventId) {
-    const event = await API.getEvent(chainUuid, eventId);
-    const { name, pallet } = event;
-    eventString.value = `${pallet}.${name}`;
-    filtersCondition.value = conditions;
-  }
-});
 </script>
 
 <style lang="scss"></style>
