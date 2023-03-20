@@ -1,5 +1,5 @@
 <template>
-  <n-space class="wrapper" align="center" justify="space-between">
+  <n-space :class="`wrapper ${darkMode ? 'dark' : ''}`" align="center" justify="space-between">
     <n-space align="center" :wrap-item="false">
       <Icon width="1.2rem" :icon="icon" :color="color" />
       <div class="text-capitalize">{{ log.status }}</div>
@@ -26,9 +26,9 @@ const icon = computed(() =>
   props.log.status === 'success' ? 'ep:success-filled' : 'ic:round-cancel',
 );
 
-const sucessColor = computed(() => (darkMode.value ? '#63e2b7' : '18a058ff'));
+const sucessColor = computed(() => (darkMode.value ? '#63e2b7' : '#18a058ff'));
 
-const failedColor = computed(() => (darkMode.value ? '#e88080' : 'd03050ff'));
+const failedColor = computed(() => (darkMode.value ? '#e88080' : '#d03050ff'));
 
 const color = computed(() =>
   props.log.status === 'success' ? sucessColor.value : failedColor.value,
@@ -42,7 +42,7 @@ const color = computed(() =>
   padding: 16px;
   border-radius: 1rem;
 
-  @media (prefers-color-scheme: dark) {
+  &.dark {
     border-color: rgba(255, 255, 255, 0.09);
   }
 

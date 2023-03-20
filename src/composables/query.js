@@ -161,7 +161,6 @@ export default function useQuery(module, path, columns = {}, fetchData = () => {
   });
 
   async function initQuery() {
-    console.log('query.value', query.value);
     const params = query.value || getQueryFromRoute(route.query);
     store.commit(`${module}/saveQuery`, { [path]: params });
 

@@ -45,7 +45,7 @@ import WorkflowLogs from '@/views/WorkflowSummary/WorkflowLogs';
 import Overview from '@/views/WorkflowSummary/Overview';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-import { onBeforeMount, ref, computed, watch } from 'vue';
+import { onBeforeMount, onBeforeUnmount, ref, computed, watch } from 'vue';
 import { isEmpty } from 'lodash';
 
 const props = defineProps({ id: [String, Number] });
@@ -86,8 +86,10 @@ watch(
   { immediate: true },
 );
 
-onBeforeMount(async () => {
-  activeTab.value = route.name;
+onBeforeMount(async () => (activeTab.value = route.name));
+onBeforeUnmount(() => {
+  store.commit('history/getLog', []);
+  store.commit('history/getItemCount', { log: null });
 });
 </script>
 

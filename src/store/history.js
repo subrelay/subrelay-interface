@@ -30,8 +30,9 @@ export default {
     getItemCount: (state, data) => (state.itemCount = { ...state.itemCount, ...data }),
 
     reset: (state) => {
-      state.query = {};
       state.logs = [];
+      state.log = [];
+      state.query = {};
       state.itemCount = {};
     },
   },

@@ -8,7 +8,7 @@
     :render-label="useRenderDropdownLabel"
     :options="chains"
     :loading="loading"
-    :disabled="loading"
+    :disabled="loading || disabled"
     :value="modelValue"
     @update:value="onUpdateValue"
   />
@@ -20,7 +20,8 @@ import { useStore } from 'vuex';
 import { useRenderDropdownLabel, useDropdownFilter } from '@/composables';
 
 const props = defineProps({
-  modelValue: [String],
+  disabled: Boolean,
+  modelValue: String,
   placeholder: { type: String, default: 'All Chains' },
   onSelectChain: { type: Function, default: () => {} },
 });

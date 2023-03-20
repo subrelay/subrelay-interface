@@ -49,8 +49,8 @@ const columns = ref([
     ellipsis: { tooltip: true },
     render: ({ status }) => {
       const isSuccess = status === 'success';
-      const sucessColor = darkMode.value ? '#63e2b7' : '18a058ff';
-      const failedColor = darkMode.value ? '#e88080' : 'd03050ff';
+      const sucessColor = darkMode.value ? '#63e2b7' : '#18a058ff';
+      const failedColor = darkMode.value ? '#e88080' : '#d03050ff';
       return h(Icon, {
         icon: isSuccess ? 'ep:success-filled' : 'ic:round-cancel',
         color: isSuccess ? sucessColor : failedColor,
@@ -73,16 +73,17 @@ const columns = ref([
     key: 'chain',
     width: '25%',
     ellipsis: { tooltip: true },
-    render: ({ chain }) => h('div', { style: { display: 'flex', alignItems: 'center' } }, [
-      h(NAvatar, {
-        style: { background: 'transparent' },
-        src: useGetChainImg(chain.name, chains.value),
-        round: true,
-        size: 'small',
-        color: 'white',
-      }),
-      h('div', { style: { marginLeft: '12px', padding: '4px 0' } }, chain.name),
-    ]),
+    render: ({ chain }) =>
+      h('div', { style: { display: 'flex', alignItems: 'center' } }, [
+        h(NAvatar, {
+          style: { background: 'transparent' },
+          src: useGetChainImg(chain.name, chains.value),
+          round: true,
+          size: 'small',
+          color: 'white',
+        }),
+        h('div', { style: { marginLeft: '12px', padding: '4px 0' } }, chain.name),
+      ]),
   },
   {
     title: 'Started at',
