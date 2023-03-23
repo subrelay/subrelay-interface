@@ -1,6 +1,6 @@
 <template>
   <n-space vertical :size="30">
-    <PageHeader :module="'history'" :statusOptions="useLogStatuses" />
+    <PageHeader title="Logs" :statusOptions="useLogStatuses" />
 
     <n-space :wrapItem="false">
       <n-data-table
@@ -106,7 +106,7 @@ const columns = ref([
     sorter: true,
     sortOrder: false,
     renderSorterIcon: useRenderSortIcon,
-    render: ({ startedAt }) => moment(startedAt).format('MMM Do YYYY, HH:mm:ss'),
+    render: ({ startedAt }) => moment(startedAt).local().format('MMM Do YYYY, HH:mm:ss'),
   },
   {
     title: 'Finished at',
@@ -116,7 +116,7 @@ const columns = ref([
     sorter: true,
     sortOrder: false,
     renderSorterIcon: useRenderSortIcon,
-    render: ({ finishedAt }) => moment(finishedAt).format('MMM Do YYYY, HH:mm:ss'),
+    render: ({ finishedAt }) => moment(finishedAt).local().format('MMM Do YYYY, HH:mm:ss'),
   },
   {
     key: 'view',

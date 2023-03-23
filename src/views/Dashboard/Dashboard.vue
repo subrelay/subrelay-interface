@@ -72,18 +72,19 @@ onMounted(() => (window.$message = useMessage()));
 
 const siderOptions = ref([
   {
-    label: () => (collapsed.value
-      ? h('div', {}, { default: () => 'New workflow' })
-      : h(
-        NButton,
-        { block: true, type: 'primary', round: true },
-        {
-          default: () => [
-            h(Icon, { icon: 'fluent:add-12-filled', inline: true }),
-            h('div', { style: 'margin-left: 0.6rem' }, 'New workflow'),
-          ],
-        },
-      )),
+    label: () =>
+      collapsed.value
+        ? h('div', {}, { default: () => 'New workflow' })
+        : h(
+            NButton,
+            { block: true, type: 'primary', round: true },
+            {
+              default: () => [
+                h(Icon, { icon: 'fluent:add-12-filled', inline: true }),
+                h('div', { style: 'margin-left: 0.6rem' }, 'New workflow'),
+              ],
+            },
+          ),
     key: 'editor',
     icon: renderIcon('fluent:add-12-filled', true),
   },
@@ -93,7 +94,7 @@ const siderOptions = ref([
     icon: renderIcon('ic:round-dashboard'),
   },
   {
-    label: () => h(RouterLink, { to: { name: 'history' } }, { default: () => 'History' }),
+    label: () => h(RouterLink, { to: { name: 'history' } }, { default: () => 'Logs' }),
     key: 'history',
     icon: renderIcon('system-uicons:files-history'),
   },
@@ -114,9 +115,10 @@ function onUpdateActive(value) {
 
 function renderIcon(icon, isButton = false) {
   if (isButton) {
-    return () => (collapsed.value
-      ? h(NButton, { type: 'primary' }, { default: () => h(Icon, { icon, inline: true }) })
-      : '');
+    return () =>
+      collapsed.value
+        ? h(NButton, { type: 'primary' }, { default: () => h(Icon, { icon, inline: true }) })
+        : '';
   }
   return () => h(Icon, { icon, inline: true });
 }

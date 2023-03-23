@@ -1,11 +1,11 @@
 <template>
   <n-space :class="`wrapper ${darkMode ? 'dark' : ''}`" align="center" justify="space-between">
     <n-space align="center" :wrap-item="false">
-      <Icon width="1.2rem" :icon="icon" :color="color" />
+      <StatusIcon :status="log.status" />
       <div class="text-capitalize">{{ log.status }}</div>
     </n-space>
 
-    <div>{{ moment(log.startedAt).format('MMM Do YYYY, HH:mm:ss') }}</div>
+    <div>{{ moment(log.startedAt).local().format('MMM Do YYYY, HH:mm:ss') }}</div>
 
     <n-button text>
       <Icon icon="akar-icons:chevron-right" />
@@ -13,26 +13,14 @@
   </n-space>
 </template>
 <script setup>
-import { computed, ref } from 'vue';
+import StatusIcon from '@/components/StatusIcon';
+import { computed } from 'vue';
 import { useStore } from 'vuex';
 import moment from 'moment';
-
 const store = useStore();
 const props = defineProps(['log']);
 
 const darkMode = computed(() => store.state.global.isDarkMode);
-
-const icon = computed(() =>
-  props.log.status === 'success' ? 'ep:success-filled' : 'ic:round-cancel',
-);
-
-const sucessColor = computed(() => (darkMode.value ? '#63e2b7' : '#18a058ff'));
-
-const failedColor = computed(() => (darkMode.value ? '#e88080' : '#d03050ff'));
-
-const color = computed(() =>
-  props.log.status === 'success' ? sucessColor.value : failedColor.value,
-);
 </script>
 
 <style lang="scss" scoped>

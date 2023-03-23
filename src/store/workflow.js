@@ -49,7 +49,7 @@ export default {
           } = await Api.getWorkflows({
             account: rootState.account.selected,
             signer: rootState.account.signer,
-            params: pickBy(state.query),
+            params: { ...pickBy(state.query.workflows) },
           });
           commit('getWorkflows', workflows);
           commit('getItemCount', { workflows: total });

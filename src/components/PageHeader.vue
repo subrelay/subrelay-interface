@@ -1,6 +1,6 @@
 <template>
   <n-space vertical :size="30">
-    <div class="page_title">{{ props.module }}</div>
+    <div class="page_title">{{ title }}</div>
 
     <n-space align="center" :wrap="false">
       <n-grid cols="6" :x-gap="20" item-responsive>
@@ -70,7 +70,7 @@ const {
 } = inject('search');
 
 const props = defineProps({
-  module: String,
+  title: String,
   statusOptions: Array,
   loading: Boolean,
 });

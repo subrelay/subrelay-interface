@@ -1,6 +1,6 @@
 <template>
   <n-space align="center" justify="center" style="height: 80vh; width: 100%" v-if="loading">
-    <n-spin description="Loading data... Please wait" size="small" />
+    <Icon icon="eos-icons:three-dots-loading" width="50" color="rgba(230, 0, 122, 1)" />
   </n-space>
 
   <n-space v-else vertical>
