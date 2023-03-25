@@ -1,6 +1,6 @@
 <template>
   <n-space vertical :size="32">
-    <PageHeader :module="'workflows'" :statusOptions="useWorkflowStatuses" :loading="loading" />
+    <PageHeader title="workflows" :statusOptions="useWorkflowStatuses" :loading="loading" />
 
     <n-space :wrapItem="false">
       <n-data-table
@@ -179,7 +179,7 @@ const columns = ref([
     sorter: true,
     sortOrder: false,
     renderSorterIcon: useRenderSortIcon,
-    render: ({ createdAt }) => moment(createdAt).format('MMM Do YYYY, HH:mm:ss'),
+    render: ({ createdAt }) => moment(createdAt).local().format('MMM Do YYYY, HH:mm:ss'),
   },
   {
     title: 'Updated at',
@@ -189,7 +189,7 @@ const columns = ref([
     sorter: true,
     sortOrder: false,
     renderSorterIcon: useRenderSortIcon,
-    render: ({ updatedAt }) => moment(updatedAt).format('MMM Do YYYY, HH:mm:ss'),
+    render: ({ updatedAt }) => moment(updatedAt).local().format('MMM Do YYYY, HH:mm:ss'),
   },
   {
     title: 'Status',
@@ -203,7 +203,6 @@ const columns = ref([
         h(WorkflowSwitch, { status, id, fetchOne: false }),
       ),
   },
-
   {
     key: 'action',
     align: 'right',
@@ -239,6 +238,8 @@ const columns = ref([
 
       const menuNode = h(WorkflowActionMenu, {
         onRename: () => onRename({ id, name }),
+        onViewDetails: () => router.push({ name: 'overview', params: { id } }),
+        onViewLog: () => router.push({ name: 'logs', params: { id } }),
         onDelete: () => showDeleteConfirm({ id, name }),
       });
 

@@ -18,7 +18,7 @@
           <n-space vertical>
             <div class="text-semi-bold">Created at</div>
             <div>
-              {{ moment(workflow.updatedAt).format('MMM Do YYYY, HH:mm:ss') }}
+              {{ moment(workflow.updatedAt).local().format('MMM Do YYYY, HH:mm:ss') }}
             </div>
           </n-space>
         </n-gi>
@@ -27,7 +27,7 @@
           <n-space vertical>
             <div class="text-semi-bold">Updated at</div>
             <div>
-              {{ moment(workflow.updatedAt).format('MMM Do YYYY, HH:mm:ss') }}
+              {{ moment(workflow.updatedAt).local().format('MMM Do YYYY, HH:mm:ss') }}
             </div>
           </n-space>
         </n-gi>

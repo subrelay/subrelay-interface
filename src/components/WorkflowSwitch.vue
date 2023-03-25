@@ -51,7 +51,7 @@ async function onUpdateStatus(newStt) {
       await store.dispatch('workflow/getWorkflows', { showLoading: false });
     }
 
-    message.success('Status updated successfully');
+    message.success(`Workflow ${newStt === 'pausing' ? 'paused' : 'resumed'} successfully`);
   } catch (e) {
     const errMsg = e.message;
     if (errMsg === 'Cancelled') {

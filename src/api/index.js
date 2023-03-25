@@ -194,4 +194,13 @@ export default {
       endpoint: `/workflow-logs${buildQueryStr(params)}`,
     });
   },
+
+  async getLogDetails({ account, signer, id }) {
+    return request({
+      account,
+      signer,
+      method: 'get',
+      endpoint: `/workflow-logs/${id}`,
+    });
+  },
 };

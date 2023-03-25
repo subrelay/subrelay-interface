@@ -1,9 +1,17 @@
 <template>
   <n-space vertical :size="30">
-    <PageHeader :module="'history'" :statusOptions="useLogStatuses" />
+    <PageHeader title="Logs" :statusOptions="useLogStatuses" />
 
     <n-space :wrapItem="false">
-      <n-data-table :columns="columns" :data="logs" :loading="loading" @update:sorter="handleSort">
+      <n-data-table
+        :columns="columns"
+        :data="logs"
+        :loading="loading"
+        :row-key="({ id }) => id"
+        :row-props="rowProps"
+        @update:sorter="handleSort"
+        row-class-name="pointer-cursor"
+      >
         <template #empty>
           <n-empty description="No data available" :show-icon="false" :size="'small'"> </n-empty>
         </template>
@@ -30,22 +38,28 @@ import { useStore } from 'vuex';
 import { NAvatar } from 'naive-ui';
 import { useQuery, useRenderSortIcon, useLogStatuses, useGetChainImg } from '@/composables';
 import moment from 'moment';
+import { useRouter } from 'vue-router';
 
 const store = useStore();
+const router = useRouter();
 const chains = computed(() => store.state.chain.chains);
 const darkMode = computed(() => store.state.global.isDarkMode);
 
 function fetchData() {
-  store.dispatch('history/getLogs');
+  store.dispatch('log/getLogs');
 }
 
-const logs = computed(() => store.state.history.logs);
+const logs = computed(() => store.state.log.logs);
+
+const rowProps = ({ id }) => ({
+  onClick: () => router.push({ name: 'logDetails', params: { id } }),
+});
 
 const columns = ref([
   {
     title: 'Status',
     key: 'updatedAt',
-    width: 50,
+    width: 100,
     ellipsis: { tooltip: true },
     render: ({ status }) => {
       const isSuccess = status === 'success';
@@ -62,7 +76,7 @@ const columns = ref([
     title: 'Workflow Name',
     key: 'name',
     className: 'text-bold',
-    width: '25%',
+    width: '22%',
     ellipsis: { tooltip: true },
     sorter: true,
     sortOrder: false,
@@ -71,7 +85,7 @@ const columns = ref([
   {
     title: 'Chain',
     key: 'chain',
-    width: '25%',
+    width: '22%',
     ellipsis: { tooltip: true },
     render: ({ chain }) =>
       h('div', { style: { display: 'flex', alignItems: 'center' } }, [
@@ -93,7 +107,7 @@ const columns = ref([
     sorter: true,
     sortOrder: false,
     renderSorterIcon: useRenderSortIcon,
-    render: ({ startedAt }) => moment(startedAt).format('MMM Do YYYY, HH:mm:ss'),
+    render: ({ startedAt }) => moment(startedAt).local().format('MMM Do YYYY, HH:mm:ss'),
   },
   {
     title: 'Finished at',
@@ -103,7 +117,18 @@ const columns = ref([
     sorter: true,
     sortOrder: false,
     renderSorterIcon: useRenderSortIcon,
-    render: ({ finishedAt }) => moment(finishedAt).format('MMM Do YYYY, HH:mm:ss'),
+    render: ({ finishedAt }) => moment(finishedAt).local().format('MMM Do YYYY, HH:mm:ss'),
+  },
+  {
+    key: 'view',
+    width: '10%',
+    ellipsis: { tooltip: true },
+    render: ({ id }) => {
+      return h('div', { style: { display: 'flex', alignItems: 'center' } }, [
+        'View',
+        h(Icon, { icon: 'akar-icons:chevron-right', style: { 'margin-left': '4px' } }),
+      ]);
+    },
   },
 ]);
 
@@ -117,7 +142,7 @@ const [
     handleSelectStatus,
     clearAllFilters,
   },
-] = useQuery('history', 'logs', columns, fetchData);
+] = useQuery('log', 'logs', columns, fetchData);
 
 provide('search', {
   selectedChain,

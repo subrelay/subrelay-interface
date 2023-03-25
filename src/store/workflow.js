@@ -49,7 +49,7 @@ export default {
           } = await Api.getWorkflows({
             account: rootState.account.selected,
             signer: rootState.account.signer,
-            params: pickBy(state.query),
+            params: { ...pickBy(state.query.workflows) },
           });
           commit('getWorkflows', workflows);
           commit('getItemCount', { workflows: total });
@@ -63,7 +63,7 @@ export default {
     },
 
     async getWorkflow({ commit, rootState }, { showLoading = true, id } = {}) {
-      if (rootState) {
+      if (!isEmpty(rootState.account.selected)) {
         if (showLoading) commit('setLoading', { workflow: true });
         try {
           const { data: workflow } = await Api.getWorkflow({
