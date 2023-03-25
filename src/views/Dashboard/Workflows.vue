@@ -238,6 +238,8 @@ const columns = ref([
 
       const menuNode = h(WorkflowActionMenu, {
         onRename: () => onRename({ id, name }),
+        onViewDetails: () => router.push({ name: 'overview', params: { id } }),
+        onViewLog: () => router.push({ name: 'logs', params: { id } }),
         onDelete: () => showDeleteConfirm({ id, name }),
       });
 

@@ -1,5 +1,10 @@
 <template>
-  <n-space :class="`wrapper ${darkMode ? 'dark' : ''}`" align="center" justify="space-between">
+  <n-space
+    align="center"
+    justify="space-between"
+    :class="`wrapper ${darkMode ? 'dark' : ''}`"
+    @click="router.push({ name: 'logDetails', params: { id: log.id } })"
+  >
     <n-space align="center" :wrap-item="false">
       <StatusIcon :status="log.status" />
       <div class="text-capitalize">{{ log.status }}</div>
@@ -16,10 +21,12 @@
 import StatusIcon from '@/components/StatusIcon';
 import { computed } from 'vue';
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 import moment from 'moment';
-const store = useStore();
-const props = defineProps(['log']);
 
+const store = useStore();
+const router = useRouter();
+const props = defineProps(['log']);
 const darkMode = computed(() => store.state.global.isDarkMode);
 </script>
 

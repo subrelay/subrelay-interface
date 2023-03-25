@@ -69,7 +69,7 @@ const config = computed(() => EditorData.workflow.tasks[EditorData.actionIdx].co
 const eventId = computed(() => EditorData.workflow.tasks[EditorData.triggerIdx].config.eventId);
 
 const runningTest = computed(() => store.state.task.runningTest[type.value]);
-const workflowLoading = computed(() => store.state.workflow.loading);
+const workflowLoading = computed(() => store.state.workflow.loading.workflow);
 const isTested = computed(() => store.state.task.tested[type.value]);
 const testResult = computed(() => store.state.task.testResult[type.value]);
 

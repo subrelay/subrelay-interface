@@ -16,7 +16,7 @@
       </template>
     </n-result>
 
-    <n-space vertical :size="20" v-else style="margin-bottom: 5vh">
+    <n-space v-else vertical :size="20" style="margin-bottom: 5vh">
       <div class="page_title">{{ workflow.name }}</div>
 
       <n-tabs
@@ -73,7 +73,8 @@ watch(workflow, (newWorkflow) => {
 
 function onChangeTab(tab) {
   activeTab.value = tab;
-  router.push({ name: tab, params: { id: +props.id } });
+
+  router.push({ name: tab === 'overview' ? tab : 'workflowLogs', params: { id: +props.id } });
 }
 
 watch(
@@ -89,8 +90,8 @@ watch(
 onBeforeMount(async () => (activeTab.value = route.name));
 
 onBeforeUnmount(() => {
-  store.commit('history/getLog', []);
-  store.commit('history/getItemCount', { log: null });
+  store.commit('log/getLog', []);
+  store.commit('log/getItemCount', { log: null });
 });
 </script>
 

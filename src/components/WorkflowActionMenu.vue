@@ -9,7 +9,7 @@
 import { ref } from 'vue';
 import { useRenderIcon as renderIcon } from '@/composables';
 
-const emits = defineEmits(['rename', 'details', 'log', 'delete']);
+const emits = defineEmits(['rename', 'viewDetails', 'viewLog', 'delete']);
 
 const options = ref([
   {
@@ -19,12 +19,12 @@ const options = ref([
   },
   {
     label: 'View details',
-    key: 'details',
+    key: 'viewDetails',
     icon: renderIcon('bi:eye-fill'),
   },
   {
     label: 'View log',
-    key: 'log',
+    key: 'viewLog',
     icon: renderIcon('icon-park-outline:log'),
   },
   {

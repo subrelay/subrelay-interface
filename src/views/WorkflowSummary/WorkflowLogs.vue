@@ -60,10 +60,10 @@ const store = useStore();
 const account = computed(() => store.state.account.selected);
 const signer = computed(() => store.state.account.signer);
 const props = defineProps(['id']);
-const logs = computed(() => store.state.history.log);
+const logs = computed(() => store.state.log.log);
 
 async function fetchData() {
-  store.dispatch('history/getLog', props.id);
+  store.dispatch('log/getLog', props.id);
 }
 const [
   { query, searchText, loading, tablePagination, selectedChain, selectedStatus },
@@ -75,5 +75,5 @@ const [
     handleSelectStatus,
     clearAllFilters,
   },
-] = useQuery('history', 'log', null, fetchData);
+] = useQuery('log', 'log', null, fetchData);
 </script>

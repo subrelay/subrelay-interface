@@ -7,6 +7,7 @@
         :columns="columns"
         :data="logs"
         :loading="loading"
+        :row-key="({ id }) => id"
         :row-props="rowProps"
         @update:sorter="handleSort"
         row-class-name="pointer-cursor"
@@ -45,10 +46,10 @@ const chains = computed(() => store.state.chain.chains);
 const darkMode = computed(() => store.state.global.isDarkMode);
 
 function fetchData() {
-  store.dispatch('history/getLogs');
+  store.dispatch('log/getLogs');
 }
 
-const logs = computed(() => store.state.history.logs);
+const logs = computed(() => store.state.log.logs);
 
 const rowProps = ({ id }) => ({
   onClick: () => router.push({ name: 'logDetails', params: { id } }),
@@ -58,7 +59,7 @@ const columns = ref([
   {
     title: 'Status',
     key: 'updatedAt',
-    width: 50,
+    width: 100,
     ellipsis: { tooltip: true },
     render: ({ status }) => {
       const isSuccess = status === 'success';
@@ -141,7 +142,7 @@ const [
     handleSelectStatus,
     clearAllFilters,
   },
-] = useQuery('history', 'logs', columns, fetchData);
+] = useQuery('log', 'logs', columns, fetchData);
 
 provide('search', {
   selectedChain,
