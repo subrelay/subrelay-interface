@@ -12,6 +12,7 @@
 import { computed, shallowRef, provide } from 'vue';
 import { useStore } from 'vuex';
 import WebhookSetup from '@/views/Editor/Action/WebhookSetup';
+import EmailSetup from '@/views/Editor/Action/EmailSetup';
 import EditorData from '@/store/localStore/EditorData';
 
 const store = useStore();
@@ -24,5 +25,6 @@ function onBack() {
 
 const actionComponent = shallowRef({
   webhook: WebhookSetup,
+  email: EmailSetup,
 });
 </script>

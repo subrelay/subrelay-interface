@@ -3,7 +3,7 @@ export default {
 
   state: () => ({
     step: null,
-    expand: { trigger: '1', action: '1' },
+    expand: { trigger: '1', action: '2' },
     isTestActionDisabled: true,
   }),
 

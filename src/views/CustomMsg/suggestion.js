@@ -3,30 +3,29 @@ import CommandsList from '@/views/CustomMsg/CommandsList.vue';
 import tippy from 'tippy.js';
 
 export default {
-  items: (data) => {
-    const { query } = data;
+  items: ({ query }) => {
     return [
       {
-        title: 'H1',
+        title: 'From',
         command: (data) => {
           const { editor, range } = data;
           return editor.chain().deleteRange(range).insertContent('foo!').run();
         },
       },
       {
-        title: 'H2',
+        title: 'To',
         command: ({ editor, range }) => {
           editor.chain().focus().deleteRange(range).setNode('heading', { level: 2 }).run();
         },
       },
       {
-        title: 'bold',
+        title: 'Foo',
         command: ({ editor, range }) => {
           editor.chain().focus().deleteRange(range).setMark('bold').run();
         },
       },
       {
-        title: 'italic',
+        title: 'Bar',
         command: ({ editor, range }) => {
           editor.chain().focus().deleteRange(range).setMark('italic').run();
         },

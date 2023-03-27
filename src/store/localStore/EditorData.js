@@ -23,7 +23,7 @@ const defaultConfig = () => ({
       type: 'notification',
       dependOnName: 'trigger',
       config: {
-        channel: null,
+        channel: 'email',
         config: {
           headers: [{ key: null, value: null }],
           url: null,
