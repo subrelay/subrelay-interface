@@ -192,7 +192,7 @@ export default function useQuery(module, path, columns = {}, fetchData = () => {
     setTimeout(() => {
       initQuery();
       fetchData();
-    }, 200);
+    }, 100);
   });
 
   return [
