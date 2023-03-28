@@ -9,42 +9,25 @@ import { useEditor, Editor, EditorContent } from '@tiptap/vue-3';
 import Commands from '@/views/CustomMsg/commands';
 import suggestion from '@/views/CustomMsg/suggestion';
 import StarterKit from '@tiptap/starter-kit';
-import { Slice, Fragment, Node } from 'prosemirror-model';
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
-import { template } from 'lodash';
 
 const props = defineProps({ modelValue: { type: String, default: '' } });
 const emits = defineEmits(['update:modelValue']);
 
 const editor = useEditor({
-  content: '<p>I’m running Tiptap with Vue.js. 🎉</p>',
+  content: '',
   extensions: [StarterKit, Commands.configure({ suggestion })],
   content: props.modelValue,
   onUpdate: () => {
-    const newValue = editor.value.getHTML();
-    const modifiedHtml = replaceEmptyParagraphsWithNbsp(newValue);
-    emits('update:modelValue', modifiedHtml);
+    emits('update:modelValue', editor.value.getHTML());
   },
 });
-
-var compiled = template('<p><%= empty %></p>');
-
-function replaceEmptyParagraphsWithNbsp(htmlString) {
-  const regex = /<p><\/p>/g; // g flag to replace all occurrences
-  const replacement = '<p>&nbsp;</p>';
-  const result = htmlString.replace(regex, replacement);
-  return result;
-}
 
 watch(
   () => props.modelValue,
   (newValue) => {
-    // console.log('test', compiled({ empty: '&nbsp;' }));
-
     const isSame = editor.value.getHTML() === newValue;
-    if (isSame) {
-      return;
-    }
+    if (isSame) return;
     editor.value.commands.setContent(newValue, false);
   },
 );

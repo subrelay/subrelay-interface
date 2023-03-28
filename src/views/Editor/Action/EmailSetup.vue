@@ -24,19 +24,39 @@
         header-style="font-size: 0.85rem; font-weight: bold; padding:10px"
         content-style="padding:10px; min-height: 400px;"
       >
-        <div v-html="content" class="custom-message-content"></div>
+        <div v-html="previewContent" class="custom-message-content"></div>
       </n-card>
     </n-gi>
   </n-grid>
-
-  <pre>{{ content }}</pre>
 </template>
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import Tiptap from '@/views/CustomMsg/Tiptap';
+import { template } from 'lodash';
 
-const content = ref('<p>foo</p>');
+const previewContent = ref('');
+const subject = ref('');
+const content = ref(
+  '<p>Hello,</p><p></p><p>Here is the summary of what happened in the event you are subscribing:</p>',
+);
+
+function replaceEmptyParagraphsWithNbsp(htmlString) {
+  const regex = /<p><\/p>/g; // g flag to replace all occurrences
+  const replacement = '<p>&nbsp;</p>';
+  const result = htmlString.replace(regex, replacement);
+  return result;
+}
+
+var compiled = template('<p><%= empty %></p>');
+watch(
+  content,
+  (newContent) => {
+    previewContent.value = replaceEmptyParagraphsWithNbsp(newContent);
+    // console.log('test', compiled({ empty: '&nbsp;' }));
+  },
+  { immediate: true },
+);
 </script>
 
 <style lang="scss">

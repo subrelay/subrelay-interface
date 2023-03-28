@@ -9,25 +9,25 @@ export default {
         title: 'From',
         command: (data) => {
           const { editor, range } = data;
-          return editor.chain().deleteRange(range).insertContent('foo!').run();
+          return editor.chain().deleteRange(range).insertContent('From').run();
         },
       },
       {
         title: 'To',
         command: ({ editor, range }) => {
-          editor.chain().focus().deleteRange(range).setNode('heading', { level: 2 }).run();
+          editor.chain().focus().deleteRange(range).insertContent('Too').run();
         },
       },
       {
         title: 'Foo',
         command: ({ editor, range }) => {
-          editor.chain().focus().deleteRange(range).setMark('bold').run();
+          editor.chain().focus().deleteRange(range).insertContent('Foo').run();
         },
       },
       {
         title: 'Bar',
         command: ({ editor, range }) => {
-          editor.chain().focus().deleteRange(range).setMark('italic').run();
+          editor.chain().focus().deleteRange(range).insertContent('Bar').run();
         },
       },
     ]
