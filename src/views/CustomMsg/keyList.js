@@ -2,15 +2,13 @@ import { Extension } from '@tiptap/core';
 import Suggestion from '@tiptap/suggestion';
 
 export default Extension.create({
-  name: 'commands_tip',
+  name: 'KeyList',
 
   addOptions() {
     return {
       suggestion: {
         char: '/',
-        command: ({ editor, range, props }) => {
-          props.command({ editor, range });
-        },
+        command: ({ editor, range, props }) => props.command({ editor, range }),
       },
     };
   },

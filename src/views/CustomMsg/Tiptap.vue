@@ -6,7 +6,7 @@
 
 <script setup>
 import { useEditor, Editor, EditorContent } from '@tiptap/vue-3';
-import Commands from '@/views/CustomMsg/commands';
+import KeyList from '@/views/CustomMsg/keyList';
 import suggestion from '@/views/CustomMsg/suggestion';
 import StarterKit from '@tiptap/starter-kit';
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
@@ -16,7 +16,7 @@ const emits = defineEmits(['update:modelValue']);
 
 const editor = useEditor({
   content: '',
-  extensions: [StarterKit, Commands.configure({ suggestion })],
+  extensions: [StarterKit, KeyList.configure({ suggestion })],
   content: props.modelValue,
   onUpdate: () => {
     emits('update:modelValue', editor.value.getHTML());
