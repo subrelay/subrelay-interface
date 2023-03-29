@@ -1,7 +1,5 @@
 <template>
-  <div class="email-wrapper">
-    <EditorContent :editor="editor" />
-  </div>
+  <EditorContent :editor="editor" />
 </template>
 
 <script setup>
@@ -25,7 +23,7 @@ const fields = computed(() => store.state.chain.event.fields);
 
 const suggestion = {
   items: ({ query }) => {
-    const items = fields.value.map((e) => e.name);
+    const items = fields.value.filter((e) => e.example !== undefined).map((e) => e.name);
     return items.filter((item) => item.toLowerCase().includes(query.toLowerCase())).slice(0, 5);
   },
 
@@ -232,17 +230,21 @@ watch(
 </script>
 
 <style lang="scss">
-.ProseMirror:focus {
-  outline: none;
-}
-
-.email-wrapper {
+.ProseMirror {
   padding: 10px;
-  flex: 1;
-  border: 1px solid rgb(239, 239, 245);
+  border: 1px solid transparent;
+  border-radius: 3px;
+  transition: border-color 0.3s var(--n-bezier), box-shadow 0.3s var(--n-bezier),
+    background 0.3s var(--n-bezier);
 
-  .dark {
-    border-color: rgba(255, 255, 255, 0.09);
+  &:hover {
+    border-color: rgba(230, 0, 122, 0.7);
+  }
+
+  &:focus {
+    outline: none;
+    border: 1px solid rgba(230, 0, 122, 0.7);
+    box-shadow: 0 0 0 2px rgba(230, 0, 122, 0.2);
   }
 }
 

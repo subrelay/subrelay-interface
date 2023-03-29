@@ -14,7 +14,7 @@ const defaultConfig = () => ({
       dependOnName: null,
       config: {
         // eventId: null,
-        eventId: 247,
+        eventId: 168,
         conditions: [],
       },
     },

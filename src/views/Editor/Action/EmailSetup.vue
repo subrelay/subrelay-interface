@@ -10,10 +10,11 @@
         <div class="custom-message-content">
           <div class="email-subject">
             <span>Subject</span>
-            <n-input placeholder=""></n-input>
+            <n-input placeholder="" v-model:value="subject"></n-input>
           </div>
-
-          <Compiler v-model="content" />
+          <div class="email-wrapper" :class="{ dark: darkMode }">
+            <Compiler v-model="content" />
+          </div>
         </div>
       </n-card>
     </n-gi>
@@ -24,7 +25,10 @@
         header-style="font-size: 0.85rem; font-weight: bold; padding:10px"
         content-style="padding:10px; min-height: 400px;"
       >
-        <div v-html="previewContent" class="custom-message-content"></div>
+        <div class="custom-message-content">
+          <div v-html="previewSubject" class="preview-subject" />
+          <div v-html="previewContent" class="preview-wrapper" />
+        </div>
       </n-card>
     </n-gi>
   </n-grid>
@@ -33,41 +37,63 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, watch, computed } from 'vue';
 import Compiler from '@/views/CustomMsg/Compiler';
-import { template } from 'lodash';
+import { template, set, flow } from 'lodash';
 import { useStore } from 'vuex';
 
-const previewContent = ref('');
-const subject = ref('');
 const store = useStore();
-const fields = computed(() => store.state.chain.event.fields);
-const chainUuid = computed(() => store.state.chain.event.chainUuid);
 const defaultContent = ref('');
 const content = ref('');
+const previewContent = ref('');
+const subject = ref('Your tracked event has just happened!');
+const previewSubject = ref('Your tracked event has just happened!');
+const keyLookup = ref(null);
+const darkMode = computed(() => store.state.global.isDarkMode);
+const fields = computed(() => store.state.chain.event.fields);
+const chainUuid = computed(() => store.state.chain.event.chainUuid);
 
-watch(fields, (newFields) => {
-  if (newFields) {
-    const greetings = [
-      '<p>Hello,</p>',
-      '<p></p>',
-      '<p>Here is the summary of what happened in the event you are subscribing:</p>',
-      '<p></p>',
-      `<p>Chain: ${chainUuid.value}</p>`,
-      '<p></p>',
-      '<p>Sample Data:</p>',
-      '<p></p>',
-    ];
+watch(
+  fields,
+  (newFields) => {
+    if (newFields) {
+      const greetings = [
+        '<p>Hello,</p>',
+        '<p></p>',
+        '<p>Here is the summary of what happened in the event you are subscribing:</p>',
+        '<p></p>',
+        `<p>Chain: ${chainUuid.value}</p>`,
+        '<p></p>',
+        '<p>Sample Data:</p>',
+        '<p></p>',
+      ];
 
-    const keys = (fields.value || []).map((e) => {
-      return `<p><span data-type="KeySuggestion" class="mention" data-id="${e.name}">
-          ${e.name}
-        </span></p><p></p>`;
-      // return `<p>${e.name}</p><p></p>`;
-    });
-    const rs = [...greetings, ...keys];
-    defaultContent.value = rs.join('');
-    content.value = defaultContent.value;
-  }
-});
+      const keysWithExample = newFields.filter((e) => e.example !== undefined);
+
+      const keys = keysWithExample.map((e) => {
+        return `<p><span data-type="KeySuggestion" class="mention" data-id="${e.name}">$\{${e.name}\}</span></p><p></p>`;
+      });
+      const rs = [...greetings, ...keys];
+      defaultContent.value = rs.join('');
+      content.value = defaultContent.value;
+
+      keyLookup.value = keysWithExample.reduce((obj, e) => {
+        const { name, example } = e;
+        set(obj, name, example);
+        return { ...obj };
+      }, {});
+    }
+  },
+  { immediate: true },
+);
+
+watch(
+  content,
+  (newContent) => {
+    const formatContent = flow(replaceEmptyParagraphsWithNbsp, template);
+    const formattedContent = formatContent(newContent)({ ...keyLookup.value });
+    previewContent.value = formattedContent;
+  },
+  { immediate: true },
+);
 
 function replaceEmptyParagraphsWithNbsp(htmlString) {
   const regex = /<p><\/p>/g; // g flag to replace all occurrences
@@ -75,16 +101,6 @@ function replaceEmptyParagraphsWithNbsp(htmlString) {
   const result = htmlString.replace(regex, replacement);
   return result;
 }
-
-var compiled = template('<p><%= empty %></p>');
-watch(
-  content,
-  (newContent) => {
-    previewContent.value = replaceEmptyParagraphsWithNbsp(newContent);
-    // console.log('test', compiled({ empty: '&nbsp;' }));
-  },
-  { immediate: true },
-);
 </script>
 
 <style lang="scss">
@@ -99,6 +115,37 @@ watch(
   }
 }
 
+.email-wrapper {
+  flex: 1;
+  border: 1px solid rgb(239, 239, 245);
+  border-radius: 3px;
+  transition: border-color 0.3s var(--n-bezier), box-shadow 0.3s var(--n-bezier);
+
+  &.dark {
+    border-color: rgba(255, 255, 255, 0.09);
+
+    .ProseMirror {
+      background: rgba(255, 255, 255, 0.1);
+
+      &:focus {
+        background: transparent;
+      }
+    }
+  }
+}
+
+.preview-subject {
+  margin-bottom: 14px;
+  height: 34px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+}
+
+.preview-wrapper {
+  padding: 10px 0;
+  flex: 1;
+}
 .custom-message-content {
   min-height: 400px;
   display: flex;
