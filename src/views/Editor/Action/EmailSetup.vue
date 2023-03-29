@@ -31,17 +31,43 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
+import { ref, onMounted, onBeforeUnmount, watch, computed } from 'vue';
 import Compiler from '@/views/CustomMsg/Compiler';
 import { template } from 'lodash';
+import { useStore } from 'vuex';
 
 const previewContent = ref('');
 const subject = ref('');
-// const content = ref(
-//   '<p>Hello,</p><p></p><p>Here is the summary of what happened in the event you are subscribing:</p>',
-// );
-
+const store = useStore();
+const fields = computed(() => store.state.chain.event.fields);
+const chainUuid = computed(() => store.state.chain.event.chainUuid);
+const defaultContent = ref('');
 const content = ref('');
+
+watch(fields, (newFields) => {
+  if (newFields) {
+    const greetings = [
+      '<p>Hello,</p>',
+      '<p></p>',
+      '<p>Here is the summary of what happened in the event you are subscribing:</p>',
+      '<p></p>',
+      `<p>Chain: ${chainUuid.value}</p>`,
+      '<p></p>',
+      '<p>Sample Data:</p>',
+      '<p></p>',
+    ];
+
+    const keys = (fields.value || []).map((e) => {
+      return `<p><span data-type="KeySuggestion" class="mention" data-id="${e.name}">
+          ${e.name}
+        </span></p><p></p>`;
+      // return `<p>${e.name}</p><p></p>`;
+    });
+    const rs = [...greetings, ...keys];
+    defaultContent.value = rs.join('');
+    content.value = defaultContent.value;
+  }
+});
 
 function replaceEmptyParagraphsWithNbsp(htmlString) {
   const regex = /<p><\/p>/g; // g flag to replace all occurrences

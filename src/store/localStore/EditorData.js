@@ -5,7 +5,7 @@ const conditionFormat = { variable: null, operator: null, value: null };
 
 const defaultConfig = () => ({
   name: null,
-  chainUuid: 'f75a269e-3ffb-4ea8-a1f8-e43bfa1a44fd',
+  chainUuid: '8506ee1b-6821-4d38-b3ba-e935525c446a',
   // chainUuid: null,
   tasks: [
     {
@@ -14,7 +14,7 @@ const defaultConfig = () => ({
       dependOnName: null,
       config: {
         // eventId: null,
-        eventId: 12,
+        eventId: 247,
         conditions: [],
       },
     },

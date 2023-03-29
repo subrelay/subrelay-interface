@@ -35,7 +35,7 @@ const suggestion = {
 
     return {
       onStart: (props) => {
-        component = new VueRenderer(MentionList, {
+        component = new VueRenderer(KeysMenu, {
           props,
           editor: props.editor,
         });
@@ -80,8 +80,8 @@ const suggestion = {
   },
 };
 
-const NewMention = Node.create({
-  name: 'NewMention',
+const KeySuggestion = Node.create({
+  name: 'KeySuggestion',
 
   addOptions() {
     return {
@@ -213,7 +213,7 @@ const editor = useEditor({
   content: props.modelValue,
   extensions: [
     StarterKit,
-    NewMention.configure({
+    KeySuggestion.configure({
       HTMLAttributes: { class: 'mention' },
       suggestion,
     }),
