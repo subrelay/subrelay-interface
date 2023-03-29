@@ -5,16 +5,18 @@
 </template>
 
 <script setup>
+import KeysMenu from '@/views/CustomMsg/KeysMenu.vue';
 import { ref, onMounted, onBeforeUnmount, watch, computed } from 'vue';
 import { useStore } from 'vuex';
-import { Extension } from '@tiptap/core';
-import { useEditor, Editor, EditorContent } from '@tiptap/vue-3';
-import { VueRenderer } from '@tiptap/vue-3';
-import CommandsList from '@/views/CustomMsg/CommandsList.vue';
-import tippy from 'tippy.js';
+import { useEditor, EditorContent, VueRenderer } from '@tiptap/vue-3';
+import { mergeAttributes, Node } from '@tiptap/core';
+import { Node as ProseMirrorNode } from '@tiptap/pm/model';
+import { PluginKey } from '@tiptap/pm/state';
 import Suggestion from '@tiptap/suggestion';
 import StarterKit from '@tiptap/starter-kit';
+import tippy from 'tippy.js';
 
+const MentionPluginKey = new PluginKey('mention');
 const props = defineProps({ modelValue: { type: String, default: '' } });
 const emits = defineEmits(['update:modelValue']);
 
@@ -22,19 +24,9 @@ const store = useStore();
 const fields = computed(() => store.state.chain.event.fields);
 
 const suggestion = {
-  char: '/',
-  command: ({ editor, range, props }) => props.command({ editor, range }),
-
   items: ({ query }) => {
-    const replaceText = ({ editor, range }, text) =>
-      editor.chain().deleteRange(range).insertContent(`<h6>$\{${text}\}</h6>`).run();
-
-    const items = fields.value.map((e) => ({
-      title: e.name,
-      command: ({ editor, range }) => replaceText({ editor, range }, e.name),
-    }));
-
-    return items.filter((item) => item.title.toLowerCase().includes(query.toLowerCase()));
+    const items = fields.value.map((e) => e.name);
+    return items.filter((item) => item.toLowerCase().includes(query.toLowerCase())).slice(0, 5);
   },
 
   render: () => {
@@ -43,11 +35,12 @@ const suggestion = {
 
     return {
       onStart: (props) => {
-        component = new VueRenderer(CommandsList, { props, editor: props.editor });
+        component = new VueRenderer(MentionList, {
+          props,
+          editor: props.editor,
+        });
 
-        if (!props.clientRect) {
-          return;
-        }
+        if (!props.clientRect) return;
 
         popup = tippy('body', {
           getReferenceClientRect: props.clientRect,
@@ -63,9 +56,7 @@ const suggestion = {
       onUpdate(props) {
         component.updateProps(props);
 
-        if (!props.clientRect) {
-          return;
-        }
+        if (!props.clientRect) return;
 
         popup[0].setProps({
           getReferenceClientRect: props.clientRect,
@@ -89,25 +80,144 @@ const suggestion = {
   },
 };
 
-const KeyList = Extension.create({
-  name: 'KeyList',
+const NewMention = Node.create({
+  name: 'NewMention',
 
-  addOptions: () => ({ suggestion }),
+  addOptions() {
+    return {
+      HTMLAttributes: {},
 
-  addProseMirrorPlugins() {
+      renderLabel: ({ options, node }) => `$\{${node.attrs.id}\}`,
+
+      suggestion: {
+        char: '/',
+
+        pluginKey: MentionPluginKey,
+
+        command: ({ editor, range, props }) => {
+          const nodeAfter = editor.view.state.selection.$to.nodeAfter;
+          const overrideSpace = nodeAfter?.text?.startsWith(' ');
+
+          if (overrideSpace) range.to += 1;
+
+          editor
+            .chain()
+            .focus()
+            .insertContentAt(range, [
+              { type: this.name, attrs: props },
+              { type: 'text', text: ' ' },
+            ])
+            .run();
+
+          window.getSelection()?.collapseToEnd();
+        },
+
+        allow: ({ state, range }) => {
+          const $from = state.doc.resolve(range.from);
+          const type = state.schema.nodes[this.name];
+          const allow = !!$from.parent.type.contentMatch.matchType(type);
+          return allow;
+        },
+      },
+    };
+  },
+
+  group: 'inline',
+
+  inline: true,
+
+  selectable: false,
+
+  atom: true,
+
+  addAttributes() {
+    return {
+      id: {
+        default: null,
+        parseHTML: (element) => element.getAttribute('data-id'),
+
+        renderHTML: (attributes) => {
+          if (!attributes.id) return {};
+
+          return { 'data-id': attributes.id };
+        },
+      },
+
+      label: {
+        default: null,
+        parseHTML: (element) => element.getAttribute('data-label'),
+
+        renderHTML: (attributes) => {
+          if (!attributes.label) return {};
+
+          return { 'data-label': attributes.label };
+        },
+      },
+    };
+  },
+
+  parseHTML() {
+    return [{ tag: `span[data-type="${this.name}"]` }];
+  },
+
+  renderHTML({ node, HTMLAttributes }) {
     return [
-      Suggestion({
-        editor: this.editor,
-        ...this.options.suggestion,
+      'span',
+      mergeAttributes({ 'data-type': this.name }, this.options.HTMLAttributes, HTMLAttributes),
+      this.options.renderLabel({
+        options: this.options,
+        node,
       }),
     ];
+  },
+
+  renderText({ node }) {
+    return this.options.renderLabel({
+      options: this.options,
+      node,
+    });
+  },
+
+  addKeyboardShortcuts() {
+    return {
+      Backspace: () =>
+        this.editor.commands.command(({ tr, state }) => {
+          let isMention = false;
+          const { selection } = state;
+          const { empty, anchor } = selection;
+
+          if (!empty) {
+            return false;
+          }
+
+          state.doc.nodesBetween(anchor - 1, anchor, (node, pos) => {
+            if (node.type.name === this.name) {
+              isMention = true;
+              tr.insertText(this.options.suggestion.char || '', pos, pos + node.nodeSize);
+              return false;
+            }
+          });
+
+          return isMention;
+        }),
+    };
+  },
+
+  addProseMirrorPlugins() {
+    return [Suggestion({ editor: this.editor, ...this.options.suggestion })];
   },
 });
 
 const editor = useEditor({
   content: '',
   content: props.modelValue,
-  extensions: [StarterKit, KeyList.configure({ suggestion })],
+  extensions: [
+    StarterKit,
+    NewMention.configure({
+      HTMLAttributes: { class: 'mention' },
+      suggestion,
+    }),
+  ],
   onUpdate: () => emits('update:modelValue', editor.value.getHTML()),
 });
 
@@ -126,19 +236,6 @@ watch(
   outline: none;
 }
 
-.ProseMirror {
-  h6 {
-    color: red;
-    font-size: 1rem;
-    font-weight: normal;
-    display: inline-block;
-  }
-
-  p {
-    display: inline-block;
-  }
-}
-
 .email-wrapper {
   padding: 10px;
   flex: 1;
@@ -150,9 +247,10 @@ watch(
 }
 
 .mention {
-  border: 1px solid #000;
-  border-radius: 0.4rem;
   padding: 0.1rem 0.3rem;
   box-decoration-break: clone;
+  font-size: 1em;
+  font-weight: bold;
+  color: rgba(230, 0, 122, 1);
 }
 </style>

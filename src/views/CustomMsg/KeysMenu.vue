@@ -8,7 +8,7 @@
         :key="index"
         @click="selectItem(index)"
       >
-        {{ item.title }}
+        {{ item }}
       </button>
     </template>
     <div class="item" v-else>No result</div>
@@ -18,8 +18,15 @@
 <script>
 export default {
   props: {
-    items: { type: Array, required: true },
-    command: { type: Function, required: true },
+    items: {
+      type: Array,
+      required: true,
+    },
+
+    command: {
+      type: Function,
+      required: true,
+    },
   },
 
   data() {
@@ -70,7 +77,7 @@ export default {
       const item = this.items[index];
 
       if (item) {
-        this.command(item);
+        this.command({ id: item });
       }
     },
   },
