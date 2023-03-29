@@ -27,12 +27,7 @@ const suggestion = {
 
   items: ({ query }) => {
     const replaceText = ({ editor, range }, text) =>
-      editor
-        .chain()
-        .deleteRange(range)
-        .insertContent('${' + text + '}')
-        .run();
-
+      editor.chain().deleteRange(range).insertContent(`<h6>$\{${text}\}</h6>`).run();
     const items = fields.value.map((e) => ({
       title: e.name,
       command: ({ editor, range }) => replaceText({ editor, range }, e.name),
@@ -79,7 +74,6 @@ const suggestion = {
       onKeyDown(props) {
         if (props.event.key === 'Escape') {
           popup[0].hide();
-
           return true;
         }
 
@@ -97,9 +91,7 @@ const suggestion = {
 const KeyList = Extension.create({
   name: 'KeyList',
 
-  addOptions() {
-    return { suggestion };
-  },
+  addOptions: () => ({ suggestion }),
 
   addProseMirrorPlugins() {
     return [
@@ -131,6 +123,19 @@ watch(
 <style lang="scss">
 .ProseMirror:focus {
   outline: none;
+}
+
+.ProseMirror {
+  h6 {
+    color: red;
+    font-size: 1rem;
+    font-weight: normal;
+    display: inline-block;
+  }
+
+  p {
+    display: inline-block;
+  }
 }
 
 .email-wrapper {
