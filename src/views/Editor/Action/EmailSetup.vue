@@ -13,7 +13,7 @@
             <n-input placeholder=""></n-input>
           </div>
 
-          <Tiptap v-model="content" />
+          <Compiler v-model="content" />
         </div>
       </n-card>
     </n-gi>
@@ -32,14 +32,16 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
-import Tiptap from '@/views/CustomMsg/Tiptap';
+import Compiler from '@/views/CustomMsg/Compiler';
 import { template } from 'lodash';
 
 const previewContent = ref('');
 const subject = ref('');
-const content = ref(
-  '<p>Hello,</p><p></p><p>Here is the summary of what happened in the event you are subscribing:</p>',
-);
+// const content = ref(
+//   '<p>Hello,</p><p></p><p>Here is the summary of what happened in the event you are subscribing:</p>',
+// );
+
+const content = ref('');
 
 function replaceEmptyParagraphsWithNbsp(htmlString) {
   const regex = /<p><\/p>/g; // g flag to replace all occurrences
@@ -63,7 +65,7 @@ watch(
 .email-subject {
   display: flex;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1em;
 
   span {
     width: 20%;
