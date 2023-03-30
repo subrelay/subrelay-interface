@@ -85,18 +85,6 @@ const router = createRouter({
       meta: { title: 'Welcome' },
     },
     {
-      path: '/test-markdown',
-      name: 'test2',
-      component: () => import('@/views/Test.vue'),
-      meta: { title: 'Test' },
-    },
-    {
-      path: '/test',
-      name: 'test',
-      component: () => import('@/views/TestFoo.vue'),
-      meta: { title: 'Test' },
-    },
-    {
       path: '/:pathMatch(.*)*',
       name: 'notfound',
       component: () => import('@/views/NotFound.vue'),

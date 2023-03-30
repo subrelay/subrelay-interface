@@ -12,7 +12,7 @@
             <span>Subject</span>
             <n-input placeholder="" v-model:value="subject"></n-input>
           </div>
-          <div class="email-wrapper" :class="{ dark: darkMode }">
+          <div class="email-content" :class="{ dark: darkMode }">
             <Compiler v-model="content" />
           </div>
         </div>
@@ -23,17 +23,15 @@
         title="PREVIEW"
         :segmented="{ content: true }"
         header-style="font-size: 0.85rem; font-weight: bold; padding:10px"
-        content-style="padding:10px; min-height: 400px;"
+        content-style="padding:10px"
       >
         <div class="custom-message-content">
           <div v-html="previewSubject" class="preview-subject" />
-          <div v-html="previewContent" class="preview-wrapper" />
+          <div v-html="previewContent" class="preview-content" />
         </div>
       </n-card>
     </n-gi>
   </n-grid>
-
-  <div>Test</div>
 </template>
 
 <script setup>
@@ -117,8 +115,14 @@ function replaceEmptyParagraphsWithNbsp(htmlString) {
   }
 }
 
-.email-wrapper {
-  flex: 1;
+.email-content {
+  .ProseMirror {
+    height: 50vh;
+    max-height: 600px;
+    padding-right: 10px;
+    overflow: auto;
+  }
+
   border: 1px solid rgb(239, 239, 245);
   border-radius: 3px;
   transition: border-color 0.3s var(--n-bezier), box-shadow 0.3s var(--n-bezier);
@@ -144,12 +148,14 @@ function replaceEmptyParagraphsWithNbsp(htmlString) {
   align-items: center;
 }
 
-.preview-wrapper {
+.preview-content {
   padding: 10px 0;
-  flex: 1;
+  height: 50vh;
+  max-height: 600px;
+  padding-right: 10px;
+  overflow: auto;
 }
 .custom-message-content {
-  min-height: 400px;
   display: flex;
   flex-direction: column;
 }
