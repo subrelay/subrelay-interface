@@ -8,22 +8,27 @@
         content-style="padding: 10px"
       >
         <div class="custom-message-content">
-          <div class="email-subject">
+          <div class="email-subject-wrapper">
             <span>Subject</span>
-            <n-input placeholder="" v-model:value="subject"></n-input>
+            <Compiler
+              v-model="subject"
+              padding="5px"
+              class="email-subject compiler"
+              :multiline="false"
+              :class="{ dark: darkMode }"
+            />
           </div>
-          <div class="email-content" :class="{ dark: darkMode }">
-            <Compiler v-model="content" />
-          </div>
+
+          <Compiler v-model="content" class="email-content compiler" :class="{ dark: darkMode }" />
         </div>
       </n-card>
     </n-gi>
     <n-gi>
       <n-card
         title="PREVIEW"
-        :segmented="{ content: true }"
         header-style="font-size: 0.85rem; font-weight: bold; padding:10px"
         content-style="padding:10px"
+        :segmented="{ content: true }"
       >
         <div class="custom-message-content">
           <div v-html="previewSubject" class="preview-subject" />
@@ -41,13 +46,15 @@ import { template, set, flow } from 'lodash';
 import { useStore } from 'vuex';
 
 const store = useStore();
+
+const keyLookup = ref(null);
 const defaultContent = ref('');
 const content = ref('');
 const previewContent = ref('');
 const subject = ref('Your tracked event has just happened!');
-const previewSubject = ref('Your tracked event has just happened!');
-const keyLookup = ref(null);
+const previewSubject = ref('');
 const darkMode = computed(() => store.state.global.isDarkMode);
+
 const fields = computed(() => store.state.chain.event.fields);
 const chainUuid = computed(() => store.state.chain.event.chainUuid);
 
@@ -95,6 +102,16 @@ watch(
   { immediate: true },
 );
 
+watch(
+  subject,
+  (newSubject) => {
+    const formatSubject = flow(replaceEmptyParagraphsWithNbsp, template);
+    const formattedSubject = formatSubject(newSubject)({ ...keyLookup.value });
+    previewSubject.value = formattedSubject;
+  },
+  { immediate: true },
+);
+
 function replaceEmptyParagraphsWithNbsp(htmlString) {
   const regex = /<p><\/p>/g; // g flag to replace all occurrences
   const replacement = '<p>&nbsp;</p>';
@@ -104,10 +121,11 @@ function replaceEmptyParagraphsWithNbsp(htmlString) {
 </script>
 
 <style lang="scss">
-.email-subject {
+.email-subject-wrapper {
   display: flex;
   align-items: center;
   margin-bottom: 1em;
+  max-width: 100%;
 
   span {
     width: 20%;
@@ -115,17 +133,14 @@ function replaceEmptyParagraphsWithNbsp(htmlString) {
   }
 }
 
-.email-content {
-  .ProseMirror {
-    height: 50vh;
-    max-height: 600px;
-    padding-right: 10px;
-    overflow: auto;
-  }
+.email-subject {
+  width: 80%;
+  max-height: 2.1255rem;
+}
 
+.compiler {
   border: 1px solid rgb(239, 239, 245);
   border-radius: 3px;
-  transition: border-color 0.3s var(--n-bezier), box-shadow 0.3s var(--n-bezier);
 
   &.dark {
     border-color: rgba(255, 255, 255, 0.09);
@@ -140,9 +155,20 @@ function replaceEmptyParagraphsWithNbsp(htmlString) {
   }
 }
 
+.email-content {
+  transition: border-color 0.3s var(--n-bezier), box-shadow 0.3s var(--n-bezier);
+
+  .ProseMirror {
+    height: 50vh;
+    max-height: 600px;
+    padding-right: 5px;
+    overflow: auto;
+  }
+}
+
 .preview-subject {
   margin-bottom: 14px;
-  height: 34px;
+  min-height: 34px;
   font-weight: bold;
   display: flex;
   align-items: center;

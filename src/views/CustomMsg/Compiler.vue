@@ -4,10 +4,10 @@
 
 <script setup>
 import KeysMenu from '@/views/CustomMsg/KeysMenu.vue';
-import { ref, onMounted, onBeforeUnmount, watch, computed } from 'vue';
+import { ref, watch, computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import { useEditor, EditorContent, VueRenderer } from '@tiptap/vue-3';
-import { mergeAttributes, Node } from '@tiptap/core';
+import { mergeAttributes, Node, Extension } from '@tiptap/core';
 import { Node as ProseMirrorNode } from '@tiptap/pm/model';
 import { PluginKey } from '@tiptap/pm/state';
 import Suggestion from '@tiptap/suggestion';
@@ -15,11 +15,18 @@ import StarterKit from '@tiptap/starter-kit';
 import tippy from 'tippy.js';
 
 const MentionPluginKey = new PluginKey('mention');
-const props = defineProps({ modelValue: { type: String, default: '' } });
+
+const props = defineProps({
+  modelValue: { type: String, default: '' },
+  padding: { type: String, default: '10px' },
+  multiline: { type: Boolean, default: true },
+});
+
 const emits = defineEmits(['update:modelValue']);
 
 const store = useStore();
 const fields = computed(() => store.state.chain.event.fields);
+const darkMode = computed(() => store.state.global.isDarkMode);
 
 const suggestion = {
   items: ({ query }) => {
@@ -92,7 +99,7 @@ const KeySuggestion = Node.create({
 
         pluginKey: MentionPluginKey,
 
-        command: ({ editor, range, props }) => {
+        command: ({ editor, range, props: editorProps }) => {
           const nodeAfter = editor.view.state.selection.$to.nodeAfter;
           const overrideSpace = nodeAfter?.text?.startsWith(' ');
 
@@ -102,7 +109,7 @@ const KeySuggestion = Node.create({
             .chain()
             .focus()
             .insertContentAt(range, [
-              { type: this.name, attrs: props },
+              { type: this.name, attrs: editorProps },
               { type: 'text', text: ' ' },
             ])
             .run();
@@ -180,23 +187,21 @@ const KeySuggestion = Node.create({
     return {
       Backspace: () =>
         this.editor.commands.command(({ tr, state }) => {
-          let isMention = false;
+          let isVariable = false;
           const { selection } = state;
           const { empty, anchor } = selection;
 
-          if (!empty) {
-            return false;
-          }
+          if (!empty) return false;
 
           state.doc.nodesBetween(anchor - 1, anchor, (node, pos) => {
             if (node.type.name === this.name) {
-              isMention = true;
+              isVariable = true;
               tr.insertText(this.options.suggestion.char || '', pos, pos + node.nodeSize);
               return false;
             }
           });
 
-          return isMention;
+          return isVariable;
         }),
     };
   },
@@ -206,24 +211,44 @@ const KeySuggestion = Node.create({
   },
 });
 
+const PreventEnter = Extension.create({
+  addKeyboardShortcuts() {
+    return {
+      Enter: () => true,
+    };
+  },
+});
+
 const editor = useEditor({
-  content: '',
   content: props.modelValue,
+
+  editorProps: {
+    attributes: {
+      style: `padding: ${props.padding}`,
+      class: `${props.multiline ? '' : 'no-multiline'}`,
+    },
+    keypress(view, event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+      }
+    },
+  },
+  onUpdate: () => emits('update:modelValue', editor.value.getHTML()),
+
   extensions: [
     StarterKit,
-    KeySuggestion.configure({
-      HTMLAttributes: { class: 'mention' },
-      suggestion,
-    }),
+    props.multiline ? null : PreventEnter,
+    KeySuggestion.configure({ HTMLAttributes: { class: 'mention' }, suggestion }),
   ],
-  onUpdate: () => emits('update:modelValue', editor.value.getHTML()),
 });
 
 watch(
   () => props.modelValue,
   (newValue) => {
     const isSame = editor.value.getHTML() === newValue;
+
     if (isSame) return;
+
     editor.value.commands.setContent(newValue, false);
   },
 );
@@ -231,11 +256,28 @@ watch(
 
 <style lang="scss">
 .ProseMirror {
-  padding: 10px;
   border: 1px solid transparent;
   border-radius: 3px;
   transition: border-color 0.3s var(--n-bezier), box-shadow 0.3s var(--n-bezier),
     background 0.3s var(--n-bezier);
+
+  &.no-multiline {
+    max-height: 2.1255rem;
+    white-space: pre !important;
+    overflow: hidden;
+
+    [contenteditable='false'] {
+      white-space: nowrap;
+    }
+  }
+
+  &.dark {
+    background: rgba(255, 255, 255, 0.1);
+
+    &:focus {
+      background: transparent;
+    }
+  }
 
   &:hover {
     border-color: rgba(230, 0, 122, 0.7);
@@ -249,7 +291,7 @@ watch(
 }
 
 .mention {
-  padding: 0.1rem 0.3rem;
+  padding: 0.1rem 0;
   box-decoration-break: clone;
   font-size: 1em;
   font-weight: bold;
