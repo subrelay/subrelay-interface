@@ -26,9 +26,10 @@ export function useFormValidation() {
               resolve();
             }
           },
-          (rule) => keys.includes(rule.key)
-            || (rule.key.includes('filterCond') && keys.includes('filterCond'))
-            || (rule.key.includes('setupAction') && keys.includes('setupAction')),
+          (rule) =>
+            keys.includes(rule.key) ||
+            (rule.key.includes('filterCond') && keys.includes('filterCond')) ||
+            (rule.key.includes('setupAction') && keys.includes('setupAction')),
         );
       });
 
@@ -45,4 +46,9 @@ export function useFormValidation() {
   }
 
   return [{ formRef }, { validateForm }];
+}
+
+export function useEmailValidator(email) {
+  const isCorrectEmailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
+  return isCorrectEmailFormat;
 }

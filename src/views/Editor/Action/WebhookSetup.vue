@@ -1,6 +1,6 @@
 <template>
   <n-form-item :path="`tasks[${actionIdx}].config.config.url`" label="URL" :rule="urlRule">
-    <n-input clearable v-model:value="EditorData.workflow.tasks[1].config.config.url" />
+    <n-input clearable v-model:value="EditorData.workflow.tasks[actionIdx].config.config.url" />
   </n-form-item>
 
   <n-form-item

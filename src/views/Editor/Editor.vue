@@ -134,10 +134,11 @@ const hasError = computed(() =>
 );
 
 const [{ formRef }, { validateForm }] = useFormValidation();
+const eventBus = inject('eventBus');
+eventBus.on('validate', validateForm);
 
 async function setStepStatus(step) {
   // Switch from action to trigger
-
   if (step === 1) {
     actionStatus.value = 'wait';
     triggerStatus.value = 'process';

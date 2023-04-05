@@ -1,5 +1,39 @@
 <template>
-  <n-grid cols="2" x-gap="30" style="margin-bottom: 1rem">
+  <!-- EMAIl LIST -->
+  <n-space vertical>
+    <div class="text-semi-bold">Recipients:</div>
+    <n-form-item
+      :path="`tasks[${actionIdx}].config.config.addresses`"
+      :show-label="false"
+      :rule="rule"
+    >
+      <n-dynamic-tags
+        v-model:value="addressTags"
+        @update:value="addAddress"
+        @create="handleCreate"
+        :render-tag="renderTag"
+      >
+        <template #input="{ submit, deactivate }">
+          <n-input
+            ref="inputRef"
+            size="small"
+            placeholder="Email"
+            v-model:value="inputValue"
+            @blur="deactivate"
+            @keyup.enter="submit(inputValue)"
+          />
+        </template>
+        <template #trigger="{ activate, disabled }">
+          <n-button size="small" type="primary" dashed :disabled="disabled" @click="activate()">
+            <template #icon><Icon icon="material-symbols:add" /> </template>
+            Add email
+          </n-button>
+        </template>
+      </n-dynamic-tags>
+    </n-form-item>
+  </n-space>
+
+  <n-grid cols="2" x-gap="30" style="margin: 0.5rem 0 1rem 0">
     <n-gi>
       <n-card
         title="CUSTOMIZATION"
@@ -9,6 +43,7 @@
       >
         <div class="custom-message-content">
           <div class="email-subject-wrapper">
+            <!-- SUBJECT -->
             <span>Subject</span>
             <Compiler
               v-model="subject"
@@ -19,6 +54,7 @@
             />
           </div>
 
+          <!-- CONTENT -->
           <Compiler v-model="content" class="email-content compiler" :class="{ dark: darkMode }" />
         </div>
       </n-card>
@@ -40,24 +76,66 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, watch, computed } from 'vue';
+import EditorData from '@/store/localStore/EditorData';
 import Compiler from '@/views/CustomMsg/Compiler';
+import { h, ref, watch, computed, inject, nextTick } from 'vue';
 import { template, set, flow } from 'lodash';
+import { useEmailValidator } from '@/composables';
+import { Icon } from '@iconify/vue';
 import { useStore } from 'vuex';
+import { NTag } from 'naive-ui';
 
 const store = useStore();
-
+const eventBus = inject('eventBus');
+const emits = defineEmits(['validate']);
 const keyLookup = ref(null);
 const defaultContent = ref('');
 const content = ref('');
 const previewContent = ref('');
-const subject = ref('Your tracked event has just happened!');
+const subject = ref('<p>Your track event has just happened!</p>');
 const previewSubject = ref('');
-const darkMode = computed(() => store.state.global.isDarkMode);
-
+const inputRef = ref(null);
+const inputValue = ref(null);
 const fields = computed(() => store.state.chain.event.fields);
 const chainUuid = computed(() => store.state.chain.event.chainUuid);
+const darkMode = computed(() => store.state.global.isDarkMode);
 
+const actionIdx = computed(() => EditorData.actionIdx);
+const addressTags = ref([]);
+
+const rule = ref({
+  key: 'setupAction_addresses',
+  trigger: ['change'],
+  validator(rule, value) {
+    if (!value.length) {
+      return new Error('Required!');
+    }
+
+    if (value.some((add) => add.status === 'warning')) {
+      return new Error('Invalid email address!');
+    }
+    return true;
+  },
+});
+
+const renderTag = ({ label, status }, index) => {
+  return h(
+    NTag,
+    { type: status, closable: true, onClose: () => removeAddress(index) },
+    {
+      default: () =>
+        h('div', { style: { display: 'flex', 'align-items': 'center' } }, [
+          h('div', label),
+          status === 'warning'
+            ? h(Icon, {
+                icon: 'uiw:warning-o',
+                style: { 'margin-left': '4px', color: '#d03050ff' },
+              })
+            : '',
+        ]),
+    },
+  );
+};
 watch(
   fields,
   (newFields) => {
@@ -117,6 +195,34 @@ function replaceEmptyParagraphsWithNbsp(htmlString) {
   const replacement = '<p>&nbsp;</p>';
   const result = htmlString.replace(regex, replacement);
   return result;
+}
+
+watch(inputRef, (value) => {
+  if (value) {
+    inputValue.value = null;
+    nextTick(() => value.focus());
+  }
+});
+
+async function addAddress(newAddList) {
+  const addresses = newAddList.map((e) => e.label);
+  EditorData.workflow.tasks[actionIdx.value].config.config.addresses = [...addresses];
+  emits('validate', { changeStep: false, taskName: 'action', keys: ['addresses'] });
+}
+
+function removeAddress(index) {
+  addressTags.value.splice(index, 1);
+  EditorData.workflow.tasks[actionIdx.value].config.config.addresses.splice(index, 1);
+  eventBus.emit('validate', {
+    changeStep: false,
+    taskName: 'action',
+    keys: ['setupAction_addresses'],
+  });
+}
+
+function handleCreate(email) {
+  const isCorrectFormat = useEmailValidator(email);
+  return { label: email, status: isCorrectFormat ? 'success' : 'warning' };
 }
 </script>
 

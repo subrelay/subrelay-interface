@@ -11,6 +11,12 @@
         </template>
       </n-result>
     </div>
+
+    <n-form :model="model" :rules="rules">
+      <n-form-item path="tags" :show-label="false">
+        <n-dynamic-tags v-model:value="model.tags" :render-tag="renderTag" />
+      </n-form-item>
+    </n-form>
   </n-layout>
 </template>
 
@@ -21,6 +27,40 @@ const router = useRouter();
 
 const onBackToHome = () => {
   router.push('/');
+};
+
+import { ref, h } from 'vue';
+
+import { NTag } from 'naive-ui';
+
+const model = ref({
+  tags: ['teacher', 'programmer'],
+});
+
+const rules = ref({
+  tags: {
+    trigger: ['change'],
+    validator(rule, value) {
+      console.log(value);
+      if (value.length >= 3) return new Error('Up to 4 tags');
+      return true;
+    },
+  },
+});
+
+const renderTag = (tag, index) => {
+  return h(
+    NTag,
+    {
+      type: index < 3 ? 'success' : 'error',
+      disabled: index > 3,
+      closable: true,
+      onClose: () => {
+        model.value.tags.splice(index, 1);
+      },
+    },
+    { default: () => tag },
+  );
 };
 </script>
 

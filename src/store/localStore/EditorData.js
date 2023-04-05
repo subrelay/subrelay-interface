@@ -25,10 +25,15 @@ const defaultConfig = () => ({
       config: {
         channel: 'email',
         config: {
-          headers: [{ key: null, value: null }],
-          url: null,
-          // url: 'https://typedwebhook.tools/webhook/f43136d0-e0c1-4757-a05c-247a756b545d',
+          addresses: [],
+          subjectTemplate: null,
+          bodyTemplate: null,
         },
+        // config: {
+        // headers: [{ key: null, value: null }],
+        // url: null,
+        // url: 'https://typedwebhook.tools/webhook/f43136d0-e0c1-4757-a05c-247a756b545d',
+        // },
       },
     },
   ],
