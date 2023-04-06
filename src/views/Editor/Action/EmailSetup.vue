@@ -7,12 +7,7 @@
       :show-label="false"
       :rule="rule"
     >
-      <n-dynamic-tags
-        v-model:value="addressTags"
-        @update:value="addAddress"
-        @create="handleCreate"
-        :render-tag="renderTag"
-      >
+      <n-dynamic-tags v-model:value="addressTags" @create="handleCreate" :render-tag="renderTag">
         <template #input="{ submit, deactivate }">
           <n-input
             ref="inputRef"
@@ -23,6 +18,7 @@
             @keyup.enter="submit(inputValue)"
           />
         </template>
+
         <template #trigger="{ activate, disabled }">
           <n-button size="small" type="primary" dashed :disabled="disabled" @click="activate()">
             <template #icon><Icon icon="material-symbols:add" /> </template>
@@ -45,12 +41,15 @@
           <div class="email-subject-wrapper">
             <!-- SUBJECT -->
             <span>Subject</span>
+
             <Compiler
               v-model="subject"
               padding="5px"
               class="email-subject compiler"
+              useRawText
               :multiline="false"
               :class="{ dark: darkMode }"
+              @getRawText="getRawText"
             />
           </div>
 
@@ -79,8 +78,8 @@
 import EditorData from '@/store/localStore/EditorData';
 import Compiler from '@/views/CustomMsg/Compiler';
 import { h, ref, watch, computed, inject, nextTick } from 'vue';
-import { template, set, flow } from 'lodash';
-import { useEmailValidator } from '@/composables';
+import { template, set, flow, isEmpty } from 'lodash';
+import { useIsCorrectEmailFormat } from '@/composables';
 import { Icon } from '@iconify/vue';
 import { useStore } from 'vuex';
 import { NTag } from 'naive-ui';
@@ -88,20 +87,21 @@ import { NTag } from 'naive-ui';
 const store = useStore();
 const eventBus = inject('eventBus');
 const emits = defineEmits(['validate']);
+
 const keyLookup = ref(null);
-const defaultContent = ref('');
+const addressTags = ref([{ label: 'anhthichieu@gmail.com', status: 'success' }]);
 const content = ref('');
 const previewContent = ref('');
-const subject = ref('<p>Your track event has just happened!</p>');
+const subject = ref('');
 const previewSubject = ref('');
 const inputRef = ref(null);
 const inputValue = ref(null);
+const event = computed(() => store.state.chain.event);
 const fields = computed(() => store.state.chain.event.fields);
 const chainUuid = computed(() => store.state.chain.event.chainUuid);
 const darkMode = computed(() => store.state.global.isDarkMode);
-
 const actionIdx = computed(() => EditorData.actionIdx);
-const addressTags = ref([]);
+const rawSubject = ref('');
 
 const rule = ref({
   key: 'setupAction_addresses',
@@ -111,9 +111,11 @@ const rule = ref({
       return new Error('Required!');
     }
 
-    if (value.some((add) => add.status === 'warning')) {
+    const hasIncorrectEmail = value.some((add) => !useIsCorrectEmailFormat(add));
+    if (hasIncorrectEmail) {
       return new Error('Invalid email address!');
     }
+
     return true;
   },
 });
@@ -136,10 +138,11 @@ const renderTag = ({ label, status }, index) => {
     },
   );
 };
+
 watch(
-  fields,
-  (newFields) => {
-    if (newFields) {
+  event,
+  (newEvent) => {
+    if (!isEmpty(newEvent)) {
       const greetings = [
         '<p>Hello,</p>',
         '<p></p>',
@@ -151,16 +154,19 @@ watch(
         '<p></p>',
       ];
 
-      const keysWithExample = newFields.filter((e) => e.example !== undefined);
+      const keysHaveExample = newEvent.fields.filter((e) => e.example !== undefined);
 
-      const keys = keysWithExample.map((e) => {
+      const keys = keysHaveExample.map((e) => {
         return `<p><span data-type="KeySuggestion" class="mention" data-id="${e.name}">$\{${e.name}\}</span></p><p></p>`;
       });
-      const rs = [...greetings, ...keys];
-      defaultContent.value = rs.join('');
-      content.value = defaultContent.value;
 
-      keyLookup.value = keysWithExample.reduce((obj, e) => {
+      const defaultContent = [...greetings, ...keys].join('');
+      content.value = defaultContent;
+
+      const defaultSubject = `Your tracked event ${newEvent.pallet}.${newEvent.name} on chain ${newEvent.chainUuid} has been triggered!`;
+      subject.value = defaultSubject;
+
+      keyLookup.value = keysHaveExample.reduce((obj, e) => {
         const { name, example } = e;
         set(obj, name, example);
         return { ...obj };
@@ -176,6 +182,7 @@ watch(
     const formatContent = flow(replaceEmptyParagraphsWithNbsp, template);
     const formattedContent = formatContent(newContent)({ ...keyLookup.value });
     previewContent.value = formattedContent;
+    EditorData.workflow.tasks[actionIdx.value].config.config.bodyTemplate = newContent;
   },
   { immediate: true },
 );
@@ -189,6 +196,11 @@ watch(
   },
   { immediate: true },
 );
+
+function getRawText(data) {
+  rawSubject.value = data;
+  EditorData.workflow.tasks[actionIdx.value].config.config.subjectTemplate = data;
+}
 
 function replaceEmptyParagraphsWithNbsp(htmlString) {
   const regex = /<p><\/p>/g; // g flag to replace all occurrences
@@ -204,11 +216,19 @@ watch(inputRef, (value) => {
   }
 });
 
-async function addAddress(newAddList) {
-  const addresses = newAddList.map((e) => e.label);
-  EditorData.workflow.tasks[actionIdx.value].config.config.addresses = [...addresses];
-  emits('validate', { changeStep: false, taskName: 'action', keys: ['addresses'] });
-}
+watch(
+  addressTags,
+  (newAddressTags) => {
+    const addresses = newAddressTags.map((e) => e.label);
+    EditorData.workflow.tasks[actionIdx.value].config.config.addresses = [...addresses];
+    eventBus.emit('validate', {
+      changeStep: false,
+      taskName: 'action',
+      keys: ['setupAction_addresses'],
+    });
+  },
+  { immediate: true },
+);
 
 function removeAddress(index) {
   addressTags.value.splice(index, 1);
@@ -221,7 +241,7 @@ function removeAddress(index) {
 }
 
 function handleCreate(email) {
-  const isCorrectFormat = useEmailValidator(email);
+  const isCorrectFormat = useIsCorrectEmailFormat(email);
   return { label: email, status: isCorrectFormat ? 'success' : 'warning' };
 }
 </script>

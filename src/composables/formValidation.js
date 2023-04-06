@@ -15,7 +15,7 @@ export function useFormValidation() {
   } = {}) {
     try {
       await new Promise((resolve, reject) => {
-        formRef.value.validate(
+        formRef.value?.validate(
           (errors) => {
             if (errors) {
               EditorData.setError(taskName, true);
@@ -48,7 +48,7 @@ export function useFormValidation() {
   return [{ formRef }, { validateForm }];
 }
 
-export function useEmailValidator(email) {
+export function useIsCorrectEmailFormat(email) {
   const isCorrectEmailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
   return isCorrectEmailFormat;
 }

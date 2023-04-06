@@ -39,6 +39,7 @@ import { useChannels } from '@/composables';
 function handleSelectChannel() {
   // set Editor.setError to false
   // Used for milestone 2 to clear 'Set Up Action' data when user switches to other channel
+  // reset editor config
 }
 </script>
 

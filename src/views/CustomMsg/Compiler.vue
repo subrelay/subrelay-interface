@@ -20,9 +20,10 @@ const props = defineProps({
   modelValue: { type: String, default: '' },
   padding: { type: String, default: '10px' },
   multiline: { type: Boolean, default: true },
+  useRawText: { type: Boolean, default: false },
 });
 
-const emits = defineEmits(['update:modelValue']);
+const emits = defineEmits(['update:modelValue', 'getRawText']);
 
 const store = useStore();
 const fields = computed(() => store.state.chain.event.fields);
@@ -40,10 +41,7 @@ const suggestion = {
 
     return {
       onStart: (props) => {
-        component = new VueRenderer(KeysMenu, {
-          props,
-          editor: props.editor,
-        });
+        component = new VueRenderer(KeysMenu, { props, editor: props.editor });
 
         if (!props.clientRect) return;
 
@@ -227,30 +225,30 @@ const editor = useEditor({
       style: `padding: ${props.padding}`,
       class: `${props.multiline ? '' : 'no-multiline'}`,
     },
+
     keypress(view, event) {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-      }
+      if (event.key === 'Enter') event.preventDefault();
     },
   },
-  onUpdate: () => emits('update:modelValue', editor.value.getHTML()),
 
   extensions: [
     StarterKit,
     props.multiline ? null : PreventEnter,
     KeySuggestion.configure({ HTMLAttributes: { class: 'mention' }, suggestion }),
   ],
+
+  onUpdate: () => emits('update:modelValue', editor.value.getHTML()),
 });
 
 watch(
   () => props.modelValue,
   (newValue) => {
+    if (!editor.value) return;
     const isSame = editor.value.getHTML() === newValue;
-
-    if (isSame) return;
-
-    editor.value.commands.setContent(newValue, false);
+    if (!isSame) editor.value.commands.setContent(newValue);
+    if (props.useRawText) emits('getRawText', editor.value.getText());
   },
+  { immediate: true },
 );
 </script>
 
