@@ -7,7 +7,12 @@
       :show-label="false"
       :rule="rule"
     >
-      <n-dynamic-tags v-model:value="addressTags" @create="handleCreate" :render-tag="renderTag">
+      <n-dynamic-tags
+        v-model:value="addressTags"
+        @create="handleCreate"
+        :render-tag="renderTag"
+        :max="3"
+      >
         <template #input="{ submit, deactivate }">
           <n-input
             ref="inputRef"
@@ -30,34 +35,48 @@
   </n-space>
 
   <n-grid cols="2" x-gap="30" style="margin: 0.5rem 0 1rem 0">
+    <!-- COMPILER -->
     <n-gi>
       <n-card
-        title="CUSTOMIZATION"
         :segmented="{ content: true }"
+        title="CUSTOMIZATION"
         header-style="font-size: 0.85rem; font-weight: bold; padding:10px"
         content-style="padding: 10px"
       >
-        <div class="custom-message-content">
-          <div class="email-subject-wrapper">
-            <!-- SUBJECT -->
-            <span>Subject</span>
-
+        <n-space vertical>
+          <!-- SUBJECT -->
+          <n-space vertical style="margin-bottom: 1em">
+            <div class="text-italic">Subject:</div>
             <Compiler
               v-model="subject"
               padding="5px"
               class="email-subject compiler"
-              useRawText
+              field="subjectTemplate"
+              @getRawText="getRawText"
               :multiline="false"
               :class="{ dark: darkMode }"
-              @getRawText="getRawText"
+              :defaultContent="defaultSubject"
             />
-          </div>
+            <n-divider style="margin: 0"></n-divider>
+          </n-space>
 
           <!-- CONTENT -->
-          <Compiler v-model="content" class="email-content compiler" :class="{ dark: darkMode }" />
-        </div>
+          <n-space vetical>
+            <div class="text-italic">Content:</div>
+            <Compiler
+              v-model="content"
+              class="email-content compiler"
+              field="bodyTemplate"
+              @getRawText="getRawText"
+              :class="{ dark: darkMode }"
+              :defaultContent="defaultContent"
+            />
+          </n-space>
+        </n-space>
       </n-card>
     </n-gi>
+
+    <!-- PREVIEW -->
     <n-gi>
       <n-card
         title="PREVIEW"
@@ -65,10 +84,20 @@
         content-style="padding:10px"
         :segmented="{ content: true }"
       >
-        <div class="custom-message-content">
-          <div v-html="previewSubject" class="preview-subject" />
-          <div v-html="previewContent" class="preview-content" />
-        </div>
+        <n-space vertical class="custom-message-content">
+          <!-- SUBJECT -->
+          <n-space>
+            <div class="text-italic">Subject:</div>
+            <div v-html="previewSubject" class="preview-subject" />
+          </n-space>
+
+          <n-divider style="margin: 0; margin-bottom: 1em"></n-divider>
+
+          <n-space>
+            <div class="text-italic">Content:</div>
+            <div v-html="previewContent" class="preview-content" />
+          </n-space>
+        </n-space>
       </n-card>
     </n-gi>
   </n-grid>
@@ -89,7 +118,7 @@ const eventBus = inject('eventBus');
 const emits = defineEmits(['validate']);
 
 const keyLookup = ref(null);
-const addressTags = ref([{ label: 'anhthichieu@gmail.com', status: 'success' }]);
+const addressTags = ref([]);
 const content = ref('');
 const previewContent = ref('');
 const subject = ref('');
@@ -102,6 +131,8 @@ const chainUuid = computed(() => store.state.chain.event.chainUuid);
 const darkMode = computed(() => store.state.global.isDarkMode);
 const actionIdx = computed(() => EditorData.actionIdx);
 const rawSubject = ref('');
+const defaultSubject = ref('');
+const defaultContent = ref('');
 
 const rule = ref({
   key: 'setupAction_addresses',
@@ -156,15 +187,17 @@ watch(
 
       const keysHaveExample = newEvent.fields.filter((e) => e.example !== undefined);
 
-      const keys = keysHaveExample.map((e) => {
-        return `<p><span data-type="KeySuggestion" class="mention" data-id="${e.name}">$\{${e.name}\}</span></p><p></p>`;
+      const keys = keysHaveExample.map((e, i) => {
+        return `<p>Var${i + 1}: <span data-type="KeySuggestion" class="mention" data-id="${
+          e.name
+        }">$\{${e.name}\}</span></p>${i === keysHaveExample.length - 1 ? '' : '<p></p>'}`;
       });
 
-      const defaultContent = [...greetings, ...keys].join('');
-      content.value = defaultContent;
+      defaultContent.value = [...greetings, ...keys].join('');
+      content.value = defaultContent.value;
 
-      const defaultSubject = `Your tracked event ${newEvent.pallet}.${newEvent.name} on chain ${newEvent.chainUuid} has been triggered!`;
-      subject.value = defaultSubject;
+      defaultSubject.value = `Your tracked event ${newEvent.pallet}.${newEvent.name} on chain ${newEvent.chainUuid} has been triggered!`;
+      subject.value = defaultSubject.value;
 
       keyLookup.value = keysHaveExample.reduce((obj, e) => {
         const { name, example } = e;
@@ -183,6 +216,7 @@ watch(
     const formattedContent = formatContent(newContent)({ ...keyLookup.value });
     previewContent.value = formattedContent;
     EditorData.workflow.tasks[actionIdx.value].config.config.bodyTemplate = newContent;
+    store.commit('editor/setEmailConfig', { bodyTemplate: formattedContent });
   },
   { immediate: true },
 );
@@ -193,13 +227,14 @@ watch(
     const formatSubject = flow(replaceEmptyParagraphsWithNbsp, template);
     const formattedSubject = formatSubject(newSubject)({ ...keyLookup.value });
     previewSubject.value = formattedSubject;
+    store.commit('editor/setEmailConfig', { subjectTemplate: formattedSubject });
   },
   { immediate: true },
 );
 
-function getRawText(data) {
-  rawSubject.value = data;
-  EditorData.workflow.tasks[actionIdx.value].config.config.subjectTemplate = data;
+function getRawText({ field, text }) {
+  if (field === 'subjectTemplate')
+    EditorData.workflow.tasks[actionIdx.value].config.config[field] = text;
 }
 
 function replaceEmptyParagraphsWithNbsp(htmlString) {
@@ -221,6 +256,7 @@ watch(
   (newAddressTags) => {
     const addresses = newAddressTags.map((e) => e.label);
     EditorData.workflow.tasks[actionIdx.value].config.config.addresses = [...addresses];
+    store.commit('editor/setEmailConfig', { addresses });
     eventBus.emit('validate', {
       changeStep: false,
       taskName: 'action',
@@ -247,23 +283,6 @@ function handleCreate(email) {
 </script>
 
 <style lang="scss">
-.email-subject-wrapper {
-  display: flex;
-  align-items: center;
-  margin-bottom: 1em;
-  max-width: 100%;
-
-  span {
-    width: 20%;
-    min-width: 60px;
-  }
-}
-
-.email-subject {
-  width: 80%;
-  max-height: 2.1255rem;
-}
-
 .compiler {
   border: 1px solid rgb(239, 239, 245);
   border-radius: 3px;
@@ -306,9 +325,5 @@ function handleCreate(email) {
   max-height: 600px;
   padding-right: 10px;
   overflow: auto;
-}
-.custom-message-content {
-  display: flex;
-  flex-direction: column;
 }
 </style>

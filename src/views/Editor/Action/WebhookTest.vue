@@ -60,7 +60,7 @@
 <script setup>
 import WebhookInput from '@/views/Editor/Action/WebhookInput';
 import EditorData from '@/store/localStore/EditorData';
-import { computed, inject, onBeforeUnmount } from 'vue';
+import { computed, onBeforeUnmount } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();

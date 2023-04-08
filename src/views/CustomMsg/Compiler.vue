@@ -20,7 +20,8 @@ const props = defineProps({
   modelValue: { type: String, default: '' },
   padding: { type: String, default: '10px' },
   multiline: { type: Boolean, default: true },
-  useRawText: { type: Boolean, default: false },
+  field: { type: String, default: 'content' },
+  defaultContent: String,
 });
 
 const emits = defineEmits(['update:modelValue', 'getRawText']);
@@ -218,7 +219,8 @@ const PreventEnter = Extension.create({
 });
 
 const editor = useEditor({
-  content: props.modelValue,
+  // content: props.modelValue,
+  content: props.defaultContent,
 
   editorProps: {
     attributes: {
@@ -240,13 +242,22 @@ const editor = useEditor({
   onUpdate: () => emits('update:modelValue', editor.value.getHTML()),
 });
 
+function setEditorContent(newValue) {
+  const isSame = editor.value.getHTML() === newValue;
+  if (!isSame) editor.value.commands.setContent(newValue);
+  emits('getRawText', { field: props.field, text: editor.value.getText() });
+}
 watch(
   () => props.modelValue,
   (newValue) => {
-    if (!editor.value) return;
-    const isSame = editor.value.getHTML() === newValue;
-    if (!isSame) editor.value.commands.setContent(newValue);
-    if (props.useRawText) emits('getRawText', editor.value.getText());
+    if (editor.value) {
+      setEditorContent(newValue);
+    } else {
+      // Wait for 100 milliseconds before running the function
+      setTimeout(() => {
+        setEditorContent(newValue);
+      }, 200);
+    }
   },
   { immediate: true },
 );
@@ -260,9 +271,9 @@ watch(
     background 0.3s var(--n-bezier);
 
   &.no-multiline {
-    max-height: 2.1255rem;
-    white-space: pre !important;
-    overflow: hidden;
+    // max-height: 2.1255rem;
+    // white-space: pre !important;
+    // overflow: hidden;
 
     [contenteditable='false'] {
       white-space: nowrap;

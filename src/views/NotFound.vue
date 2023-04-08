@@ -41,7 +41,6 @@ const rules = ref({
   tags: {
     trigger: ['change'],
     validator(rule, value) {
-      console.log(value);
       if (value.length >= 3) return new Error('Up to 4 tags');
       return true;
     },

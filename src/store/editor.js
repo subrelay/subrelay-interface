@@ -3,8 +3,9 @@ export default {
 
   state: () => ({
     step: null,
-    expand: { trigger: '1', action: '2' },
+    expand: { trigger: '1', action: '1' },
     isTestActionDisabled: true,
+    emailConfig: {}, // for preview in test
   }),
 
   mutations: {
@@ -24,6 +25,10 @@ export default {
       state.step = null;
       state.expand = { trigger: '1', action: '1' };
       state.isTestActionDisabled = true;
+    },
+
+    setEmailConfig: (state, config) => {
+      state.emailConfig = { ...state.emailConfig, ...config };
     },
   },
 
