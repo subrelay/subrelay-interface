@@ -18,7 +18,6 @@
 
     <n-space v-else vertical :size="20" style="margin-bottom: 5vh">
       <div class="page_title">{{ workflow.name }}</div>
-
       <n-tabs
         v-if="workflow.tasks"
         default-value="overview"
@@ -32,7 +31,7 @@
           <Overview :id="id" />
         </n-tab-pane>
 
-        <n-tab-pane name="logs" tab="Logs">
+        <n-tab-pane name="workflowLogs" tab="Logs">
           <WorkflowLogs :id="id" />
         </n-tab-pane>
       </n-tabs>
@@ -73,8 +72,7 @@ watch(workflow, (newWorkflow) => {
 
 function onChangeTab(tab) {
   activeTab.value = tab;
-
-  router.push({ name: tab === 'overview' ? tab : 'workflowLogs', params: { id: +props.id } });
+  router.push({ name: tab, params: { id: +props.id } });
 }
 
 watch(

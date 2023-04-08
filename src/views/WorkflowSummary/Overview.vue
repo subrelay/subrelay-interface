@@ -108,7 +108,12 @@
         <!-- ACTION -->
         <n-space vertical>
           <div class="text-semi-bold">Config</div>
-          <WebhookInput :config="actionTask.config.config" />
+          <WebhookInput
+            :config="actionTask.config.config"
+            v-if="actionTask.config.channel === 'webhook'"
+          />
+
+          <div>UNDER DEVELOPMENT</div>
         </n-space>
       </n-space>
     </n-card>

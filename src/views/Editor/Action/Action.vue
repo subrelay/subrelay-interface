@@ -25,6 +25,7 @@
       <n-collapse-item name="2" title="Setup Action">
         <div class="step_container">
           <SetUpAction />
+
           <n-button class="action_button" type="primary" @click="validateSetupAction">
             Continue
           </n-button>
@@ -53,6 +54,7 @@ const [{ expandedNames }, { nextStep, backStep, setExpand }] = useAccordion('act
 
 const store = useStore();
 const emits = defineEmits(['validate']);
+
 const isDisabledTest = computed(() => store.state.editor.isTestActionDisabled);
 
 function validateSetupAction() {

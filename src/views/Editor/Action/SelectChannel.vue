@@ -35,10 +35,17 @@
 <script setup>
 import EditorData from '@/store/localStore/EditorData';
 import { useChannels } from '@/composables';
+import { computed } from 'vue';
 
-function handleSelectChannel() {
+const actionIdx = computed(() => EditorData.actionIdx);
+const config = {
+  webhook: { headers: [{ key: null, value: null }], url: null },
+  email: { addresses: [], subjectTemplate: null, bodyTemplate: null },
+};
+
+function handleSelectChannel(newChannel) {
   // set Editor.setError to false
-  // Used for milestone 2 to clear 'Set Up Action' data when user switches to other channel
+  EditorData.workflow.tasks[actionIdx.value].config.config = config[newChannel];
 }
 </script>
 

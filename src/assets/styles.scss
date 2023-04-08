@@ -199,7 +199,7 @@ body {
 
 .text-ellipsis {
   overflow: hidden;
-  white-space: nowrap;
+  white-space: nowrap !important;
   text-overflow: ellipsis;
 }
 
@@ -237,9 +237,11 @@ flex-1 {
 
 .input-item {
   display: flex;
-  align-items: center;
+  align-items: baseline;
+
   .title {
-    width: 15%;
+    width: 100px;
+    min-width: 100px;
   }
 }
 .table-pagination {

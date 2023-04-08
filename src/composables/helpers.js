@@ -1,7 +1,7 @@
 import { isArray } from 'lodash';
 
 export const useDropdownFilter = (string, option) => {
-  option.name.toLowerCase().includes(string.toLowerCase());
+  return option.name.toLowerCase().includes(string.toLowerCase());
 };
 
 export const useParsePascalCaseStr = (string) => {
