@@ -50,7 +50,7 @@
 
           <n-step
             title="ACTION"
-            description="Action will perform when the app has started"
+            description="Action will perform when the event is triggered"
             :status="actionStatus"
           >
             <template #icon>

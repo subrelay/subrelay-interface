@@ -11,7 +11,7 @@
         v-model:value="addressTags"
         @create="handleCreate"
         :render-tag="renderTag"
-        :max="3"
+        :max="2"
       >
         <template #input="{ submit, deactivate }">
           <n-input
@@ -108,7 +108,7 @@ import EditorData from '@/store/localStore/EditorData';
 import Compiler from '@/views/CustomMsg/Compiler';
 import { h, ref, watch, computed, inject, nextTick } from 'vue';
 import { template, set, flow, isEmpty } from 'lodash';
-import { useIsCorrectEmailFormat } from '@/composables';
+import { useIsCorrectEmailFormat, useCustomMessage } from '@/composables';
 import { Icon } from '@iconify/vue';
 import { useStore } from 'vuex';
 import { NTag } from 'naive-ui';
@@ -117,7 +117,6 @@ const store = useStore();
 const eventBus = inject('eventBus');
 const emits = defineEmits(['validate']);
 
-const keyLookup = ref(null);
 const addressTags = ref([]);
 const content = ref('');
 const previewContent = ref('');
@@ -133,6 +132,7 @@ const actionIdx = computed(() => EditorData.actionIdx);
 const rawSubject = ref('');
 const defaultSubject = ref('');
 const defaultContent = ref('');
+const getFormattedText = useCustomMessage(event);
 
 const rule = ref({
   key: 'setupAction_addresses',
@@ -152,6 +152,7 @@ const rule = ref({
 });
 
 const renderTag = ({ label, status }, index) => {
+  // todo: disable 2nd tag with error message
   return h(
     NTag,
     { type: status, closable: true, onClose: () => removeAddress(index) },
@@ -198,12 +199,6 @@ watch(
 
       defaultSubject.value = `Your tracked event ${newEvent.pallet}.${newEvent.name} on chain ${newEvent.chainUuid} has been triggered!`;
       subject.value = defaultSubject.value;
-
-      keyLookup.value = keysHaveExample.reduce((obj, e) => {
-        const { name, example } = e;
-        set(obj, name, example);
-        return { ...obj };
-      }, {});
     }
   },
   { immediate: true },
@@ -212,11 +207,9 @@ watch(
 watch(
   content,
   (newContent) => {
-    const formatContent = flow(replaceEmptyParagraphsWithNbsp, template);
-    const formattedContent = formatContent(newContent)({ ...keyLookup.value });
-    previewContent.value = formattedContent;
+    previewContent.value = getFormattedText(newContent);
     EditorData.workflow.tasks[actionIdx.value].config.config.bodyTemplate = newContent;
-    store.commit('editor/setEmailConfig', { bodyTemplate: formattedContent });
+    store.commit('editor/setEmailConfig', { bodyTemplate: previewContent.value });
   },
   { immediate: true },
 );
@@ -224,24 +217,17 @@ watch(
 watch(
   subject,
   (newSubject) => {
-    const formatSubject = flow(replaceEmptyParagraphsWithNbsp, template);
-    const formattedSubject = formatSubject(newSubject)({ ...keyLookup.value });
-    previewSubject.value = formattedSubject;
-    store.commit('editor/setEmailConfig', { subjectTemplate: formattedSubject });
+    previewSubject.value = getFormattedText(newSubject);
+    store.commit('editor/setEmailConfig', { subjectTemplate: previewContent.value });
   },
   { immediate: true },
 );
 
 function getRawText({ field, text }) {
-  if (field === 'subjectTemplate')
+  if (field === 'subjectTemplate') {
     EditorData.workflow.tasks[actionIdx.value].config.config[field] = text;
-}
-
-function replaceEmptyParagraphsWithNbsp(htmlString) {
-  const regex = /<p><\/p>/g; // g flag to replace all occurrences
-  const replacement = '<p>&nbsp;</p>';
-  const result = htmlString.replace(regex, replacement);
-  return result;
+    store.commit('editor/setEmailConfig', { subjectTemplate: getFormattedText(text) });
+  }
 }
 
 watch(inputRef, (value) => {

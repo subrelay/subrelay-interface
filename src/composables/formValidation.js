@@ -41,7 +41,7 @@ export function useFormValidation() {
         }
       }
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     }
   }
 

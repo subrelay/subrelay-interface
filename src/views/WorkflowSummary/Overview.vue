@@ -42,13 +42,15 @@
 
       <n-space vertical :size="24">
         <n-grid cols="3">
-          <n-gi span="2">
+          <!-- Chain -->
+          <n-gi span="1">
             <n-space vertical>
               <div class="text-semi-bold">Chain</div>
               <div>{{ workflow.chainName }}</div>
             </n-space>
           </n-gi>
 
+          <!-- Event -->
           <n-gi>
             <n-space vertical>
               <div class="text-semi-bold">Event</div>
@@ -95,7 +97,8 @@
 
       <n-space vertical :size="24">
         <n-grid cols="3">
-          <n-gi span="2">
+          <!-- Channel -->
+          <n-gi span="1">
             <n-space vertical>
               <div class="text-semi-bold">Channel</div>
               <div class="text-capitalize">
@@ -103,31 +106,54 @@
               </div>
             </n-space>
           </n-gi>
+
+          <!-- Email addresses -->
+          <n-gi span="2" v-if="actionTask.config.channel === 'email'">
+            <n-space vertical>
+              <div class="text-semi-bold">Recipients</div>
+              <n-ellipsis>
+                <span
+                  v-for="(add, idx) in actionTask.config.config.addresses"
+                  style="font-size: 0.85em"
+                  :key="idx"
+                >
+                  <span>{{ add }}</span>
+                  <span v-if="idx !== actionTask.config.config.addresses.length - 1">,&nbsp;</span>
+                </span>
+              </n-ellipsis>
+            </n-space>
+          </n-gi>
         </n-grid>
 
         <!-- ACTION -->
-        <n-space vertical>
+        <!-- Webhook config -->
+        <n-space vertical v-if="actionTask.config.channel === 'webhook'">
           <div class="text-semi-bold">Config</div>
-          <WebhookInput
-            :config="actionTask.config.config"
-            v-if="actionTask.config.channel === 'webhook'"
-          />
-
-          <div>UNDER DEVELOPMENT</div>
+          <WebhookInput :config="actionTask.config.config" />
         </n-space>
+
+        <n-space vertical v-if="!isEmpty(event)">
+          <div class="text-semi-bold">Subject</div>
+          <n-blockquote>
+            {{ getFormattedText(actionTask.config.config.subjectTemplate) }}
+          </n-blockquote>
+        </n-space>
+
+        <EmailInput :config="actionTask.config.config" />
       </n-space>
     </n-card>
   </n-space>
 </template>
 
 <script setup>
+import EmailInput from '@/views/Editor/Action/EmailInput';
 import WebhookInput from '@/views/Editor/Action/WebhookInput';
 import WorkflowSwitch from '@/components/WorkflowSwitch';
-import { useParsePascalCaseStr } from '@/composables';
+import { useParsePascalCaseStr, useCustomMessage } from '@/composables';
 import { computed, ref, watch, onBeforeUnmount } from 'vue';
 import { useStore } from 'vuex';
-import moment from 'moment';
 import { isEmpty } from 'lodash';
+import moment from 'moment';
 
 const store = useStore();
 const props = defineProps({ id: [String, Number] });
@@ -136,6 +162,8 @@ const event = computed(() => store.state.chain.event);
 const eventString = ref(null);
 const triggerTask = computed(() => workflow.value.tasks.find((task) => task.type === 'trigger'));
 const filtersCondition = computed(() => triggerTask.value.config.conditions);
+
+const getFormattedText = useCustomMessage(event);
 
 watch(
   event,
