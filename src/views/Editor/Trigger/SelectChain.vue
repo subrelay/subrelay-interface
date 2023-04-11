@@ -2,13 +2,13 @@
   <n-form-item
     path="chainUuid"
     class="w-100"
-    label="Select Chain"
+    label="Select chain"
     :rule="{ required: true, trigger: 'input', message: 'Required', key: 'selectChain' }"
   >
     <ChainDropdown
       v-model="EditorData.workflow.chainUuid"
+      placeholder="Please select"
       :onSelectChain="handleSelectChain"
-      :placeholder="'Select Chain'"
     />
   </n-form-item>
 </template>
@@ -22,7 +22,8 @@ const store = useStore();
 
 function handleSelectChain(chainUuid) {
   EditorData.setError('trigger', !chainUuid);
-  EditorData.setTrigger({ eventId: null, conditions: [] });
+  EditorData.resetTrigger();
+  EditorData.resetFilter();
 
   if (chainUuid) {
     store.dispatch('chain/getEvents', chainUuid);

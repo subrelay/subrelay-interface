@@ -41,11 +41,7 @@
         <div class="step_container">
           <Filters />
 
-          <n-button
-            class="action_button"
-            type="primary"
-            @click="emits('validate', { taskName: 'trigger', keys: ['filterCond'] })"
-          >
+          <n-button class="action_button" type="primary" @click="validateFilter">
             {{ conditionLength ? 'Continue' : 'Skip filter' }}
           </n-button>
         </div>
@@ -65,7 +61,15 @@ import Filters from '@/views/Editor/Trigger/Filters';
 const [{ expandedNames }, { setExpand }] = useAccordion('trigger');
 const emits = defineEmits(['validate']);
 
-const conditionLength = computed(() => EditorData.workflow.tasks[0].config.conditions.length);
+const filterIdx = computed(() => EditorData.filterIdx);
+const conditionLength = computed(
+  () => EditorData.workflow.tasks[filterIdx.value].config.conditions.length,
+);
+
+function validateFilter() {
+  const callback = () => EditorData.setComplete('filter', true);
+  emits('validate', { taskName: 'filter', keys: ['filterCond'], callback });
+}
 </script>
 
 <style lang="scss"></style>

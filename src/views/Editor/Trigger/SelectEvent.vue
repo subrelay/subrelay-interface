@@ -1,6 +1,6 @@
 <template>
   <n-form-item
-    label="Select Event"
+    label="Select event"
     :path="`tasks[${EditorData.triggerIdx}].config.eventId`"
     :rule="{
       required: true,
@@ -13,7 +13,6 @@
     <n-select
       clearable
       filterable
-      placeholder="Select Event"
       :loading="loading"
       :disabled="loading"
       :options="options"
@@ -56,7 +55,8 @@ function onBack() {
 
 function handleSelectEvent(eventId) {
   EditorData.setError('trigger', !eventId);
-  EditorData.setTrigger({ conditions: [] });
+  EditorData.setComplete('trigger', !!eventId);
+  EditorData.resetFilter();
 
   if (eventId) {
     store.dispatch('chain/getEvent', { chainUuid: chainUuid.value, eventId });

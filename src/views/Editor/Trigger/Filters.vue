@@ -1,5 +1,8 @@
 <template>
-  <div v-for="(group, index) in EditorData.workflow.tasks[0].config.conditions" :key="index">
+  <div
+    v-for="(group, index) in EditorData.workflow.tasks[filterIdx].config.conditions"
+    :key="index"
+  >
     <n-divider title-placement="left" v-if="index !== 0"> OR </n-divider>
 
     <FilterConditionInput
@@ -37,7 +40,7 @@
   <n-button
     @click="() => EditorData.addOr()"
     :type="darkMode ? 'default' : 'info'"
-    v-if="!EditorData.workflow.tasks[0].config.conditions.length"
+    v-if="!EditorData.workflow.tasks[filterIdx].config.conditions.length"
   >
     <Icon icon="fluent:add-16-filled" style="margin-right: 4px" />
     <span>Add filter conditions</span>
@@ -52,8 +55,10 @@ import { useStore } from 'vuex';
 
 const store = useStore();
 const darkMode = computed(() => store.state.global.isDarkMode);
-
-const conditionLength = computed(() => EditorData.workflow.tasks[0].config.conditions.length);
+const filterIdx = computed(() => EditorData.filterIdx);
+const conditionLength = computed(
+  () => EditorData.workflow.tasks[filterIdx.value].config.conditions.length,
+);
 
 function removeItem(groupIdx, conditionIdx) {
   EditorData.setError('trigger', false);

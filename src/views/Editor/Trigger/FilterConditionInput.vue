@@ -3,13 +3,13 @@
     <n-grid cols="3" x-gap="20" class="grid_area">
       <n-gi>
         <n-form-item
+          label="Property"
           :rule="{ ...requiredRule, key: `filterCond_variable_${index}_${conditionIdx}` }"
-          :path="`tasks[0].config.conditions[${props.index}][${props.conditionIdx}].variable`"
+          :path="`tasks[${filterIdx}].config.conditions[${props.index}][${props.conditionIdx}].variable`"
         >
           <n-select
             filterable
             clearable
-            placeholder="Select Property"
             :consistent-menu-width="false"
             :filter="useDropdownFilter"
             :value-field="'name'"
@@ -28,14 +28,13 @@
 
       <n-gi>
         <n-form-item
-          label=""
+          label="Operator"
           :rule="{ ...requiredRule, key: `filterCond_operator_${index}_${conditionIdx}` }"
-          :path="`tasks[0].config.conditions[${props.index}][${conditionIdx}].operator`"
+          :path="`tasks[${filterIdx}].config.conditions[${props.index}][${conditionIdx}].operator`"
         >
           <n-select
             filterable
             clearable
-            placeholder="Select Operator"
             :consistent-menu-width="false"
             :render-label="renderLabel"
             :loading="isLoading || getOperatorsLoading"
@@ -54,12 +53,13 @@
 
       <n-gi v-if="inputType !== 'boolean'">
         <n-form-item
+          label="Value"
+          :path="`tasks[${filterIdx}].config.conditions[${props.index}][${props.conditionIdx}].value`"
           :rule="{
             ...requiredRule,
             type: 'number',
             key: `filterCond_value_${index}_${conditionIdx}`,
           }"
-          :path="`tasks[0].config.conditions[${props.index}][${props.conditionIdx}].value`"
         >
           <n-input
             placeholder="Filter value"
@@ -96,11 +96,11 @@ import EditorData from '@/store/localStore/EditorData';
 import { ref, computed, watch, inject, h, onBeforeMount } from 'vue';
 import { useStore } from 'vuex';
 import { isEmpty } from 'lodash';
-import { useRenderDropdownLabel,
+import {
+  useRenderDropdownLabel,
   useDropdownFilter,
-  renderSelectTagWithDescription } from '@/composables';
-
-const store = useStore();
+  renderSelectTagWithDescription,
+} from '@/composables';
 
 const props = defineProps({
   index: Number,
@@ -109,23 +109,28 @@ const props = defineProps({
 });
 
 const emits = defineEmits(['remove', 'input']);
+const store = useStore();
 const isLoading = ref(false);
-const propertyOptions = computed(() => (store.state.chain.event.fields || []).map((e) => ({
-  ...e,
-  disabled: e.type === 'unknown',
-})));
+const propertyOptions = computed(() =>
+  (store.state.chain.event.fields || []).map((e) => ({
+    ...e,
+    disabled: e.type === 'unknown',
+  })),
+);
 
 const requiredRule = ref({
   trigger: ['input'],
+  required: true,
   validator(rule, value) {
     if (value === null) {
-      EditorData.setError('trigger', true);
+      EditorData.setError('filter', true);
       return new Error('Required!');
     }
-    EditorData.setError('trigger', false);
+    EditorData.setError('filter', false);
   },
 });
 
+const filterIdx = computed(() => EditorData.filterIdx);
 const operators = computed(() => store.state.task.operators);
 const getOperatorsLoading = computed(() => store.state.task.loading);
 const inputType = ref(null);

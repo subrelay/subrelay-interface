@@ -249,7 +249,7 @@ onBeforeUnmount(() => {
   EditorData.loadWorkflow();
   store.commit('task/reset');
   store.commit('editor/reset');
-  window.removeEventListener('beforeunload', (e) => handleReload(e));
+  // window.removeEventListener('beforeunload', (e) => handleReload(e));
 });
 
 onBeforeMount(async () => {
@@ -286,7 +286,7 @@ onBeforeMount(async () => {
   }
 
   store.commit('editor/setStep', route.name === 'trigger' ? 1 : 2);
-  window.addEventListener('beforeunload', (e) => handleReload(e));
+  // window.addEventListener('beforeunload', (e) => handleReload(e));
 });
 </script>
 
