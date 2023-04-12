@@ -6,7 +6,7 @@
       </template>
 
       <n-skeleton v-if="runningTest" text :repeat="2" />
-      <WebhookInput v-else :config="config.config" />
+      <WebhookInput v-else :config="config" />
     </n-card>
 
     <n-card header-style="padding-bottom: 0.5rem" v-if="isTested" :segmented="{ content: 'soft' }">

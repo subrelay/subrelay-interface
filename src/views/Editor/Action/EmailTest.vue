@@ -23,16 +23,16 @@
       <n-space vertical :size="10" v-else>
         <div class="input-item" style="align-items: center">
           <div class="title">Status:</div>
-          <StatusIcon :isSuccess="testResult.success" />
+          <StatusIcon :status="testResult.status" />
 
           <span class="text-capitalize" style="margin-left: 4px">
-            {{ testResult.success ? 'Success' : 'Failed' }}
+            {{ testResult.status ? 'Success' : 'Failed' }}
           </span>
         </div>
 
-        <div class="input-item" v-if="!testResult.success">
+        <div class="input-item" v-if="!testResult.status === 'failed'">
           <div class="title">Message:</div>
-          <p>{{ testResult.error.message }}</p>
+          <p>{{ testResult.error?.message }}</p>
         </div>
 
         <div class="input-item" v-if="testResult.result">
@@ -87,7 +87,7 @@ async function onTest() {
   await store.dispatch('task/runTask', {
     type: type.value,
     config: config.value,
-    data: { eventId: +eventId.value },
+    data: { eventId: eventId.value },
   });
 }
 </script>

@@ -14,7 +14,11 @@
             class="action_button"
             type="primary"
             @click="
-              emits('validate', { taskName: 'action', keys: ['selectChannel'], nextExpand: '2' })
+              emits('validate', {
+                taskName: 'action',
+                keys: ['selectChannel'],
+                nextExpand: '2',
+              })
             "
           >
             Continue

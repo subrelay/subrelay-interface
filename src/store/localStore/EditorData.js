@@ -20,7 +20,7 @@ const defaultConfig = () => ({
       config: { conditions: [] },
     },
     {
-      name: 'notification',
+      name: 'action',
       type: '',
       dependOnName: 'trigger',
       config: {},
@@ -64,7 +64,7 @@ const editor = reactive({
 
   resetFilter() {
     this.workflow.tasks[this.filterIdx].config.conditions = [];
-    this.setComplete('filter', false); // todo: true or false?
+    this.setComplete('filter', false); // todo: true or false? since filter is an optional step
   },
 
   addOr() {
@@ -98,7 +98,7 @@ const editor = reactive({
     this.workflow = defaultConfig();
     this.triggerIdx = this.workflow.tasks.findIndex((task) => task.type === 'trigger');
     this.filterIdx = this.workflow.tasks.findIndex((task) => task.type === 'filter');
-    this.actionIdx = this.workflow.tasks.findIndex((task) => task.name === 'notification');
+    this.actionIdx = this.workflow.tasks.findIndex((task) => task.name === 'action');
 
     // Add flag for error validator
     this.workflow.tasks.forEach((task) => {

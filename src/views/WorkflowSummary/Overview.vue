@@ -113,12 +113,12 @@
               <div class="text-semi-bold">Recipients</div>
               <n-ellipsis>
                 <span
-                  v-for="(add, idx) in actionTask.config.config.addresses"
+                  v-for="(add, idx) in actionTask.config.addresses"
                   style="font-size: 0.85em"
                   :key="idx"
                 >
                   <span>{{ add }}</span>
-                  <span v-if="idx !== actionTask.config.config.addresses.length - 1">,&nbsp;</span>
+                  <span v-if="idx !== actionTask.config.addresses.length - 1">,&nbsp;</span>
                 </span>
               </n-ellipsis>
             </n-space>
@@ -129,17 +129,17 @@
         <!-- Webhook config -->
         <n-space vertical v-if="actionTask.config.channel === 'webhook'">
           <div class="text-semi-bold">Config</div>
-          <WebhookInput :config="actionTask.config.config" />
+          <WebhookInput :config="actionTask.config" />
         </n-space>
 
         <n-space vertical v-if="!isEmpty(event)">
           <div class="text-semi-bold">Subject</div>
           <n-blockquote>
-            {{ getFormattedText(actionTask.config.config.subjectTemplate) }}
+            {{ getFormattedText(actionTask.config.subjectTemplate) }}
           </n-blockquote>
         </n-space>
 
-        <EmailInput :config="actionTask.config.config" />
+        <EmailInput :config="actionTask.config" />
       </n-space>
     </n-card>
   </n-space>
@@ -176,9 +176,7 @@ watch(
   { immediate: true },
 );
 
-const actionTask = computed(() =>
-  workflow.value.tasks.find((task) => task.type === 'notification'),
-);
+const actionTask = computed(() => workflow.value.tasks.find((task) => task.name === 'action'));
 </script>
 
 <style lang="scss"></style>

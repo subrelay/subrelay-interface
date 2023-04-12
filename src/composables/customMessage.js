@@ -8,10 +8,10 @@ export default function useCustomMessage(event) {
     event,
     (newEvent) => {
       if (!isEmpty(newEvent)) {
-        const keysHaveExample = newEvent.fields.filter((e) => e.example !== undefined);
+        const keysHaveExample = newEvent.fields.filter((e) => e.data !== undefined);
         keyLookup.value = keysHaveExample.reduce((obj, e) => {
-          const { name, example } = e;
-          set(obj, name, example);
+          const { name, data } = e;
+          set(obj, name, data);
           return { ...obj };
         }, {});
       }

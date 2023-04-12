@@ -2,11 +2,7 @@
   <!-- EMAIl LIST -->
   <n-space vertical>
     <div class="text-semi-bold">Recipients:</div>
-    <n-form-item
-      :path="`tasks[${actionIdx}].config.config.addresses`"
-      :show-label="false"
-      :rule="rule"
-    >
+    <n-form-item :path="`tasks[${actionIdx}].config.addresses`" :show-label="false" :rule="rule">
       <n-dynamic-tags
         v-model:value="addressTags"
         @create="handleCreate"
@@ -180,13 +176,13 @@ watch(
         '<p></p>',
         '<p>Here is the summary of what happened in the event you are subscribing:</p>',
         '<p></p>',
-        `<p>Chain: ${chainUuid.value}</p>`,
+        `<p>Chain: ${newEvent.chain.name}</p>`,
         '<p></p>',
         '<p>Sample Data:</p>',
         '<p></p>',
       ];
 
-      const keysHaveExample = newEvent.fields.filter((e) => e.example !== undefined);
+      const keysHaveExample = newEvent.fields.filter((e) => e.data !== undefined);
 
       const keys = keysHaveExample.map((e, i) => {
         return `<p>Var${i + 1}: <span data-type="KeySuggestion" class="mention" data-id="${
@@ -197,7 +193,7 @@ watch(
       defaultContent.value = [...greetings, ...keys].join('');
       content.value = defaultContent.value;
 
-      defaultSubject.value = `Your tracked event ${newEvent.pallet}.${newEvent.name} on chain ${newEvent.chainUuid} has been triggered!`;
+      defaultSubject.value = `Your tracked event ${newEvent.name} on chain ${newEvent.chain.name} has been triggered!`;
       subject.value = defaultSubject.value;
     }
   },
@@ -208,7 +204,7 @@ watch(
   content,
   (newContent) => {
     previewContent.value = getFormattedText(newContent);
-    EditorData.workflow.tasks[actionIdx.value].config.config.bodyTemplate = newContent;
+    EditorData.workflow.tasks[actionIdx.value].config.bodyTemplate = newContent;
     store.commit('editor/setEmailConfig', { bodyTemplate: previewContent.value });
   },
   { immediate: true },
@@ -225,7 +221,7 @@ watch(
 
 function getRawText({ field, text }) {
   if (field === 'subjectTemplate') {
-    EditorData.workflow.tasks[actionIdx.value].config.config[field] = text;
+    EditorData.workflow.tasks[actionIdx.value].config[field] = text;
     store.commit('editor/setEmailConfig', { subjectTemplate: getFormattedText(text) });
   }
 }
@@ -241,7 +237,7 @@ watch(
   addressTags,
   (newAddressTags) => {
     const addresses = newAddressTags.map((e) => e.label);
-    EditorData.workflow.tasks[actionIdx.value].config.config.addresses = [...addresses];
+    EditorData.workflow.tasks[actionIdx.value].config.addresses = [...addresses];
     store.commit('editor/setEmailConfig', { addresses });
     eventBus.emit('validate', {
       changeStep: false,
@@ -254,7 +250,7 @@ watch(
 
 function removeAddress(index) {
   addressTags.value.splice(index, 1);
-  EditorData.workflow.tasks[actionIdx.value].config.config.addresses.splice(index, 1);
+  EditorData.workflow.tasks[actionIdx.value].config.addresses.splice(index, 1);
   eventBus.emit('validate', {
     changeStep: false,
     taskName: 'action',

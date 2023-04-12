@@ -1,27 +1,27 @@
 <template>
-  <n-form-item :path="`tasks[${actionIdx}].config.config.url`" label="URL" :rule="urlRule">
-    <n-input clearable v-model:value="EditorData.workflow.tasks[actionIdx].config.config.url" />
+  <n-form-item :path="`tasks[${actionIdx}].config.url`" label="URL" :rule="urlRule">
+    <n-input clearable v-model:value="EditorData.workflow.tasks[actionIdx].config.url" />
   </n-form-item>
 
   <n-form-item
     label="Header key"
-    :path="`tasks[${actionIdx}].config.config.headers[0].key`"
+    :path="`tasks[${actionIdx}].config.headers[0].key`"
     :rule="keyRule"
   >
     <n-input
       clearable
-      v-model:value="EditorData.workflow.tasks[actionIdx].config.config.headers[0].key"
+      v-model:value="EditorData.workflow.tasks[actionIdx].config.headers[0].key"
     />
   </n-form-item>
 
   <n-form-item
     label="Header value"
-    :path="`tasks[${actionIdx}].config.config.headers[0].value`"
+    :path="`tasks[${actionIdx}].config.headers[0].value`"
     :rule="valueRule"
   >
     <n-input
       clearable
-      v-model:value="EditorData.workflow.tasks[actionIdx].config.config.headers[0].value"
+      v-model:value="EditorData.workflow.tasks[actionIdx].config.headers[0].value"
     />
   </n-form-item>
 </template>
@@ -36,10 +36,10 @@ const store = useStore();
 const actionIdx = computed(() => EditorData.actionIdx);
 
 const headerKey = computed(
-  () => EditorData.workflow.tasks[actionIdx.value].config.config.headers[0].key,
+  () => EditorData.workflow.tasks[actionIdx.value].config.headers[0].key,
 );
 const headerValue = computed(
-  () => EditorData.workflow.tasks[actionIdx.value].config.config.headers[0].value,
+  () => EditorData.workflow.tasks[actionIdx.value].config.headers[0].value,
 );
 
 const keyRule = ref({

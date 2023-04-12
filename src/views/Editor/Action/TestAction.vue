@@ -11,7 +11,7 @@ import EditorData from '@/store/localStore/EditorData';
 
 const store = useStore();
 const actionIdx = computed(() => EditorData.actionIdx);
-const channel = computed(() => EditorData.workflow.tasks[actionIdx.value].config.channel);
+const channel = computed(() => EditorData.workflow.tasks[actionIdx.value].type);
 
 function onBack() {
   store.commit('editor/setExpand', { action: '1' });
