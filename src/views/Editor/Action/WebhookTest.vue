@@ -19,22 +19,14 @@
         <div class="input-item">
           <div class="title">Status:</div>
 
-          <Icon
-            :inline="true"
-            :icon="testResult.success ? 'ep:success-filled' : 'ic:round-cancel'"
-            :color="testResult.success ? '#18A058FF' : '#D03050FF'"
-            :width="'1.2rem'"
-            style="margin-right: 5px"
-          />
-          <span class="text-capitalize">
-            {{ testResult.success ? 'Success' : 'Failed' }}
-          </span>
+          <StatusIcon :status="testResult.status" />
+          <span class="text-capitalize" style="margin-left: 4px"> {{ testResult.status }} </span>
         </div>
 
-        <div class="input-item" v-if="!testResult.success">
+        <n-space class="input-item" align="center" v-if="testResult.status === 'failed'">
           <div class="title">Message:</div>
-          <p>{{ testResult.error.message }}</p>
-        </div>
+          <p>{{ testResult.error?.message || testResult.error?.code }}</p>
+        </n-space>
 
         <div class="input-item" v-if="testResult.result">
           <div class="title">Result:</div>
@@ -58,6 +50,7 @@
 </template>
 
 <script setup>
+import StatusIcon from '@/components/StatusIcon';
 import WebhookInput from '@/views/Editor/Action/WebhookInput';
 import EditorData from '@/store/localStore/EditorData';
 import { computed, onBeforeUnmount } from 'vue';
@@ -83,7 +76,7 @@ async function onTest() {
   await store.dispatch('task/runTask', {
     type: type.value,
     config: config.value,
-    data: { eventId: +eventId.value },
+    data: { eventId: eventId.value },
   });
 }
 </script>

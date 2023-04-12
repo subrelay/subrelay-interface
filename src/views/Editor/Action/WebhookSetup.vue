@@ -1,27 +1,24 @@
 <template>
-  <n-form-item :path="`tasks[${actionIdx}].config.url`" label="URL" :rule="urlRule">
+  <n-form-item
+    label-placement="left"
+    label="URL"
+    label-width="auto"
+    :path="`tasks[${actionIdx}].config.url`"
+    :rule="urlRule"
+  >
     <n-input clearable v-model:value="EditorData.workflow.tasks[actionIdx].config.url" />
   </n-form-item>
 
   <n-form-item
-    label="Header key"
-    :path="`tasks[${actionIdx}].config.headers[0].key`"
-    :rule="keyRule"
+    label="Secret"
+    label-width="auto"
+    label-placement="left"
+    :path="`tasks[${actionIdx}].config.secret`"
   >
     <n-input
+      type="password"
       clearable
-      v-model:value="EditorData.workflow.tasks[actionIdx].config.headers[0].key"
-    />
-  </n-form-item>
-
-  <n-form-item
-    label="Header value"
-    :path="`tasks[${actionIdx}].config.headers[0].value`"
-    :rule="valueRule"
-  >
-    <n-input
-      clearable
-      v-model:value="EditorData.workflow.tasks[actionIdx].config.headers[0].value"
+      v-model:value="EditorData.workflow.tasks[actionIdx].config.secret"
     />
   </n-form-item>
 </template>
@@ -34,50 +31,6 @@ import { useStore } from 'vuex';
 
 const store = useStore();
 const actionIdx = computed(() => EditorData.actionIdx);
-
-const headerKey = computed(
-  () => EditorData.workflow.tasks[actionIdx.value].config.headers[0].key,
-);
-const headerValue = computed(
-  () => EditorData.workflow.tasks[actionIdx.value].config.headers[0].value,
-);
-
-const keyRule = ref({
-  key: 'setupAction_key',
-  trigger: ['input'],
-  validator(_rule, value) {
-    store.commit('editor/disableTestAction', true);
-
-    if (headerValue.value && !value) {
-      return new Error('Required!');
-    }
-
-    if (/(-_)+|(_-)+|(-{2,})|(_{2,})|[^a-zA-Z0-9_-]/g.test(value)) {
-      return new Error('Invalid value');
-    }
-
-    return true;
-  },
-});
-
-const valueRule = ref({
-  key: 'setupAction_value',
-  trigger: ['input'],
-  type: ['string', 'number'],
-  validator(_rule, value) {
-    store.commit('editor/disableTestAction', true);
-
-    if (headerKey.value && !value) {
-      return new Error('Required!');
-    }
-
-    if (/(\W{2,})|[^a-zA-Z0-9\W-_] /.test(value)) {
-      return new Error('Invalid value');
-    }
-
-    return true;
-  },
-});
 
 const urlRule = ref({
   required: true,

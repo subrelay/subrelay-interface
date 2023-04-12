@@ -24,16 +24,13 @@
         <div class="input-item" style="align-items: center">
           <div class="title">Status:</div>
           <StatusIcon :status="testResult.status" />
-
-          <span class="text-capitalize" style="margin-left: 4px">
-            {{ testResult.status ? 'Success' : 'Failed' }}
-          </span>
+          <span class="text-capitalize" style="margin-left: 4px"> {{ testResult.status }} </span>
         </div>
 
-        <div class="input-item" v-if="!testResult.status === 'failed'">
+        <n-space class="input-item" v-if="testResult.status === 'failed'">
           <div class="title">Message:</div>
-          <p>{{ testResult.error?.message }}</p>
-        </div>
+          <p>{{ testResult.error?.message || testResult.error?.code }}</p>
+        </n-space>
 
         <div class="input-item" v-if="testResult.result">
           <div class="title">Result:</div>

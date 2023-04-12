@@ -39,7 +39,7 @@ import { computed } from 'vue';
 
 const actionIdx = computed(() => EditorData.actionIdx);
 const config = {
-  webhook: { headers: [{ key: null, value: null }], url: null },
+  webhook: { url: null, secret: null },
   email: { addresses: [], subjectTemplate: null, bodyTemplate: null },
 };
 

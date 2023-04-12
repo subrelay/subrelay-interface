@@ -15,15 +15,15 @@
       </n-text>
     </div>
 
-    <div class="input-item">
-      <div class="title">Subject:</div>
+    <n-space align="baseline" :size="0" :wrap-item="false" :wrap="false">
+      <div class="title" style="width: 100px; min-width: 100px">Subject:</div>
       <n-text code style="font-size: 0.85em">{{ config.subjectTemplate }}</n-text>
-    </div>
+    </n-space>
 
     <n-collapse arrow-placement="right" default-expanded-names="">
       <n-collapse-item title="Content" name="content">
         <template #header>
-          <div style="margin-left: -32px">Content:</div>
+          <div style="margin-left: -32px; font-weight: normal">Content:</div>
         </template>
 
         <n-blockquote>
