@@ -18,15 +18,16 @@
       <n-space vertical :size="10" v-else>
         <div class="input-item">
           <div class="title">Status:</div>
-
-          <StatusIcon :status="testResult.status" />
-          <span class="text-capitalize" style="margin-left: 4px"> {{ testResult.status }} </span>
+          <n-space :size="4" align="center" :wrap-item="false">
+            <StatusIcon :status="testResult.status" />
+            <span class="text-capitalize"> {{ testResult.status }} </span>
+          </n-space>
         </div>
 
-        <n-space class="input-item" align="center" v-if="testResult.status === 'failed'">
+        <div class="input-item" v-if="testResult.status === 'failed'">
           <div class="title">Message:</div>
           <p>{{ testResult.error?.message || testResult.error?.code }}</p>
-        </n-space>
+        </div>
 
         <div class="input-item" v-if="testResult.result">
           <div class="title">Result:</div>

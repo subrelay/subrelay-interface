@@ -118,7 +118,7 @@ const changedToTrigger = computed(() => {
     typeof task.isError === 'boolean' ||
     typeof task.isCompleted === 'boolean' ||
     !!task.config.eventId ||
-    !!task.chainUuid
+    !!task.uuid
   );
 });
 
@@ -275,13 +275,13 @@ onBeforeMount(async () => {
   // before data is completely loaded
   EditorData.loadWorkflow(data);
 
-  const { chainUuid } = EditorData.workflow;
+  const { uuid } = EditorData.workflow;
   const { eventId } = EditorData.workflow.tasks[0].config;
 
-  if (chainUuid) {
-    store.dispatch('chain/getEvents', chainUuid);
+  if (uuid) {
+    store.dispatch('chain/getEvents', uuid);
     if (eventId) {
-      store.dispatch('chain/getEvent', { chainUuid, eventId });
+      store.dispatch('chain/getEvent', { uuid, eventId });
     }
   }
 

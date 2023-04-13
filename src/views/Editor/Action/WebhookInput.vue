@@ -2,12 +2,14 @@
   <n-space vertical :size="10">
     <div class="input-item">
       <div class="title">URL:</div>
-      <n-text code class="text-ellipsis">{{ config.url }}</n-text>
+      <n-text code class="text-ellipsis" style="font-size: 0.85em">{{ config.url }}</n-text>
     </div>
 
     <div class="input-item">
       <div class="title">Secret:</div>
-      <n-text code class="text-ellipsis">{{ config.secret }}</n-text>
+      <n-text code class="text-ellipsis" style="font-size: 0.85em">
+        {{ config.secret.replace(/./g, '*') }}
+      </n-text>
     </div>
   </n-space>
 </template>

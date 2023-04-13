@@ -37,12 +37,12 @@
         :segmented="{ content: true }"
         title="CUSTOMIZATION"
         header-style="font-size: 0.85rem; font-weight: bold; padding:10px"
-        content-style="padding: 10px"
+        content-style="padding:0"
       >
-        <n-space vertical>
+        <n-space vertical class="custom-message-card-content" :wrap-item="false">
           <!-- SUBJECT -->
           <n-space vertical style="margin-bottom: 1em">
-            <div class="text-italic">Subject:</div>
+            <div class="text-italic text-bold">Subject:</div>
             <Compiler
               v-model="subject"
               padding="5px"
@@ -57,8 +57,8 @@
           </n-space>
 
           <!-- CONTENT -->
-          <n-space vetical>
-            <div class="text-italic">Content:</div>
+          <n-space vertical style="flex: 1" :wrap-item="false">
+            <div class="text-italic text-bold">Content:</div>
             <Compiler
               v-model="content"
               class="email-content compiler"
@@ -77,22 +77,13 @@
       <n-card
         title="PREVIEW"
         header-style="font-size: 0.85rem; font-weight: bold; padding:10px"
-        content-style="padding:10px"
+        content-style="padding:0"
         :segmented="{ content: true }"
       >
-        <n-space vertical class="custom-message-content">
+        <n-space vertical class="custom-message-card-content" style="height: 70vh; overflow: auto">
           <!-- SUBJECT -->
-          <n-space>
-            <div class="text-italic">Subject:</div>
-            <div v-html="previewSubject" class="preview-subject" />
-          </n-space>
-
-          <n-divider style="margin: 0; margin-bottom: 1em"></n-divider>
-
-          <n-space>
-            <div class="text-italic">Content:</div>
-            <div v-html="previewContent" class="preview-content" />
-          </n-space>
+          <div v-html="previewSubject" class="preview-subject" />
+          <div v-html="previewContent" class="preview-content" />
         </n-space>
       </n-card>
     </n-gi>
@@ -122,7 +113,7 @@ const inputRef = ref(null);
 const inputValue = ref(null);
 const event = computed(() => store.state.chain.event);
 const fields = computed(() => store.state.chain.event.fields);
-const chainUuid = computed(() => store.state.chain.event.chainUuid);
+const uuid = computed(() => store.state.chain.event.uuid);
 const darkMode = computed(() => store.state.global.isDarkMode);
 const actionIdx = computed(() => EditorData.actionIdx);
 const rawSubject = ref('');
@@ -141,6 +132,10 @@ const rule = ref({
     const hasIncorrectEmail = value.some((add) => !useIsCorrectEmailFormat(add));
     if (hasIncorrectEmail) {
       return new Error('Invalid email address!');
+    }
+
+    if (value.length > 1) {
+      return new Error('You free plan only allows 01 email per notification');
     }
 
     return true;
@@ -167,33 +162,40 @@ const renderTag = ({ label, status }, index) => {
   );
 };
 
+function getKeyHTML(key) {
+  return `<span data-type="KeySuggestion" class="mention" data-id="${key}">$\{${key}}\</span>`;
+}
+
 watch(
   event,
   (newEvent) => {
     if (!isEmpty(newEvent)) {
       const greetings = [
-        '<p>Hello,</p>',
+        `<p>Event ${getKeyHTML('name')} happened at ${getKeyHTML('time')}, block ${getKeyHTML(
+          'block.hash',
+        )} with following data:</p>`,
         '<p></p>',
-        '<p>Here is the summary of what happened in the event you are subscribing:</p>',
-        '<p></p>',
-        `<p>Chain: ${newEvent.chain.name}</p>`,
-        '<p></p>',
-        '<p>Sample Data:</p>',
+        `<p>Success: ${getKeyHTML('success')}</p>`,
         '<p></p>',
       ];
 
-      const keysHaveExample = newEvent.fields.filter((e) => e.data !== undefined);
+      const dataKeys = newEvent.fields
+        .filter((e) => e.data !== undefined && e.name.includes('data.'))
+        .map((e, i, arr) => {
+          return `<p>${e.name}: ${getKeyHTML(e.name)}</p>${i === arr.length - 1 ? '' : '<p></p>'}`;
+        });
 
-      const keys = keysHaveExample.map((e, i) => {
-        return `<p>Var${i + 1}: <span data-type="KeySuggestion" class="mention" data-id="${
-          e.name
-        }">$\{${e.name}\}</span></p>${i === keysHaveExample.length - 1 ? '' : '<p></p>'}`;
-      });
-
-      defaultContent.value = [...greetings, ...keys].join('');
+      defaultContent.value = [...greetings, ...dataKeys].join('');
       content.value = defaultContent.value;
 
-      defaultSubject.value = `Your tracked event ${newEvent.name} on chain ${newEvent.chain.name} has been triggered!`;
+      // defaultSubject.value = `<p>Your tracked event ${getKeyHTML('name')} on chain ${getKeyHTML(
+      //   'chain',
+      // )} has been triggered!</p>`;
+
+      defaultSubject.value = `<p>Your tracked event ${getKeyHTML('name')} on chain ${
+        newEvent.chain.name
+      } has been triggered!</p>`;
+
       subject.value = defaultSubject.value;
     }
   },
@@ -284,17 +286,18 @@ function handleCreate(email) {
 
 .email-content {
   transition: border-color 0.3s var(--n-bezier), box-shadow 0.3s var(--n-bezier);
+  flex: 1;
 
   .ProseMirror {
-    height: 50vh;
-    max-height: 600px;
+    // height: 50vh;
+    // max-height: 600px;
+    height: 100%;
     padding-right: 5px;
     overflow: auto;
   }
 }
 
 .preview-subject {
-  margin-bottom: 14px;
   min-height: 34px;
   font-weight: bold;
   display: flex;
@@ -303,9 +306,15 @@ function handleCreate(email) {
 
 .preview-content {
   padding: 10px 0;
-  height: 50vh;
-  max-height: 600px;
+  // height: 50vh;
+  // max-height: 600px;
   padding-right: 10px;
+  overflow: auto;
+}
+
+.custom-message-card-content {
+  padding: 10px;
+  height: 70vh;
   overflow: auto;
 }
 </style>

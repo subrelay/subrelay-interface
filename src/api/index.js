@@ -113,13 +113,13 @@ export default {
     return response.data;
   },
 
-  async getEvents(chainId) {
-    const response = await instance.get(`/chains/${chainId}/events`);
+  async getEvents(uuid) {
+    const response = await instance.get(`/chains/${uuid}/events`);
     return response.data;
   },
 
-  async getEvent(chainId, eventId) {
-    const response = await instance.get(`/chains/${chainId}/events/${eventId}`);
+  async getEvent(uuid, eventId) {
+    const response = await instance.get(`/chains/${uuid}/events/${eventId}`);
     return response.data;
   },
 

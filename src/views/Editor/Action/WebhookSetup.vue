@@ -2,7 +2,7 @@
   <n-form-item
     label-placement="left"
     label="URL"
-    label-width="auto"
+    label-width="70"
     :path="`tasks[${actionIdx}].config.url`"
     :rule="urlRule"
   >
@@ -11,7 +11,7 @@
 
   <n-form-item
     label="Secret"
-    label-width="auto"
+    label-width="70"
     label-placement="left"
     :path="`tasks[${actionIdx}].config.secret`"
   >

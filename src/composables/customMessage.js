@@ -9,7 +9,11 @@ export default function useCustomMessage(event) {
     (newEvent) => {
       if (!isEmpty(newEvent)) {
         const keysHaveExample = newEvent.fields.filter((e) => e.data !== undefined);
-        keyLookup.value = keysHaveExample.reduce((obj, e) => {
+        const extraKeys = [
+          { name: 'chain', data: newEvent.chain.name },
+          { name: 'worflowLogUrl', data: 'https://app.subrelay.xyz' },
+        ];
+        keyLookup.value = [...keysHaveExample, ...extraKeys].reduce((obj, e) => {
           const { name, data } = e;
           set(obj, name, data);
           return { ...obj };

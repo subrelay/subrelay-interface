@@ -26,7 +26,7 @@
     >
       <template #empty>
         <n-empty description="No event found">
-          <template #extra v-if="!EditorData.workflow.chainUuid">
+          <template #extra v-if="!EditorData.workflow.uuid">
             <n-button size="small" @click="onBack"> Select a chain first </n-button>
           </template>
         </n-empty>
@@ -45,7 +45,7 @@ const store = useStore();
 const isShown = ref(false);
 
 const options = computed(() => store.state.chain.events);
-const chainUuid = computed(() => EditorData.workflow.chainUuid);
+const uuid = computed(() => EditorData.workflow.uuid);
 const loading = computed(() => store.state.chain.loading.getEventsLoading);
 
 function onBack() {
@@ -59,7 +59,7 @@ function handleSelectEvent(eventId) {
   EditorData.resetFilter();
 
   if (eventId) {
-    store.dispatch('chain/getEvent', { chainUuid: chainUuid.value, eventId });
+    store.dispatch('chain/getEvent', { uuid: uuid.value, eventId });
   } else {
     store.commit('chain/getEvent', {});
   }

@@ -46,7 +46,7 @@
           <n-gi span="1">
             <n-space vertical>
               <div class="text-semi-bold">Chain</div>
-              <div>{{ workflow.chainName }}</div>
+              <div>{{ workflow.chain.name }}</div>
             </n-space>
           </n-gi>
 
@@ -54,7 +54,7 @@
           <n-gi>
             <n-space vertical>
               <div class="text-semi-bold">Event</div>
-              <div>{{ eventString }}</div>
+              <div>{{ workflow.event.name }}</div>
             </n-space>
           </n-gi>
         </n-grid>
@@ -159,22 +159,10 @@ const store = useStore();
 const props = defineProps({ id: [String, Number] });
 const workflow = computed(() => store.state.workflow.workflow);
 const event = computed(() => store.state.chain.event);
-const eventString = ref(null);
-const triggerTask = computed(() => workflow.value.tasks.find((task) => task.type === 'trigger'));
-const filtersCondition = computed(() => triggerTask.value.config.conditions);
+const filterTask = computed(() => workflow.value.tasks.find((task) => task.type === 'filter'));
+const filtersCondition = computed(() => filterTask.value.config.conditions);
 
 const getFormattedText = useCustomMessage(event);
-
-watch(
-  event,
-  (newEvent) => {
-    if (!isEmpty(newEvent)) {
-      const { name, pallet } = newEvent;
-      eventString.value = `${pallet}.${name}`;
-    }
-  },
-  { immediate: true },
-);
 
 const actionTask = computed(() => workflow.value.tasks.find((task) => task.name === 'action'));
 </script>

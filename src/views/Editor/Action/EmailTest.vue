@@ -23,21 +23,18 @@
       <n-space vertical :size="10" v-else>
         <div class="input-item" style="align-items: center">
           <div class="title">Status:</div>
-          <StatusIcon :status="testResult.status" />
-          <span class="text-capitalize" style="margin-left: 4px"> {{ testResult.status }} </span>
+          <n-space :size="4" align="center" :wrap-item="false">
+            <StatusIcon :status="testResult.status" />
+            <span class="text-capitalize"> {{ testResult.status }} </span>
+          </n-space>
         </div>
 
-        <n-space class="input-item" v-if="testResult.status === 'failed'">
+        <div class="input-item" v-if="testResult.status === 'failed'">
           <div class="title">Message:</div>
           <p>{{ testResult.error?.message || testResult.error?.code }}</p>
-        </n-space>
-
-        <div class="input-item" v-if="testResult.result">
-          <div class="title">Result:</div>
-          <p>{{ testResult.result }}</p>
         </div>
 
-        <div>A test email was sent to all recipient(s).</div>
+        <div v-else>A test email was sent to all recipient(s).</div>
       </n-space>
     </n-card>
 

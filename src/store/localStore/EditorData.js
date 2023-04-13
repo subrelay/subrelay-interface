@@ -5,13 +5,13 @@ const conditionFormat = { variable: null, operator: null, value: null };
 
 const defaultConfig = () => ({
   name: null,
-  chainUuid: '01GXN125QNY368GYCA6JVVF1WZ',
+  uuid: null,
   tasks: [
     {
       name: 'trigger',
       type: 'trigger',
       dependOnName: null,
-      config: { eventId: '01GXN125RAQ17WKSGGK02FBA7B' },
+      config: { eventId: null },
     },
     {
       name: 'filter',
@@ -53,8 +53,8 @@ const editor = reactive({
     this.workflow.name = name || 'Untitled';
   },
 
-  setChainUuid(chainUuid) {
-    this.workflow.chainUuid = chainUuid;
+  setChainUuid(uuid) {
+    this.workflow.uuid = uuid;
   },
 
   resetTrigger() {
@@ -120,8 +120,8 @@ const editor = reactive({
       delete task.isError;
     });
 
-    // Delete chainUuid:
-    delete this.postWorkflowData.chainUuid;
+    // Delete uuid:
+    delete this.postWorkflowData.uuid;
 
     // Note to emove key for each condition before submitting too.
   },

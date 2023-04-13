@@ -63,9 +63,11 @@ watch(workflow, (newWorkflow) => {
   if (newWorkflow.tasks) {
     triggerTask.value = newWorkflow.tasks.find((task) => task.type === 'trigger');
     const { eventId } = triggerTask.value.config;
-    const { chainUuid } = newWorkflow;
+    const {
+      chain: { uuid },
+    } = newWorkflow;
     if (eventId) {
-      store.dispatch('chain/getEvent', { chainUuid, eventId });
+      store.dispatch('chain/getEvent', { uuid, eventId });
     }
   }
 });
@@ -79,7 +81,7 @@ watch(
   selectedAccount,
   () => {
     if (!isEmpty(selectedAccount.value)) {
-      store.dispatch('workflow/getWorkflow', { id: +props.id });
+      store.dispatch('workflow/getWorkflow', { id: props.id });
     }
   },
   { immediate: true },
