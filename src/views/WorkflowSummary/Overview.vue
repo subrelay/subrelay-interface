@@ -125,7 +125,7 @@
           </n-gi>
         </n-grid>
 
-        <div v-if="actionTask.type === 'email'">
+        <n-space v-if="actionTask.type === 'email'" vertical :size="24">
           <n-space vertical v-if="!isEmpty(event)">
             <div class="text-semi-bold">Subject</div>
             <n-blockquote>{{ getFormattedText(actionTask.config.subjectTemplate) }} </n-blockquote>
@@ -137,7 +137,7 @@
               <div v-html="getFormattedText(actionTask.config.bodyTemplate)"></div>
             </n-blockquote>
           </n-space>
-        </div>
+        </n-space>
 
         <!-- ACTION -->
         <!-- Webhook config -->
