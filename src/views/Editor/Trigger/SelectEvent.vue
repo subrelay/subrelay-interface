@@ -60,8 +60,10 @@ function handleSelectEvent(eventId) {
 
   if (eventId) {
     store.dispatch('chain/getEvent', { uuid: uuid.value, eventId });
+    store.dispatch('task/getEventFields', eventId);
   } else {
     store.commit('chain/getEvent', {});
+    store.commit('task/getFields', []);
   }
 }
 

@@ -3,11 +3,13 @@
 </template>
 
 <script setup>
-import { computed, shallowRef, provide } from 'vue';
-import { useStore } from 'vuex';
 import WebhookTest from '@/views/Editor/Action/WebhookTest';
 import EmailTest from '@/views/Editor/Action/EmailTest';
+import TelegramTest from '@/views/Editor/Action/TelegramTest';
+import DiscordTest from '@/views/Editor/Action/DiscordTest';
 import EditorData from '@/store/localStore/EditorData';
+import { computed, shallowRef, provide } from 'vue';
+import { useStore } from 'vuex';
 
 const store = useStore();
 const actionIdx = computed(() => EditorData.actionIdx);
@@ -20,5 +22,7 @@ function onBack() {
 const actionTestComponent = shallowRef({
   webhook: WebhookTest,
   email: EmailTest,
+  telegram: TelegramTest,
+  discord: DiscordTest,
 });
 </script>

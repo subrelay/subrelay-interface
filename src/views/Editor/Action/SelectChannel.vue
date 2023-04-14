@@ -17,12 +17,7 @@
     >
       <n-grid cols="2" y-gap="20" x-gap="30">
         <n-gi span="1" v-for="channel in useChannels" :key="channel.value">
-          <n-radio-button
-            :value="channel.value"
-            :bordered="false"
-            :disabled="channel.disabled"
-            class="channel_item"
-          >
+          <n-radio-button :value="channel.value" :bordered="false" class="channel_item">
             <Icon :icon="channel.icon" class="icon" />
             <span class="text">{{ channel.label }}</span>
           </n-radio-button>
@@ -44,7 +39,6 @@ const config = {
 };
 
 function handleSelectChannel(newChannel) {
-  // set Editor.setError to false
   EditorData.workflow.tasks[actionIdx.value].config = config[newChannel];
 }
 </script>

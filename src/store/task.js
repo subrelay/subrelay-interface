@@ -1,4 +1,4 @@
-import Api from '@/api';
+import API from '@/api';
 import { useShowError } from '@/composables';
 
 export default {
@@ -6,28 +6,39 @@ export default {
 
   state: () => ({
     operators: [],
-    loading: null,
+    properties: [],
+    filterFields: [],
     runningTest: {},
     tested: {},
     testResult: {},
+    loading: { getOperators: false, getFields: false },
   }),
 
   mutations: {
     getOperators: (state, operators) => {
       state.operators = operators;
     },
-    setLoading: (state, isLoading) => {
-      state.loading = isLoading;
+
+    getEventFields: (state, fields) => {
+      state.properties = fields;
     },
+
+    setLoading: (state, data) => {
+      state.loading = { ...state.loading, ...data };
+    },
+
     setRunningTest: (state, data) => {
       state.runningTest = { ...state.runningTest, ...data };
     },
+
     setTested: (state, data) => {
       state.tested = { ...state.tested, ...data };
     },
+
     setTestResult: (state, data) => {
       state.testResult = { ...state.tested, ...data };
     },
+
     reset: (state) => {
       state.runningTest = {};
       state.testResult = {};
@@ -37,15 +48,28 @@ export default {
 
   actions: {
     async getOperators({ commit }) {
-      commit('setLoading', true);
+      commit('setLoading', { getOperators: true });
       try {
-        const operators = await Api.getOperators();
+        const operators = await API.getOperators();
         commit('getOperators', operators);
       } catch (error) {
         commit('getOperators', []);
         console.error(error);
       } finally {
-        commit('setLoading', false);
+        commit('setLoading', { getOperators: false });
+      }
+    },
+
+    async getEventFields({ commit }, eventId) {
+      commit('setLoading', { getFields: true });
+      try {
+        const fields = await API.getFields(eventId);
+        commit('getEventFields', fields);
+      } catch (error) {
+        commit('getEventFields', []);
+        console.error(error);
+      } finally {
+        commit('setLoading', { getFields: false });
       }
     },
 
@@ -55,7 +79,7 @@ export default {
       commit('setRunningTest', { [type]: true });
 
       try {
-        const { data } = await Api.runTask({
+        const { data } = await API.runTask({
           account: rootState.account.selected,
           signer: rootState.account.signer,
           body,
