@@ -74,13 +74,14 @@ const columns = ref([
   },
   {
     title: 'Workflow Name',
-    key: 'name',
+    key: 'workflow',
     className: 'text-bold',
     width: '22%',
     ellipsis: { tooltip: true },
     sorter: true,
     sortOrder: false,
     renderSorterIcon: useRenderSortIcon,
+    render: ({ workflow }) => workflow.name,
   },
   {
     title: 'Chain',

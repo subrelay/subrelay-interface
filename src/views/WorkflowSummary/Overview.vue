@@ -102,13 +102,13 @@
             <n-space vertical>
               <div class="text-semi-bold">Channel</div>
               <div class="text-capitalize">
-                {{ actionTask.config.channel }}
+                {{ actionTask.type }}
               </div>
             </n-space>
           </n-gi>
 
-          <!-- Email addresses -->
-          <n-gi span="2" v-if="actionTask.config.channel === 'email'">
+          <!-- Email -->
+          <n-gi span="2" v-if="actionTask.type === 'email'">
             <n-space vertical>
               <div class="text-semi-bold">Recipients</div>
               <n-ellipsis>
@@ -125,28 +125,32 @@
           </n-gi>
         </n-grid>
 
+        <div v-if="actionTask.type === 'email'">
+          <n-space vertical v-if="!isEmpty(event)">
+            <div class="text-semi-bold">Subject</div>
+            <n-blockquote>{{ getFormattedText(actionTask.config.subjectTemplate) }} </n-blockquote>
+          </n-space>
+
+          <n-space vertical v-if="!isEmpty(event)">
+            <div class="text-semi-bold">Content</div>
+            <n-blockquote>
+              <div v-html="getFormattedText(actionTask.config.bodyTemplate)"></div>
+            </n-blockquote>
+          </n-space>
+        </div>
+
         <!-- ACTION -->
         <!-- Webhook config -->
-        <n-space vertical v-if="actionTask.config.channel === 'webhook'">
+        <n-space vertical v-if="actionTask.type === 'webhook'">
           <div class="text-semi-bold">Config</div>
           <WebhookInput :config="actionTask.config" />
         </n-space>
-
-        <n-space vertical v-if="!isEmpty(event)">
-          <div class="text-semi-bold">Subject</div>
-          <n-blockquote>
-            {{ getFormattedText(actionTask.config.subjectTemplate) }}
-          </n-blockquote>
-        </n-space>
-
-        <EmailInput :config="actionTask.config" />
       </n-space>
     </n-card>
   </n-space>
 </template>
 
 <script setup>
-import EmailInput from '@/views/Editor/Action/EmailInput';
 import WebhookInput from '@/views/Editor/Action/WebhookInput';
 import WorkflowSwitch from '@/components/WorkflowSwitch';
 import { useParsePascalCaseStr, useCustomMessage } from '@/composables';

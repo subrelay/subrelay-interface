@@ -74,7 +74,7 @@ watch(workflow, (newWorkflow) => {
 
 function onChangeTab(tab) {
   activeTab.value = tab;
-  router.push({ name: tab, params: { id: +props.id } });
+  router.push({ name: tab, params: { id: props.id } });
 }
 
 watch(
