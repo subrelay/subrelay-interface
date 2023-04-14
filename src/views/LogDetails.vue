@@ -4,6 +4,7 @@
   </n-space>
 
   <div v-else class="log-details">
+    <div>step {{ step }}</div>
     <n-result
       style="margin-top: 20vh"
       v-if="isEmpty(log)"

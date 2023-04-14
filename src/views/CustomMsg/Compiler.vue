@@ -32,8 +32,12 @@ const darkMode = computed(() => store.state.global.isDarkMode);
 
 const suggestion = {
   items: ({ query }) => {
-    const items = fields.value.filter((e) => e.example !== undefined).map((e) => e.name);
-    return items.filter((item) => item.toLowerCase().includes(query.toLowerCase())).slice(0, 5);
+    const itemsFromKey = fields.value.filter((e) => e.data !== undefined).map((e) => e.name);
+    const extraItems = ['chain', 'worflowLogUrl'];
+    const result = [...itemsFromKey, ...extraItems].filter((item) =>
+      item.toLowerCase().includes(query.toLowerCase()),
+    );
+    return result;
   },
 
   render: () => {

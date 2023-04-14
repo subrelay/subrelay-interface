@@ -19,6 +19,7 @@ export function useFormValidation() {
           (errors) => {
             if (errors) {
               EditorData.setError(taskName, true);
+              EditorData.setComplete(taskName, false);
               reject(new Error('Form validation failed'));
             } else {
               EditorData.setError(taskName, false);
@@ -41,7 +42,7 @@ export function useFormValidation() {
         }
       }
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     }
   }
 

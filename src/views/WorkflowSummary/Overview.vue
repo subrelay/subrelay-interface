@@ -42,17 +42,19 @@
 
       <n-space vertical :size="24">
         <n-grid cols="3">
-          <n-gi span="2">
+          <!-- Chain -->
+          <n-gi span="1">
             <n-space vertical>
               <div class="text-semi-bold">Chain</div>
-              <div>{{ workflow.chainName }}</div>
+              <div>{{ workflow.chain.name }}</div>
             </n-space>
           </n-gi>
 
+          <!-- Event -->
           <n-gi>
             <n-space vertical>
               <div class="text-semi-bold">Event</div>
-              <div>{{ eventString }}</div>
+              <div>{{ workflow.event.name }}</div>
             </n-space>
           </n-gi>
         </n-grid>
@@ -95,25 +97,53 @@
 
       <n-space vertical :size="24">
         <n-grid cols="3">
-          <n-gi span="2">
+          <!-- Channel -->
+          <n-gi span="1">
             <n-space vertical>
               <div class="text-semi-bold">Channel</div>
               <div class="text-capitalize">
-                {{ actionTask.config.channel }}
+                {{ actionTask.type }}
               </div>
+            </n-space>
+          </n-gi>
+
+          <!-- Email -->
+          <n-gi span="2" v-if="actionTask.type === 'email'">
+            <n-space vertical>
+              <div class="text-semi-bold">Recipients</div>
+              <n-ellipsis>
+                <span
+                  v-for="(add, idx) in actionTask.config.addresses"
+                  style="font-size: 0.85em"
+                  :key="idx"
+                >
+                  <span>{{ add }}</span>
+                  <span v-if="idx !== actionTask.config.addresses.length - 1">,&nbsp;</span>
+                </span>
+              </n-ellipsis>
             </n-space>
           </n-gi>
         </n-grid>
 
-        <!-- ACTION -->
-        <n-space vertical>
-          <div class="text-semi-bold">Config</div>
-          <WebhookInput
-            :config="actionTask.config.config"
-            v-if="actionTask.config.channel === 'webhook'"
-          />
+        <n-space v-if="actionTask.type === 'email'" vertical :size="24">
+          <n-space vertical v-if="!isEmpty(event)">
+            <div class="text-semi-bold">Subject</div>
+            <n-blockquote>{{ getFormattedText(actionTask.config.subjectTemplate) }} </n-blockquote>
+          </n-space>
 
-          <div>UNDER DEVELOPMENT</div>
+          <n-space vertical v-if="!isEmpty(event)">
+            <div class="text-semi-bold">Content</div>
+            <n-blockquote>
+              <div v-html="getFormattedText(actionTask.config.bodyTemplate)"></div>
+            </n-blockquote>
+          </n-space>
+        </n-space>
+
+        <!-- ACTION -->
+        <!-- Webhook config -->
+        <n-space vertical v-if="actionTask.type === 'webhook'">
+          <div class="text-semi-bold">Config</div>
+          <WebhookInput :config="actionTask.config" />
         </n-space>
       </n-space>
     </n-card>
@@ -123,34 +153,22 @@
 <script setup>
 import WebhookInput from '@/views/Editor/Action/WebhookInput';
 import WorkflowSwitch from '@/components/WorkflowSwitch';
-import { useParsePascalCaseStr } from '@/composables';
+import { useParsePascalCaseStr, useCustomMessage } from '@/composables';
 import { computed, ref, watch, onBeforeUnmount } from 'vue';
 import { useStore } from 'vuex';
-import moment from 'moment';
 import { isEmpty } from 'lodash';
+import moment from 'moment';
 
 const store = useStore();
 const props = defineProps({ id: [String, Number] });
 const workflow = computed(() => store.state.workflow.workflow);
 const event = computed(() => store.state.chain.event);
-const eventString = ref(null);
-const triggerTask = computed(() => workflow.value.tasks.find((task) => task.type === 'trigger'));
-const filtersCondition = computed(() => triggerTask.value.config.conditions);
+const filterTask = computed(() => workflow.value.tasks.find((task) => task.type === 'filter'));
+const filtersCondition = computed(() => filterTask.value.config.conditions);
 
-watch(
-  event,
-  (newEvent) => {
-    if (!isEmpty(newEvent)) {
-      const { name, pallet } = newEvent;
-      eventString.value = `${pallet}.${name}`;
-    }
-  },
-  { immediate: true },
-);
+const getFormattedText = useCustomMessage(event);
 
-const actionTask = computed(() =>
-  workflow.value.tasks.find((task) => task.type === 'notification'),
-);
+const actionTask = computed(() => workflow.value.tasks.find((task) => task.name === 'action'));
 </script>
 
 <style lang="scss"></style>

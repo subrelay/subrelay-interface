@@ -6,7 +6,7 @@
       </template>
 
       <n-skeleton v-if="runningTest" text :repeat="2" />
-      <WebhookInput v-else :config="config.config" />
+      <WebhookInput v-else :config="config" />
     </n-card>
 
     <n-card header-style="padding-bottom: 0.5rem" v-if="isTested" :segmented="{ content: 'soft' }">
@@ -18,22 +18,15 @@
       <n-space vertical :size="10" v-else>
         <div class="input-item">
           <div class="title">Status:</div>
-
-          <Icon
-            :inline="true"
-            :icon="testResult.success ? 'ep:success-filled' : 'ic:round-cancel'"
-            :color="testResult.success ? '#18A058FF' : '#D03050FF'"
-            :width="'1.2rem'"
-            style="margin-right: 5px"
-          />
-          <span class="text-capitalize">
-            {{ testResult.success ? 'Success' : 'Failed' }}
-          </span>
+          <n-space :size="4" align="center" :wrap-item="false">
+            <StatusIcon :status="testResult.status" />
+            <span class="text-capitalize"> {{ testResult.status }} </span>
+          </n-space>
         </div>
 
-        <div class="input-item" v-if="!testResult.success">
+        <div class="input-item" v-if="testResult.status === 'failed'">
           <div class="title">Message:</div>
-          <p>{{ testResult.error.message }}</p>
+          <p>{{ testResult.error?.message || testResult.error?.code }}</p>
         </div>
 
         <div class="input-item" v-if="testResult.result">
@@ -58,6 +51,7 @@
 </template>
 
 <script setup>
+import StatusIcon from '@/components/StatusIcon';
 import WebhookInput from '@/views/Editor/Action/WebhookInput';
 import EditorData from '@/store/localStore/EditorData';
 import { computed, onBeforeUnmount } from 'vue';
@@ -83,7 +77,7 @@ async function onTest() {
   await store.dispatch('task/runTask', {
     type: type.value,
     config: config.value,
-    data: { eventId: +eventId.value },
+    data: { eventId: eventId.value },
   });
 }
 </script>

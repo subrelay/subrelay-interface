@@ -2,7 +2,7 @@
   <n-form-item
     class="form_item_wrapper"
     label="Select channel you want to receive notifications form triggered event."
-    :path="`tasks[${EditorData.actionIdx}].config.channel`"
+    :path="`tasks[${actionIdx}].type`"
     :rule="{
       required: true,
       message: 'Please select a channel!',
@@ -11,7 +11,7 @@
     }"
   >
     <n-radio-group
-      v-model:value="EditorData.workflow.tasks[1].config.channel"
+      v-model:value="EditorData.workflow.tasks[actionIdx].type"
       @update:value="handleSelectChannel"
       class="channel_select"
     >
@@ -39,13 +39,13 @@ import { computed } from 'vue';
 
 const actionIdx = computed(() => EditorData.actionIdx);
 const config = {
-  webhook: { headers: [{ key: null, value: null }], url: null },
+  webhook: { url: null, secret: null },
   email: { addresses: [], subjectTemplate: null, bodyTemplate: null },
 };
 
 function handleSelectChannel(newChannel) {
   // set Editor.setError to false
-  EditorData.workflow.tasks[actionIdx.value].config.config = config[newChannel];
+  EditorData.workflow.tasks[actionIdx.value].config = config[newChannel];
 }
 </script>
 

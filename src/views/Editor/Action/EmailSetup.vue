@@ -2,16 +2,12 @@
   <!-- EMAIl LIST -->
   <n-space vertical>
     <div class="text-semi-bold">Recipients:</div>
-    <n-form-item
-      :path="`tasks[${actionIdx}].config.config.addresses`"
-      :show-label="false"
-      :rule="rule"
-    >
+    <n-form-item :path="`tasks[${actionIdx}].config.addresses`" :show-label="false" :rule="rule">
       <n-dynamic-tags
         v-model:value="addressTags"
         @create="handleCreate"
         :render-tag="renderTag"
-        :max="3"
+        :max="2"
       >
         <template #input="{ submit, deactivate }">
           <n-input
@@ -41,12 +37,12 @@
         :segmented="{ content: true }"
         title="CUSTOMIZATION"
         header-style="font-size: 0.85rem; font-weight: bold; padding:10px"
-        content-style="padding: 10px"
+        content-style="padding:0"
       >
-        <n-space vertical>
+        <n-space vertical class="custom-message-card-content" :wrap-item="false">
           <!-- SUBJECT -->
           <n-space vertical style="margin-bottom: 1em">
-            <div class="text-italic">Subject:</div>
+            <div class="text-italic text-bold">Subject:</div>
             <Compiler
               v-model="subject"
               padding="5px"
@@ -61,8 +57,8 @@
           </n-space>
 
           <!-- CONTENT -->
-          <n-space vetical>
-            <div class="text-italic">Content:</div>
+          <n-space vertical style="flex: 1" :wrap-item="false">
+            <div class="text-italic text-bold">Content:</div>
             <Compiler
               v-model="content"
               class="email-content compiler"
@@ -81,22 +77,13 @@
       <n-card
         title="PREVIEW"
         header-style="font-size: 0.85rem; font-weight: bold; padding:10px"
-        content-style="padding:10px"
+        content-style="padding:0"
         :segmented="{ content: true }"
       >
-        <n-space vertical class="custom-message-content">
+        <n-space vertical class="custom-message-card-content" style="height: 70vh; overflow: auto">
           <!-- SUBJECT -->
-          <n-space>
-            <div class="text-italic">Subject:</div>
-            <div v-html="previewSubject" class="preview-subject" />
-          </n-space>
-
-          <n-divider style="margin: 0; margin-bottom: 1em"></n-divider>
-
-          <n-space>
-            <div class="text-italic">Content:</div>
-            <div v-html="previewContent" class="preview-content" />
-          </n-space>
+          <div v-html="previewSubject" class="preview-subject" />
+          <div v-html="previewContent" class="preview-content" />
         </n-space>
       </n-card>
     </n-gi>
@@ -108,7 +95,7 @@ import EditorData from '@/store/localStore/EditorData';
 import Compiler from '@/views/CustomMsg/Compiler';
 import { h, ref, watch, computed, inject, nextTick } from 'vue';
 import { template, set, flow, isEmpty } from 'lodash';
-import { useIsCorrectEmailFormat } from '@/composables';
+import { useIsCorrectEmailFormat, useCustomMessage } from '@/composables';
 import { Icon } from '@iconify/vue';
 import { useStore } from 'vuex';
 import { NTag } from 'naive-ui';
@@ -117,7 +104,6 @@ const store = useStore();
 const eventBus = inject('eventBus');
 const emits = defineEmits(['validate']);
 
-const keyLookup = ref(null);
 const addressTags = ref([]);
 const content = ref('');
 const previewContent = ref('');
@@ -127,12 +113,13 @@ const inputRef = ref(null);
 const inputValue = ref(null);
 const event = computed(() => store.state.chain.event);
 const fields = computed(() => store.state.chain.event.fields);
-const chainUuid = computed(() => store.state.chain.event.chainUuid);
+const uuid = computed(() => store.state.chain.event.uuid);
 const darkMode = computed(() => store.state.global.isDarkMode);
 const actionIdx = computed(() => EditorData.actionIdx);
 const rawSubject = ref('');
 const defaultSubject = ref('');
 const defaultContent = ref('');
+const getFormattedText = useCustomMessage(event);
 
 const rule = ref({
   key: 'setupAction_addresses',
@@ -147,11 +134,16 @@ const rule = ref({
       return new Error('Invalid email address!');
     }
 
+    if (value.length > 1) {
+      return new Error('You free plan only allows 01 email per notification');
+    }
+
     return true;
   },
 });
 
 const renderTag = ({ label, status }, index) => {
+  // todo: disable 2nd tag with error message
   return h(
     NTag,
     { type: status, closable: true, onClose: () => removeAddress(index) },
@@ -170,40 +162,41 @@ const renderTag = ({ label, status }, index) => {
   );
 };
 
+function getKeyHTML(key) {
+  return `<span data-type="KeySuggestion" class="mention" data-id="${key}">$\{${key}}\</span>`;
+}
+
 watch(
   event,
   (newEvent) => {
     if (!isEmpty(newEvent)) {
       const greetings = [
-        '<p>Hello,</p>',
+        `<p>Event ${getKeyHTML('name')} happened at ${getKeyHTML('time')}, block ${getKeyHTML(
+          'block.hash',
+        )} with following data:</p>`,
         '<p></p>',
-        '<p>Here is the summary of what happened in the event you are subscribing:</p>',
-        '<p></p>',
-        `<p>Chain: ${chainUuid.value}</p>`,
-        '<p></p>',
-        '<p>Sample Data:</p>',
+        `<p>Success: ${getKeyHTML('success')}</p>`,
         '<p></p>',
       ];
 
-      const keysHaveExample = newEvent.fields.filter((e) => e.example !== undefined);
+      const dataKeys = newEvent.fields
+        .filter((e) => e.data !== undefined && e.name.includes('data.'))
+        .map((e, i, arr) => {
+          return `<p>${e.name}: ${getKeyHTML(e.name)}</p>${i === arr.length - 1 ? '' : '<p></p>'}`;
+        });
 
-      const keys = keysHaveExample.map((e, i) => {
-        return `<p>Var${i + 1}: <span data-type="KeySuggestion" class="mention" data-id="${
-          e.name
-        }">$\{${e.name}\}</span></p>${i === keysHaveExample.length - 1 ? '' : '<p></p>'}`;
-      });
-
-      defaultContent.value = [...greetings, ...keys].join('');
+      defaultContent.value = [...greetings, ...dataKeys].join('');
       content.value = defaultContent.value;
 
-      defaultSubject.value = `Your tracked event ${newEvent.pallet}.${newEvent.name} on chain ${newEvent.chainUuid} has been triggered!`;
-      subject.value = defaultSubject.value;
+      // defaultSubject.value = `<p>Your tracked event ${getKeyHTML('name')} on chain ${getKeyHTML(
+      //   'chain',
+      // )} has been triggered!</p>`;
 
-      keyLookup.value = keysHaveExample.reduce((obj, e) => {
-        const { name, example } = e;
-        set(obj, name, example);
-        return { ...obj };
-      }, {});
+      defaultSubject.value = `<p>Your tracked event ${getKeyHTML('name')} on chain ${
+        newEvent.chain.name
+      } has been triggered!</p>`;
+
+      subject.value = defaultSubject.value;
     }
   },
   { immediate: true },
@@ -212,11 +205,9 @@ watch(
 watch(
   content,
   (newContent) => {
-    const formatContent = flow(replaceEmptyParagraphsWithNbsp, template);
-    const formattedContent = formatContent(newContent)({ ...keyLookup.value });
-    previewContent.value = formattedContent;
-    EditorData.workflow.tasks[actionIdx.value].config.config.bodyTemplate = newContent;
-    store.commit('editor/setEmailConfig', { bodyTemplate: formattedContent });
+    previewContent.value = getFormattedText(newContent);
+    EditorData.workflow.tasks[actionIdx.value].config.bodyTemplate = newContent;
+    store.commit('editor/setEmailConfig', { bodyTemplate: previewContent.value });
   },
   { immediate: true },
 );
@@ -224,24 +215,17 @@ watch(
 watch(
   subject,
   (newSubject) => {
-    const formatSubject = flow(replaceEmptyParagraphsWithNbsp, template);
-    const formattedSubject = formatSubject(newSubject)({ ...keyLookup.value });
-    previewSubject.value = formattedSubject;
-    store.commit('editor/setEmailConfig', { subjectTemplate: formattedSubject });
+    previewSubject.value = getFormattedText(newSubject);
+    store.commit('editor/setEmailConfig', { subjectTemplate: previewContent.value });
   },
   { immediate: true },
 );
 
 function getRawText({ field, text }) {
-  if (field === 'subjectTemplate')
-    EditorData.workflow.tasks[actionIdx.value].config.config[field] = text;
-}
-
-function replaceEmptyParagraphsWithNbsp(htmlString) {
-  const regex = /<p><\/p>/g; // g flag to replace all occurrences
-  const replacement = '<p>&nbsp;</p>';
-  const result = htmlString.replace(regex, replacement);
-  return result;
+  if (field === 'subjectTemplate') {
+    EditorData.workflow.tasks[actionIdx.value].config[field] = text;
+    store.commit('editor/setEmailConfig', { subjectTemplate: getFormattedText(text) });
+  }
 }
 
 watch(inputRef, (value) => {
@@ -255,7 +239,7 @@ watch(
   addressTags,
   (newAddressTags) => {
     const addresses = newAddressTags.map((e) => e.label);
-    EditorData.workflow.tasks[actionIdx.value].config.config.addresses = [...addresses];
+    EditorData.workflow.tasks[actionIdx.value].config.addresses = [...addresses];
     store.commit('editor/setEmailConfig', { addresses });
     eventBus.emit('validate', {
       changeStep: false,
@@ -268,7 +252,7 @@ watch(
 
 function removeAddress(index) {
   addressTags.value.splice(index, 1);
-  EditorData.workflow.tasks[actionIdx.value].config.config.addresses.splice(index, 1);
+  EditorData.workflow.tasks[actionIdx.value].config.addresses.splice(index, 1);
   eventBus.emit('validate', {
     changeStep: false,
     taskName: 'action',
@@ -302,17 +286,18 @@ function handleCreate(email) {
 
 .email-content {
   transition: border-color 0.3s var(--n-bezier), box-shadow 0.3s var(--n-bezier);
+  flex: 1;
 
   .ProseMirror {
-    height: 50vh;
-    max-height: 600px;
+    // height: 50vh;
+    // max-height: 600px;
+    height: 100%;
     padding-right: 5px;
     overflow: auto;
   }
 }
 
 .preview-subject {
-  margin-bottom: 14px;
   min-height: 34px;
   font-weight: bold;
   display: flex;
@@ -321,9 +306,15 @@ function handleCreate(email) {
 
 .preview-content {
   padding: 10px 0;
-  height: 50vh;
-  max-height: 600px;
+  // height: 50vh;
+  // max-height: 600px;
   padding-right: 10px;
+  overflow: auto;
+}
+
+.custom-message-card-content {
+  padding: 10px;
+  height: 70vh;
   overflow: auto;
 }
 </style>

@@ -5,35 +5,13 @@
         <div class="title">Input</div>
       </template>
 
+      <div style="margin-bottom: 1.5em">
+        To test email, we need to send a new email to the recipients. This is what will be sent to
+        the defined {{ `${emailConfig.addresses.length > 1 ? 'addresses' : 'address'}` }}.
+      </div>
+
       <n-skeleton v-if="runningTest" text :repeat="5" />
-
-      <n-space vertical :size="10" v-else>
-        <div class="input-item">
-          <div class="title">To:</div>
-
-          <div class="text-ellipsis">
-            <span v-for="(add, idx) in emailConfig.addresses" :key="idx">
-              <span>{{ add }}</span>
-              <span v-if="idx !== emailConfig.addresses.length - 1">,&nbsp;</span>
-            </span>
-          </div>
-        </div>
-
-        <div class="input-item">
-          <div class="title">Subject:</div>
-          <div>{{ emailConfig.subjectTemplate }}</div>
-        </div>
-
-        <n-collapse arrow-placement="right" default-expanded-names="">
-          <n-collapse-item title="Content" name="content">
-            <template #header>
-              <div style="margin-left: -32px; font-weight: 400">Content:</div>
-            </template>
-
-            <n-blockquote> <div v-html="emailConfig.bodyTemplate"></div></n-blockquote>
-          </n-collapse-item>
-        </n-collapse>
-      </n-space>
+      <EmailInput :config="emailConfig" v-else />
     </n-card>
 
     <n-card header-style="padding-bottom: 0.5rem" v-if="isTested" :segmented="{ content: 'soft' }">
@@ -43,27 +21,20 @@
 
       <n-skeleton v-if="runningTest && isTested" text :repeat="2" />
       <n-space vertical :size="10" v-else>
-        <div class="input-item" style="align-items=center">
+        <div class="input-item" style="align-items: center">
           <div class="title">Status:</div>
-
-          <StatusIcon :isSuccess="testResult.success" />
-
-          <span class="text-capitalize" style="margin-left: 4px">
-            {{ testResult.success ? 'Success' : 'Failed' }}
-          </span>
+          <n-space :size="4" align="center" :wrap-item="false">
+            <StatusIcon :status="testResult.status" />
+            <span class="text-capitalize"> {{ testResult.status }} </span>
+          </n-space>
         </div>
 
-        <div class="input-item" v-if="!testResult.success">
+        <div class="input-item" v-if="testResult.status === 'failed'">
           <div class="title">Message:</div>
-          <p>{{ testResult.error.message }}</p>
+          <p>{{ testResult.error?.message || testResult.error?.code }}</p>
         </div>
 
-        <div class="input-item" v-if="testResult.result">
-          <div class="title">Result:</div>
-          <p>{{ testResult.result }}</p>
-        </div>
-
-        <div>A test email was sent to all recipient(s).</div>
+        <div v-else>A test email was sent to all recipient(s).</div>
       </n-space>
     </n-card>
 
@@ -83,9 +54,9 @@
 
 <script setup>
 import StatusIcon from '@/components/StatusIcon';
-import WebhookInput from '@/views/Editor/Action/WebhookInput';
+import EmailInput from '@/views/Editor/Action/EmailInput';
 import EditorData from '@/store/localStore/EditorData';
-import { computed, onBeforeUnmount, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
@@ -110,7 +81,7 @@ async function onTest() {
   await store.dispatch('task/runTask', {
     type: type.value,
     config: config.value,
-    data: { eventId: +eventId.value },
+    data: { eventId: eventId.value },
   });
 }
 </script>

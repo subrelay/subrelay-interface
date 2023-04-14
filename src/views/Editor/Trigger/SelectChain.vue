@@ -1,14 +1,14 @@
 <template>
   <n-form-item
-    path="chainUuid"
+    path="uuid"
     class="w-100"
-    label="Select Chain"
+    label="Select chain"
     :rule="{ required: true, trigger: 'input', message: 'Required', key: 'selectChain' }"
   >
     <ChainDropdown
-      v-model="EditorData.workflow.chainUuid"
+      v-model="EditorData.workflow.uuid"
+      placeholder="Please select"
       :onSelectChain="handleSelectChain"
-      :placeholder="'Select Chain'"
     />
   </n-form-item>
 </template>
@@ -20,12 +20,13 @@ import { useStore } from 'vuex';
 
 const store = useStore();
 
-function handleSelectChain(chainUuid) {
-  EditorData.setError('trigger', !chainUuid);
-  EditorData.setTrigger({ eventId: null, conditions: [] });
+function handleSelectChain(uuid) {
+  EditorData.setError('trigger', !uuid);
+  EditorData.resetTrigger();
+  EditorData.resetFilter();
 
-  if (chainUuid) {
-    store.dispatch('chain/getEvents', chainUuid);
+  if (uuid) {
+    store.dispatch('chain/getEvents', uuid);
   } else {
     store.commit('chain/getEvents', []);
   }

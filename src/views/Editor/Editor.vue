@@ -50,7 +50,7 @@
 
           <n-step
             title="ACTION"
-            description="Action will perform when the app has started"
+            description="Action will perform when the event is triggered"
             :status="actionStatus"
           >
             <template #icon>
@@ -118,7 +118,7 @@ const changedToTrigger = computed(() => {
     typeof task.isError === 'boolean' ||
     typeof task.isCompleted === 'boolean' ||
     !!task.config.eventId ||
-    !!task.chainUuid
+    !!task.uuid
   );
 });
 
@@ -177,7 +177,7 @@ function onChangeStep(nextStep) {
   setStepStatus(nextStep);
   router.push({
     name: nextStep == 1 ? 'trigger' : 'action',
-    params: { id: +props.id || 'new-flow' },
+    params: { id: props.id || 'new-flow' },
   });
 }
 
@@ -261,7 +261,7 @@ onBeforeMount(async () => {
       const { data: workflow } = await Api.getWorkFlow({
         account: store.state.account.selected,
         signer: store.state.account.signer,
-        id: +props.id,
+        id: props.id,
       });
       data = workflow;
     } catch (error) {
@@ -275,13 +275,13 @@ onBeforeMount(async () => {
   // before data is completely loaded
   EditorData.loadWorkflow(data);
 
-  const { chainUuid } = EditorData.workflow;
+  const { uuid } = EditorData.workflow;
   const { eventId } = EditorData.workflow.tasks[0].config;
 
-  if (chainUuid) {
-    store.dispatch('chain/getEvents', chainUuid);
+  if (uuid) {
+    store.dispatch('chain/getEvents', uuid);
     if (eventId) {
-      store.dispatch('chain/getEvent', { chainUuid, eventId });
+      store.dispatch('chain/getEvent', { uuid, eventId });
     }
   }
 
