@@ -30,16 +30,22 @@
 <script setup>
 import EditorData from '@/store/localStore/EditorData';
 import { useChannels } from '@/composables';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+import { useStore } from 'vuex';
 
-const actionIdx = computed(() => EditorData.actionIdx);
-const config = {
+const store = useStore();
+
+const defaultConfig = {
   webhook: { url: null, secret: null },
   email: { addresses: [], subjectTemplate: null, bodyTemplate: null },
+  telegram: { chatId: null, messageTemplate: null },
 };
 
+const actionIdx = computed(() => EditorData.actionIdx);
+
 function handleSelectChannel(newChannel) {
-  EditorData.workflow.tasks[actionIdx.value].config = config[newChannel];
+  EditorData.workflow.tasks[actionIdx.value].config = { ...defaultConfig[newChannel] };
+  store.commit('editor/resetCustomConfig');
 }
 </script>
 

@@ -24,6 +24,7 @@ function handleSelectChain(uuid) {
   EditorData.setError('trigger', !uuid);
   EditorData.resetTrigger();
   EditorData.resetFilter();
+  EditorData.resetAction();
 
   if (uuid) {
     store.dispatch('chain/getEvents', uuid);
