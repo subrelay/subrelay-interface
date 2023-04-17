@@ -80,7 +80,7 @@
         content-style="padding:0"
         :segmented="{ content: true }"
       >
-        <n-space vertical class="custom-message-card-content" style="height: 70vh; overflow: auto">
+        <n-space vertical class="custom-message-card-content" style="height: 60vh; overflow: auto">
           <!-- SUBJECT -->
           <div v-html="previewSubject" class="preview-subject" />
           <div v-html="previewContent" class="preview-content" />
@@ -111,15 +111,14 @@ const subject = ref('');
 const previewSubject = ref('');
 const inputRef = ref(null);
 const inputValue = ref(null);
-const event = computed(() => store.state.chain.event);
-const fields = computed(() => store.state.chain.event.fields);
 const uuid = computed(() => store.state.chain.event.uuid);
 const darkMode = computed(() => store.state.global.isDarkMode);
 const actionIdx = computed(() => EditorData.actionIdx);
+const customMsgKeys = computed(() => store.state.task.customMsgKeys);
 const rawSubject = ref('');
 const defaultSubject = ref('');
 const defaultContent = ref('');
-const getFormattedText = useCustomMessage(event);
+const getFormattedText = useCustomMessage();
 
 const rule = ref({
   key: 'setupAction_addresses',
@@ -167,35 +166,29 @@ function getKeyHTML(key) {
 }
 
 watch(
-  event,
-  (newEvent) => {
-    if (!isEmpty(newEvent)) {
+  customMsgKeys,
+  (newKeys) => {
+    if (!isEmpty(newKeys)) {
       const greetings = [
-        `<p>Event ${getKeyHTML('name')} happened at ${getKeyHTML('time')}, block ${getKeyHTML(
-          'block.hash',
-        )} with following data:</p>`,
+        `<p>Event ${getKeyHTML('event.name')} happened at ${getKeyHTML(
+          'event.time',
+        )}, block ${getKeyHTML('event.block.hash')} with following data:</p>`,
         '<p></p>',
-        `<p>Success: ${getKeyHTML('success')}</p>`,
-        '<p></p>',
+        `<p>Success: ${getKeyHTML('event.success')}</p>`,
       ];
 
-      const dataKeys = newEvent.fields
+      const dataContent = newKeys
         .filter((e) => e.data !== undefined && e.name.includes('data.'))
         .map((e, i, arr) => {
-          return `<p>${e.name}: ${getKeyHTML(e.name)}</p>${i === arr.length - 1 ? '' : '<p></p>'}`;
+          return `<p>${e.name}: ${getKeyHTML(e.name)}</p>`;
         });
 
-      defaultContent.value = [...greetings, ...dataKeys].join('');
+      defaultContent.value = [...greetings, ...dataContent].join('');
       content.value = defaultContent.value;
 
-      // defaultSubject.value = `<p>Your tracked event ${getKeyHTML('name')} on chain ${getKeyHTML(
-      //   'chain',
-      // )} has been triggered!</p>`;
-
-      defaultSubject.value = `<p>Your tracked event ${getKeyHTML('name')} on chain ${
-        newEvent.chain.name
-      } has been triggered!</p>`;
-
+      defaultSubject.value = `<p>Your tracked event ${getKeyHTML(
+        'event.name',
+      )} on chain ${getKeyHTML('chain.name')} has been triggered!</p>`;
       subject.value = defaultSubject.value;
     }
   },
@@ -247,12 +240,15 @@ watch(
       keys: ['setupAction_addresses'],
     });
   },
+
   { immediate: true },
 );
 
 function removeAddress(index) {
   addressTags.value.splice(index, 1);
   EditorData.workflow.tasks[actionIdx.value].config.addresses.splice(index, 1);
+
+  store.commit('editor/setEmailConfig', { addresses: [...addressTags.value] });
   eventBus.emit('validate', {
     changeStep: false,
     taskName: 'action',
@@ -270,6 +266,7 @@ function handleCreate(email) {
 .compiler {
   border: 1px solid rgb(239, 239, 245);
   border-radius: 3px;
+  font-size: 0.9em;
 
   &.dark {
     border-color: rgba(255, 255, 255, 0.09);
@@ -302,19 +299,19 @@ function handleCreate(email) {
   font-weight: bold;
   display: flex;
   align-items: center;
+  font-size: 0.9em;
 }
 
 .preview-content {
   padding: 10px 0;
-  // height: 50vh;
-  // max-height: 600px;
   padding-right: 10px;
   overflow: auto;
+  font-size: 0.9em;
 }
 
 .custom-message-card-content {
   padding: 10px;
-  height: 70vh;
+  height: 60vh;
   overflow: auto;
 }
 </style>

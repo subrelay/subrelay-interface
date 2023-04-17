@@ -1,19 +1,18 @@
 import { flow, template, set, isEmpty } from 'lodash';
-import { watch, ref } from 'vue';
+import { watch, ref, computed } from 'vue';
+import { useStore } from 'vuex';
 
-export default function useCustomMessage(event) {
+export default function useCustomMessage() {
+  const store = useStore();
   const keyLookup = ref(null);
+  const customMsgKeys = computed(() => store.state.task.customMsgKeys);
 
   watch(
-    event,
-    (newEvent) => {
-      if (!isEmpty(newEvent)) {
-        const keysHaveExample = newEvent.fields.filter((e) => e.data !== undefined);
-        const extraKeys = [
-          { name: 'chain', data: newEvent.chain.name },
-          { name: 'worflowLogUrl', data: 'https://app.subrelay.xyz' },
-        ];
-        keyLookup.value = [...keysHaveExample, ...extraKeys].reduce((obj, e) => {
+    customMsgKeys,
+    (newKeys) => {
+      if (!isEmpty(newKeys)) {
+        const keysHaveExample = newKeys.filter((e) => e.data !== undefined);
+        keyLookup.value = keysHaveExample.reduce((obj, e) => {
           const { name, data } = e;
           set(obj, name, data);
           return { ...obj };
@@ -21,6 +20,7 @@ export default function useCustomMessage(event) {
       }
     },
     { immediate: true },
+    { deep: true },
   );
 
   function replaceEmptyParagraphsWithNbsp(text) {

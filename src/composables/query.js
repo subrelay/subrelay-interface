@@ -1,4 +1,4 @@
-import { ref, onMounted, computed, watch } from 'vue';
+import { ref, onMounted, computed, watch, onBeforeMount } from 'vue';
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router';
 import { debounce, isEmpty, findIndex } from 'lodash';
 import { useStore } from 'vuex';
@@ -187,11 +187,16 @@ export default function useQuery(module, path, columns = {}, fetchData = () => {
     if (isEmpty(route.query)) pushQueryToRoute(params);
   }
 
-  onMounted(async () => {
-    setTimeout(() => {
-      initQuery();
-      fetchData();
-    }, 100);
+  // onMounted(async () => {
+  //   setTimeout(() => {
+  //     initQuery();
+  //     fetchData();
+  //   }, 100);
+  // });
+
+  onBeforeMount(async () => {
+    initQuery();
+    fetchData();
   });
 
   return [

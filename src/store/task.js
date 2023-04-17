@@ -7,7 +7,7 @@ export default {
   state: () => ({
     operators: [],
     properties: [],
-    filterFields: [],
+    customMsgKeys: [],
     runningTest: {},
     tested: {},
     testResult: {},
@@ -19,8 +19,9 @@ export default {
       state.operators = operators;
     },
 
-    getEventFields: (state, fields) => {
-      state.properties = fields;
+    getFields: (state, { filterFields, custtomMsgFields }) => {
+      state.properties = filterFields;
+      state.customMsgKeys = custtomMsgFields;
     },
 
     setLoading: (state, data) => {
@@ -60,13 +61,16 @@ export default {
       }
     },
 
-    async getEventFields({ commit }, eventId) {
+    async getFields({ commit }, eventId) {
       commit('setLoading', { getFields: true });
       try {
-        const fields = await API.getFields(eventId);
-        commit('getEventFields', fields);
+        const [filterFields, custtomMsgFields] = await Promise.all([
+          API.getFilterFields(eventId),
+          API.getCustomMsgFields(eventId),
+        ]);
+        commit('getFields', { filterFields, custtomMsgFields });
       } catch (error) {
-        commit('getEventFields', []);
+        commit('getFields', { filterFields: [], custtomMsgFields: [] });
         console.error(error);
       } finally {
         commit('setLoading', { getFields: false });
