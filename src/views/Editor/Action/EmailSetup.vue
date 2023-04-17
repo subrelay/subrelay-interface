@@ -35,7 +35,7 @@
     <n-gi>
       <n-card
         :segmented="{ content: true }"
-        title="CUSTOMIZATION"
+        title="CUSTOM EMAIL CONTENT"
         header-style="font-size: 0.85rem; font-weight: bold; padding:10px"
         content-style="padding:0"
       >
@@ -80,7 +80,7 @@
         content-style="padding:0"
         :segmented="{ content: true }"
       >
-        <n-space vertical class="custom-message-card-content" style="height: 60vh; overflow: auto">
+        <n-space vertical class="custom-message-card-content" style="height: 50vh; overflow: auto">
           <!-- SUBJECT -->
           <div v-html="previewSubject" class="preview-subject" />
           <div v-html="previewContent" class="preview-content" />
@@ -94,7 +94,7 @@
 import EditorData from '@/store/localStore/EditorData';
 import Compiler from '@/views/CustomMsg/Compiler';
 import { h, ref, watch, computed, inject, nextTick } from 'vue';
-import { template, set, flow, isEmpty } from 'lodash';
+import { isEmpty } from 'lodash';
 import { useIsCorrectEmailFormat, useCustomMessage } from '@/composables';
 import { Icon } from '@iconify/vue';
 import { useStore } from 'vuex';
@@ -105,20 +105,17 @@ const eventBus = inject('eventBus');
 const emits = defineEmits(['validate']);
 
 const addressTags = ref([]);
-const content = ref('');
-const previewContent = ref('');
-const subject = ref('');
-const previewSubject = ref('');
 const inputRef = ref(null);
 const inputValue = ref(null);
 const uuid = computed(() => store.state.chain.event.uuid);
-const darkMode = computed(() => store.state.global.isDarkMode);
 const actionIdx = computed(() => EditorData.actionIdx);
 const customMsgKeys = computed(() => store.state.task.customMsgKeys);
 const rawSubject = ref('');
-const defaultSubject = ref('');
-const defaultContent = ref('');
-const getFormattedText = useCustomMessage();
+
+const [
+  { content, previewContent, defaultContent, subject, previewSubject, defaultSubject, darkMode },
+  { getKeyHTML, getRawText, getFormattedText },
+] = useCustomMessage({ channel: 'email' });
 
 const rule = ref({
   key: 'setupAction_addresses',
@@ -142,7 +139,6 @@ const rule = ref({
 });
 
 const renderTag = ({ label, status }, index) => {
-  // todo: disable 2nd tag with error message
   return h(
     NTag,
     { type: status, closable: true, onClose: () => removeAddress(index) },
@@ -161,66 +157,6 @@ const renderTag = ({ label, status }, index) => {
   );
 };
 
-function getKeyHTML(key) {
-  return `<span data-type="KeySuggestion" class="mention" data-id="${key}">$\{${key}}\</span>`;
-}
-
-watch(
-  customMsgKeys,
-  (newKeys) => {
-    if (!isEmpty(newKeys)) {
-      const greetings = [
-        `<p>Event ${getKeyHTML('event.name')} happened at ${getKeyHTML(
-          'event.time',
-        )}, block ${getKeyHTML('event.block.hash')} with following data:</p>`,
-        '<p></p>',
-        `<p>Success: ${getKeyHTML('event.success')}</p>`,
-      ];
-
-      const dataContent = newKeys
-        .filter((e) => e.data !== undefined && e.name.includes('data.'))
-        .map((e, i, arr) => {
-          return `<p>${e.name}: ${getKeyHTML(e.name)}</p>`;
-        });
-
-      defaultContent.value = [...greetings, ...dataContent].join('');
-      content.value = defaultContent.value;
-
-      defaultSubject.value = `<p>Your tracked event ${getKeyHTML(
-        'event.name',
-      )} on chain ${getKeyHTML('chain.name')} has been triggered!</p>`;
-      subject.value = defaultSubject.value;
-    }
-  },
-  { immediate: true },
-);
-
-watch(
-  content,
-  (newContent) => {
-    previewContent.value = getFormattedText(newContent);
-    EditorData.workflow.tasks[actionIdx.value].config.bodyTemplate = newContent;
-    store.commit('editor/setEmailConfig', { bodyTemplate: previewContent.value });
-  },
-  { immediate: true },
-);
-
-watch(
-  subject,
-  (newSubject) => {
-    previewSubject.value = getFormattedText(newSubject);
-    store.commit('editor/setEmailConfig', { subjectTemplate: previewContent.value });
-  },
-  { immediate: true },
-);
-
-function getRawText({ field, text }) {
-  if (field === 'subjectTemplate') {
-    EditorData.workflow.tasks[actionIdx.value].config[field] = text;
-    store.commit('editor/setEmailConfig', { subjectTemplate: getFormattedText(text) });
-  }
-}
-
 watch(inputRef, (value) => {
   if (value) {
     inputValue.value = null;
@@ -233,7 +169,7 @@ watch(
   (newAddressTags) => {
     const addresses = newAddressTags.map((e) => e.label);
     EditorData.workflow.tasks[actionIdx.value].config.addresses = [...addresses];
-    store.commit('editor/setEmailConfig', { addresses });
+    store.commit('editor/setCustomMsgConfig', { addresses });
     eventBus.emit('validate', {
       changeStep: false,
       taskName: 'action',
@@ -248,7 +184,8 @@ function removeAddress(index) {
   addressTags.value.splice(index, 1);
   EditorData.workflow.tasks[actionIdx.value].config.addresses.splice(index, 1);
 
-  store.commit('editor/setEmailConfig', { addresses: [...addressTags.value] });
+  store.commit('editor/setCustomMsgConfig', { addresses: [...addressTags.value] });
+
   eventBus.emit('validate', {
     changeStep: false,
     taskName: 'action',
@@ -311,7 +248,7 @@ function handleCreate(email) {
 
 .custom-message-card-content {
   padding: 10px;
-  height: 60vh;
+  height: 50vh;
   overflow: auto;
 }
 </style>

@@ -7,11 +7,11 @@
 
       <div style="margin-bottom: 1.5em">
         To test email, we need to send a new email to the recipients. This is what will be sent to
-        the defined {{ `${emailConfig.addresses.length > 1 ? 'addresses' : 'address'}` }}.
+        the defined {{ `${config.addresses.length > 1 ? 'addresses' : 'address'}` }}.
       </div>
 
       <n-skeleton v-if="runningTest" text :repeat="5" />
-      <EmailInput :config="emailConfig" v-else />
+      <EmailInput :config="config" v-else />
     </n-card>
 
     <n-card header-style="padding-bottom: 0.5rem" v-if="isTested" :segmented="{ content: 'soft' }">
@@ -60,10 +60,8 @@ import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
-const showContent = ref(false);
-const emailConfig = computed(() => store.state.editor.emailConfig);
+const config = computed(() => store.state.editor.customMsgConfig);
 const type = computed(() => EditorData.workflow.tasks[EditorData.actionIdx].type);
-const config = computed(() => EditorData.workflow.tasks[EditorData.actionIdx].config);
 const eventId = computed(() => EditorData.workflow.tasks[EditorData.triggerIdx].config.eventId);
 
 const runningTest = computed(() => store.state.task.runningTest[type.value]);
@@ -80,7 +78,7 @@ function resetTest({ isDisabled }) {
 async function onTest() {
   await store.dispatch('task/runTask', {
     type: type.value,
-    config: config.value,
+    config: { ...config.value, subjectTemplate: `[TESTING EMAIL] ${config.value.subjectTemplate}` },
     data: { eventId: eventId.value },
   });
 }

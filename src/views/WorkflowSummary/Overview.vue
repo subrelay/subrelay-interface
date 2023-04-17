@@ -161,7 +161,7 @@ import moment from 'moment';
 
 const props = defineProps({ id: [String, Number] });
 const store = useStore();
-const getFormattedText = useCustomMessage();
+const [{}, { getFormattedText }] = useCustomMessage({ isCustomizing: false });
 
 const customMsgKeys = computed(() => store.state.task.customMsgKeys);
 const workflow = computed(() => store.state.workflow.workflow);

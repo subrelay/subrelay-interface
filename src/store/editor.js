@@ -5,7 +5,7 @@ export default {
     step: null,
     expand: { trigger: '1', action: '1' },
     isTestActionDisabled: true,
-    emailConfig: {}, // for preview in test
+    customMsgConfig: {}, // for preview in test
   }),
 
   mutations: {
@@ -27,8 +27,12 @@ export default {
       state.isTestActionDisabled = true;
     },
 
-    setEmailConfig: (state, config) => {
-      state.emailConfig = { ...state.emailConfig, ...config };
+    setCustomMsgConfig: (state, config) => {
+      state.customMsgConfig = { ...state.customMsgConfig, ...config };
+    },
+
+    resetCustomConfig: (state) => {
+      state.customMsgConfig = {};
     },
   },
 

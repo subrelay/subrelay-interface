@@ -223,7 +223,6 @@ const PreventEnter = Extension.create({
 });
 
 const editor = useEditor({
-  // content: props.modelValue,
   content: props.defaultContent,
 
   editorProps: {
