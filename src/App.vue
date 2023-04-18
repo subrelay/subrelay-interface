@@ -12,6 +12,7 @@ import { onBeforeMount } from 'vue';
 const store = useStore();
 
 onBeforeMount(() => {
+  console.log('test');
   store.dispatch('chain/getChains');
   store.dispatch('task/getOperators');
   store.dispatch('account/loadAccounts');
