@@ -4,14 +4,14 @@ import { cloneDeep } from 'lodash';
 const conditionFormat = { variable: null, operator: null, value: null };
 
 const defaultConfig = () => ({
-  name: null,
-  uuid: null,
+  name: 'Foo',
+  uuid: '01GY6NSJ4PYF5NFGRPB2HFH6KK',
   tasks: [
     {
       name: 'trigger',
       type: 'trigger',
       dependOnName: null,
-      config: { eventId: null },
+      config: { eventId: '01GY6NSJ5FMZCZGSYEMR5R0FRG' },
     },
     {
       name: 'filter',
@@ -21,7 +21,7 @@ const defaultConfig = () => ({
     },
     {
       name: 'action',
-      type: '',
+      type: null,
       dependOnName: 'filter',
       config: {},
     },
@@ -65,6 +65,12 @@ const editor = reactive({
   resetFilter() {
     this.workflow.tasks[this.filterIdx].config.conditions = [];
     this.setComplete('filter', false); // todo: true or false? since filter is an optional step
+  },
+
+  resetAction() {
+    this.workflow.tasks[this.actionIdx].type = null;
+    this.workflow.tasks[this.actionIdx].config = {};
+    this.setComplete('action', false);
   },
 
   addOr() {

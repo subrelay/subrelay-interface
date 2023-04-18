@@ -79,7 +79,8 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
       if (channel === 'email') {
         template = 'bodyTemplate';
       } else if (channel === 'telegram' || channel === 'discord') {
-        template = 'messageTemplateWithHTML';
+        // template = 'messageTemplateWithHTML';
+        template = 'messageTemplate';
       }
 
       EditorData.workflow.tasks[actionIdx.value].config[template] = newContent;
