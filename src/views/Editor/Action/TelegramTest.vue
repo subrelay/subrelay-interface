@@ -80,10 +80,14 @@ function resetTest({ isDisabled }) {
 
 async function onTest() {
   const { chatId, messageTemplate } = config.value;
+
   await store.dispatch('task/runTask', {
     type: type.value,
     data: { eventId: eventId.value },
-    config: { chatId, messageTemplate },
+    config: {
+      chatId,
+      messageTemplate: `[TESTING MESSAGE] \n\n${messageTemplate}`,
+    },
   });
 }
 </script>

@@ -4,14 +4,14 @@ import { cloneDeep } from 'lodash';
 const conditionFormat = { variable: null, operator: null, value: null };
 
 const defaultConfig = () => ({
-  name: 'Foo',
-  uuid: '01GY6NSJ4PYF5NFGRPB2HFH6KK',
+  name: null,
+  uuid: null,
   tasks: [
     {
       name: 'trigger',
       type: 'trigger',
       dependOnName: null,
-      config: { eventId: '01GY6NSJ5FMZCZGSYEMR5R0FRG' },
+      config: { eventId: null },
     },
     {
       name: 'filter',
