@@ -21,8 +21,8 @@ const defaultConfig = () => ({
     },
     {
       name: 'action',
-      type: '',
-      dependOnName: 'trigger',
+      type: null,
+      dependOnName: 'filter',
       config: {},
     },
   ],
@@ -65,6 +65,12 @@ const editor = reactive({
   resetFilter() {
     this.workflow.tasks[this.filterIdx].config.conditions = [];
     this.setComplete('filter', false); // todo: true or false? since filter is an optional step
+  },
+
+  resetAction() {
+    this.workflow.tasks[this.actionIdx].type = null;
+    this.workflow.tasks[this.actionIdx].config = {};
+    this.setComplete('action', false);
   },
 
   addOr() {

@@ -27,12 +27,12 @@ const props = defineProps({
 const emits = defineEmits(['update:modelValue', 'getRawText']);
 
 const store = useStore();
-const fields = computed(() => store.state.chain.event.fields);
+const customMsgKeys = computed(() => store.state.task.customMsgKeys);
 const darkMode = computed(() => store.state.global.isDarkMode);
 
 const suggestion = {
   items: ({ query }) => {
-    const itemsFromKey = fields.value.filter((e) => e.data !== undefined).map((e) => e.name);
+    const itemsFromKey = customMsgKeys.value.filter((e) => e.data !== undefined).map((e) => e.name);
     const extraItems = ['chain', 'worflowLogUrl'];
     const result = [...itemsFromKey, ...extraItems].filter((item) =>
       item.toLowerCase().includes(query.toLowerCase()),
@@ -223,7 +223,6 @@ const PreventEnter = Extension.create({
 });
 
 const editor = useEditor({
-  // content: props.modelValue,
   content: props.defaultContent,
 
   editorProps: {

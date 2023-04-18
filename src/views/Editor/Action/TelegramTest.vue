@@ -6,12 +6,11 @@
       </template>
 
       <div style="margin-bottom: 1.5em">
-        To test email, we need to send a new email to the recipients. This is what will be sent to
-        the defined {{ `${config.addresses.length > 1 ? 'addresses' : 'address'}` }}.
+        To test Telegram notification, we need to send a new message with below configuration:
       </div>
 
       <n-skeleton v-if="runningTest" text :repeat="5" />
-      <EmailInput :config="config" v-else />
+      <TelegramInput :config="config" v-else />
     </n-card>
 
     <n-card header-style="padding-bottom: 0.5rem" v-if="isTested" :segmented="{ content: 'soft' }">
@@ -34,7 +33,11 @@
           <p>{{ testResult.error?.message || testResult.error?.code }}</p>
         </div>
 
-        <div v-else>A test email was sent to all recipient(s).</div>
+        <div v-else>
+          A test message was sent to the defined chat with id
+          <n-text code>{{ config.chatId }}</n-text>
+          .
+        </div>
       </n-space>
     </n-card>
 
@@ -54,7 +57,7 @@
 
 <script setup>
 import StatusIcon from '@/components/StatusIcon';
-import EmailInput from '@/views/Editor/Action/EmailInput';
+import TelegramInput from '@/views/Editor/Action/TelegramInput';
 import EditorData from '@/store/localStore/EditorData';
 import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
@@ -76,10 +79,15 @@ function resetTest({ isDisabled }) {
 }
 
 async function onTest() {
+  const { chatId, messageTemplate } = config.value;
+
   await store.dispatch('task/runTask', {
     type: type.value,
-    config: { ...config.value, subjectTemplate: `[TESTING EMAIL] ${config.value.subjectTemplate}` },
     data: { eventId: eventId.value },
+    config: {
+      chatId,
+      messageTemplate: `[TESTING MESSAGE] \n\n${messageTemplate}`,
+    },
   });
 }
 </script>

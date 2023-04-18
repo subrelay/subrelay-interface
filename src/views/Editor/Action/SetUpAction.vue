@@ -9,11 +9,13 @@
 </template>
 
 <script setup>
-import { computed, shallowRef, provide } from 'vue';
-import { useStore } from 'vuex';
+import EditorData from '@/store/localStore/EditorData';
 import WebhookSetup from '@/views/Editor/Action/WebhookSetup';
 import EmailSetup from '@/views/Editor/Action/EmailSetup';
-import EditorData from '@/store/localStore/EditorData';
+import TelegramSetup from '@/views/Editor/Action/TelegramSetup';
+import DiscordSetup from '@/views/Editor/Action/DiscordSetup';
+import { computed, shallowRef, provide } from 'vue';
+import { useStore } from 'vuex';
 
 const store = useStore();
 const actionIdx = computed(() => EditorData.actionIdx);
@@ -26,5 +28,7 @@ function onBack() {
 const actionComponent = shallowRef({
   webhook: WebhookSetup,
   email: EmailSetup,
+  telegram: TelegramSetup,
+  discord: DiscordSetup,
 });
 </script>

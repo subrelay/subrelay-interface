@@ -123,6 +123,16 @@ export default {
     return response.data;
   },
 
+  async getFilterFields(eventId) {
+    const response = await instance.get(`/tasks/filter/fields?eventId=${eventId}`);
+    return response.data;
+  },
+
+  async getCustomMsgFields(eventId) {
+    const response = await instance.get(`/tasks/custom-message/fields?eventId=${eventId}`);
+    return response.data;
+  },
+
   async getOperators() {
     const response = await instance.get('/tasks/filter/operators');
     return response.data;

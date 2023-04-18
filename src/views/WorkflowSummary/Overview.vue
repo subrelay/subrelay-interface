@@ -126,12 +126,12 @@
         </n-grid>
 
         <n-space v-if="actionTask.type === 'email'" vertical :size="24">
-          <n-space vertical v-if="!isEmpty(event)">
+          <n-space vertical v-if="!isEmpty(customMsgKeys)">
             <div class="text-semi-bold">Subject</div>
             <n-blockquote>{{ getFormattedText(actionTask.config.subjectTemplate) }} </n-blockquote>
           </n-space>
 
-          <n-space vertical v-if="!isEmpty(event)">
+          <n-space vertical v-if="!isEmpty(customMsgKeys)">
             <div class="text-semi-bold">Content</div>
             <n-blockquote>
               <div v-html="getFormattedText(actionTask.config.bodyTemplate)"></div>
@@ -159,15 +159,14 @@ import { useStore } from 'vuex';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 
-const store = useStore();
 const props = defineProps({ id: [String, Number] });
+const store = useStore();
+const [{}, { getFormattedText }] = useCustomMessage({ isCustomizing: false });
+
+const customMsgKeys = computed(() => store.state.task.customMsgKeys);
 const workflow = computed(() => store.state.workflow.workflow);
-const event = computed(() => store.state.chain.event);
-const filterTask = computed(() => workflow.value.tasks.find((task) => task.type === 'filter'));
 const filtersCondition = computed(() => filterTask.value.config.conditions);
-
-const getFormattedText = useCustomMessage(event);
-
+const filterTask = computed(() => workflow.value.tasks.find((task) => task.type === 'filter'));
 const actionTask = computed(() => workflow.value.tasks.find((task) => task.name === 'action'));
 </script>
 

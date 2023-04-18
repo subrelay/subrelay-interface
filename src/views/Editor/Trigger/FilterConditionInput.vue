@@ -15,7 +15,7 @@
             :value-field="'name'"
             :render-label="useRenderDropdownLabel"
             :render-tag="renderSelectTagWithDescription"
-            :options="propertyOptions"
+            :options="properties"
             :value="props.condition.variable"
             @update:value="onSelectProp"
           >
@@ -111,12 +111,6 @@ const props = defineProps({
 const emits = defineEmits(['remove', 'input']);
 const store = useStore();
 const isLoading = ref(false);
-const propertyOptions = computed(() =>
-  (store.state.chain.event.fields || []).map((e) => ({
-    ...e,
-    disabled: e.type === 'unknown',
-  })),
-);
 
 const requiredRule = ref({
   trigger: ['input'],
@@ -130,11 +124,13 @@ const requiredRule = ref({
   },
 });
 
-const filterIdx = computed(() => EditorData.filterIdx);
-const operators = computed(() => store.state.task.operators);
-const getOperatorsLoading = computed(() => store.state.task.loading);
 const inputType = ref(null);
 const operatorOptions = ref([]);
+const properties = computed(() => store.state.task.properties);
+const filterIdx = computed(() => EditorData.filterIdx);
+const operators = computed(() => store.state.task.operators);
+const getOperatorsLoading = computed(() => store.state.task.loading.getOperators);
+const getFieldsLoading = computed(() => store.state.task.loading.getFields);
 
 function onSelectProp(val, options) {
   onInput('variable', val);

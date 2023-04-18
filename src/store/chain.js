@@ -7,11 +7,7 @@ export default {
     chains: [],
     events: [],
     event: {},
-    loading: {
-      getChainsLoading: null,
-      getEventsLoading: null,
-      getEventLoading: null,
-    },
+    loading: { getChainsLoading: null, getEventsLoading: null, getEventLoading: null },
   }),
 
   mutations: {
@@ -47,6 +43,7 @@ export default {
       commit('setLoading', { getEventsLoading: true });
       try {
         const events = await API.getEvents(uuid);
+
         commit('getEvents', events);
       } catch (error) {
         commit('getChains', []);
@@ -57,10 +54,10 @@ export default {
     },
 
     async getEvent({ commit }, { uuid, eventId }) {
+      // to do: check again if this is used
       commit('setLoading', { getEventLoading: true });
       try {
         const event = await API.getEvent(uuid, eventId);
-
         commit('getEvent', event);
       } catch (error) {
         commit('getEvent', []);

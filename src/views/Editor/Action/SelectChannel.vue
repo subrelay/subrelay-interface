@@ -17,12 +17,7 @@
     >
       <n-grid cols="2" y-gap="20" x-gap="30">
         <n-gi span="1" v-for="channel in useChannels" :key="channel.value">
-          <n-radio-button
-            :value="channel.value"
-            :bordered="false"
-            :disabled="channel.disabled"
-            class="channel_item"
-          >
+          <n-radio-button :value="channel.value" :bordered="false" class="channel_item">
             <Icon :icon="channel.icon" class="icon" />
             <span class="text">{{ channel.label }}</span>
           </n-radio-button>
@@ -35,17 +30,22 @@
 <script setup>
 import EditorData from '@/store/localStore/EditorData';
 import { useChannels } from '@/composables';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+import { useStore } from 'vuex';
 
-const actionIdx = computed(() => EditorData.actionIdx);
-const config = {
+const store = useStore();
+
+const defaultConfig = {
   webhook: { url: null, secret: null },
   email: { addresses: [], subjectTemplate: null, bodyTemplate: null },
+  telegram: { chatId: null, messageTemplate: null },
 };
 
+const actionIdx = computed(() => EditorData.actionIdx);
+
 function handleSelectChannel(newChannel) {
-  // set Editor.setError to false
-  EditorData.workflow.tasks[actionIdx.value].config = config[newChannel];
+  EditorData.workflow.tasks[actionIdx.value].config = { ...defaultConfig[newChannel] };
+  store.commit('editor/resetCustomConfig');
 }
 </script>
 
