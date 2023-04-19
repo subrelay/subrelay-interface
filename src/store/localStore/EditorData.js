@@ -5,13 +5,13 @@ const conditionFormat = { variable: null, operator: null, value: null };
 
 const defaultConfig = () => ({
   name: null,
-  uuid: '01GYAFEG5G4ESNFWX7NRW1CSN8',
+  uuid: null,
   tasks: [
     {
       name: 'trigger',
       type: 'trigger',
       dependOnName: null,
-      config: { eventId: '01GYAFEG5YF0TVBQV2S204NKNK' },
+      config: { eventId: null },
     },
     {
       name: 'filter',
@@ -21,7 +21,7 @@ const defaultConfig = () => ({
     },
     {
       name: 'action',
-      type: 'discord',
+      type: null,
       dependOnName: 'filter',
       config: {},
     },
