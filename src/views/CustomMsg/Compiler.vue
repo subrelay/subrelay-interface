@@ -4,7 +4,7 @@
 
 <script setup>
 import KeysMenu from '@/views/CustomMsg/KeysMenu.vue';
-import { ref, watch, computed, onMounted } from 'vue';
+import { ref, watch, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useStore } from 'vuex';
 import { useEditor, EditorContent, VueRenderer } from '@tiptap/vue-3';
 import { mergeAttributes, Node, Extension } from '@tiptap/core';
@@ -224,6 +224,9 @@ const PreventEnter = Extension.create({
 
 const editor = useEditor({
   content: props.defaultContent,
+  textSerializers: (content) => {
+    return content?.toString() ?? '';
+  },
 
   editorProps: {
     attributes: {
@@ -248,7 +251,10 @@ const editor = useEditor({
 function setEditorContent(newValue) {
   const isSame = editor.value.getHTML() === newValue;
   if (!isSame) editor.value.commands.setContent(newValue);
-  emits('getRawText', { field: props.field, text: editor.value.getText() });
+  emits('getRawText', {
+    field: props.field,
+    text: editor.value.getText({ blockSeparator: '\n' }),
+  });
 }
 watch(
   () => props.modelValue,
@@ -264,6 +270,8 @@ watch(
   },
   { immediate: true },
 );
+
+onBeforeUnmount(() => editor.value.destroy());
 </script>
 
 <style lang="scss">

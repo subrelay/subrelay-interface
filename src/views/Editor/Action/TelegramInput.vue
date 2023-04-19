@@ -11,8 +11,11 @@
           <div style="margin-left: -32px; font-weight: normal">Content:</div>
         </template>
 
-        <n-blockquote>
-          <div v-html="config.messageTemplateWithHTML" style="font-size: 0.85em" />
+        <n-blockquote style="white-space: pre-wrap">
+          <div
+            v-html="config.messageTemplateWithHTML || config.messageTemplate"
+            style="font-size: 0.85em"
+          />
         </n-blockquote>
       </n-collapse-item>
     </n-collapse>

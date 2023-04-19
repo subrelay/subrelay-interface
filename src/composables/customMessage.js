@@ -25,8 +25,8 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
   function getRawText({ field, text }) {
     if (field === 'subjectTemplate' || field === 'messageTemplate') {
       EditorData.workflow.tasks[actionIdx.value].config[field] = text;
-      store.commit('editor/setCustomMsgConfig', { [field]: getFormattedText(text) });
     }
+    store.commit('editor/setCustomMsgConfig', { [field]: getFormattedText(text) });
   }
 
   watch(
@@ -47,6 +47,7 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
           `<p>Event ${getKeyHTML('event.name')} happened at ${getKeyHTML(
             'event.time',
           )}, block ${getKeyHTML('event.block.hash')} with following data:</p>`,
+          '<br/>',
           `<p>Success: ${getKeyHTML('event.success')}</p>`,
         ];
 
@@ -82,7 +83,7 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
         // template = 'messageTemplateWithHTML';
         template = 'messageTemplate';
       }
-
+      if (!isCustomizing) return;
       EditorData.workflow.tasks[actionIdx.value].config[template] = newContent;
       store.commit('editor/setCustomMsgConfig', { [template]: previewContent.value });
     },

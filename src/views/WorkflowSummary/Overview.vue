@@ -139,11 +139,20 @@
           </n-space>
         </n-space>
 
-        <!-- ACTION -->
-        <!-- Webhook config -->
+        <!-- Webhook -->
         <n-space vertical v-if="actionTask.type === 'webhook'">
           <div class="text-semi-bold">Config</div>
           <WebhookInput :config="actionTask.config" />
+        </n-space>
+
+        <!-- Telegram -->
+        <n-space v-if="actionTask.type === 'telegram'" vertical :size="24">
+          <n-space vertical v-if="!isEmpty(customMsgKeys)">
+            <div class="text-semi-bold">Content</div>
+            <n-blockquote style="white-space: pre-wrap">
+              <div v-html="getFormattedText(actionTask.config.messageTemplate)"></div>
+            </n-blockquote>
+          </n-space>
         </n-space>
       </n-space>
     </n-card>
@@ -166,7 +175,7 @@ const [{}, { getFormattedText }] = useCustomMessage({ isCustomizing: false });
 const customMsgKeys = computed(() => store.state.task.customMsgKeys);
 const workflow = computed(() => store.state.workflow.workflow);
 const filtersCondition = computed(() => filterTask.value.config.conditions);
-const filterTask = computed(() => workflow.value.tasks.find((task) => task.type === 'filter'));
+const filterTask = computed(() => workflow.value.tasks.find((task) => task.name === 'filter'));
 const actionTask = computed(() => workflow.value.tasks.find((task) => task.name === 'action'));
 </script>
 

@@ -78,7 +78,10 @@ function resetTest({ isDisabled }) {
 async function onTest() {
   await store.dispatch('task/runTask', {
     type: type.value,
-    config: { ...config.value, subjectTemplate: `[TESTING EMAIL] ${config.value.subjectTemplate}` },
+    config: {
+      ...config.value,
+      subjectTemplate: `====(TESTING EMAIL)==== ${config.value.subjectTemplate}`,
+    },
     data: { eventId: eventId.value },
   });
 }

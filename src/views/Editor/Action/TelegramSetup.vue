@@ -20,7 +20,7 @@
       />
     </n-form-item>
 
-    <n-button @click="showTeleGuidance" text>
+    <n-button @click="showGuidance" text>
       <Icon icon="material-symbols:info-outline-rounded" />
     </n-button>
   </n-space>
@@ -66,12 +66,9 @@
 <script setup>
 import Compiler from '@/views/CustomMsg/Compiler';
 import EditorData from '@/store/localStore/EditorData';
-import { h, ref, watch, computed, inject, nextTick } from 'vue';
-import { template, set, flow, isEmpty } from 'lodash';
+import { h, computed } from 'vue';
 import { useCustomMessage } from '@/composables';
-import { Icon } from '@iconify/vue';
 import { useStore } from 'vuex';
-import { NTag } from 'naive-ui';
 
 const store = useStore();
 const actionIdx = computed(() => EditorData.actionIdx);
@@ -82,7 +79,7 @@ const [
   { getKeyHTML, getRawText, getFormattedText },
 ] = useCustomMessage({ channel: 'telegram' });
 
-function showTeleGuidance() {
+function showGuidance() {
   console.log('showTeleGuidance');
 }
 
