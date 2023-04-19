@@ -25,6 +25,7 @@ function handleSelectChain(uuid) {
   EditorData.resetTrigger();
   EditorData.resetFilter();
   EditorData.resetAction();
+  store.commit('editor/disableTestAction', true);
 
   if (uuid) {
     store.dispatch('chain/getEvents', uuid);

@@ -107,7 +107,7 @@
             </n-space>
           </n-gi>
 
-          <!-- Email -->
+          <!-- Email recipients-->
           <n-gi span="2" v-if="actionTask.type === 'email'">
             <n-space vertical>
               <div class="text-semi-bold">Recipients</div>
@@ -121,6 +121,27 @@
                   <span v-if="idx !== actionTask.config.addresses.length - 1">,&nbsp;</span>
                 </span>
               </n-ellipsis>
+            </n-space>
+          </n-gi>
+
+          <!-- Telegram chatId-->
+          <n-gi span="2" v-if="actionTask.type === 'telegram'">
+            <n-space vertical>
+              <div class="text-semi-bold">Chat Id</div>
+              <div>{{ actionTask.config.chatId }}</div>
+            </n-space>
+          </n-gi>
+
+          <!-- Discord chatId-->
+          <n-gi span="2" v-if="actionTask.type === 'discord'">
+            <n-space vertical v-if="actionTask.config.channelId">
+              <div class="text-semi-bold">Channel Id</div>
+              <div>{{ actionTask.config.channelId }}</div>
+            </n-space>
+
+            <n-space vertical v-if="actionTask.config.userId">
+              <div class="text-semi-bold">User Id</div>
+              <div>{{ actionTask.config.userId }}</div>
             </n-space>
           </n-gi>
         </n-grid>
@@ -139,11 +160,24 @@
           </n-space>
         </n-space>
 
-        <!-- ACTION -->
         <!-- Webhook config -->
         <n-space vertical v-if="actionTask.type === 'webhook'">
           <div class="text-semi-bold">Config</div>
           <WebhookInput :config="actionTask.config" />
+        </n-space>
+
+        <!-- Telegram & Discord Content -->
+        <n-space
+          v-if="actionTask.type === 'telegram' || actionTask.type === 'discord'"
+          vertical
+          :size="24"
+        >
+          <n-space vertical v-if="!isEmpty(customMsgKeys)">
+            <div class="text-semi-bold">Content</div>
+            <n-blockquote style="white-space: pre-wrap">
+              <div v-html="getFormattedText(actionTask.config.messageTemplate)"></div>
+            </n-blockquote>
+          </n-space>
         </n-space>
       </n-space>
     </n-card>
@@ -166,7 +200,7 @@ const [{}, { getFormattedText }] = useCustomMessage({ isCustomizing: false });
 const customMsgKeys = computed(() => store.state.task.customMsgKeys);
 const workflow = computed(() => store.state.workflow.workflow);
 const filtersCondition = computed(() => filterTask.value.config.conditions);
-const filterTask = computed(() => workflow.value.tasks.find((task) => task.type === 'filter'));
+const filterTask = computed(() => workflow.value.tasks.find((task) => task.name === 'filter'));
 const actionTask = computed(() => workflow.value.tasks.find((task) => task.name === 'action'));
 </script>
 

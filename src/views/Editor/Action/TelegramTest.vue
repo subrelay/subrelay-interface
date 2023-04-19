@@ -86,7 +86,7 @@ async function onTest() {
     data: { eventId: eventId.value },
     config: {
       chatId,
-      messageTemplate: `[TESTING MESSAGE] \n\n${messageTemplate}`,
+      messageTemplate: `====(TESTING MESSAGE)==== \n\n${messageTemplate}`,
     },
   });
 }
