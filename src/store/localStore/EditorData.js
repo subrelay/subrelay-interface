@@ -7,24 +7,9 @@ const defaultConfig = () => ({
   name: null,
   uuid: null,
   tasks: [
-    {
-      name: 'trigger',
-      type: 'trigger',
-      dependOnName: null,
-      config: { eventId: null },
-    },
-    {
-      name: 'filter',
-      type: 'filter',
-      dependOnName: 'trigger',
-      config: { conditions: [] },
-    },
-    {
-      name: 'action',
-      type: null,
-      dependOnName: 'filter',
-      config: {},
-    },
+    { name: 'trigger', type: 'trigger', dependOnName: null, config: { eventId: null } },
+    { name: 'filter', type: 'filter', dependOnName: 'trigger', config: { conditions: [] } },
+    { name: 'action', type: null, dependOnName: 'filter', config: {} },
   ],
 });
 
@@ -129,7 +114,21 @@ const editor = reactive({
     // Delete uuid:
     delete this.postWorkflowData.uuid;
 
-    // Note to emove key for each condition before submitting too.
+    // Remove chatId from discord
+    if (this.postWorkflowData.tasks[this.actionIdx].type === 'discord') {
+      delete this.postWorkflowData.tasks[this.actionIdx].config.chatId;
+    }
+
+    if (this.postWorkflowData.tasks[this.filterIdx].config.conditions.length) {
+      // Remove key for each condition before submitting
+      this.postWorkflowData.tasks[this.filterIdx].config.conditions.forEach((group) =>
+        group.forEach((condition) => delete condition.key),
+      );
+    } else {
+      // Remove empty filter conditions
+      this.postWorkflowData.tasks[this.actionIdx].dependOnName = 'trigger';
+      this.postWorkflowData.tasks.splice(this.filterIdx, 1);
+    }
   },
 });
 
