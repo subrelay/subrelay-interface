@@ -26,6 +26,7 @@ function handleSelectChain(uuid) {
   EditorData.resetFilter();
   EditorData.resetAction();
   store.commit('editor/disableTestAction', true);
+  store.commit('editor/setExpand', { action: '1' });
 
   if (uuid) {
     store.dispatch('chain/getEvents', uuid);
