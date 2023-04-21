@@ -267,15 +267,14 @@ onBeforeMount(async () => {
   // Might need to update right here to prevent child components from mounting
   // before data is completely loaded
   EditorData.loadWorkflow(data);
-
   const { uuid } = EditorData.workflow;
   const { eventId } = EditorData.workflow.tasks[0].config;
 
   if (uuid) {
     store.dispatch('chain/getEvents', uuid);
-    if (eventId) {
-      store.dispatch('chain/getEvent', { uuid, eventId });
-    }
+    // if (eventId) {
+    //   store.dispatch('chain/getEvent', { uuid, eventId });
+    // }
   }
 
   store.commit('editor/setStep', route.name === 'trigger' ? 1 : 2);

@@ -199,9 +199,13 @@ const [{}, { getFormattedText }] = useCustomMessage({ isCustomizing: false });
 
 const customMsgKeys = computed(() => store.state.task.customMsgKeys);
 const workflow = computed(() => store.state.workflow.workflow);
-const filtersCondition = computed(() => filterTask.value.config.conditions);
+
 const filterTask = computed(() => workflow.value.tasks.find((task) => task.name === 'filter'));
 const actionTask = computed(() => workflow.value.tasks.find((task) => task.name === 'action'));
+const filtersCondition = computed(() => {
+  if (filterTask.value) return filterTask.value.config.conditions;
+  return [];
+});
 </script>
 
 <style lang="scss"></style>

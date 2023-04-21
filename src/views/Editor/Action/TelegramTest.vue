@@ -10,7 +10,25 @@
       </div>
 
       <n-skeleton v-if="runningTest" text :repeat="5" />
-      <TelegramInput :config="config" v-else />
+
+      <n-space vertical :size="10" v-else>
+        <div class="input-item">
+          <div class="title">Chat id:</div>
+          <n-text code class="text-ellipsis" style="font-size: 0.85em">{{ config.chatId }}</n-text>
+        </div>
+
+        <n-collapse arrow-placement="right" default-expanded-names="">
+          <n-collapse-item title="Content" name="content">
+            <template #header>
+              <div style="margin-left: -32px; font-weight: normal">Content:</div>
+            </template>
+
+            <n-blockquote style="white-space: pre-wrap">
+              <div v-html="getFormattedText(config.messageTemplate)" style="font-size: 0.85em" />
+            </n-blockquote>
+          </n-collapse-item>
+        </n-collapse>
+      </n-space>
     </n-card>
 
     <n-card header-style="padding-bottom: 0.5rem" v-if="isTested" :segmented="{ content: 'soft' }">
@@ -57,13 +75,13 @@
 
 <script setup>
 import StatusIcon from '@/components/StatusIcon';
-import TelegramInput from '@/views/Editor/Action/TelegramInput';
 import EditorData from '@/store/localStore/EditorData';
+import { useCustomMessage } from '@/composables';
 import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
-const config = computed(() => store.state.editor.customMsgConfig);
+const config = computed(() => EditorData.workflow.tasks[EditorData.actionIdx].config);
 const type = computed(() => EditorData.workflow.tasks[EditorData.actionIdx].type);
 const eventId = computed(() => EditorData.workflow.tasks[EditorData.triggerIdx].config.eventId);
 
@@ -71,6 +89,7 @@ const runningTest = computed(() => store.state.task.runningTest[type.value]);
 const workflowLoading = computed(() => store.state.workflow.loading.workflow);
 const isTested = computed(() => store.state.task.tested[type.value]);
 const testResult = computed(() => store.state.task.testResult[type.value]);
+const [{}, { getFormattedText }] = useCustomMessage({ isCustomizing: false });
 
 function resetTest({ isDisabled }) {
   if (isDisabled) {

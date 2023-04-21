@@ -79,7 +79,6 @@
 
 <script setup>
 import StatusIcon from '@/components/StatusIcon';
-import TelegramInput from '@/views/Editor/Action/TelegramInput';
 import EditorData from '@/store/localStore/EditorData';
 import { computed, ref } from 'vue';
 import { useStore } from 'vuex';

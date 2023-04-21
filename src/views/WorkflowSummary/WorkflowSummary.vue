@@ -67,7 +67,7 @@ watch(workflow, (newWorkflow) => {
       chain: { uuid },
     } = newWorkflow;
     if (eventId) {
-      store.dispatch('chain/getEvent', { uuid, eventId });
+      // store.dispatch('chain/getEvent', { uuid, eventId });
       store.dispatch('task/getFields', eventId);
     }
   }

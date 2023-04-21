@@ -4,7 +4,6 @@
   </n-space>
 
   <div v-else class="log-details">
-    <div>step {{ step }}</div>
     <n-result
       style="margin-top: 20vh"
       v-if="isEmpty(log)"
@@ -20,21 +19,17 @@
     <div v-else>
       <!-- HEADER -->
       <n-space align="center" justify="space-between">
-        <n-breadcrumb separator=">">
+        <n-breadcrumb separator=">" style="font-family: Unbounded">
           <n-breadcrumb-item>
             <template #default>
-              <router-link
-                :to="{ name: 'logs' }"
-                class="text-bold font-size-2rem"
-                style="font-family: Unbounded"
-              >
+              <router-link :to="{ name: 'logs' }" class="text-bold font-size-2rem">
                 LOGS
               </router-link>
             </template>
           </n-breadcrumb-item>
 
-          <n-breadcrumb-item class="font-size-2rem text-bold">
-            {{ log.name || '' }}
+          <n-breadcrumb-item>
+            <div class="font-size-2rem text-bold">{{ log.workflow.name || '' }}</div>
           </n-breadcrumb-item>
         </n-breadcrumb>
 
@@ -44,9 +39,7 @@
           @select="handleSelect"
           placement="bottom-end"
         >
-          <n-button text>
-            <Icon icon="ph:dots-six-vertical-bold" width="30" />
-          </n-button>
+          <n-button text><Icon icon="ph:dots-six-vertical-bold" width="1.25rem" /> </n-button>
         </n-dropdown>
       </n-space>
 
@@ -66,6 +59,19 @@
           </n-space>
 
           <n-space vertical> </n-space>
+        </n-space>
+      </n-space>
+
+      <!-- STEPS -->
+      <n-space class="steps" :size="0">
+        <n-space v-for="(step, index) in log.taskLogs" :key="index" align="center" :size="0">
+          <n-button size="large" round class="step" @click="setStep(log.taskLogs[index].task.name)">
+            <StatusIcon :status="log.taskLogs[0].status" style="margin: 0 10px 0 -1.5rem" />
+            
+            <div class="text-capitalize">{{ log.taskLogs[index].task.name }}</div>
+          </n-button>
+
+          <div class="splitor" v-if="index !== log.taskLogs.length - 1"></div>
         </n-space>
       </n-space>
 
@@ -176,6 +182,7 @@
       </transition>
     </div>
   </div>
+  <pre>{{ log.taskLogs }}</pre>
 </template>
 
 <script setup>
@@ -233,16 +240,19 @@ const options = ref([
   },
   {
     label: 'View full workflow logs',
-    key: 'log',
+    key: 'logs',
     icon: renderIcon('icon-park-outline:log'),
   },
 ]);
 
 function handleSelect(key) {
-  console.log('log ', log.value);
-  // if (key === 'viewDetails') {
-  //   router.push({ name: 'overview', params: { id: props.id } });
-  // }
+  if (key === 'viewDetails') {
+    router.push({ name: 'overview', params: { id: log.value.workflow.id } });
+  }
+
+  if (key === 'logs') {
+    router.push({ name: 'workflowLogs', params: { id: log.value.workflow.id } });
+  }
 }
 
 function setStep(newStep) {
