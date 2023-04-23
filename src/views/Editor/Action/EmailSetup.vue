@@ -109,7 +109,7 @@ const inputRef = ref(null);
 const inputValue = ref(null);
 const uuid = computed(() => store.state.chain.event.uuid);
 const actionIdx = computed(() => EditorData.actionIdx);
-const customMsgKeys = computed(() => store.state.task.customMsgKeys);
+const customMsgKeys = computed(() => store.state.editor.customMsgKeys);
 const rawSubject = ref('');
 
 const [

@@ -13,7 +13,7 @@
 
       <n-space vertical :size="10">
         <div class="input-item">
-          <div class="title">Chat id:</div>
+          <div class="title">{{ config.userId ? 'User Id' : 'Channel Id' }}:</div>
           <n-text code class="text-ellipsis" style="font-size: 0.85em">
             {{ config.userId || config.channelId }}
           </n-text>
@@ -79,7 +79,6 @@
 
 <script setup>
 import StatusIcon from '@/components/StatusIcon';
-import TelegramInput from '@/views/Editor/Action/TelegramInput';
 import EditorData from '@/store/localStore/EditorData';
 import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
@@ -89,21 +88,15 @@ const config = computed(() => store.state.editor.customMsgConfig);
 const type = computed(() => EditorData.workflow.tasks[EditorData.actionIdx].type);
 const eventId = computed(() => EditorData.workflow.tasks[EditorData.triggerIdx].config.eventId);
 
-const runningTest = computed(() => store.state.task.runningTest[type.value]);
+const runningTest = computed(() => store.state.editor.runningTest[type.value]);
 const workflowLoading = computed(() => store.state.workflow.loading.workflow);
-const isTested = computed(() => store.state.task.tested[type.value]);
-const testResult = computed(() => store.state.task.testResult[type.value]);
-
-function resetTest({ isDisabled }) {
-  if (isDisabled) {
-    store.commit('task/setTested', false);
-  }
-}
+const isTested = computed(() => store.state.editor.tested[type.value]);
+const testResult = computed(() => store.state.editor.testResult[type.value]);
 
 async function onTest() {
-  const { chatId, messageTemplate } = config.value;
+  const { messageTemplate } = config.value;
 
-  await store.dispatch('task/runTask', {
+  await store.dispatch('editor/runTask', {
     type: type.value,
     data: { eventId: eventId.value },
     config: {

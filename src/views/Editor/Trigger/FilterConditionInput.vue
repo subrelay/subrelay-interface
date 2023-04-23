@@ -126,11 +126,11 @@ const requiredRule = ref({
 
 const inputType = ref(null);
 const operatorOptions = ref([]);
-const properties = computed(() => store.state.task.properties);
+const properties = computed(() => store.state.editor.properties);
 const filterIdx = computed(() => EditorData.filterIdx);
-const operators = computed(() => store.state.task.operators);
-const getOperatorsLoading = computed(() => store.state.task.loading.getOperators);
-const getFieldsLoading = computed(() => store.state.task.loading.getFields);
+const operators = computed(() => store.state.editor.operators);
+const getOperatorsLoading = computed(() => store.state.editor.loading.getOperators);
+const getFieldsLoading = computed(() => store.state.editor.loading.getFields);
 
 function onSelectProp(val, options) {
   onInput('variable', val);

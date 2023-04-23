@@ -5,9 +5,18 @@ const conditionFormat = { variable: null, operator: null, value: null };
 
 const defaultConfig = () => ({
   name: null,
+  // uuid: '01GYD0FCSWRJRCX8TFDEZRTBAN',
   uuid: null,
   tasks: [
-    { name: 'trigger', type: 'trigger', dependOnName: null, config: { eventId: null } },
+    {
+      name: 'trigger',
+      type: 'trigger',
+      dependOnName: null,
+      config: {
+        // eventId: '01GYD0FCTBNDHNY5FBAK3WH08Z',
+        eventId: null,
+      },
+    },
     { name: 'filter', type: 'filter', dependOnName: 'trigger', config: { conditions: [] } },
     { name: 'action', type: null, dependOnName: 'filter', config: {} },
   ],

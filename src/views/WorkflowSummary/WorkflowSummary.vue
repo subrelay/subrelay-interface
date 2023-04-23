@@ -63,13 +63,7 @@ watch(workflow, (newWorkflow) => {
   if (newWorkflow.tasks) {
     triggerTask.value = newWorkflow.tasks.find((task) => task.type === 'trigger');
     const { eventId } = triggerTask.value.config;
-    const {
-      chain: { uuid },
-    } = newWorkflow;
-    if (eventId) {
-      store.dispatch('chain/getEvent', { uuid, eventId });
-      store.dispatch('task/getFields', eventId);
-    }
+    if (eventId) store.dispatch('editor/getFields', eventId);
   }
 });
 

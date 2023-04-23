@@ -15,7 +15,7 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
   const previewSubject = ref('');
   const defaultSubject = ref('');
 
-  const customMsgKeys = computed(() => store.state.task.customMsgKeys);
+  const customMsgKeys = computed(() => store.state.editor.customMsgKeys);
   const actionIdx = computed(() => EditorData.actionIdx);
 
   function getKeyHTML(key) {
@@ -47,7 +47,9 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
           `<p>Event ${getKeyHTML('event.name')} happened at ${getKeyHTML(
             'event.time',
           )}, block ${getKeyHTML('event.block.hash')} with following data:</p>`,
-          '<br/>',
+          // `${channel === 'telegram' ? '<br>' : '<p></p>'}`,
+          // '<p></p>',
+          '<br>',
           `<p>Success: ${getKeyHTML('event.success')}</p>`,
         ];
 
@@ -84,7 +86,10 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
         template = 'messageTemplate';
       }
       if (!isCustomizing) return;
-      EditorData.workflow.tasks[actionIdx.value].config[template] = newContent;
+      EditorData.workflow.tasks[actionIdx.value].config[template] = newContent.replace(
+        /<p><\/p>/g,
+        '<br>',
+      );
       store.commit('editor/setCustomMsgConfig', { [template]: previewContent.value });
     },
     { immediate: true },
@@ -109,6 +114,7 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
   }
 
   function getFormattedText(text) {
+    if (!text) return '';
     const formatText = flow(replaceEmptyParagraphsWithNbsp, template);
     const formattedText = formatText(text)({ ...keyLookup.value });
     return formattedText;

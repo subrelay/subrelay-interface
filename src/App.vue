@@ -13,7 +13,7 @@ const store = useStore();
 
 onBeforeMount(() => {
   store.dispatch('chain/getChains');
-  store.dispatch('task/getOperators');
+  store.dispatch('editor/getOperators');
   store.dispatch('account/loadAccounts');
   store.dispatch('global/loadSiderState');
 });

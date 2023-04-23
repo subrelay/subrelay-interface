@@ -57,9 +57,11 @@ import EditorData from '@/store/localStore/EditorData';
 import SelectChain from '@/views/Editor/Trigger/SelectChain';
 import SelectEvent from '@/views/Editor/Trigger/SelectEvent';
 import Filters from '@/views/Editor/Trigger/Filters';
+import { useRouter } from 'vue-router';
 
 const [{ expandedNames }, { setExpand }] = useAccordion('trigger');
 const emits = defineEmits(['validate']);
+const router = useRouter();
 
 const filterIdx = computed(() => EditorData.filterIdx);
 const conditionLength = computed(
@@ -67,7 +69,10 @@ const conditionLength = computed(
 );
 
 function validateFilter() {
-  const callback = () => EditorData.setComplete('filter', true);
+  const callback = () => {
+    EditorData.setComplete('filter', true);
+    router.push({ name: 'action' });
+  };
   emits('validate', { taskName: 'filter', keys: ['filterCond'], callback });
 }
 </script>

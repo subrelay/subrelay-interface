@@ -38,7 +38,7 @@
           />
         </n-layout-sider>
 
-        <n-layout-content :content-style="{ padding: '20px 5rem 0' }">
+        <n-layout-content :content-style="{ padding: '2rem 4rem 0' }">
           <RouterView />
         </n-layout-content>
       </n-layout>
@@ -106,7 +106,7 @@ watch(
   { immediate: true },
 );
 
-const goToEditor = (id) => router.push({ name: 'trigger', params: { id } });
+const goToEditor = (id) => router.push({ name: 'trigger' });
 const goToHomePage = () => router.push({ name: 'workflows' });
 
 function onUpdateActive(value) {

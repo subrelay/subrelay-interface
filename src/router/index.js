@@ -58,7 +58,7 @@ const router = createRouter({
           ],
         },
         {
-          path: '/editor/:id',
+          path: '/editor',
           props: true,
           component: () => import('@/views/Editor/Editor.vue'),
           meta: { title: 'Editor', signInRequired: true },
