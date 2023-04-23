@@ -47,6 +47,8 @@ const actionIdx = computed(() => EditorData.actionIdx);
 function handleSelectChannel(newChannel) {
   EditorData.workflow.tasks[actionIdx.value].config = { ...defaultConfig[newChannel] };
   store.commit('editor/resetCustomConfig');
+  store.commit('editor/disableTestAction', true);
+  store.commit('task/reset');
 }
 </script>
 

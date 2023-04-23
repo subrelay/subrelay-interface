@@ -49,6 +49,11 @@ export const useChannels = ref([
   { value: 'discord', label: 'Discord', icon: 'logos:discord-icon' },
 ]);
 
+export function useGetChannelIcon(channelName) {
+  const channel = useChannels.value.find((el) => el.value === channelName);
+  return channel.icon;
+}
+
 export const defaultQuery = {
   search: undefined,
   order: undefined,

@@ -146,6 +146,13 @@
           </n-gi>
         </n-grid>
 
+        <!-- Webhook config -->
+        <n-space vertical v-if="actionTask.type === 'webhook'">
+          <div class="text-semi-bold">Config</div>
+          <WebhookInput :config="actionTask.config" />
+        </n-space>
+
+        <!-- Email content -->
         <n-space v-if="actionTask.type === 'email'" vertical :size="24">
           <n-space vertical v-if="!isEmpty(customMsgKeys)">
             <div class="text-semi-bold">Subject</div>
@@ -158,12 +165,6 @@
               <div v-html="getFormattedText(actionTask.config.bodyTemplate)"></div>
             </n-blockquote>
           </n-space>
-        </n-space>
-
-        <!-- Webhook config -->
-        <n-space vertical v-if="actionTask.type === 'webhook'">
-          <div class="text-semi-bold">Config</div>
-          <WebhookInput :config="actionTask.config" />
         </n-space>
 
         <!-- Telegram & Discord Content -->

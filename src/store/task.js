@@ -115,14 +115,10 @@ export default {
     runningTest: {},
     tested: {},
     testResult: {},
-    loading: { getOperators: false, getFields: false },
+    loading: { getFields: false },
   }),
 
   mutations: {
-    getOperators: (state, operators) => {
-      state.operators = operators;
-    },
-
     getFields: (state, { filterFields, custtomMsgFields }) => {
       state.properties = filterFields;
       state.customMsgKeys = custtomMsgFields;
@@ -152,19 +148,6 @@ export default {
   },
 
   actions: {
-    async getOperators({ commit }) {
-      commit('setLoading', { getOperators: true });
-      try {
-        const operators = await API.getOperators();
-        commit('getOperators', operators);
-      } catch (error) {
-        commit('getOperators', []);
-        console.error(error);
-      } finally {
-        commit('setLoading', { getOperators: false });
-      }
-    },
-
     async getFields({ commit }, eventId) {
       commit('setLoading', { getFields: true });
       try {

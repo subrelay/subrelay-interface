@@ -129,7 +129,7 @@ const operatorOptions = ref([]);
 const properties = computed(() => store.state.task.properties);
 const filterIdx = computed(() => EditorData.filterIdx);
 const operators = computed(() => store.state.task.operators);
-const getOperatorsLoading = computed(() => store.state.task.loading.getOperators);
+const getOperatorsLoading = computed(() => store.state.editor.loading.getOperators);
 const getFieldsLoading = computed(() => store.state.task.loading.getFields);
 
 function onSelectProp(val, options) {
