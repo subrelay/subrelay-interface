@@ -198,7 +198,7 @@ const props = defineProps({ id: [String, Number] });
 const store = useStore();
 const [{}, { getFormattedText }] = useCustomMessage({ isCustomizing: false });
 
-const customMsgKeys = computed(() => store.state.task.customMsgKeys);
+const customMsgKeys = computed(() => store.state.editor.customMsgKeys);
 const workflow = computed(() => store.state.workflow.workflow);
 
 const filterTask = computed(() => workflow.value.tasks.find((task) => task.name === 'filter'));

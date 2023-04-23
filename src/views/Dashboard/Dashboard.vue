@@ -106,7 +106,7 @@ watch(
   { immediate: true },
 );
 
-const goToEditor = (id) => router.push({ name: 'trigger', params: { id } });
+const goToEditor = (id) => router.push({ name: 'trigger' });
 const goToHomePage = () => router.push({ name: 'workflows' });
 
 function onUpdateActive(value) {

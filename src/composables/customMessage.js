@@ -15,7 +15,7 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
   const previewSubject = ref('');
   const defaultSubject = ref('');
 
-  const customMsgKeys = computed(() => store.state.task.customMsgKeys);
+  const customMsgKeys = computed(() => store.state.editor.customMsgKeys);
   const actionIdx = computed(() => EditorData.actionIdx);
 
   function getKeyHTML(key) {

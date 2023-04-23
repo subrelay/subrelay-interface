@@ -175,10 +175,7 @@ async function setStepStatus(step) {
 function onChangeStep(nextStep) {
   store.commit('editor/setStep', nextStep);
   setStepStatus(nextStep);
-  router.push({
-    name: nextStep == 1 ? 'trigger' : 'action',
-    params: { id: props.id || 'new-flow' },
-  });
+  router.push({ name: nextStep == 1 ? 'trigger' : 'action' });
 }
 
 function onUpdateName(value) {
@@ -246,44 +243,18 @@ async function createWorkflow() {
 }
 
 onBeforeMount(async () => {
-  let data;
-
-  // TODO: Refactor
-  if (props.id !== 'new-flow') {
-    try {
-      const { data: workflow } = await Api.getWorkFlow({
-        account: store.state.account.selected,
-        signer: store.state.account.signer,
-        id: props.id,
-      });
-      data = workflow;
-    } catch (error) {
-      message.error('Failed to fetch workflow data', error);
-    } finally {
-      loading.value = false;
-    }
-  }
-
   // Might need to update right here to prevent child components from mounting
   // before data is completely loaded
-  EditorData.loadWorkflow(data);
+  EditorData.loadWorkflow();
   const { uuid } = EditorData.workflow;
-  const { eventId } = EditorData.workflow.tasks[0].config;
 
-  if (uuid) {
-    store.dispatch('chain/getEvents', uuid);
-    // if (eventId) {
-    //   store.dispatch('chain/getEvent', { uuid, eventId });
-    // }
-  }
-
+  if (uuid) store.dispatch('chain/getEvents', uuid);
   store.commit('editor/setStep', route.name === 'trigger' ? 1 : 2);
   // window.addEventListener('beforeunload', (e) => handleReload(e));
 });
 
 onBeforeUnmount(() => {
   EditorData.loadWorkflow();
-  store.commit('task/reset');
   store.commit('editor/reset');
   // window.removeEventListener('beforeunload', (e) => handleReload(e));
 });

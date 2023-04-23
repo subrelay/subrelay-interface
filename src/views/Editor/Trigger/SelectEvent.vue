@@ -59,11 +59,9 @@ function handleSelectEvent(eventId) {
   EditorData.resetFilter();
 
   if (eventId) {
-    // store.dispatch('chain/getEvent', { uuid: uuid.value, eventId });
-    store.dispatch('task/getFields', eventId);
+    store.dispatch('editor/getFields', eventId);
   } else {
-    // store.commit('chain/getEvent', {});
-    store.commit('task/getFields', []);
+    store.commit('editor/getFields', []);
   }
 }
 

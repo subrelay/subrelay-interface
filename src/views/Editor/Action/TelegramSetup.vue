@@ -72,7 +72,7 @@ import { useStore } from 'vuex';
 
 const store = useStore();
 const actionIdx = computed(() => EditorData.actionIdx);
-const customMsgKeys = computed(() => store.state.task.customMsgKeys);
+const customMsgKeys = computed(() => store.state.editor.customMsgKeys);
 
 const [
   { content, previewContent, defaultContent, subject, previewSubject, defaultSubject, darkMode },

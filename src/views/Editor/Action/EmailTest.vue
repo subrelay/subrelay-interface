@@ -98,20 +98,14 @@ const store = useStore();
 const config = computed(() => EditorData.workflow.tasks[EditorData.actionIdx].config);
 const type = computed(() => EditorData.workflow.tasks[EditorData.actionIdx].type);
 const eventId = computed(() => EditorData.workflow.tasks[EditorData.triggerIdx].config.eventId);
-const runningTest = computed(() => store.state.task.runningTest[type.value]);
+const runningTest = computed(() => store.state.editor.runningTest[type.value]);
 const workflowLoading = computed(() => store.state.workflow.loading.workflow);
-const isTested = computed(() => store.state.task.tested[type.value]);
-const testResult = computed(() => store.state.task.testResult[type.value]);
+const isTested = computed(() => store.state.editor.tested[type.value]);
+const testResult = computed(() => store.state.editor.testResult[type.value]);
 const [{}, { getFormattedText }] = useCustomMessage({ isCustomizing: false });
 
-function resetTest({ isDisabled }) {
-  if (isDisabled) {
-    store.commit('task/setTested', false);
-  }
-}
-
 async function onTest() {
-  await store.dispatch('task/runTask', {
+  await store.dispatch('editor/runTask', {
     type: type.value,
     config: {
       ...config.value,

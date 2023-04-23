@@ -27,7 +27,7 @@ const props = defineProps({
 const emits = defineEmits(['update:modelValue', 'getRawText']);
 
 const store = useStore();
-const customMsgKeys = computed(() => store.state.task.customMsgKeys);
+const customMsgKeys = computed(() => store.state.editor.customMsgKeys);
 const darkMode = computed(() => store.state.global.isDarkMode);
 
 const suggestion = {

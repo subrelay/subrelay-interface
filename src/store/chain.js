@@ -17,9 +17,7 @@ export default {
     getEvents: (state, events) => {
       state.events = events;
     },
-    getEvent: (state, event) => {
-      state.event = event;
-    },
+
     setLoading: (state, data) => {
       state.loading = { ...state.loading, ...data };
     },
@@ -50,20 +48,6 @@ export default {
         console.error('error', error);
       } finally {
         commit('setLoading', { getEventsLoading: false });
-      }
-    },
-
-    async getEvent({ commit }, { uuid, eventId }) {
-      // to do: check again if this is used
-      commit('setLoading', { getEventLoading: true });
-      try {
-        const event = await API.getEvent(uuid, eventId);
-        commit('getEvent', event);
-      } catch (error) {
-        commit('getEvent', []);
-        console.error(error);
-      } finally {
-        commit('setLoading', { getEventLoading: false });
       }
     },
   },
