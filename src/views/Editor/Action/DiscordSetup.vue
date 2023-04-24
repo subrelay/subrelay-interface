@@ -98,9 +98,6 @@ function handleChange(e) {
 
   if (chatId) {
     const idToRemove = checkedValue.value === 'channelId' ? 'userId' : 'channelId';
-    store.commit('editor/setCustomMsgConfig', { [checkedValue.value]: chatId });
-    store.commit('editor/setCustomMsgConfig', { [idToRemove]: null });
-
     EditorData.workflow.tasks[actionIdx.value].config[checkedValue.value] = chatId;
     EditorData.workflow.tasks[actionIdx.value].config[idToRemove] = null;
   }
@@ -112,7 +109,6 @@ function showGuidance() {
 
 function onUpdateChatId(chatId) {
   EditorData.workflow.tasks[actionIdx.value].config[checkedValue.value] = chatId;
-  store.commit('editor/setCustomMsgConfig', { [checkedValue.value]: chatId });
 }
 
 const [

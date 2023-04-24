@@ -84,7 +84,7 @@ import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
-const config = computed(() => store.state.editor.customMsgConfig);
+const config = computed(() => EditorData.workflow.tasks[EditorData.actionIdx].config);
 const type = computed(() => EditorData.workflow.tasks[EditorData.actionIdx].type);
 const eventId = computed(() => EditorData.workflow.tasks[EditorData.triggerIdx].config.eventId);
 

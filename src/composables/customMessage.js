@@ -26,7 +26,6 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
     if (field === 'subjectTemplate' || field === 'messageTemplate') {
       EditorData.workflow.tasks[actionIdx.value].config[field] = text;
     }
-    store.commit('editor/setCustomMsgConfig', { [field]: getFormattedText(text) });
   }
 
   watch(
@@ -82,15 +81,15 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
       if (channel === 'email') {
         template = 'bodyTemplate';
       } else if (channel === 'telegram' || channel === 'discord') {
-        // template = 'messageTemplateWithHTML';
         template = 'messageTemplate';
       }
+
       if (!isCustomizing) return;
+      if (newContent) store.commit('editor/setError', { body: false });
       EditorData.workflow.tasks[actionIdx.value].config[template] = newContent.replace(
         /<p><\/p>/g,
         '<br>',
       );
-      store.commit('editor/setCustomMsgConfig', { [template]: previewContent.value });
     },
     { immediate: true },
   );
@@ -98,10 +97,7 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
   watch(
     subject,
     (newSubject) => {
-      if (channel === 'email') {
-        previewSubject.value = getFormattedText(newSubject);
-        store.commit('editor/setCustomMsgConfig', { subjectTemplate: previewSubject.value });
-      }
+      if (channel === 'email') previewSubject.value = getFormattedText(newSubject);
     },
     { immediate: true },
   );

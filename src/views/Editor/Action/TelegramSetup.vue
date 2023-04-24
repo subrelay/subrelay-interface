@@ -13,11 +13,7 @@
         key: 'setupAction_chatId',
       }"
     >
-      <n-input
-        clearable
-        v-model:value="EditorData.workflow.tasks[actionIdx].config.chatId"
-        @update:value="onUpdateChatId"
-      />
+      <n-input clearable v-model:value="EditorData.workflow.tasks[actionIdx].config.chatId" />
     </n-form-item>
 
     <n-button @click="showGuidance" text>
@@ -81,10 +77,6 @@ const [
 
 function showGuidance() {
   console.log('showTeleGuidance');
-}
-
-function onUpdateChatId(chatId) {
-  store.commit('editor/setCustomMsgConfig', { chatId });
 }
 </script>
 

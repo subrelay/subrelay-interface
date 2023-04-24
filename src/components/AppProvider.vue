@@ -48,7 +48,7 @@ const darkOverrides = {
     // warningColorHover: string;
     // warningColorPressed: string;
     // warningColorSuppl: string;
-    errorColor: 'rgb(210, 84, 93)',
+    // errorColor: 'rgb(210, 84, 93)',
     // errorColorHover: string;
     // errorColorPressed: string;
     // errorColorSuppl: string;

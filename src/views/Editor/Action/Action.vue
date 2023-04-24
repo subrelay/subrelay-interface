@@ -38,7 +38,7 @@
 
       <n-collapse-item name="3" title="Test" :disabled="isDisabledTest">
         <div class="step_container">
-          <TestAction @continue="nextStep" @back="backStep" />
+          <TestAction />
         </div>
       </n-collapse-item>
     </n-collapse>
@@ -53,15 +53,27 @@ import EditorData from '@/store/localStore/EditorData';
 import SelectChannel from '@/views/Editor/Action/SelectChannel.vue';
 import SetUpAction from '@/views/Editor/Action/SetUpAction.vue';
 import TestAction from '@/views/Editor/Action/TestAction.vue';
-
-const [{ expandedNames }, { nextStep, backStep, setExpand }] = useAccordion('action');
+const [{ expandedNames }, { setExpand }] = useAccordion('action');
 
 const store = useStore();
 const emits = defineEmits(['validate']);
-
+const actionIdx = computed(() => EditorData.actionIdx);
+const actionConfig = computed(() => EditorData.workflow.tasks[EditorData.actionIdx].config);
 const isDisabledTest = computed(() => store.state.editor.isTestActionDisabled);
 
 function validateSetupAction() {
+  if (!actionConfig.value.subjectTemplate) {
+    store.commit('editor/setError', { subject: true });
+  }
+
+  if (!actionConfig.value.bodyTemplate) {
+    store.commit('editor/setError', { body: true });
+  }
+
+  if (!actionConfig.value.messageTemplate) {
+    store.commit('editor/setError', { content: true });
+  }
+
   const callback = () => {
     store.commit('editor/disableTestAction', false);
     EditorData.setComplete('action', true);
