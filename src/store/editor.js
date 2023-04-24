@@ -40,6 +40,12 @@ export default {
       state.tested = {};
     },
 
+    resetTest: (state) => {
+      state.runningTest = {};
+      state.testResult = {};
+      state.tested = {};
+    },
+
     setCustomMsgConfig: (state, config) => {
       state.customMsgConfig = { ...state.customMsgConfig, ...config };
     },
