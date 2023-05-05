@@ -15,7 +15,7 @@ export default {
     runningTest: {},
     tested: {},
     testResult: {},
-    error: { subject: false, content: false, body: false },
+    error: { subjectTemplate: false, messageTemplate: false, bodyTemplate: false },
   }),
 
   mutations: {
@@ -38,14 +38,14 @@ export default {
       state.runningTest = {};
       state.testResult = {};
       state.tested = {};
-      state.error = { subject: false, content: false };
+      state.error = { subjectTemplate: false, messageTemplate: false, bodyTemplate: false };
     },
 
     resetAction: (state) => {
       state.runningTest = {};
       state.testResult = {};
       state.tested = {};
-      state.error = { subject: false, content: false };
+      state.error = { subjectTemplate: false, messageTemplate: false, bodyTemplate: false };
     },
 
     setLoading: (state, data) => {
@@ -74,6 +74,7 @@ export default {
     },
 
     setError: (state, data) => {
+      // To check error for custom message inputs
       state.error = { ...state.error, ...data };
     },
   },

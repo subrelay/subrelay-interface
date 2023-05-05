@@ -41,7 +41,7 @@
       >
         <n-space vertical class="custom-message-card-content" :wrap-item="false">
           <!-- SUBJECT -->
-          <n-space vertical style="margin-bottom: 1em">
+          <n-space vertical>
             <div class="text-italic text-bold">Subject:</div>
             <Compiler
               v-model="subject"
@@ -110,8 +110,8 @@ const emits = defineEmits(['validate']);
 const addressTags = ref([]);
 const inputRef = ref(null);
 const inputValue = ref(null);
-const requiredSubject = computed(() => store.state.editor.error.subject);
-const requiredBody = computed(() => store.state.editor.error.body);
+const requiredSubject = computed(() => store.state.editor.error.subjectTemplate);
+const requiredBody = computed(() => store.state.editor.error.bodyTemplate);
 const uuid = computed(() => store.state.chain.event.uuid);
 const actionIdx = computed(() => EditorData.actionIdx);
 const customMsgKeys = computed(() => store.state.editor.customMsgKeys);

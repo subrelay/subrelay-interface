@@ -85,7 +85,13 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
       }
 
       if (!isCustomizing) return;
-      if (newContent) store.commit('editor/setError', { body: false });
+
+      if (!newContent || newContent === '<p></p>' || newContent === '<br>') {
+        store.commit('editor/setError', { [template]: true });
+      } else {
+        store.commit('editor/setError', { [template]: false });
+      }
+
       EditorData.workflow.tasks[actionIdx.value].config[template] = newContent.replace(
         /<p><\/p>/g,
         '<br>',
@@ -97,7 +103,15 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
   watch(
     subject,
     (newSubject) => {
-      if (channel === 'email') previewSubject.value = getFormattedText(newSubject);
+      if (channel === 'email') {
+        previewSubject.value = getFormattedText(newSubject);
+        if (!isCustomizing) return;
+        if (!newSubject || newSubject === '<p></p>' || newSubject === '<br>') {
+          store.commit('editor/setError', { subjectTemplate: true });
+        } else {
+          store.commit('editor/setError', { subjectTemplate: false });
+        }
+      }
     },
     { immediate: true },
   );

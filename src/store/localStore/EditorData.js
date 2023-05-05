@@ -4,7 +4,7 @@ import { cloneDeep } from 'lodash';
 const conditionFormat = { variable: null, operator: null, value: null };
 
 const defaultConfig = () => ({
-  name: null,
+  // name: null,
   // uuid: '01GYD0FCSWRJRCX8TFDEZRTBAN',
   uuid: null,
   tasks: [
@@ -35,6 +35,8 @@ const editor = reactive({
 
   setError(taskName, isError) {
     const index = this.workflow.tasks.findIndex((task) => task.name === taskName);
+    console.log('INDEX', index);
+    console.log('isError', isError);
     this.workflow.tasks[index].isError = isError;
   },
 

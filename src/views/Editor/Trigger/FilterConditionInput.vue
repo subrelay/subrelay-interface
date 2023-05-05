@@ -120,7 +120,7 @@ const requiredRule = ref({
       EditorData.setError('filter', true);
       return new Error('Required!');
     }
-    EditorData.setError('filter', false);
+    // EditorData.setError('filter', false);
   },
 });
 

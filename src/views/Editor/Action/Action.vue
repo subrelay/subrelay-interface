@@ -48,7 +48,7 @@
 <script setup>
 import { shallowRef, inject, ref, computed } from 'vue';
 import { useStore } from 'vuex';
-import { useAccordion } from '@/composables';
+import { useAccordion, useFormValidation } from '@/composables';
 import EditorData from '@/store/localStore/EditorData';
 import SelectChannel from '@/views/Editor/Action/SelectChannel.vue';
 import SetUpAction from '@/views/Editor/Action/SetUpAction.vue';
@@ -57,26 +57,46 @@ const [{ expandedNames }, { setExpand }] = useAccordion('action');
 
 const store = useStore();
 const emits = defineEmits(['validate']);
-const actionIdx = computed(() => EditorData.actionIdx);
 const actionConfig = computed(() => EditorData.workflow.tasks[EditorData.actionIdx].config);
 const isDisabledTest = computed(() => store.state.editor.isTestActionDisabled);
+const [{}, { validateCustomMessage }] = useFormValidation();
 
 function validateSetupAction() {
-  if (!actionConfig.value.subjectTemplate) {
-    store.commit('editor/setError', { subject: true });
-  }
-
-  if (!actionConfig.value.bodyTemplate) {
-    store.commit('editor/setError', { body: true });
-  }
-
-  if (!actionConfig.value.messageTemplate) {
-    store.commit('editor/setError', { content: true });
-  }
-
   const callback = () => {
+    if (EditorData.workflow.tasks[EditorData.actionIdx].type !== 'email') {
+      if (!actionConfig.value.subjectTemplate) {
+        console.log('1');
+        store.commit('editor/setError', { subjectTemplate: true });
+        EditorData.setError('action', true);
+      }
+
+      if (
+        !actionConfig.value.bodyTemplate ||
+        actionConfig.value.bodyTemplate === '<br>' ||
+        actionConfig.value.bodyTemplate === '<p></p>'
+      ) {
+        console.log('2');
+        store.commit('editor/setError', { bodyTemplate: true });
+        EditorData.setError('action', true);
+      }
+    }
+
+    if (EditorData.workflow.tasks[EditorData.actionIdx].type !== 'email') {
+      if (
+        !actionConfig.value.messageTemplate ||
+        actionConfig.value.messageTemplate === '<br>' ||
+        actionConfig.value.messageTemplate === '<p></p>'
+      ) {
+        console.log('3');
+        store.commit('editor/setError', { messageTemplate: true });
+        EditorData.setError('action', true);
+      }
+    }
+
+    // to do: nhét ^ vào callback
     store.commit('editor/disableTestAction', false);
     EditorData.setComplete('action', true);
+    EditorData.setError('action', false);
   };
 
   emits('validate', { taskName: 'action', keys: ['setupAction'], nextExpand: '3', callback });

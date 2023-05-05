@@ -71,6 +71,7 @@ const conditionLength = computed(
 function validateFilter() {
   const callback = () => {
     EditorData.setComplete('filter', true);
+    EditorData.setError('filter', false);
     router.push({ name: 'action' });
   };
   emits('validate', { taskName: 'filter', keys: ['filterCond'], callback });

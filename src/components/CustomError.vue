@@ -19,7 +19,6 @@ const darkMode = computed(() => store.state.global.isDarkMode);
 
 <style lang="scss">
 .custom-error {
-  line-height: 1.25;
   min-height: 24px;
   color: #d03050;
 
