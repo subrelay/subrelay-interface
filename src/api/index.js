@@ -142,6 +142,10 @@ export default {
     return request({ account, signer, method: 'post', endpoint: '/tasks/run', body });
   },
 
+  async getUserInfo({ account, signer }) {
+    return request({ account, signer, method: 'get', endpoint: '/user/info' });
+  },
+
   async getWorkflows({ account, signer, params }) {
     return request({
       account,

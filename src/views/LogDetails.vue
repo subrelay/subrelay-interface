@@ -71,16 +71,31 @@
           :size="0"
           :wrap="false"
         >
+          <!-- todo: Change to component -->
           <n-space
             v-if="log.taskLogs[index].task.type === 'trigger'"
             class="step no-input"
             align="center"
-            justify="start"
+            justify="space-between"
             :wrap-item="false"
             :wrap="false"
           >
-            <n-avatar style="background: transparent" round :size="24" :src="log.chain.imageUrl" />
-            <div>{{ log.event.name }}</div>
+            <n-space align="center" :wrap-item="false">
+              <n-avatar
+                style="background: transparent"
+                round
+                :size="24"
+                :src="log.chain.imageUrl"
+              />
+              <div>{{ log.event.name }}</div>
+            </n-space>
+
+            <n-tooltip trigger="hover" class="text-capitalize">
+              <template #trigger>
+                <StatusIcon :status="log.taskLogs[index].status" />
+              </template>
+              {{ log.taskLogs[index].status }}
+            </n-tooltip>
           </n-space>
 
           <n-button
@@ -92,14 +107,25 @@
             @click="setStep(index)"
           >
             <n-space align="center" justify="space-between" class="w-100" :size="8">
-              <n-space align="center">
+              <n-space align="center" :wrap-item="false">
                 <Icon icon="clarity:filter-grid-circle-solid" width="24" />
                 <div class="text-capitalize">{{ log.taskLogs[index].task.type }}</div>
               </n-space>
 
-              <n-text type="info">
-                <Icon icon="mdi:information-variant-circle-outline" width="16" />
-              </n-text>
+              <n-space align="center" :wrap-item="false">
+                <Icon
+                  icon="mdi:information-variant-circle-outline"
+                  width="1.2rem"
+                  :class="['info-icon', { dark: isDarkMode }]"
+                />
+
+                <n-tooltip trigger="hover" class="text-capitalize">
+                  <template #trigger>
+                    <StatusIcon :status="log.taskLogs[index].status" />
+                  </template>
+                  {{ log.taskLogs[index].status }}
+                </n-tooltip>
+              </n-space>
             </n-space>
 
             <div class="text-capitalize" v-if="log.taskLogs[index].task.name === 'action'">
@@ -116,14 +142,25 @@
             @click="setStep(index)"
           >
             <n-space align="center" justify="space-between" class="w-100" :size="8">
-              <n-space align="center">
+              <n-space align="center" :wrap-item="false">
                 <Icon :icon="useGetChannelIcon(log.taskLogs[index].task.type)" width="24" />
                 <div class="text-capitalize">{{ log.taskLogs[index].task.type }}</div>
               </n-space>
 
-              <n-text type="info">
-                <Icon icon="mdi:information-variant-circle-outline" width="16" />
-              </n-text>
+              <n-space align="center" :wrap-item="false">
+                <Icon
+                  icon="mdi:information-variant-circle-outline"
+                  width="1.2rem"
+                  :class="['info-icon', { dark: isDarkMode }]"
+                />
+
+                <n-tooltip trigger="hover" class="text-capitalize">
+                  <template #trigger>
+                    <StatusIcon :status="log.taskLogs[index].status" />
+                  </template>
+                  {{ log.taskLogs[index].status }}
+                </n-tooltip>
+              </n-space>
             </n-space>
           </n-button>
 
@@ -133,7 +170,6 @@
 
       <!-- DETAILS -->
       <transition name="fade" mode="out-in">
-        <!-- Trigger -->
         <n-card style="margin-bottom: 5vh" v-if="currentLogDetails">
           <template #header>
             <n-space align="center" :wrap-item="false">
@@ -141,6 +177,7 @@
             </n-space>
           </template>
 
+          <!-- Input -->
           <n-space vertical :size="20">
             <n-space v-if="currentLogDetails.input" vertical>
               <div>Input:</div>
@@ -193,6 +230,7 @@
               </n-card>
             </n-space>
 
+            <!-- Output -->
             <div v-if="currentLogDetails.output">
               <div>Output:</div>
               <JsonViewer
@@ -205,94 +243,17 @@
               />
             </div>
           </n-space>
+
+          <!-- Skipped task msg -->
+          <div v-if="currentLogDetails.status === 'skipped'">This task was skipped.</div>
+
+          <!-- Failed task error -->
+          <n-space v-if="currentLogDetails.status === 'failed'" style="margin-top: 1rem">
+            <div>Error:</div>
+            <n-text type="error">{{ currentLogDetails.error?.message }}</n-text>
+          </n-space>
         </n-card>
       </transition>
-
-      <!-- <transition name="fade" mode="out-in">
-        <n-card v-if="step === log.taskLogs[0].task.name" style="margin-bottom: 5vh">
-          <template #header>
-            <n-space align="center" :wrap-item="false">
-              <StatusIcon :status="log.taskLogs[0].status" />
-              <div class="text-capitalize">{{ log.taskLogs[0].task.name }}</div>
-            </n-space>
-          </template>
-
-          <n-space vertical :size="20">
-            <n-space>
-              <div class="info-title">Time:</div>
-              <div>
-                {{ moment(log.taskLogs[0].finishedAt).local().format('MMM Do YYYY, HH:mm:ss') }}
-              </div>
-            </n-space>
-
-            <div>
-              <div>Input:</div>
-              <JsonViewer
-                :class="{ 'jv-dark': isDarkMode }"
-                :value="log.taskLogs[0].input"
-                :expand-depth="1"
-                copyable
-                boxed
-                sort
-              />
-            </div>
-
-            <div>
-              <div>Output:</div>
-              <JsonViewer
-                :class="{ 'jv-dark': isDarkMode }"
-                :value="log.taskLogs[0].output"
-                :expand-depth="1"
-                copyable
-                boxed
-                sort
-              />
-            </div>
-          </n-space>
-        </n-card>
-
-        <n-card v-else-if="step === log.taskLogs[1].task.name" style="margin-bottom: 5vh">
-          <template #header>
-            <n-space align="center" :wrap-item="false">
-              <StatusIcon :status="log.taskLogs[1].status" />
-              <div class="text-capitalize">{{ log.taskLogs[1].task.name }}</div>
-            </n-space>
-          </template>
-
-          <n-space vertical :size="20">
-            <n-space>
-              <div class="info-title">Time:</div>
-              <div>
-                {{ moment(log.taskLogs[1].finishedAt).local().format('MMM Do YYYY, HH:mm:ss') }}
-              </div>
-            </n-space>
-
-            <div>
-              <div>Input:</div>
-              <JsonViewer
-                :class="{ 'jv-dark': isDarkMode }"
-                :value="log.taskLogs[1].input"
-                :expand-depth="1"
-                copyable
-                boxed
-                sort
-              />
-            </div>
-
-            <div>
-              <div>Output:</div>
-              <JsonViewer
-                :class="{ 'jv-dark': isDarkMode }"
-                :value="log.taskLogs[1].output"
-                :expand-depth="1"
-                copyable
-                boxed
-                sort
-              />
-            </div>
-          </n-space>
-        </n-card>
-      </transition> -->
     </div>
   </div>
 </template>
@@ -375,6 +336,13 @@ function setStep(newStep) {
 </script>
 
 <style lang="scss">
+.info-icon {
+  color: #2080f0;
+  &.dark {
+    color: #70c0e8;
+  }
+}
+
 .log-details {
   .info-title {
     width: 50px;

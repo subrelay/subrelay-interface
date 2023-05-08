@@ -1,21 +1,25 @@
 <template>
-  <n-space
-    align="center"
-    justify="space-between"
+  <div
     :class="`wrapper ${darkMode ? 'dark' : ''}`"
     @click="router.push({ name: 'logDetails', params: { id: log.id } })"
   >
-    <n-space align="center" :wrap-item="false">
-      <StatusIcon :status="log.status" />
-      <div class="text-capitalize">{{ log.status }}</div>
-    </n-space>
+    <n-grid cols="3" item-responsive>
+      <n-gi>
+        <n-space align="center" :wrap-item="false">
+          <StatusIcon :status="log.status" />
+          <div class="text-capitalize">{{ log.status }}</div>
+        </n-space>
+      </n-gi>
 
-    <div>{{ moment(log.startedAt).local().format('MMM Do YYYY, HH:mm:ss') }}</div>
+      <n-gi class="text-center">
+        <div>{{ moment(log.startedAt).local().format('MMM Do YYYY, HH:mm:ss') }}</div>
+      </n-gi>
 
-    <n-button text>
-      <Icon icon="akar-icons:chevron-right" />
-    </n-button>
-  </n-space>
+      <n-gi class="text-end">
+        <n-button text><Icon icon="akar-icons:chevron-right" /></n-button>
+      </n-gi>
+    </n-grid>
+  </div>
 </template>
 <script setup>
 import StatusIcon from '@/components/StatusIcon';
