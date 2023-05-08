@@ -46,11 +46,7 @@
           <p>{{ testResult.error?.message || testResult.error?.code }}</p>
         </div>
 
-        <div v-else>
-          A test message was sent to the defined chat with id
-          <n-text code>{{ config.chatId }}</n-text>
-          .
-        </div>
+        <div v-else>A test message was sent to by Telegram Subrelay Bot</div>
       </n-space>
     </n-card>
 

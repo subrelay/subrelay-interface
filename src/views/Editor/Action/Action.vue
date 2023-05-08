@@ -65,7 +65,6 @@ function validateSetupAction() {
   const callback = () => {
     if (EditorData.workflow.tasks[EditorData.actionIdx].type !== 'email') {
       if (!actionConfig.value.subjectTemplate) {
-        console.log('1');
         store.commit('editor/setError', { subjectTemplate: true });
         EditorData.setError('action', true);
       }
@@ -75,7 +74,6 @@ function validateSetupAction() {
         actionConfig.value.bodyTemplate === '<br>' ||
         actionConfig.value.bodyTemplate === '<p></p>'
       ) {
-        console.log('2');
         store.commit('editor/setError', { bodyTemplate: true });
         EditorData.setError('action', true);
       }
@@ -87,13 +85,15 @@ function validateSetupAction() {
         actionConfig.value.messageTemplate === '<br>' ||
         actionConfig.value.messageTemplate === '<p></p>'
       ) {
-        console.log('3');
         store.commit('editor/setError', { messageTemplate: true });
         EditorData.setError('action', true);
       }
     }
 
-    // to do: nhét ^ vào callback
+    // todo: nhét ^ vào callback
+    // chạy cục trên trước khi chạy validate email input
+    // vì email pass thì cục trên ko chạy nữa
+    // chỗ này cần copy lại để dùng khi change editor step -> from action to trigger
     store.commit('editor/disableTestAction', false);
     EditorData.setComplete('action', true);
     EditorData.setError('action', false);

@@ -1,31 +1,7 @@
 <template>
-  <n-space align="baseline" :wrap-item="false">
-    <n-space align="center">
-      <div class="text-bold">Key:</div>
-      <n-text code>{{ key }}</n-text>
-    </n-space>
+  <UserKey channel="Telegram" />
 
-    <div>
-      <div class="code__icon completed" v-if="isCopied">
-        <Icon icon="akar-icons:check" width="13" />
-      </div>
-
-      <div class="code__icon copy" @click="onCopy" v-else>
-        <Icon icon="fluent:document-copy-48-filled" width="13" />
-      </div>
-    </div>
-
-    <n-tooltip trigger="hover" placement="top-start">
-      <template #trigger>
-        <n-button text>
-          <Icon icon="material-symbols:info-outline-rounded" />
-        </n-button>
-      </template>
-      Add this key to Subrelay Bot in your Telegram
-    </n-tooltip>
-  </n-space>
-
-  <n-grid cols="2" x-gap="30" style="margin: 1.5rem 0 1rem 0">
+  <n-grid cols="2" x-gap="30" style="margin: 0 0 1rem 0">
     <!-- COMPILER -->
     <n-gi>
       <n-card
@@ -64,34 +40,13 @@
 </template>
 
 <script setup>
+import UserKey from '@/components/UserKey';
 import Compiler from '@/views/CustomMsg/Compiler';
-import EditorData from '@/store/localStore/EditorData';
-import { h, computed, ref } from 'vue';
 import { useCustomMessage } from '@/composables';
-import { useStore } from 'vuex';
-import { useMessage } from 'naive-ui';
 
-const store = useStore();
-const message = useMessage();
-const isCopied = ref(false);
-const actionIdx = computed(() => EditorData.actionIdx);
-const customMsgKeys = computed(() => store.state.editor.customMsgKeys);
-const key = computed(() => store.state.account.userInfo.key);
-
-const [
-  { content, previewContent, defaultContent, subject, previewSubject, defaultSubject, darkMode },
-  { getKeyHTML, getRawText, getFormattedText },
-] = useCustomMessage({ channel: 'telegram' });
-
-const account = computed(() => store.state.account.selected);
-const signer = computed(() => store.state.account.signer);
-
-function onCopy() {
-  navigator.clipboard.writeText(key.value);
-  isCopied.value = true;
-  message.success('Copied!');
-  setTimeout(() => (isCopied.value = false), 1500);
-}
+const [{ content, previewContent, defaultContent, darkMode }, { getRawText }] = useCustomMessage({
+  channel: 'telegram',
+});
 </script>
 
 <style lang="scss">

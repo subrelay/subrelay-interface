@@ -6,20 +6,13 @@
       </template>
 
       <div style="margin-bottom: 1.5em">
-        To test Discrod notification, we need to send a new message with below configuration:
+        To test Discord notification, we need to send a new message with below configuration:
       </div>
 
       <n-skeleton v-if="runningTest" text :repeat="5" />
 
       <n-space vertical :size="10">
-        <div class="input-item">
-          <div class="title">{{ config.userId ? 'User Id' : 'Channel Id' }}:</div>
-          <n-text code class="text-ellipsis" style="font-size: 0.85em">
-            {{ config.userId || config.channelId }}
-          </n-text>
-        </div>
-
-        <n-collapse arrow-placement="right" default-expanded-names="">
+        <n-collapse arrow-placement="right" default-expanded-names="content">
           <n-collapse-item title="Content" name="content">
             <template #header>
               <div style="margin-left: -32px; font-weight: normal">Content:</div>
@@ -56,10 +49,7 @@
           <p>{{ testResult.error?.message || testResult.error?.code }}</p>
         </div>
 
-        <div v-else>
-          A test message was sent to the defined chat with id
-          <n-text code>{{ config.userId || config.channelId }}</n-text>
-        </div>
+        <div v-else>A test message was sent to by Discord Subrelay Bot.</div>
       </n-space>
     </n-card>
 

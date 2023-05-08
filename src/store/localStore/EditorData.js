@@ -4,8 +4,8 @@ import { cloneDeep } from 'lodash';
 const conditionFormat = { variable: null, operator: null, value: null };
 
 const defaultConfig = () => ({
-  // name: null,
-  // uuid: '01GYD0FCSWRJRCX8TFDEZRTBAN',
+  name: null,
+  // uuid: '01GYAC2F61T2KXB62A7XJ2M5H6',
   uuid: null,
   tasks: [
     {
@@ -13,7 +13,7 @@ const defaultConfig = () => ({
       type: 'trigger',
       dependOnName: null,
       config: {
-        // eventId: '01GYD0FCTBNDHNY5FBAK3WH08Z',
+        // eventId: '01GYAC2FSW6YSQVBHJ86Z8VHX5',
         eventId: null,
       },
     },
@@ -35,8 +35,6 @@ const editor = reactive({
 
   setError(taskName, isError) {
     const index = this.workflow.tasks.findIndex((task) => task.name === taskName);
-    console.log('INDEX', index);
-    console.log('isError', isError);
     this.workflow.tasks[index].isError = isError;
   },
 

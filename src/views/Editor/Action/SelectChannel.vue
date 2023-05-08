@@ -39,7 +39,7 @@ const defaultConfig = {
   webhook: { url: null, secret: null },
   email: { addresses: [], subjectTemplate: null, bodyTemplate: null },
   telegram: { messageTemplate: null },
-  discord: { channelId: null, userId: null, messageTemplate: null },
+  discord: { messageTemplate: null },
 };
 
 const actionIdx = computed(() => EditorData.actionIdx);
