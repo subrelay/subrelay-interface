@@ -38,7 +38,7 @@ const store = useStore();
 const defaultConfig = {
   webhook: { url: null, secret: null },
   email: { addresses: [], subjectTemplate: null, bodyTemplate: null },
-  telegram: { chatId: null, messageTemplate: null },
+  telegram: { messageTemplate: null },
   discord: { channelId: null, userId: null, messageTemplate: null },
 };
 

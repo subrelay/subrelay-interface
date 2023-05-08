@@ -53,6 +53,7 @@
 <script setup>
 import { useAccordion } from '@/composables';
 import { computed } from 'vue';
+import { useStore } from 'vuex';
 import EditorData from '@/store/localStore/EditorData';
 import SelectChain from '@/views/Editor/Trigger/SelectChain';
 import SelectEvent from '@/views/Editor/Trigger/SelectEvent';
@@ -62,6 +63,7 @@ import { useRouter } from 'vue-router';
 const [{ expandedNames }, { setExpand }] = useAccordion('trigger');
 const emits = defineEmits(['validate']);
 const router = useRouter();
+const store = useStore();
 
 const filterIdx = computed(() => EditorData.filterIdx);
 const conditionLength = computed(
@@ -72,6 +74,7 @@ function validateFilter() {
   const callback = () => {
     EditorData.setComplete('filter', true);
     EditorData.setError('filter', false);
+    store.commit('editor/setExpand', { action: '1' });
     router.push({ name: 'action' });
   };
   emits('validate', { taskName: 'filter', keys: ['filterCond'], callback });

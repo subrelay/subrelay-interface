@@ -124,14 +124,6 @@
             </n-space>
           </n-gi>
 
-          <!-- Telegram chatId-->
-          <n-gi span="2" v-if="actionTask.type === 'telegram'">
-            <n-space vertical>
-              <div class="text-semi-bold">Chat Id</div>
-              <div>{{ actionTask.config.chatId }}</div>
-            </n-space>
-          </n-gi>
-
           <!-- Discord chatId-->
           <n-gi span="2" v-if="actionTask.type === 'discord'">
             <n-space vertical v-if="actionTask.config.channelId">

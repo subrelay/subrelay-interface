@@ -1,5 +1,5 @@
 import { useShowError } from '@/composables';
-import { getSavedAuthToken } from '../api';
+import Api, { getSavedAuthToken } from '@/api';
 
 const MAX_RETRY = 10;
 const CONNECTED_ACCOUNT = 'polkadot-js-connected';
@@ -36,6 +36,7 @@ export default {
     signer: null,
     selected: {},
     loading: null,
+    userInfo: null,
   }),
 
   mutations: {
@@ -51,6 +52,10 @@ export default {
       state.accounts = accounts;
     },
 
+    setUserInfo: (state, info) => {
+      state.userInfo = info;
+    },
+
     setSelected: (state, selected) => {
       state.selected = selected;
 
@@ -63,7 +68,7 @@ export default {
   },
 
   actions: {
-    async loadAccounts({ commit }) {
+    async loadAccounts({ commit, dispatch }) {
       commit('setLoading', true);
       try {
         const connectedAccount = localStorage.getItem(CONNECTED_ACCOUNT);
@@ -93,6 +98,7 @@ export default {
 
           if (isAccountExisted) {
             commit('setSelected', connected);
+            dispatch('getUserInfo', connected);
           } else {
             commit('setSelected', null);
           }
@@ -101,6 +107,16 @@ export default {
         console.error('e', e);
       } finally {
         commit('setLoading', false);
+      }
+    },
+
+    async getUserInfo({ state, commit }, account) {
+      try {
+        const { signer } = state;
+        const { data: user } = await Api.getUserInfo({ account, signer });
+        if (user) commit('setUserInfo', user);
+      } catch (e) {
+        console.error(e);
       }
     },
   },

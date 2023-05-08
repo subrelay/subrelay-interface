@@ -1,27 +1,31 @@
 <template>
   <n-space align="baseline" :wrap-item="false">
-    <n-form-item
-      class="flex-1"
-      label-placement="left"
-      label="Chat ID"
-      label-align="left"
-      :path="`tasks[${actionIdx}].config.chatId`"
-      :rule="{
-        required: true,
-        message: 'Required!',
-        trigger: ['input'],
-        key: 'setupAction_chatId',
-      }"
-    >
-      <n-input clearable v-model:value="EditorData.workflow.tasks[actionIdx].config.chatId" />
-    </n-form-item>
+    <n-space align="center">
+      <div class="text-bold">Key:</div>
+      <n-text code>{{ key }}</n-text>
+    </n-space>
 
-    <n-button @click="showGuidance" text>
-      <Icon icon="material-symbols:info-outline-rounded" />
-    </n-button>
+    <div>
+      <div class="code__icon completed" v-if="isCopied">
+        <Icon icon="akar-icons:check" width="13" />
+      </div>
+
+      <div class="code__icon copy" @click="onCopy" v-else>
+        <Icon icon="fluent:document-copy-48-filled" width="13" />
+      </div>
+    </div>
+
+    <n-tooltip trigger="hover" placement="top-start">
+      <template #trigger>
+        <n-button text>
+          <Icon icon="material-symbols:info-outline-rounded" />
+        </n-button>
+      </template>
+      Add this key to Subrelay Bot in your Telegram
+    </n-tooltip>
   </n-space>
 
-  <n-grid cols="2" x-gap="30" style="margin: 0.5rem 0 1rem 0">
+  <n-grid cols="2" x-gap="30" style="margin: 1.5rem 0 1rem 0">
     <!-- COMPILER -->
     <n-gi>
       <n-card
@@ -62,22 +66,69 @@
 <script setup>
 import Compiler from '@/views/CustomMsg/Compiler';
 import EditorData from '@/store/localStore/EditorData';
-import { h, computed } from 'vue';
+import { h, computed, ref } from 'vue';
 import { useCustomMessage } from '@/composables';
 import { useStore } from 'vuex';
+import { useMessage } from 'naive-ui';
 
 const store = useStore();
+const message = useMessage();
+const isCopied = ref(false);
 const actionIdx = computed(() => EditorData.actionIdx);
 const customMsgKeys = computed(() => store.state.editor.customMsgKeys);
+const key = computed(() => store.state.account.userInfo.key);
 
 const [
   { content, previewContent, defaultContent, subject, previewSubject, defaultSubject, darkMode },
   { getKeyHTML, getRawText, getFormattedText },
 ] = useCustomMessage({ channel: 'telegram' });
 
-function showGuidance() {
-  console.log('showTeleGuidance');
+const account = computed(() => store.state.account.selected);
+const signer = computed(() => store.state.account.signer);
+
+function onCopy() {
+  navigator.clipboard.writeText(key.value);
+  isCopied.value = true;
+  message.success('Copied!');
+  setTimeout(() => (isCopied.value = false), 1500);
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.code {
+  &__card {
+    position: relative;
+  }
+
+  &__icon {
+    margin: auto;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+    background: transparent;
+
+    &.copy {
+      color: rgb(136, 147, 151);
+
+      &:hover {
+        background: #eaeaea;
+      }
+    }
+
+    &.completed {
+      color: white;
+      background: green;
+      @media (prefers-color-scheme: dark) {
+        background: #63e2b7;
+        color: black;
+      }
+    }
+  }
+}
+</style>

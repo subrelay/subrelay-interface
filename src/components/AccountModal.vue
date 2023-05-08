@@ -123,6 +123,7 @@ async function onConfirm() {
 
     if (isAccChanged) {
       store.commit('account/setSelected', currentAcc.value);
+      store.dispatch('account/getUserInfo', currentAcc.value);
       store.commit('log/reset');
       store.commit('workflow/reset');
     }
