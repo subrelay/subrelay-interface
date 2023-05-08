@@ -36,8 +36,8 @@ import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { useMessage } from 'naive-ui';
 import { Icon } from '@iconify/vue';
-import truncate from '@/utils/truncate';
 import { useRenderIcon as renderIcon } from '@/composables';
+import truncate from '@/utils/truncate';
 
 const store = useStore();
 const router = useRouter();

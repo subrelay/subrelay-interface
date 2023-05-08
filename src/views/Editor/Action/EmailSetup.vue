@@ -41,7 +41,7 @@
       >
         <n-space vertical class="custom-message-card-content" :wrap-item="false">
           <!-- SUBJECT -->
-          <n-space vertical style="margin-bottom: 1em">
+          <n-space vertical>
             <div class="text-italic text-bold">Subject:</div>
             <Compiler
               v-model="subject"
@@ -53,7 +53,8 @@
               :class="{ dark: darkMode }"
               :defaultContent="defaultSubject"
             />
-            <n-divider style="margin: 0"></n-divider>
+
+            <CustomError :show="requiredSubject" />
           </n-space>
 
           <!-- CONTENT -->
@@ -67,6 +68,7 @@
               :class="{ dark: darkMode }"
               :defaultContent="defaultContent"
             />
+            <CustomError :show="requiredBody" />
           </n-space>
         </n-space>
       </n-card>
@@ -91,6 +93,7 @@
 </template>
 
 <script setup>
+import CustomError from '@/components/CustomError';
 import EditorData from '@/store/localStore/EditorData';
 import Compiler from '@/views/CustomMsg/Compiler';
 import { h, ref, watch, computed, inject, nextTick } from 'vue';
@@ -107,10 +110,11 @@ const emits = defineEmits(['validate']);
 const addressTags = ref([]);
 const inputRef = ref(null);
 const inputValue = ref(null);
+const requiredSubject = computed(() => store.state.editor.error.subjectTemplate);
+const requiredBody = computed(() => store.state.editor.error.bodyTemplate);
 const uuid = computed(() => store.state.chain.event.uuid);
 const actionIdx = computed(() => EditorData.actionIdx);
 const customMsgKeys = computed(() => store.state.editor.customMsgKeys);
-const rawSubject = ref('');
 
 const [
   { content, previewContent, defaultContent, subject, previewSubject, defaultSubject, darkMode },
@@ -169,7 +173,6 @@ watch(
   (newAddressTags) => {
     const addresses = newAddressTags.map((e) => e.label);
     EditorData.workflow.tasks[actionIdx.value].config.addresses = [...addresses];
-    store.commit('editor/setCustomMsgConfig', { addresses });
     eventBus.emit('validate', {
       changeStep: false,
       taskName: 'action',
@@ -183,8 +186,6 @@ watch(
 function removeAddress(index) {
   addressTags.value.splice(index, 1);
   EditorData.workflow.tasks[actionIdx.value].config.addresses.splice(index, 1);
-
-  store.commit('editor/setCustomMsgConfig', { addresses: [...addressTags.value] });
 
   eventBus.emit('validate', {
     changeStep: false,

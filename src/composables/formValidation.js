@@ -22,15 +22,18 @@ export function useFormValidation() {
               EditorData.setComplete(taskName, false);
               reject(new Error('Form validation failed'));
             } else {
-              EditorData.setError(taskName, false);
+              // EditorData.setError(taskName, false);
               callback();
               resolve();
             }
           },
-          (rule) =>
-            keys.includes(rule.key) ||
-            (rule.key.includes('filterCond') && keys.includes('filterCond')) ||
-            (rule.key.includes('setupAction') && keys.includes('setupAction')),
+          (rule) => {
+            return (
+              keys.includes(rule.key) ||
+              (rule.key.includes('filterCond') && keys.includes('filterCond')) ||
+              (rule.key.includes('setupAction') && keys.includes('setupAction'))
+            );
+          },
         );
       });
 
@@ -46,7 +49,32 @@ export function useFormValidation() {
     }
   }
 
-  return [{ formRef }, { validateForm }];
+  function validateCustomMessage() {
+    if (!actionConfig.value.subjectTemplate) {
+      store.commit('editor/setError', { subjectTemplate: true });
+      EditorData.setError('action', true);
+    }
+
+    if (
+      !actionConfig.value.bodyTemplate ||
+      actionConfig.value.bodyTemplate === '<br>' ||
+      actionConfig.value.bodyTemplate === '<p></p>'
+    ) {
+      store.commit('editor/setError', { bodyTemplate: true });
+      EditorData.setError('action', true);
+    }
+
+    if (
+      !actionConfig.value.messageTemplate ||
+      actionConfig.value.messageTemplate === '<br>' ||
+      actionConfig.value.messageTemplate === '<p></p>'
+    ) {
+      store.commit('editor/setError', { messageTemplate: true });
+      EditorData.setError('action', true);
+    }
+  }
+
+  return [{ formRef }, { validateForm, validateCustomMessage }];
 }
 
 export function useIsCorrectEmailFormat(email) {

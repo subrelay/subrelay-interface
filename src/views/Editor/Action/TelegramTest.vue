@@ -12,12 +12,7 @@
       <n-skeleton v-if="runningTest" text :repeat="5" />
 
       <n-space vertical :size="10" v-else>
-        <div class="input-item">
-          <div class="title">Chat id:</div>
-          <n-text code class="text-ellipsis" style="font-size: 0.85em">{{ config.chatId }}</n-text>
-        </div>
-
-        <n-collapse arrow-placement="right" default-expanded-names="">
+        <n-collapse arrow-placement="right" default-expanded-names="content">
           <n-collapse-item title="Content" name="content">
             <template #header>
               <div style="margin-left: -32px; font-weight: normal">Content:</div>
@@ -38,24 +33,20 @@
 
       <n-skeleton v-if="runningTest && isTested" text :repeat="2" />
       <n-space vertical :size="10" v-else>
-        <div class="input-item" style="align-items: center">
-          <div class="title">Status:</div>
+        <n-space align="center">
+          <div>Status:</div>
           <n-space :size="4" align="center" :wrap-item="false">
             <StatusIcon :status="testResult.status" />
             <span class="text-capitalize"> {{ testResult.status }} </span>
           </n-space>
-        </div>
+        </n-space>
 
         <div class="input-item" v-if="testResult.status === 'failed'">
           <div class="title">Message:</div>
           <p>{{ testResult.error?.message || testResult.error?.code }}</p>
         </div>
 
-        <div v-else>
-          A test message was sent to the defined chat with id
-          <n-text code>{{ config.chatId }}</n-text>
-          .
-        </div>
+        <div v-else>A test message was sent to by Telegram Subrelay Bot</div>
       </n-space>
     </n-card>
 

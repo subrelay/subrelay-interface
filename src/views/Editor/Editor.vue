@@ -67,7 +67,7 @@
       </div>
     </n-layout-content>
 
-    <!-- <pre>{{ EditorData }} </pre> -->
+    <pre>{{ EditorData }} </pre>
   </n-layout>
 </template>
 
@@ -124,7 +124,8 @@ const changedToTrigger = computed(() => {
 
 const changedToAction = computed(() => {
   const task = EditorData.workflow.tasks[actionIdx.value];
-  return typeof task.isError === 'boolean' || typeof task.isCompleted === 'boolean';
+  // return typeof task.isError === 'boolean' || typeof task.isCompleted === 'boolean';
+  return !!task.type;
 });
 
 const hasUpdates = computed(() => changedToTrigger.value || changedToAction.value);
@@ -150,8 +151,21 @@ async function setStepStatus(step) {
         taskName: 'action',
       });
 
-      if (isErrorWithAction.value) return (actionStatus.value = 'error');
-      if (isActionCompleted.value) return (actionStatus.value = 'finish');
+      // TODO: CHECK EMAIL CONTENT HERE (COPY FROM ACTION COMPONENT)
+
+      if (isErrorWithAction.value) {
+        actionStatus.value = 'error';
+        EditorData.setError('action', true);
+        EditorData.setComplete('action', false);
+        return;
+      }
+
+      if (isActionCompleted.value) {
+        actionStatus.value = 'finish';
+        EditorData.setError('action', false);
+        EditorData.setComplete('action', true);
+        return;
+      }
     }
   }
 
@@ -166,8 +180,18 @@ async function setStepStatus(step) {
         changeStep: false,
         taskName: 'trigger',
       });
-      if (isErrorWithTrigger.value) return (triggerStatus.value = 'error');
-      if (isTriggerCompleted.value) return (triggerStatus.value = 'finish');
+      if (isErrorWithTrigger.value) {
+        triggerStatus.value = 'error';
+        EditorData.setError('trigger', true);
+        EditorData.setComplete('trigger', false);
+        return;
+      }
+      if (isTriggerCompleted.value) {
+        triggerStatus.value = 'finish';
+        EditorData.setError('trigger', false);
+        EditorData.setComplete('trigger', true);
+        return;
+      }
     }
   }
 }

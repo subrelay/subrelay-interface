@@ -38,17 +38,16 @@ const store = useStore();
 const defaultConfig = {
   webhook: { url: null, secret: null },
   email: { addresses: [], subjectTemplate: null, bodyTemplate: null },
-  telegram: { chatId: null, messageTemplate: null },
-  discord: { channelId: null, userId: null, messageTemplate: null },
+  telegram: { messageTemplate: null },
+  discord: { messageTemplate: null },
 };
 
 const actionIdx = computed(() => EditorData.actionIdx);
 
 function handleSelectChannel(newChannel) {
   EditorData.workflow.tasks[actionIdx.value].config = { ...defaultConfig[newChannel] };
-  store.commit('editor/resetCustomConfig');
   store.commit('editor/disableTestAction', true);
-  store.commit('editor/resetTest');
+  store.commit('editor/resetAction');
 }
 </script>
 

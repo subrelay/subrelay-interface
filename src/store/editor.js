@@ -8,7 +8,6 @@ export default {
     step: null, // trigger - action stepper
     expand: { trigger: '1', action: '1' },
     isTestActionDisabled: true,
-    customMsgConfig: {}, // for preview in test
     operators: [],
     properties: [],
     customMsgKeys: [],
@@ -16,6 +15,7 @@ export default {
     runningTest: {},
     tested: {},
     testResult: {},
+    error: { subjectTemplate: false, messageTemplate: false, bodyTemplate: false },
   }),
 
   mutations: {
@@ -38,20 +38,14 @@ export default {
       state.runningTest = {};
       state.testResult = {};
       state.tested = {};
+      state.error = { subjectTemplate: false, messageTemplate: false, bodyTemplate: false };
     },
 
-    resetTest: (state) => {
+    resetAction: (state) => {
       state.runningTest = {};
       state.testResult = {};
       state.tested = {};
-    },
-
-    setCustomMsgConfig: (state, config) => {
-      state.customMsgConfig = { ...state.customMsgConfig, ...config };
-    },
-
-    resetCustomConfig: (state) => {
-      state.customMsgConfig = {};
+      state.error = { subjectTemplate: false, messageTemplate: false, bodyTemplate: false };
     },
 
     setLoading: (state, data) => {
@@ -77,6 +71,11 @@ export default {
 
     setTestResult: (state, data) => {
       state.testResult = { ...state.tested, ...data };
+    },
+
+    setError: (state, data) => {
+      // To check error for custom message inputs
+      state.error = { ...state.error, ...data };
     },
   },
 

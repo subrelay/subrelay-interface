@@ -123,27 +123,6 @@
               </n-ellipsis>
             </n-space>
           </n-gi>
-
-          <!-- Telegram chatId-->
-          <n-gi span="2" v-if="actionTask.type === 'telegram'">
-            <n-space vertical>
-              <div class="text-semi-bold">Chat Id</div>
-              <div>{{ actionTask.config.chatId }}</div>
-            </n-space>
-          </n-gi>
-
-          <!-- Discord chatId-->
-          <n-gi span="2" v-if="actionTask.type === 'discord'">
-            <n-space vertical v-if="actionTask.config.channelId">
-              <div class="text-semi-bold">Channel Id</div>
-              <div>{{ actionTask.config.channelId }}</div>
-            </n-space>
-
-            <n-space vertical v-if="actionTask.config.userId">
-              <div class="text-semi-bold">User Id</div>
-              <div>{{ actionTask.config.userId }}</div>
-            </n-space>
-          </n-gi>
         </n-grid>
 
         <!-- Webhook config -->
