@@ -174,7 +174,6 @@ watch(
     const addresses = newAddressTags.map((e) => e.label);
     EditorData.workflow.tasks[actionIdx.value].config.addresses = [...addresses];
     eventBus.emit('validate', {
-      changeStep: false,
       taskName: 'action',
       keys: ['setupAction_addresses'],
     });
@@ -188,7 +187,6 @@ function removeAddress(index) {
   EditorData.workflow.tasks[actionIdx.value].config.addresses.splice(index, 1);
 
   eventBus.emit('validate', {
-    changeStep: false,
     taskName: 'action',
     keys: ['setupAction_addresses'],
   });

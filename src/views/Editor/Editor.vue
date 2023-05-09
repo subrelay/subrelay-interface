@@ -147,7 +147,6 @@ async function setStepStatus(step) {
     if (changedToAction.value) {
       await validateForm({
         keys: ['selectChannel', 'setupAction'],
-        changeStep: false,
         taskName: 'action',
       });
 
@@ -177,7 +176,6 @@ async function setStepStatus(step) {
     if (changedToTrigger.value) {
       await validateForm({
         keys: ['filterCond', 'selectChain', 'selectEvent'],
-        changeStep: false,
         taskName: 'trigger',
       });
       if (isErrorWithTrigger.value) {

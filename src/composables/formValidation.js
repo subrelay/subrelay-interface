@@ -6,13 +6,7 @@ export function useFormValidation() {
   const store = useStore();
   const formRef = ref(null);
 
-  async function validateForm({
-    changeStep = true,
-    keys,
-    nextExpand,
-    taskName,
-    callback = () => {},
-  } = {}) {
+  async function validateForm({ keys, nextStep, nextExpand, taskName, callback = () => {} } = {}) {
     try {
       await new Promise((resolve, reject) => {
         formRef.value?.validate(
@@ -37,12 +31,12 @@ export function useFormValidation() {
         );
       });
 
-      if (changeStep) {
-        if (nextExpand) {
-          store.commit('editor/setExpand', { [taskName]: nextExpand });
-        } else {
-          store.commit('editor/setStep', 2);
-        }
+      if (nextStep) {
+        store.commit('editor/setStep', nextStep);
+      }
+
+      if (nextExpand) {
+        store.commit('editor/setExpand', { [taskName]: nextExpand });
       }
     } catch (error) {
       // console.error(error);
