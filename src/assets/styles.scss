@@ -257,9 +257,9 @@ flex-1 {
   margin-bottom: 5vh;
 }
 
-.full-page {
-  min-height: calc(100vh - 50px);
-}
+// .full-page {
+//   min-height: calc(100vh - 50px);
+// }
 
 .n-data-table-empty {
   padding: 1rem !important;
@@ -293,4 +293,9 @@ flex-1 {
 .slide-fade-leave-to {
   transform: translateY(-10px);
   opacity: 0;
+}
+
+.n-layout-scroll-container {
+  display: flex;
+  flex-direction: column;
 }
