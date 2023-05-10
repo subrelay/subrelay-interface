@@ -1,8 +1,8 @@
 <template>
   <n-modal
     class="account_modal"
-    :show="props.modelValue"
     @update:show="emits('update:modelValue', $event)"
+    :show="props.modelValue"
     :showIcon="false"
     title="Dialog"
   >
@@ -123,7 +123,7 @@ async function onConfirm() {
 
     if (isAccChanged) {
       store.commit('account/setSelected', currentAcc.value);
-      store.dispatch('account/getUserInfo', currentAcc.value);
+      store.dispatch('account/getUserInfo', { account: currentAcc.value });
       store.commit('log/reset');
       store.commit('workflow/reset');
     }

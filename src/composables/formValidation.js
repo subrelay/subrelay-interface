@@ -33,6 +33,7 @@ export function useFormValidation() {
 
       if (nextStep) {
         store.commit('editor/setStep', nextStep);
+        router.push({ name: nextStep === 1 ? 'trigger' : 'action' });
       }
 
       if (nextExpand) {

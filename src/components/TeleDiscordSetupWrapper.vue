@@ -1,33 +1,42 @@
 <template>
-  <n-space :wrap-item="false" vertical :size="24">
-    <div>
+  <n-spin v-if="userInfoLoading" :stroke-width="15" size="small"></n-spin>
+
+  <n-space :wrap-item="false" vertical :size="24" v-else>
+    <div v-if="formState === 'preCustom'">
       <b>Subrelay Bot</b> will send notifications to your
       <span class="text-capitalize">{{ channel }}</span> account
       <n-text code class="text-bold">{{ userInfo.integration[channel] }} </n-text>.
     </div>
 
-    <n-space align="center" v-if="formState === 'setupKey'">
-      <div class="text-bold">Key:</div>
-      <n-text code>{{ userInfo.key }}</n-text>
-
+    <n-space vertical v-if="formState === 'setupKey'" :wrap-item="false">
       <div>
-        <div class="code__icon completed" v-if="isCopied">
-          <Icon icon="akar-icons:check" width="13" />
-        </div>
-
-        <div class="code__icon copy" @click="onCopy" v-else>
-          <Icon icon="fluent:document-copy-48-filled" width="13" />
-        </div>
+        To grant permission for <b>Subrelay Bot</b> to send messages to your
+        <span class="text-capitalize">{{ channel }}</span> account, please use this key and follow
+        the instructions provided when you have successfully started the Bot.
       </div>
 
-      <n-tooltip trigger="hover" placement="top-start">
-        <template #trigger>
-          <n-button text>
-            <Icon icon="material-symbols:info-outline-rounded" />
-          </n-button>
-        </template>
-        Add this key to Subrelay Bot in your {{ channel }} chat box.
-      </n-tooltip>
+      <n-space>
+        <n-text code>{{ userInfo.key }}</n-text>
+
+        <n-tooltip trigger="hover">
+          <template #trigger>
+            <div class="code__icon completed" v-if="isCopied">
+              <Icon icon="akar-icons:check" width="13" />
+            </div>
+
+            <div class="code__icon copy" @click="onCopy" v-else>
+              <Icon icon="fluent:document-copy-48-filled" width="13" />
+            </div>
+          </template>
+          Copy
+        </n-tooltip>
+      </n-space>
+
+      <div>After you already added the key to SubRelay Bot, click <b>Verfiy.</b></div>
+
+      <n-button style="margin-left: auto" type="primary" @click="onVerify" :loading="verifying">
+        Verify
+      </n-button>
     </n-space>
 
     <n-space vertical v-if="formState === 'customMsg'">
@@ -86,11 +95,26 @@
     </n-button> -->
     </n-space>
 
-    <n-space align="center" justify="end">
-      <n-button type="primary">Reconfigure key</n-button>
+    <n-space align="center" justify="end" v-if="formState !== 'setupKey'">
+      <n-button type="primary" v-if="userInfo.integration[channel]">Reconfigure key</n-button>
       <n-button type="primary" @click="onContinue"> Continue </n-button>
     </n-space>
   </n-space>
+
+  <n-modal
+    v-model:show="showModal"
+    class="custom-card"
+    preset="card"
+    style="width: 600px"
+    title="Modal"
+    size="huge"
+    header-style="font-size: 1rem"
+    :bordered="false"
+    :segmented="{ content: true }"
+  >
+    Content
+    <template #footer> Footer </template>
+  </n-modal>
 </template>
 
 <script setup>
@@ -98,8 +122,8 @@ import CustomError from '@/components/CustomError';
 import EditorData from '@/store/localStore/EditorData';
 import Compiler from '@/views/CustomMsg/Compiler';
 import { useCustomMessage } from '@/composables';
-import { computed, ref, inject } from 'vue';
-import { useMessage } from 'naive-ui';
+import { computed, ref, inject, watch, h, onMounted } from 'vue';
+import { useMessage, useDialog } from 'naive-ui';
 import { useStore } from 'vuex';
 
 const props = defineProps(['channel']);
@@ -108,12 +132,27 @@ const [{ content, previewContent, defaultContent, darkMode }, { getRawText }] = 
 });
 
 const store = useStore();
+const dialog = useDialog();
 const message = useMessage();
 const isCopied = ref(false);
-const formState = ref(null);
+const showModal = ref(false);
+const formState = ref('preCustom');
+const account = computed(() => store.state.account.selected);
 const userInfo = computed(() => store.state.account.userInfo);
+const userInfoLoading = computed(() => store.state.account.loading.loadUserInfo);
 const actionConfig = computed(() => EditorData.workflow.tasks[EditorData.actionIdx].config);
 const requiredMessage = computed(() => store.state.editor.error.messageTemplate);
+
+function setFormState() {
+  if (userInfo.value.integration[props.channel]) {
+    formState.value = 'preCustom';
+  } else {
+    formState.value = 'setupKey';
+  }
+}
+onMounted(() => setFormState());
+
+watch(userInfo, () => setFormState());
 
 function onCopy() {
   navigator.clipboard.writeText(userInfo.value.key);
@@ -142,12 +181,53 @@ function validateSetupAction() {
 }
 
 function onContinue() {
-  if (formState.value !== 'customMsg') {
+  if (formState.value === 'preCustom') {
     formState.value = 'customMsg';
     return;
   }
 
+  if (formState.value === 'setupKey') {
+    showModal.value = true;
+    return;
+  }
+
   validateSetupAction();
+}
+
+const verifying = ref(false);
+async function onVerify() {
+  verifying.value = true;
+  await store.dispatch('account/getUserInfo', { account: account.value, showLoading: false });
+  verifying.value = false;
+  if (userInfo.value.integration[props.channel]) {
+    dialog.success({
+      title: 'Success!',
+      content:
+        "Cool! You have successfully set up a key for Subrelay Bot. Let's move on to next steps.",
+      positiveText: 'Continue',
+      onPositiveClick: () => (formState.value = 'preCustom'),
+    });
+  } else {
+    dialog.error({
+      title: 'No integration found',
+      content: `Sorry, we were still unable to find a ${props.channel} integration in your account. Did you add the key properly follow the instruction?`,
+
+      content: () =>
+        h('div', { style: { fontSize: '0.85rem' } }, [
+          h('div', [
+            'Sorry, we were still unable to find a ',
+            h('span', { class: 'text-capitalize' }, `${props.channel}`),
+            ' integration in your account.',
+          ]),
+          h(
+            'div',
+            { style: { marginTop: '1rem' } },
+            'Did you add the key properly following the instruction?',
+          ),
+        ]),
+      positiveText: 'Retry',
+    });
+  }
 }
 </script>
 
