@@ -2,7 +2,7 @@
   <n-spin v-if="userInfoLoading" :stroke-width="15" size="small"></n-spin>
 
   <n-space :wrap-item="false" vertical :size="24" v-else>
-    <div v-if="formState === 'preCustom'">
+    <div v-if="formState === 'preCustom' || formState === 'customMsg'">
       <b>Subrelay Bot</b> will send notifications to your
       <span class="text-capitalize">{{ channel }}</span> account
       <n-text code class="text-bold">{{ userInfo.integration[channel] }} </n-text>.
@@ -39,64 +39,64 @@
       </n-button>
     </n-space>
 
-    <n-space vertical v-if="formState === 'customMsg'">
-      <div>You can customize the notification message content below.</div>
+    <n-collapse-transition :show="formState === 'customMsg'">
+      <n-space vertical>
+        <div>You can customize the notification message content below.</div>
 
-      <n-grid cols="2" x-gap="30" style="margin: 1rem 0">
-        <!-- COMPILER -->
-        <n-gi>
-          <n-card
-            :segmented="{ content: true }"
-            title="CUSTOM MESSAGE"
-            header-style="font-size: 0.85rem; font-weight: bold; padding:10px"
-            content-style="padding:0"
-          >
-            <n-space vertical class="custom-message-card-content" :wrap-item="false">
-              <Compiler
-                v-model="content"
-                class="email-content compiler"
-                field="messageTemplate"
-                @getRawText="getRawText"
-                :class="{ dark: darkMode }"
-                :defaultContent="defaultContent"
-              />
-
-              <CustomError :show="requiredMessage" />
-            </n-space>
-          </n-card>
-        </n-gi>
-
-        <!-- PREVIEW -->
-        <n-gi>
-          <n-card
-            title="PREVIEW"
-            header-style="font-size: 0.85rem; font-weight: bold; padding:10px"
-            content-style="padding:0"
-            :segmented="{ content: true }"
-          >
-            <n-space
-              vertical
-              class="custom-message-card-content"
-              style="height: 50vh; overflow: auto"
+        <n-grid cols="2" x-gap="30" style="margin: 1rem 0">
+          <!-- COMPILER -->
+          <n-gi>
+            <n-card
+              :segmented="{ content: true }"
+              title="CUSTOM MESSAGE"
+              header-style="font-size: 0.85rem; font-weight: bold; padding:10px"
+              content-style="padding:0"
             >
-              <div v-html="previewContent" class="preview-content" />
-            </n-space>
-          </n-card>
-        </n-gi>
-      </n-grid>
+              <n-space vertical class="custom-message-card-content" :wrap-item="false">
+                <Compiler
+                  v-model="content"
+                  class="email-content compiler"
+                  field="messageTemplate"
+                  @getRawText="getRawText"
+                  :class="{ dark: darkMode }"
+                  :defaultContent="defaultContent"
+                />
 
-      <!-- <n-button
-      class="action_button"
-      type="primary"
-      v-if="EditorData.workflow.tasks[EditorData.actionIdx].type"
-      @click="validateSetupAction"
-    >
-      Continue
-    </n-button> -->
-    </n-space>
+                <CustomError :show="requiredMessage" />
+              </n-space>
+            </n-card>
+          </n-gi>
+
+          <!-- PREVIEW -->
+          <n-gi>
+            <n-card
+              title="PREVIEW"
+              header-style="font-size: 0.85rem; font-weight: bold; padding:10px"
+              content-style="padding:0"
+              :segmented="{ content: true }"
+            >
+              <n-space
+                vertical
+                class="custom-message-card-content"
+                style="height: 50vh; overflow: auto"
+              >
+                <div v-html="previewContent" class="preview-content" />
+              </n-space>
+            </n-card>
+          </n-gi>
+        </n-grid>
+      </n-space>
+    </n-collapse-transition>
 
     <n-space align="center" justify="end" v-if="formState !== 'setupKey'">
-      <n-button type="primary" v-if="userInfo.integration[channel]">Reconfigure key</n-button>
+      <n-button
+        type="primary"
+        v-if="false && userInfo.integration[channel]"
+        @click="reconfigureKey"
+      >
+        Reconfigure key
+      </n-button>
+
       <n-button type="primary" @click="onContinue"> Continue </n-button>
     </n-space>
   </n-space>
@@ -136,7 +136,9 @@ const dialog = useDialog();
 const message = useMessage();
 const isCopied = ref(false);
 const showModal = ref(false);
+const verifying = ref(false);
 const formState = ref('preCustom');
+const eventBus = inject('eventBus');
 const account = computed(() => store.state.account.selected);
 const userInfo = computed(() => store.state.account.userInfo);
 const userInfoLoading = computed(() => store.state.account.loading.loadUserInfo);
@@ -151,7 +153,6 @@ function setFormState() {
   }
 }
 onMounted(() => setFormState());
-
 watch(userInfo, () => setFormState());
 
 function onCopy() {
@@ -160,8 +161,6 @@ function onCopy() {
   message.success('Copied!');
   setTimeout(() => (isCopied.value = false), 1500);
 }
-
-const eventBus = inject('eventBus');
 
 function validateSetupAction() {
   if (
@@ -186,15 +185,29 @@ function onContinue() {
     return;
   }
 
-  if (formState.value === 'setupKey') {
-    showModal.value = true;
-    return;
-  }
-
   validateSetupAction();
 }
 
-const verifying = ref(false);
+function reconfigureKey() {
+  const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+
+  if (props.channel === 'telegram') {
+    const protocol = isMac ? 'tg://' : 'https://';
+    const link = `${protocol}t.me/subrelay_bot`;
+
+    try {
+      // Try to open the Telegram app with a deep link
+      window.navigator.sendBeacon(`tg://resolve?domain=subrelay_bot`);
+
+      // If the deep link was successful, the Telegram app is installed
+      window.location.href = link;
+    } catch (error) {
+      // If the deep link failed, the Telegram app is not installed
+      window.open(link);
+    }
+  }
+}
+
 async function onVerify() {
   verifying.value = true;
   await store.dispatch('account/getUserInfo', { account: account.value, showLoading: false });

@@ -65,6 +65,7 @@ const isDisabledTest = computed(() => store.state.editor.isTestActionDisabled);
 const [{}, { validateCustomMessage }] = useFormValidation();
 
 function validateSetupAction() {
+  // todo: clean this up
   const callback = () => {
     if (EditorData.workflow.tasks[EditorData.actionIdx].type !== 'email') {
       if (!actionConfig.value.subjectTemplate) {

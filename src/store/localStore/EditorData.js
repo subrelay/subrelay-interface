@@ -18,7 +18,7 @@ const defaultConfig = () => ({
       },
     },
     { name: 'filter', type: 'filter', dependOnName: 'trigger', config: { conditions: [] } },
-    { name: 'action', type: 'telegram', dependOnName: 'filter', config: {} },
+    { name: 'action', type: null, dependOnName: 'filter', config: {} },
   ],
 });
 

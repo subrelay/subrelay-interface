@@ -35,7 +35,7 @@
           </n-text>
         </n-space>
 
-        <n-collapse arrow-placement="right" default-expanded-names="">
+        <n-collapse arrow-placement="right" default-expanded-names="content">
           <n-collapse-item title="Content" name="content">
             <template #header>
               <div style="margin-left: -32px; font-weight: normal">Content:</div>

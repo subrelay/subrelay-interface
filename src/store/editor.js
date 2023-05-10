@@ -6,7 +6,7 @@ export default {
 
   state: () => ({
     step: null, // trigger - action stepper
-    expand: { trigger: '1', action: '2' },
+    expand: { trigger: '1', action: '1' },
     isTestActionDisabled: true,
     operators: [],
     properties: [
