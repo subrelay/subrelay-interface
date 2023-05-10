@@ -5,16 +5,16 @@ const conditionFormat = { variable: null, operator: null, value: null };
 
 const defaultConfig = () => ({
   name: null,
-  uuid: '01GYAC2F61T2KXB62A7XJ2M5H6',
-  // uuid: null,
+  // uuid: '01GYAC2F61T2KXB62A7XJ2M5H6',
+  uuid: null,
   tasks: [
     {
       name: 'trigger',
       type: 'trigger',
       dependOnName: null,
       config: {
-        eventId: '01GYAC2FSW6YSQVBHJ86Z8VHX5',
-        // eventId: null,
+        // eventId: '01GYAC2FSW6YSQVBHJ86Z8VHX5',
+        eventId: null,
       },
     },
     { name: 'filter', type: 'filter', dependOnName: 'trigger', config: { conditions: [] } },
