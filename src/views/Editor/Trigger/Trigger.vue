@@ -74,10 +74,15 @@ function validateFilter() {
   const callback = () => {
     EditorData.setComplete('filter', true);
     EditorData.setError('filter', false);
-    store.commit('editor/setExpand', { action: '1' });
-    router.push({ name: 'action' });
   };
-  emits('validate', { taskName: 'filter', keys: ['filterCond'], callback });
+  
+  emits('validate', {
+    taskName: 'filter',
+    keys: ['filterCond'],
+    nextExpand: 1,
+    nextStep: 2,
+    callback,
+  });
 }
 </script>
 

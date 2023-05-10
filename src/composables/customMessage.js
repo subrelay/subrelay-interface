@@ -47,8 +47,8 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
             'event.time',
           )}, block ${getKeyHTML('event.block.hash')} with following data:</p>`,
           // `${channel === 'telegram' ? '<br>' : '<p></p>'}`,
-          // '<p></p>',
-          '<br>',
+          '<p></p>',
+          // '<br>',
           `<p>Success: ${getKeyHTML('event.success')}</p>`,
         ];
 

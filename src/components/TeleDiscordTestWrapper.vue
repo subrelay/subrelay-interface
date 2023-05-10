@@ -6,35 +6,13 @@
       </template>
 
       <div style="margin-bottom: 1.5em">
-        To test email, we need to send a new email to the recipients. This is what will be sent to
-        the defined {{ `${config.addresses.length > 1 ? 'addresses' : 'address'}` }}.
+        To test <span class="text-capitalize">{{ channel }}</span> notification,
+        <b>Subrelay Bot</b> will send you a new message with below content:
       </div>
 
       <n-skeleton v-if="runningTest" text :repeat="5" />
 
       <n-space vertical :size="10" v-else>
-        <div class="input-item">
-          <div class="title">To:</div>
-
-          <n-text
-            v-for="(add, idx) in config.addresses"
-            :key="idx"
-            code
-            style="font-size: 0.85em"
-            class="text-ellipsis"
-          >
-            <span>{{ add }}</span>
-            <span v-if="idx !== config.addresses.length - 1">,</span>
-          </n-text>
-        </div>
-
-        <n-space align="baseline" :size="0" :wrap-item="false" :wrap="false">
-          <div class="title" style="width: 100px; min-width: 100px">Subject:</div>
-          <n-text code style="font-size: 0.85em">
-            {{ getFormattedText(config.subjectTemplate) }}
-          </n-text>
-        </n-space>
-
         <n-collapse arrow-placement="right" default-expanded-names="content">
           <n-collapse-item title="Content" name="content">
             <template #header>
@@ -42,7 +20,7 @@
             </template>
 
             <n-blockquote style="white-space: pre-wrap">
-              <div v-html="getFormattedText(config.bodyTemplate)" style="font-size: 0.85em" />
+              <div v-html="getFormattedText(config.messageTemplate)" style="font-size: 0.85em" />
             </n-blockquote>
           </n-collapse-item>
         </n-collapse>
@@ -56,20 +34,23 @@
 
       <n-skeleton v-if="runningTest && isTested" text :repeat="2" />
       <n-space vertical :size="10" v-else>
-        <div class="input-item" style="align-items: center">
-          <div class="title">Status:</div>
+        <n-space align="center">
+          <div>Status:</div>
           <n-space :size="4" align="center" :wrap-item="false">
             <StatusIcon :status="testResult.status" />
             <span class="text-capitalize"> {{ testResult.status }} </span>
           </n-space>
-        </div>
+        </n-space>
 
         <div class="input-item" v-if="testResult.status === 'failed'">
           <div class="title">Message:</div>
           <p>{{ testResult.error?.message || testResult.error?.code }}</p>
         </div>
 
-        <div v-else>A test email was sent to all recipient(s).</div>
+        <div v-else>
+          A test message was sent to
+          <n-text code class="text-bold">{{ userInfo.integration[channel] }} </n-text>.
+        </div>
       </n-space>
     </n-card>
 
@@ -88,16 +69,20 @@
 </template>
 
 <script setup>
-import { useCustomMessage } from '@/composables';
 import StatusIcon from '@/components/StatusIcon';
 import EditorData from '@/store/localStore/EditorData';
+import { useCustomMessage } from '@/composables';
 import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
 
+const props = defineProps(['channel']);
+
 const store = useStore();
+const userInfo = computed(() => store.state.account.userInfo);
 const config = computed(() => EditorData.workflow.tasks[EditorData.actionIdx].config);
 const type = computed(() => EditorData.workflow.tasks[EditorData.actionIdx].type);
 const eventId = computed(() => EditorData.workflow.tasks[EditorData.triggerIdx].config.eventId);
+
 const runningTest = computed(() => store.state.editor.runningTest[type.value]);
 const workflowLoading = computed(() => store.state.workflow.loading.workflow);
 const isTested = computed(() => store.state.editor.tested[type.value]);
@@ -105,13 +90,14 @@ const testResult = computed(() => store.state.editor.testResult[type.value]);
 const [{}, { getFormattedText }] = useCustomMessage({ isCustomizing: false });
 
 async function onTest() {
+  const { messageTemplate } = config.value;
+
   await store.dispatch('editor/runTask', {
     type: type.value,
-    config: {
-      ...config.value,
-      subjectTemplate: `====(TESTING EMAIL)==== ${config.value.subjectTemplate}`,
-    },
     data: { eventId: eventId.value },
+    config: {
+      messageTemplate: `====(TESTING MESSAGE)==== \n\n${messageTemplate}`,
+    },
   });
 }
 </script>

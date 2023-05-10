@@ -257,9 +257,9 @@ flex-1 {
   margin-bottom: 5vh;
 }
 
-.full-page {
-  min-height: calc(100vh - 50px);
-}
+// .full-page {
+//   min-height: calc(100vh - 50px);
+// }
 
 .n-data-table-empty {
   padding: 1rem !important;
@@ -293,4 +293,46 @@ flex-1 {
 .slide-fade-leave-to {
   transform: translateY(-10px);
   opacity: 0;
+}
+
+.n-layout-scroll-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.code {
+  &__card {
+    position: relative;
+  }
+
+  &__icon {
+    margin: auto;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+    background: transparent;
+
+    &.copy {
+      color: rgb(136, 147, 151);
+
+      &:hover {
+        background: #eaeaea;
+      }
+    }
+
+    &.completed {
+      color: white;
+      background: green;
+      @media (prefers-color-scheme: dark) {
+        background: #63e2b7;
+        color: black;
+      }
+    }
+  }
 }

@@ -1,7 +1,7 @@
 <template>
-  <div class="cover-layout" v-if="loading"></div>
+  <div class="cover-layout" v-if="loading" />
 
-  <n-layout v-if="EditorData.workflow">
+  <n-layout v-if="EditorData.workflow" style="height: 100vh">
     <n-layout-header style="padding: 5px 3rem" bordered>
       <!-- HEADER -->
       <n-space align="center" justify="space-between">
@@ -34,7 +34,7 @@
       </n-space>
     </n-layout-header>
 
-    <n-layout-content content-style="padding-top: 50px;" class="full-page">
+    <n-layout-content content-style="padding-top: 50px;">
       <!-- STEPPER -->
       <div class="page_container">
         <n-steps :current="step" @update:current="onChangeStep" class="stepper">
@@ -66,8 +66,6 @@
         </n-form>
       </div>
     </n-layout-content>
-
-    <pre>{{ EditorData }} </pre>
   </n-layout>
 </template>
 
@@ -147,7 +145,6 @@ async function setStepStatus(step) {
     if (changedToAction.value) {
       await validateForm({
         keys: ['selectChannel', 'setupAction'],
-        changeStep: false,
         taskName: 'action',
       });
 
@@ -177,7 +174,6 @@ async function setStepStatus(step) {
     if (changedToTrigger.value) {
       await validateForm({
         keys: ['filterCond', 'selectChain', 'selectEvent'],
-        changeStep: false,
         taskName: 'trigger',
       });
       if (isErrorWithTrigger.value) {

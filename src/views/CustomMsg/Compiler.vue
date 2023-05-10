@@ -33,10 +33,8 @@ const darkMode = computed(() => store.state.global.isDarkMode);
 const suggestion = {
   items: ({ query }) => {
     const itemsFromKey = customMsgKeys.value.filter((e) => e.data !== undefined).map((e) => e.name);
-    const extraItems = ['chain', 'worflowLogUrl'];
-    const result = [...itemsFromKey, ...extraItems].filter((item) =>
-      item.toLowerCase().includes(query.toLowerCase()),
-    );
+
+    const result = itemsFromKey.filter((item) => item.toLowerCase().includes(query.toLowerCase()));
     return result;
   },
 
@@ -95,7 +93,9 @@ const KeySuggestion = Node.create({
     return {
       HTMLAttributes: {},
 
-      renderLabel: ({ options, node }) => `$\{${node.attrs.id}\}`,
+      renderLabel: ({ options, node }) => {
+        return `$\{${node.attrs.id}\}`;
+      },
 
       suggestion: {
         char: '/',
@@ -169,21 +169,16 @@ const KeySuggestion = Node.create({
   },
 
   renderHTML({ node, HTMLAttributes }) {
+    console.log('HTMLAttributes', HTMLAttributes)
     return [
       'span',
       mergeAttributes({ 'data-type': this.name }, this.options.HTMLAttributes, HTMLAttributes),
-      this.options.renderLabel({
-        options: this.options,
-        node,
-      }),
+      this.options.renderLabel({ options: this.options, node }),
     ];
   },
 
   renderText({ node }) {
-    return this.options.renderLabel({
-      options: this.options,
-      node,
-    });
+    return this.options.renderLabel({ options: this.options, node });
   },
 
   addKeyboardShortcuts() {

@@ -38,7 +38,7 @@
           />
         </n-layout-sider>
 
-        <n-layout-content :content-style="{ padding: '2rem 4rem 0' }">
+        <n-layout-content content-style="padding: 2rem 4rem 0">
           <RouterView />
         </n-layout-content>
       </n-layout>
@@ -148,14 +148,5 @@ function renderIcon(icon, isButton = false) {
       }
     }
   }
-}
-
-.home_layout {
-  height: calc(100vh - 78px);
-}
-
-.n-layout-scroll-container {
-  display: flex;
-  flex-direction: column;
 }
 </style>

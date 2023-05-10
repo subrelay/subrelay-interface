@@ -35,13 +35,13 @@ export default {
     accounts: [],
     signer: null,
     selected: {},
-    loading: null,
-    userInfo: null,
+    loading: { loadAccounts: null, loadUserInfo: null },
+    userInfo: { integration: {} },
   }),
 
   mutations: {
-    setLoading: (state, isLoading) => {
-      state.loading = isLoading;
+    setLoading: (state, data) => {
+      state.loading = { ...state.loading, ...data };
     },
 
     setSigner: (state, signer) => {
@@ -69,7 +69,7 @@ export default {
 
   actions: {
     async loadAccounts({ commit, dispatch }) {
-      commit('setLoading', true);
+      commit('setLoading', { loadAccounts: true });
       try {
         const connectedAccount = localStorage.getItem(CONNECTED_ACCOUNT);
 
@@ -98,7 +98,7 @@ export default {
 
           if (isAccountExisted) {
             commit('setSelected', connected);
-            dispatch('getUserInfo', connected);
+            dispatch('getUserInfo', { account: connected });
           } else {
             commit('setSelected', null);
           }
@@ -106,17 +106,20 @@ export default {
       } catch (e) {
         console.error('e', e);
       } finally {
-        commit('setLoading', false);
+        commit('setLoading', { loadAccounts: false });
       }
     },
 
-    async getUserInfo({ state, commit }, account) {
+    async getUserInfo({ state, commit }, { account, showLoading = true } = {}) {
       try {
+        if (showLoading) commit('setLoading', { loadUserInfo: true });
         const { signer } = state;
         const { data: user } = await Api.getUserInfo({ account, signer });
         if (user) commit('setUserInfo', user);
       } catch (e) {
         console.error(e);
+      } finally {
+        commit('setLoading', { loadUserInfo: false });
       }
     },
   },

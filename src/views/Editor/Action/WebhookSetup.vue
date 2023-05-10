@@ -21,6 +21,15 @@
       v-model:value="EditorData.workflow.tasks[actionIdx].config.secret"
     />
   </n-form-item>
+
+  <n-button
+    class="action_button"
+    type="primary"
+    v-if="EditorData.workflow.tasks[EditorData.actionIdx].type"
+    @click="validateSetupAction"
+  >
+    Continue
+  </n-button>
 </template>
 
 <script setup>
@@ -29,6 +38,7 @@ import EditorData from '@/store/localStore/EditorData';
 import { ref, computed, inject } from 'vue';
 import { useStore } from 'vuex';
 
+const eventBus = inject('eventBus');
 const store = useStore();
 const actionIdx = computed(() => EditorData.actionIdx);
 
@@ -43,15 +53,30 @@ const urlRule = ref({
       return new Error('Required!');
     }
 
-    if (
-      !/^(http(s)?:\/\/.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/.test(
-        value,
-      )
-    ) {
+    const emailReg =
+      /^(http(s)?:\/\/.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/;
+
+    if (!emailReg.test(value)) {
       return new Error('Invalid URL');
     }
 
     return true;
   },
 });
+
+function validateSetupAction() {
+  const callback = () => {
+    store.commit('editor/disableTestAction', false);
+    store.commit('editor/resetAction');
+    EditorData.setComplete('action', true);
+    EditorData.setError('action', false);
+  };
+
+  eventBus.emit('validate', {
+    taskName: 'action',
+    keys: ['setupAction'],
+    nextExpand: '3',
+    callback,
+  });
+}
 </script>

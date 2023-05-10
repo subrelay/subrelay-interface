@@ -5,7 +5,7 @@
     <n-form-item :path="`tasks[${actionIdx}].config.addresses`" :show-label="false" :rule="rule">
       <n-dynamic-tags
         v-model:value="addressTags"
-        @create="handleCreate"
+        @create="addEmail"
         :render-tag="renderTag"
         :max="2"
       >
@@ -90,6 +90,15 @@
       </n-card>
     </n-gi>
   </n-grid>
+
+  <n-button
+    class="action_button"
+    type="primary"
+    v-if="EditorData.workflow.tasks[EditorData.actionIdx].type"
+    @click="validateSetupAction"
+  >
+    Continue
+  </n-button>
 </template>
 
 <script setup>
@@ -114,6 +123,7 @@ const requiredSubject = computed(() => store.state.editor.error.subjectTemplate)
 const requiredBody = computed(() => store.state.editor.error.bodyTemplate);
 const uuid = computed(() => store.state.chain.event.uuid);
 const actionIdx = computed(() => EditorData.actionIdx);
+const actionConfig = computed(() => EditorData.workflow.tasks[EditorData.actionIdx].config);
 const customMsgKeys = computed(() => store.state.editor.customMsgKeys);
 
 const [
@@ -174,7 +184,6 @@ watch(
     const addresses = newAddressTags.map((e) => e.label);
     EditorData.workflow.tasks[actionIdx.value].config.addresses = [...addresses];
     eventBus.emit('validate', {
-      changeStep: false,
       taskName: 'action',
       keys: ['setupAction_addresses'],
     });
@@ -188,15 +197,33 @@ function removeAddress(index) {
   EditorData.workflow.tasks[actionIdx.value].config.addresses.splice(index, 1);
 
   eventBus.emit('validate', {
-    changeStep: false,
     taskName: 'action',
     keys: ['setupAction_addresses'],
   });
 }
 
-function handleCreate(email) {
+function addEmail(email) {
   const isCorrectFormat = useIsCorrectEmailFormat(email);
   return { label: email, status: isCorrectFormat ? 'success' : 'warning' };
+}
+
+function validateSetupAction() {
+  if (!actionConfig.value.subjectTemplate) {
+    store.commit('editor/setError', { subjectTemplate: true });
+    EditorData.setError('action', true);
+  } else if (
+    !actionConfig.value.bodyTemplate ||
+    actionConfig.value.bodyTemplate === '<br>' ||
+    actionConfig.value.bodyTemplate === '<p></p>'
+  ) {
+    store.commit('editor/setError', { bodyTemplate: true });
+    EditorData.setError('action', true);
+  } else {
+    store.commit('editor/disableTestAction', false);
+    EditorData.setComplete('action', true);
+    EditorData.setError('action', false);
+    eventBus.emit('validate', { taskName: 'action', keys: ['setupAction'], nextExpand: '3' });
+  }
 }
 </script>
 

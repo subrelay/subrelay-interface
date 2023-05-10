@@ -30,16 +30,19 @@
         <div class="step_container">
           <SetUpAction />
 
-          <n-button class="action_button" type="primary" @click="validateSetupAction">
+          <!-- <n-button
+            class="action_button"
+            type="primary"
+            v-if="EditorData.workflow.tasks[EditorData.actionIdx].type"
+            @click="validateSetupAction"
+          >
             Continue
-          </n-button>
+          </n-button> -->
         </div>
       </n-collapse-item>
 
       <n-collapse-item name="3" title="Test" :disabled="isDisabledTest">
-        <div class="step_container">
-          <TestAction />
-        </div>
+        <div class="step_container"><TestAction /></div>
       </n-collapse-item>
     </n-collapse>
   </n-card>
@@ -62,6 +65,7 @@ const isDisabledTest = computed(() => store.state.editor.isTestActionDisabled);
 const [{}, { validateCustomMessage }] = useFormValidation();
 
 function validateSetupAction() {
+  // todo: clean this up
   const callback = () => {
     if (EditorData.workflow.tasks[EditorData.actionIdx].type !== 'email') {
       if (!actionConfig.value.subjectTemplate) {
