@@ -1,14 +1,14 @@
 <template>
-  <div class="items">
+  <div class="menu-items">
     <template v-if="items.length">
       <button
         class="item"
-        :class="{ 'is-selected': index === selectedIndex }"
         v-for="(item, index) in items"
-        :key="index"
         @click="selectItem(index)"
+        :key="index"
+        :class="{ 'is-selected': index === selectedIndex }"
       >
-        {{ item }}
+        {{ item.display }}
       </button>
     </template>
     <div class="item" v-else>No result</div>
@@ -80,12 +80,34 @@ export default {
         this.command({ id: item });
       }
     },
+
+    handleMouseEnter() {
+      this.selectedIndex = null;
+    },
+
+    handleMouseLeave() {
+      console.log('leave');
+    },
+  },
+
+  mounted() {
+    const element = document.querySelector(`.menu-items`);
+    if (!element) return;
+    element.addEventListener('mouseenter', this.handleMouseEnter);
+    element.addEventListener('mouseleave', this.handleMouseLeave);
+  },
+
+  beforeUnmount() {
+    const element = document.querySelector(`.menu-items`);
+    if (!element) return;
+    element.removeEventListener('mouseenter', this.handleMouseEnter);
+    element.removeEventListener('mouseleave', this.handleMouseLeave);
   },
 };
 </script>
 
 <style lang="scss">
-.items {
+.menu-items {
   padding: 0.2rem;
   position: relative;
   border-radius: 0.5rem;
@@ -102,12 +124,16 @@ export default {
   width: 100%;
   text-align: left;
   background: transparent;
-  border-radius: 0.4rem;
+  border-radius: 3px;
   border: 1px solid transparent;
   padding: 0.2rem 0.4rem;
 
+  &:hover {
+    background: rgb(243, 243, 245);
+  }
+
   &.is-selected {
-    border-color: #000;
+    background: rgb(243, 243, 245);
   }
 }
 </style>

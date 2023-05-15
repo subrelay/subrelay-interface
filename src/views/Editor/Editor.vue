@@ -65,6 +65,8 @@
           <Action v-show="step == 2" @validate="validateForm" />
         </n-form>
       </div>
+
+      <pre>{{ EditorData }}</pre>
     </n-layout-content>
   </n-layout>
 </template>

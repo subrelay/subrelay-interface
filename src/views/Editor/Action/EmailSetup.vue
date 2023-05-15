@@ -128,7 +128,7 @@ const customMsgKeys = computed(() => store.state.editor.customMsgKeys);
 
 const [
   { content, previewContent, defaultContent, subject, previewSubject, defaultSubject, darkMode },
-  { getKeyHTML, getRawText, getFormattedText },
+  { getKeyHTML, getRawText, getFormattedString },
 ] = useCustomMessage({ channel: 'email' });
 
 const rule = ref({

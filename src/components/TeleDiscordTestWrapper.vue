@@ -20,7 +20,7 @@
             </template>
 
             <n-blockquote style="white-space: pre-wrap">
-              <div v-html="getFormattedText(config.messageTemplate)" style="font-size: 0.85em" />
+              <div v-html="getFormattedString(config.messageTemplate)" style="font-size: 0.85em" />
             </n-blockquote>
           </n-collapse-item>
         </n-collapse>
@@ -87,7 +87,7 @@ const runningTest = computed(() => store.state.editor.runningTest[type.value]);
 const workflowLoading = computed(() => store.state.workflow.loading.workflow);
 const isTested = computed(() => store.state.editor.tested[type.value]);
 const testResult = computed(() => store.state.editor.testResult[type.value]);
-const [{}, { getFormattedText }] = useCustomMessage({ isCustomizing: false });
+const [{}, { getFormattedString }] = useCustomMessage({ isCustomizing: false });
 
 async function onTest() {
   const { messageTemplate } = config.value;
