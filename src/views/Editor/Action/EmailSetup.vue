@@ -207,6 +207,12 @@ function addEmail(email) {
   return { label: email, status: isCorrectFormat ? 'success' : 'warning' };
 }
 
+const callback = () => {
+  store.commit('editor/disableTestAction', false);
+  EditorData.setComplete('action', true);
+  EditorData.setError('action', false);
+};
+
 function validateSetupAction() {
   if (!actionConfig.value.subjectTemplate) {
     store.commit('editor/setError', { subjectTemplate: true });
@@ -219,10 +225,14 @@ function validateSetupAction() {
     store.commit('editor/setError', { bodyTemplate: true });
     EditorData.setError('action', true);
   } else {
-    store.commit('editor/disableTestAction', false);
-    EditorData.setComplete('action', true);
-    EditorData.setError('action', false);
-    eventBus.emit('validate', { taskName: 'action', keys: ['setupAction'], nextExpand: '3' });
+    store.commit('editor/disableTestAction', true);
+
+    eventBus.emit('validate', {
+      taskName: 'action',
+      keys: ['setupAction'],
+      nextExpand: '3',
+      callback,
+    });
   }
 }
 </script>

@@ -41,11 +41,11 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
   }
 
   function getKeyedString(displayString) {
-    if (!displayString) return;
+    if (!displayString) return '';
     const output = displayString.replace(/\${[^}]+}/g, function (match) {
       return displayLookup.value[match] || match;
     });
-    return output;
+    return output || '';
   }
 
   function getFormattedString(text) {

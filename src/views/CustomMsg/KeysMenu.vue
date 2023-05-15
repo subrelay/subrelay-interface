@@ -133,7 +133,7 @@ export default {
   }
 
   &.is-selected {
-    background: rgb(243, 243, 245);
+  background: rgb(243, 243, 245);
   }
 }
 </style>
