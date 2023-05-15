@@ -31,7 +31,7 @@
         <n-space align="baseline" :size="0" :wrap-item="false" :wrap="false">
           <div class="title" style="width: 100px; min-width: 100px">Subject:</div>
           <n-text code style="font-size: 0.85em">
-            {{ getFormattedText(config.subjectTemplate) }}
+            {{ getFormattedString(config.subjectTemplate) }}
           </n-text>
         </n-space>
 
@@ -42,7 +42,7 @@
             </template>
 
             <n-blockquote style="white-space: pre-wrap">
-              <div v-html="getFormattedText(config.bodyTemplate)" style="font-size: 0.85em" />
+              <div v-html="getFormattedString(config.bodyTemplate)" style="font-size: 0.85em" />
             </n-blockquote>
           </n-collapse-item>
         </n-collapse>
@@ -56,18 +56,18 @@
 
       <n-skeleton v-if="runningTest && isTested" text :repeat="2" />
       <n-space vertical :size="10" v-else>
-        <div class="input-item" style="align-items: center">
-          <div class="title">Status:</div>
+        <n-space align="center" v-if="testResult.status === 'success'">
+          <div>Status:</div>
           <n-space :size="4" align="center" :wrap-item="false">
             <StatusIcon :status="testResult.status" />
             <span class="text-capitalize"> {{ testResult.status }} </span>
           </n-space>
-        </div>
+        </n-space>
 
-        <div class="input-item" v-if="testResult.status === 'failed'">
-          <div class="title">Message:</div>
+        <n-space align="center" v-if="testResult.status === 'failed'">
+          <div>Message:</div>
           <p>{{ testResult.error?.message || testResult.error?.code }}</p>
-        </div>
+        </n-space>
 
         <div v-else>A test email was sent to all recipient(s).</div>
       </n-space>
@@ -102,7 +102,7 @@ const runningTest = computed(() => store.state.editor.runningTest[type.value]);
 const workflowLoading = computed(() => store.state.workflow.loading.workflow);
 const isTested = computed(() => store.state.editor.tested[type.value]);
 const testResult = computed(() => store.state.editor.testResult[type.value]);
-const [{}, { getFormattedText }] = useCustomMessage({ isCustomizing: false });
+const [{}, { getFormattedString }] = useCustomMessage({ isCustomizing: false });
 
 async function onTest() {
   await store.dispatch('editor/runTask', {

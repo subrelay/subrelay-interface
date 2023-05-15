@@ -135,13 +135,15 @@
         <n-space v-if="actionTask.type === 'email'" vertical :size="24">
           <n-space vertical v-if="!isEmpty(customMsgKeys)">
             <div class="text-semi-bold">Subject</div>
-            <n-blockquote>{{ getFormattedText(actionTask.config.subjectTemplate) }} </n-blockquote>
+            <n-blockquote
+              >{{ getFormattedString(actionTask.config.subjectTemplate) }}
+            </n-blockquote>
           </n-space>
 
           <n-space vertical v-if="!isEmpty(customMsgKeys)">
             <div class="text-semi-bold">Content</div>
             <n-blockquote>
-              <div v-html="getFormattedText(actionTask.config.bodyTemplate)"></div>
+              <div v-html="getFormattedString(actionTask.config.bodyTemplate)"></div>
             </n-blockquote>
           </n-space>
         </n-space>
@@ -155,7 +157,7 @@
           <n-space vertical v-if="!isEmpty(customMsgKeys)">
             <div class="text-semi-bold">Content</div>
             <n-blockquote style="white-space: pre-wrap">
-              <div v-html="getFormattedText(actionTask.config.messageTemplate)"></div>
+              <div v-html="getFormattedString(actionTask.config.messageTemplate)"></div>
             </n-blockquote>
           </n-space>
         </n-space>
@@ -175,7 +177,7 @@ import moment from 'moment';
 
 const props = defineProps({ id: [String, Number] });
 const store = useStore();
-const [{}, { getFormattedText }] = useCustomMessage({ isCustomizing: false });
+const [{}, { getFormattedString }] = useCustomMessage({ isCustomizing: false });
 
 const customMsgKeys = computed(() => store.state.editor.customMsgKeys);
 const workflow = computed(() => store.state.workflow.workflow);

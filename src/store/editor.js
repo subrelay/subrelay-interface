@@ -11,10 +11,10 @@ export default {
     operators: [],
     properties: [],
     customMsgKeys: [],
-    loading: { getOperators: false, getFields: false },
     runningTest: {},
     tested: {},
     testResult: {},
+    loading: { getOperators: false, getFields: false },
     error: { subjectTemplate: false, messageTemplate: false, bodyTemplate: false },
   }),
 

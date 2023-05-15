@@ -23,3 +23,9 @@ export function useShowError(e) {
   if (displayMsg === 'Cancelled' || displayMsg === 'Workflow Not Found') return;
   window.$message.error(displayMsg);
 }
+
+// FORMAT
+const formatter = new Intl.NumberFormat('en-US');
+export const useFormatNumber = (number) => {
+  return formatter.format(number);
+};

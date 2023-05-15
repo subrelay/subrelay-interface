@@ -32,9 +32,10 @@ const darkMode = computed(() => store.state.global.isDarkMode);
 
 const suggestion = {
   items: ({ query }) => {
-    const itemsFromKey = customMsgKeys.value.filter((e) => e.data !== undefined).map((e) => e.name);
+    const result = customMsgKeys.value.filter((item) =>
+      item.name.toLowerCase().includes(query.toLowerCase()),
+    );
 
-    const result = itemsFromKey.filter((item) => item.toLowerCase().includes(query.toLowerCase()));
     return result;
   },
 
@@ -50,12 +51,12 @@ const suggestion = {
 
         popup = tippy('body', {
           getReferenceClientRect: props.clientRect,
-          appendTo: () => document.body,
           content: component.element,
           showOnCreate: true,
           interactive: true,
           trigger: 'manual',
           placement: 'bottom-start',
+          appendTo: () => document.body,
         });
       },
 
@@ -91,10 +92,8 @@ const KeySuggestion = Node.create({
 
   addOptions() {
     return {
-      HTMLAttributes: {},
-
       renderLabel: ({ options, node }) => {
-        return `$\{${node.attrs.id}\}`;
+        return `$\{${node.attrs.id.display || node.attrs.id}\}`;
       },
 
       suggestion: {
@@ -147,10 +146,9 @@ const KeySuggestion = Node.create({
         renderHTML: (attributes) => {
           if (!attributes.id) return {};
 
-          return { 'data-id': attributes.id };
+          return { 'data-id': attributes.id.name };
         },
       },
-
       label: {
         default: null,
         parseHTML: (element) => element.getAttribute('data-label'),
@@ -169,7 +167,6 @@ const KeySuggestion = Node.create({
   },
 
   renderHTML({ node, HTMLAttributes }) {
-    console.log('HTMLAttributes', HTMLAttributes)
     return [
       'span',
       mergeAttributes({ 'data-type': this.name }, this.options.HTMLAttributes, HTMLAttributes),
@@ -211,14 +208,14 @@ const KeySuggestion = Node.create({
 
 const PreventEnter = Extension.create({
   addKeyboardShortcuts() {
-    return {
-      Enter: () => true,
-    };
+    return { Enter: () => true };
   },
 });
 
 const editor = useEditor({
   content: props.defaultContent,
+
+  enablePasteRules: false,
   textSerializers: (content) => {
     return content?.toString() ?? '';
   },
@@ -246,9 +243,15 @@ const editor = useEditor({
 function setEditorContent(newValue) {
   const isSame = editor.value.getHTML() === newValue;
   if (!isSame) editor.value.commands.setContent(newValue);
+
   emits('getRawText', {
     field: props.field,
-    text: editor.value.getText({ blockSeparator: '\n' }),
+    text: editor.value.getText({
+      blockSeparator: '\n',
+      textSerializers: {
+        hardBreak: () => '\n',
+      },
+    }),
   });
 }
 watch(
@@ -258,9 +261,7 @@ watch(
       setEditorContent(newValue);
     } else {
       // Wait for 100 milliseconds before running the function
-      setTimeout(() => {
-        setEditorContent(newValue);
-      }, 200);
+      setTimeout(() => setEditorContent(newValue), 200);
     }
   },
   { immediate: true },
@@ -277,10 +278,6 @@ onBeforeUnmount(() => editor.value.destroy());
     background 0.3s var(--n-bezier);
 
   &.no-multiline {
-    // max-height: 2.1255rem;
-    // white-space: pre !important;
-    // overflow: hidden;
-
     [contenteditable='false'] {
       white-space: nowrap;
     }
