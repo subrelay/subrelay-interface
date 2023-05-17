@@ -89,11 +89,7 @@
     </n-collapse-transition>
 
     <n-space align="center" justify="end" v-if="formState !== 'setupKey'">
-      <n-button
-        type="primary"
-        v-if="false && userInfo.integration[channel]"
-        @click="reconfigureKey"
-      >
+      <n-button type="primary" v-if="userInfo.integration[channel]" @click="reconfigureKey">
         Reconfigure key
       </n-button>
 
@@ -190,7 +186,7 @@ function onContinue() {
 
 function reconfigureKey() {
   const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
-
+  const message = '/key foobarlorem';
   if (props.channel === 'telegram') {
     const protocol = isMac ? 'tg://' : 'https://';
     const link = `${protocol}t.me/subrelay_bot`;
@@ -206,6 +202,21 @@ function reconfigureKey() {
       window.open(link);
     }
   }
+
+  // const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+  // const isWin = navigator.platform.toUpperCase().indexOf('WIN') >= 0;
+  // const telegramUrl = 'https://web.telegram.org/k/#@subrelay_bot';
+  // const message = '/key foobarlorem';
+
+  // if (isMac) {
+  //   window.location.href = `tg://msg?text=${encodeURIComponent(message)}`;
+  // } else if (isWin) {
+  //   window.location.href = `tg://msg_url?url=${encodeURIComponent(
+  //     telegramUrl,
+  //   )}&text=${encodeURIComponent(message)}`;
+  // } else {
+  //   window.open(telegramUrl);
+  // }
 }
 
 async function onVerify() {
