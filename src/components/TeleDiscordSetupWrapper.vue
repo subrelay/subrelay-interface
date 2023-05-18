@@ -2,6 +2,7 @@
   <n-spin v-if="userInfoLoading" :stroke-width="15" size="small"></n-spin>
 
   <n-space :wrap-item="false" vertical :size="24" v-else>
+    <div>formState {{ formState }}</div>
     <div v-if="formState === 'preCustom' || formState === 'customMsg'">
       <b>Subrelay Bot</b> will send notifications to your
       <span class="text-capitalize">{{ channel }}</span> account

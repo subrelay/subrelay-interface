@@ -30,7 +30,7 @@
     "moment": "^2.29.4",
     "process": "^0.11.10",
     "tippy.js": "^6.3.7",
-    "vue": "^3.2.41",
+    "vue": "^3.3.2",
     "vue-router": "^4.1.5",
     "vue3-json-viewer": "^2.2.2",
     "vue3-telegram-login": "^0.0.4",
