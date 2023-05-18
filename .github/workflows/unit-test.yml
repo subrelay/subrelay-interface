@@ -1,0 +1,33 @@
+name: Unit Tests
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  release:
+    name: Compile check before merge
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          registry-url: 'https://registry.npmjs.org'
+      - name: install dependencies
+        run: yarn install
+      - name: Compile check
+        env:
+          JOB_STATUS: ${{job.status}}
+        run: yarn build-dev
+      - name: Execute Unit tests
+	      run: yarn run test:unit
