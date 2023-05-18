@@ -11,7 +11,9 @@ on:
       - develop
 
 jobs:
-  common:
+  install:
+    runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -32,18 +34,18 @@ jobs:
         run: yarn install
 
   lint:
-    needs: common
+    needs: install
 
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Run linter
         run: |
           yarn eslint
 
   unit-test:
-    needs: common
-    
+    needs: install
+
     runs-on: ubuntu-latest
 
     strategy:
