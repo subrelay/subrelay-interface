@@ -187,13 +187,6 @@ export default function useQuery(module, path, columns = {}, fetchData = () => {
     if (isEmpty(route.query)) pushQueryToRoute(params);
   }
 
-  // onMounted(async () => {
-  //   setTimeout(() => {
-  //     initQuery();
-  //     fetchData();
-  //   }, 100);
-  // });
-
   onBeforeMount(async () => {
     initQuery();
     fetchData();
