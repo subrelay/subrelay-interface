@@ -3,6 +3,7 @@ import {
   useDropdownFilter,
   useParseCamelCaseStr,
   useShowError,
+  useTruncate,
 } from '@/composables';
 
 describe('Test useDropdownFilter', () => {
@@ -139,5 +140,19 @@ describe('Test useFormatNumber', () => {
     expect(useFormatNumber(null)).toBe('');
     expect(useFormatNumber(undefined)).toBe('');
     expect(useFormatNumber('not a number')).toBe('');
+  });
+});
+
+describe('Test useTruncate', () => {
+  it('Should truncate the address correctly', () => {
+    expect(useTruncate({ address: '0x1234567890abcdef' })).toBe('0x123 ... bcdef');
+  });
+
+  it('should return an empty string if the address is falsy', () => {
+    expect(useTruncate({ address: '' })).toBe('');
+  });
+
+  it('Should handle shorter addresses without truncation', () => {
+    expect(useTruncate({ address: '0xabcdef' })).toBe('0xabcdef');
   });
 });
