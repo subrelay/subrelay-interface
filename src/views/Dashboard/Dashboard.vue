@@ -122,6 +122,26 @@ function renderIcon(icon, isButton = false) {
   }
   return () => h(Icon, { icon, inline: true });
 }
+
+function test() {
+  const hostname = window.location.hostname;
+  const url = '';
+  const windowName = 'NewWindow';
+  const windowFeatures = 'width=700,height=500,left=500,top=200';
+
+  // if (hostname === 'localhost' || hostname === '127.0.0.1') {
+  //   url = 'http://127.0.0.1:9000/#/splash';
+  // } else if (hostname === 'develop.app.subrelay.xyz') {
+  //   url = 'https://develop.app.subrelay.xyz/#/splash';
+  // } else if (hostname === 'app.subrelay.xyz') {
+  //   url = 'https://app.subrelay.xyz/#/splash';
+  // }
+
+  // var url = 'http://127.0.0.1:9000/#/splash';
+  // var windowName = 'NewWindow';
+  // var windowFeatures = 'width=700,height=500,left=500,top=500';
+  // window.open(url, windowName, windowFeatures);
+}
 </script>
 
 <style lang="scss">
