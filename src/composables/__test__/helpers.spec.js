@@ -1,4 +1,9 @@
-import { useFormatNumber, useDropdownFilter, useParseCamelCaseStr } from '@/composables';
+import {
+  useFormatNumber,
+  useDropdownFilter,
+  useParseCamelCaseStr,
+  useShowError,
+} from '@/composables';
 
 describe('Test useDropdownFilter', () => {
   const option1 = {
@@ -69,6 +74,57 @@ describe('Test useParseCamelCaseStr', () => {
 
   it('should handle pascal case strings with multiple capital letters in a row', () => {
     expect(useParseCamelCaseStr('httpRequest')).toBe('http request');
+  });
+});
+
+describe('Test useShowError', () => {
+  beforeAll(() => {
+    const error = new Error('Test error');
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+  });
+
+  afterAll(() => {
+    console.error.mockRestore();
+  });
+
+  afterEach(() => {
+    console.error.mockClear();
+  });
+
+  it('Should log the error to the console', () => {
+    const error = new Error('Test error');
+    useShowError(error);
+    expect(console.error).toHaveBeenCalledWith(error);
+  });
+
+  it('Should display the error message', () => {
+    const mockErrorMessage = 'Error message';
+    window.$message = { error: vi.fn() }; // Mock $message.error function
+
+    useShowError({ message: mockErrorMessage });
+    expect(window.$message.error).toHaveBeenCalledWith(mockErrorMessage);
+  });
+
+  it('Should display the response data message if it is an array', () => {
+    const error = {
+      response: { data: { message: ['Error 1', 'Error 2'] } },
+    };
+    const expectedErrorMessage = 'Error 1,Error 2';
+    window.$message = { error: vi.fn() }; // Mock $message.error function
+
+    useShowError(error);
+    expect(window.$message.error).toHaveBeenCalledWith(expectedErrorMessage);
+  });
+
+  it('should handle the "Cancelled" and "Workflow Not Found" messages', () => {
+    const error1 = { message: 'Cancelled' };
+    const error2 = { message: 'Workflow Not Found' };
+    window.$message = { error: vi.fn() }; // Mock $message.error function
+
+    useShowError(error1);
+    useShowError(error2);
+
+    expect(window.$message.error).not.toHaveBeenCalled();
   });
 });
 
