@@ -1,7 +1,7 @@
 import { useIsCorrectEmailFormat } from '@/composables';
 import { describe } from 'vitest';
 
-describe('Email validation', () => {
+describe('Test useIsCorrectEmailFormat', () => {
   it('should return true for valid email formats', () => {
     expect(useIsCorrectEmailFormat('test@example.com')).toBe(true);
     expect(useIsCorrectEmailFormat('another.email@example.co.uk')).toBe(true);

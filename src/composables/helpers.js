@@ -1,11 +1,12 @@
-import { isArray } from 'lodash';
+import isNumber from 'lodash/isNumber';
+import isArray from 'lodash/isArray';
 
 export const useDropdownFilter = (string, option) => {
   return option.name.toLowerCase().includes(string.toLowerCase());
 };
 
-export const useParsePascalCaseStr = (string) => {
-  if (!string) return;
+export const useParseCamelCaseStr = (string) => {
+  if (!string) return '';
   return string.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase();
 };
 
@@ -24,8 +25,13 @@ export function useShowError(e) {
   window.$message.error(displayMsg);
 }
 
-// FORMAT
 const formatter = new Intl.NumberFormat('en-US');
 export const useFormatNumber = (number) => {
+  if (!isNumber(number)) return '';
   return formatter.format(number);
 };
+
+export function useTruncate({ address }) {
+  if (!address) return '';
+  return `${address.slice(0, 5)} ... ${address.slice(-5)}`;
+}

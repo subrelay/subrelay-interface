@@ -1,10 +1,13 @@
 import EditorData from '@/store/localStore/EditorData';
-import { flow, template, set, isEmpty } from 'lodash';
-import isNumber from 'lodash/isNumber';
 import { watch, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useFormatNumber } from '@/composables';
 import moment from 'moment';
+import isNumber from 'lodash/isNumber';
+import flow from 'lodash/flow';
+import template from 'lodash/template';
+import set from 'lodash/set';
+import isEmpty from 'lodash/isEmpty';
 
 export default function useCustomMessage({ channel, isCustomizing = true } = {}) {
   const store = useStore();

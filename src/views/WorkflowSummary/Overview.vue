@@ -69,7 +69,7 @@
 
               <span v-for="(condition, subIndex) in conditionGroup" :key="subIndex">
                 <b v-if="subIndex !== 0" style="margin-left: 4px"> AND </b>
-                <i> {{ condition.variable }} </i>
+                <n-text code> {{ condition.variable }} </n-text>
                 <span>
                   {{
                     ['greaterThan', 'greaterThanEqual', 'lessThan'].includes(condition.operator)
@@ -77,10 +77,10 @@
                       : ' '
                   }}
                 </span>
-                <span> {{ useParsePascalCaseStr(condition.operator) }}</span>
-                <i>
-                  {{ condition.value !== null ? ` ${condition.value}` : '' }}
-                </i>
+                <span> {{ useParseCamelCaseStr(condition.operator) + ' ' }}</span>
+                <n-text code>
+                  {{ condition.value !== null ? ` ${' ' + condition.value}` : '' }}
+                </n-text>
               </span>
             </div>
           </n-space>
@@ -169,7 +169,7 @@
 <script setup>
 import WebhookInput from '@/views/Editor/Action/WebhookInput';
 import WorkflowSwitch from '@/components/WorkflowSwitch';
-import { useParsePascalCaseStr, useCustomMessage } from '@/composables';
+import { useParseCamelCaseStr, useCustomMessage } from '@/composables';
 import { computed, ref, watch, onBeforeUnmount } from 'vue';
 import { useStore } from 'vuex';
 import { isEmpty } from 'lodash';
