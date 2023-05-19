@@ -14,7 +14,7 @@
       <n-result
         v-else
         style="margin-top: 25vh"
-        title="Error"
+        :title="isSuccess ? 'Success' : 'Error'"
         :description="
           isSuccess
             ? 'Connect suceessfully! You can close this window.'
