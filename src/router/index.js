@@ -85,6 +85,12 @@ const router = createRouter({
       meta: { title: 'Welcome' },
     },
     {
+      path: '/splash',
+      name: 'Splash',
+      component: () => import('@/views/SplashWindow.vue'),
+      meta: { title: 'Splash' },
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'notfound',
       component: () => import('@/views/NotFound'),
