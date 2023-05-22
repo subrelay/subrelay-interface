@@ -4,9 +4,7 @@ import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 
 export const restHandlers = [
-  rest.get('https://api.agify.io/', (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json([{ age: 55, name: 'tope' }]));
-  }),
+  rest.get('https://api.agify.io/', (req, res, ctx) => res(ctx.status(200), ctx.json([{ age: 55, name: 'tope' }]))),
 ];
 const server = setupServer(...restHandlers);
 // Start server before all tests

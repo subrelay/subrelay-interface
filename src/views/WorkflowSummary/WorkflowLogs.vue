@@ -7,7 +7,7 @@
       placeholder="All statuses"
       :disabled="loading"
       :render-label="useRenderDropdownLabel"
-      :options="useLogStatuses"
+      :options="logStatuses"
       :value="selectedStatus"
       @update:value="handleSelectStatus"
     />
@@ -52,8 +52,9 @@
 import ButtonWithTooltip from '@/components/ButtonWithTooltip';
 import WorkflowLogItem from '@/components/WorkflowLogItem';
 import { onMounted, computed, onBeforeUnmount } from 'vue';
-import { useQuery, useRenderDropdownLabel, useLogStatuses } from '@/composables';
+import { useQuery, useRenderDropdownLabel } from '@/composables';
 import { useStore } from 'vuex';
+import { logStatuses } from '@/config';
 import Api from '@/api';
 
 const store = useStore();

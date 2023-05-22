@@ -12,7 +12,5 @@ const props = defineProps({
   content: { type: String, required: true },
 });
 
-const markedContent = computed(() => {
-  return marked.parse(props.content);
-});
+const markedContent = computed(() => marked.parse(props.content));
 </script>

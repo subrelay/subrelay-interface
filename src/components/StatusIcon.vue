@@ -13,9 +13,7 @@ const isSuccess = computed(() => props.status === 'success');
 
 const sucessColor = computed(() => (darkMode.value ? '#63e2b7' : '#18a058ff'));
 const failedColor = computed(() => (darkMode.value ? '#e88080' : '#d03050ff'));
-const skippedColor = computed(() =>
-  darkMode.value ? 'rgba(255, 255, 255, 0.52)' : 'rgb(51, 54, 57)',
-);
+const skippedColor = computed(() => (darkMode.value ? 'rgba(255, 255, 255, 0.52)' : 'rgb(51, 54, 57)'));
 
 const color = computed(() => {
   switch (props.status) {

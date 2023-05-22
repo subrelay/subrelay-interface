@@ -53,8 +53,7 @@ const urlRule = ref({
       return new Error('Required!');
     }
 
-    const emailReg =
-      /^(http(s)?:\/\/.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/;
+    const emailReg = /^(http(s)?:\/\/.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/;
 
     if (!emailReg.test(value)) {
       return new Error('Invalid URL');

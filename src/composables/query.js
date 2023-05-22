@@ -1,8 +1,8 @@
-import { ref, onMounted, computed, watch, onBeforeMount } from 'vue';
+import { ref, computed, watch, onBeforeMount } from 'vue';
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router';
 import { debounce, isEmpty, findIndex } from 'lodash';
 import { useStore } from 'vuex';
-import { defaultQuery } from '@/composables/config';
+import { defaultQuery } from '@/config';
 
 export default function useQuery(module, path, columns = {}, fetchData = () => {}) {
   const store = useStore();

@@ -7,7 +7,8 @@ vi.mock('vuex', () => ({
 }));
 
 describe('Test useAccordion', () => {
-  let store, task, expandValue, computedProps, methods;
+  let store; let task; let expandValue; let computedProps; let
+    methods;
 
   beforeEach(() => {
     task = 'trigger';

@@ -96,11 +96,9 @@ import EditorData from '@/store/localStore/EditorData';
 import { ref, computed, watch, inject, h, onBeforeMount } from 'vue';
 import { useStore } from 'vuex';
 import { isEmpty } from 'lodash';
-import {
-  useRenderDropdownLabel,
+import { useRenderDropdownLabel,
   useDropdownFilter,
-  renderSelectTagWithDescription,
-} from '@/composables';
+  renderSelectTagWithDescription } from '@/composables';
 
 const props = defineProps({
   index: Number,

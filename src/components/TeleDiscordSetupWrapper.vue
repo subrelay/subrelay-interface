@@ -161,9 +161,9 @@ function onCopy() {
 
 function validateSetupAction() {
   if (
-    !actionConfig.value.messageTemplate ||
-    actionConfig.value.messageTemplate === '<br>' ||
-    actionConfig.value.messageTemplate === '<p></p>'
+    !actionConfig.value.messageTemplate
+    || actionConfig.value.messageTemplate === '<br>'
+    || actionConfig.value.messageTemplate === '<p></p>'
   ) {
     store.commit('editor/setError', { messageTemplate: true });
     EditorData.setError('action', true);
@@ -194,7 +194,7 @@ function reconfigureKey() {
 
     try {
       // Try to open the Telegram app with a deep link
-      window.navigator.sendBeacon(`tg://resolve?domain=subrelay_bot`);
+      window.navigator.sendBeacon('tg://resolve?domain=subrelay_bot');
 
       // If the deep link was successful, the Telegram app is installed
       window.location.href = link;
@@ -237,19 +237,18 @@ async function onVerify() {
       title: 'No integration found',
       content: `Sorry, we were still unable to find a ${props.channel} integration in your account. Did you add the key properly follow the instruction?`,
 
-      content: () =>
-        h('div', { style: { fontSize: '0.85rem' } }, [
-          h('div', [
-            'Sorry, we were still unable to find a ',
-            h('span', { class: 'text-capitalize' }, `${props.channel}`),
-            ' integration in your account.',
-          ]),
-          h(
-            'div',
-            { style: { marginTop: '1rem' } },
-            'Did you add the key properly following the instruction?',
-          ),
+      content: () => h('div', { style: { fontSize: '0.85rem' } }, [
+        h('div', [
+          'Sorry, we were still unable to find a ',
+          h('span', { class: 'text-capitalize' }, `${props.channel}`),
+          ' integration in your account.',
         ]),
+        h(
+          'div',
+          { style: { marginTop: '1rem' } },
+          'Did you add the key properly following the instruction?',
+        ),
+      ]),
       positiveText: 'Retry',
     });
   }

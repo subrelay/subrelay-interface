@@ -26,6 +26,7 @@
 
 <script setup>
 import { ref } from 'vue';
+
 defineProps({
   title: String,
 });
@@ -42,7 +43,7 @@ export default {
   },
   computed: {
     getAge() {
-      fetch('https://api.agify.io/?name=' + this.search)
+      fetch(`https://api.agify.io/?name=${this.search}`)
         .then((response) => response.json())
         .then((data) => {
           this.age = data.age;

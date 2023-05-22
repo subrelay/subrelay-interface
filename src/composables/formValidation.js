@@ -21,13 +21,11 @@ export function useFormValidation() {
               resolve();
             }
           },
-          (rule) => {
-            return (
-              keys.includes(rule.key) ||
-              (rule.key.includes('filterCond') && keys.includes('filterCond')) ||
-              (rule.key.includes('setupAction') && keys.includes('setupAction'))
-            );
-          },
+          (rule) => (
+            keys.includes(rule.key)
+              || (rule.key.includes('filterCond') && keys.includes('filterCond'))
+              || (rule.key.includes('setupAction') && keys.includes('setupAction'))
+          ),
         );
       });
 
@@ -51,18 +49,18 @@ export function useFormValidation() {
     }
 
     if (
-      !actionConfig.value.bodyTemplate ||
-      actionConfig.value.bodyTemplate === '<br>' ||
-      actionConfig.value.bodyTemplate === '<p></p>'
+      !actionConfig.value.bodyTemplate
+      || actionConfig.value.bodyTemplate === '<br>'
+      || actionConfig.value.bodyTemplate === '<p></p>'
     ) {
       store.commit('editor/setError', { bodyTemplate: true });
       EditorData.setError('action', true);
     }
 
     if (
-      !actionConfig.value.messageTemplate ||
-      actionConfig.value.messageTemplate === '<br>' ||
-      actionConfig.value.messageTemplate === '<p></p>'
+      !actionConfig.value.messageTemplate
+      || actionConfig.value.messageTemplate === '<br>'
+      || actionConfig.value.messageTemplate === '<p></p>'
     ) {
       store.commit('editor/setError', { messageTemplate: true });
       EditorData.setError('action', true);

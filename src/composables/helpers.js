@@ -1,9 +1,7 @@
 import isNumber from 'lodash/isNumber';
 import isArray from 'lodash/isArray';
 
-export const useDropdownFilter = (string, option) => {
-  return option.name.toLowerCase().includes(string.toLowerCase());
-};
+export const useDropdownFilter = (string, option) => option.name.toLowerCase().includes(string.toLowerCase());
 
 export const useParseCamelCaseStr = (string) => {
   if (!string) return '';

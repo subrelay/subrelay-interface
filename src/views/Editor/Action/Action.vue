@@ -56,6 +56,7 @@ import EditorData from '@/store/localStore/EditorData';
 import SelectChannel from '@/views/Editor/Action/SelectChannel.vue';
 import SetUpAction from '@/views/Editor/Action/SetUpAction.vue';
 import TestAction from '@/views/Editor/Action/TestAction.vue';
+
 const [{ expandedNames }, { setExpand }] = useAccordion('action');
 
 const store = useStore();
@@ -74,9 +75,9 @@ function validateSetupAction() {
       }
 
       if (
-        !actionConfig.value.bodyTemplate ||
-        actionConfig.value.bodyTemplate === '<br>' ||
-        actionConfig.value.bodyTemplate === '<p></p>'
+        !actionConfig.value.bodyTemplate
+        || actionConfig.value.bodyTemplate === '<br>'
+        || actionConfig.value.bodyTemplate === '<p></p>'
       ) {
         store.commit('editor/setError', { bodyTemplate: true });
         EditorData.setError('action', true);
@@ -85,9 +86,9 @@ function validateSetupAction() {
 
     if (EditorData.workflow.tasks[EditorData.actionIdx].type !== 'email') {
       if (
-        !actionConfig.value.messageTemplate ||
-        actionConfig.value.messageTemplate === '<br>' ||
-        actionConfig.value.messageTemplate === '<p></p>'
+        !actionConfig.value.messageTemplate
+        || actionConfig.value.messageTemplate === '<br>'
+        || actionConfig.value.messageTemplate === '<p></p>'
       ) {
         store.commit('editor/setError', { messageTemplate: true });
         EditorData.setError('action', true);

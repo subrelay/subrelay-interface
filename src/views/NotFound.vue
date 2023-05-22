@@ -23,15 +23,15 @@
 <script setup>
 import { useRouter } from 'vue-router';
 
+import { ref, h } from 'vue';
+
+import { NTag } from 'naive-ui';
+
 const router = useRouter();
 
 const onBackToHome = () => {
   router.push('/');
 };
-
-import { ref, h } from 'vue';
-
-import { NTag } from 'naive-ui';
 
 const model = ref({
   tags: ['teacher', 'programmer'],
@@ -47,20 +47,18 @@ const rules = ref({
   },
 });
 
-const renderTag = (tag, index) => {
-  return h(
-    NTag,
-    {
-      type: index < 3 ? 'success' : 'error',
-      disabled: index > 3,
-      closable: true,
-      onClose: () => {
-        model.value.tags.splice(index, 1);
-      },
+const renderTag = (tag, index) => h(
+  NTag,
+  {
+    type: index < 3 ? 'success' : 'error',
+    disabled: index > 3,
+    closable: true,
+    onClose: () => {
+      model.value.tags.splice(index, 1);
     },
-    { default: () => tag },
-  );
-};
+  },
+  { default: () => tag },
+);
 </script>
 
 <style lang="scss" scoped>

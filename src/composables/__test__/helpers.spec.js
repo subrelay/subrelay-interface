@@ -1,10 +1,8 @@
-import {
-  useFormatNumber,
+import { useFormatNumber,
   useDropdownFilter,
   useParseCamelCaseStr,
   useShowError,
-  useTruncate,
-} from '@/composables';
+  useTruncate } from '@/composables';
 
 describe('Test useDropdownFilter', () => {
   const option1 = {

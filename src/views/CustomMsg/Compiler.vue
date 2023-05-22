@@ -32,9 +32,7 @@ const darkMode = computed(() => store.state.global.isDarkMode);
 
 const suggestion = {
   items: ({ query }) => {
-    const result = customMsgKeys.value.filter((item) =>
-      item.name.toLowerCase().includes(query.toLowerCase()),
-    );
+    const result = customMsgKeys.value.filter((item) => item.name.toLowerCase().includes(query.toLowerCase()));
 
     return result;
   },
@@ -92,9 +90,7 @@ const KeySuggestion = Node.create({
 
   addOptions() {
     return {
-      renderLabel: ({ options, node }) => {
-        return `$\{${node.attrs.id.display || node.attrs.id}\}`;
-      },
+      renderLabel: ({ options, node }) => `$\{${node.attrs.id.display || node.attrs.id}\}`,
 
       suggestion: {
         char: '/',
@@ -102,7 +98,7 @@ const KeySuggestion = Node.create({
         pluginKey: MentionPluginKey,
 
         command: ({ editor, range, props: editorProps }) => {
-          const nodeAfter = editor.view.state.selection.$to.nodeAfter;
+          const { nodeAfter } = editor.view.state.selection.$to;
           const overrideSpace = nodeAfter?.text?.startsWith(' ');
 
           if (overrideSpace) range.to += 1;
@@ -180,24 +176,23 @@ const KeySuggestion = Node.create({
 
   addKeyboardShortcuts() {
     return {
-      Backspace: () =>
-        this.editor.commands.command(({ tr, state }) => {
-          let isVariable = false;
-          const { selection } = state;
-          const { empty, anchor } = selection;
+      Backspace: () => this.editor.commands.command(({ tr, state }) => {
+        let isVariable = false;
+        const { selection } = state;
+        const { empty, anchor } = selection;
 
-          if (!empty) return false;
+        if (!empty) return false;
 
-          state.doc.nodesBetween(anchor - 1, anchor, (node, pos) => {
-            if (node.type.name === this.name) {
-              isVariable = true;
-              tr.insertText(this.options.suggestion.char || '', pos, pos + node.nodeSize);
-              return false;
-            }
-          });
+        state.doc.nodesBetween(anchor - 1, anchor, (node, pos) => {
+          if (node.type.name === this.name) {
+            isVariable = true;
+            tr.insertText(this.options.suggestion.char || '', pos, pos + node.nodeSize);
+            return false;
+          }
+        });
 
-          return isVariable;
-        }),
+        return isVariable;
+      }),
     };
   },
 
@@ -216,9 +211,7 @@ const editor = useEditor({
   content: props.defaultContent,
 
   enablePasteRules: false,
-  textSerializers: (content) => {
-    return content?.toString() ?? '';
-  },
+  textSerializers: (content) => content?.toString() ?? '',
 
   editorProps: {
     attributes: {

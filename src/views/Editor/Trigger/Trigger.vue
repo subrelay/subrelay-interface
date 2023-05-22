@@ -75,7 +75,7 @@ function validateFilter() {
     EditorData.setComplete('filter', true);
     EditorData.setError('filter', false);
   };
-  
+
   emits('validate', {
     taskName: 'filter',
     keys: ['filterCond'],
