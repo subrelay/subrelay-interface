@@ -80,16 +80,20 @@ describe('Test useParseCamelCaseStr', () => {
 
 describe('Test useShowError', () => {
   beforeAll(() => {
-    const error = new Error('Test error');
-    vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => {}); // Mock console.error function
+    // console.error = vi.fn(); // This ^ can also be written in this way
+    window.$message = { error: vi.fn() }; // Mock $message.error function
+  });
+
+  afterEach(() => {
+    // This can be skipped if clearMocks: true is already set in config file
+    console.error.mockClear();
+    window.$message.error.mockClear();
   });
 
   afterAll(() => {
     console.error.mockRestore();
-  });
-
-  afterEach(() => {
-    console.error.mockClear();
+    window.$message.error.mockRestore();
   });
 
   it('Should log the error to the console', () => {
@@ -100,19 +104,13 @@ describe('Test useShowError', () => {
 
   it('Should display the error message', () => {
     const mockErrorMessage = 'Error message';
-    window.$message = { error: vi.fn() }; // Mock $message.error function
-
     useShowError({ message: mockErrorMessage });
     expect(window.$message.error).toHaveBeenCalledWith(mockErrorMessage);
   });
 
   it('Should display the response data message if it is an array', () => {
-    const error = {
-      response: { data: { message: ['Error 1', 'Error 2'] } },
-    };
+    const error = { response: { data: { message: ['Error 1', 'Error 2'] } } };
     const expectedErrorMessage = 'Error 1,Error 2';
-    window.$message = { error: vi.fn() }; // Mock $message.error function
-
     useShowError(error);
     expect(window.$message.error).toHaveBeenCalledWith(expectedErrorMessage);
   });
@@ -120,7 +118,7 @@ describe('Test useShowError', () => {
   it('should handle the "Cancelled" and "Workflow Not Found" messages', () => {
     const error1 = { message: 'Cancelled' };
     const error2 = { message: 'Workflow Not Found' };
-    window.$message = { error: vi.fn() }; // Mock $message.error function
+    // window.$message = { error: vi.fn() }; // Mock $message.error function
 
     useShowError(error1);
     useShowError(error2);
