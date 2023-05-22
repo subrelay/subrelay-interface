@@ -86,7 +86,6 @@
 <script setup>
 import PolkadotAccountIcon from '@/components/PolkadotAccountIcon';
 import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
 import { useMessage } from 'naive-ui';
 import { computed, ref, watch } from 'vue';
 import { generateGetToken } from '@/api';
@@ -96,7 +95,6 @@ const props = defineProps({ modelValue: { type: Boolean } });
 const emits = defineEmits(['update:modelValue']);
 
 const store = useStore();
-const router = useRouter();
 const message = useMessage();
 const currentAcc = ref({});
 const loading = ref(false);

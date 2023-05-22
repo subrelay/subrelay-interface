@@ -17,7 +17,9 @@ module.exports = {
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'object-curly-newline': ['error', { ImportDeclaration: 'never' }],
     'vue/multi-word-component-names': 'off',
-    'import/extensions': ['error', 'always', { js: 'never', vue: 'never' }],
+    'no-undef': 'off',
+    'import/extensions': ['error', 'always', { js: 'never', vue: 'never', cjs: 'never' }],
+    'max-len': ['error', { code: 200 }],
   },
   settings: {
     'import/resolver': {

@@ -61,14 +61,29 @@ const router = useRouter();
 const store = useStore();
 const activeKey = ref(null);
 const collapsed = computed(() => store.state.global.isSiderCollapsed);
-const query = computed(() => store.state.global.defaultQuery);
 const selectedAccount = computed(() => store.state.account.selected);
 
 watch(selectedAccount, (acc) => {
   if (!acc) router.push('/welcome');
 });
 
-onMounted(() => (window.$message = useMessage()));
+onMounted(() => {
+  window.$message = useMessage();
+});
+
+const goToEditor = () => router.push({ name: 'trigger' });
+const goToHomePage = () => router.push({ name: 'workflows' });
+
+function onUpdateActive(value) {
+  if (value === 'editor') goToEditor('new-flow');
+}
+
+function renderIcon(icon, isButton = false) {
+  if (isButton) {
+    return () => (collapsed.value ? h(NButton, { type: 'primary' }, { default: () => h(Icon, { icon, inline: true }) }) : '');
+  }
+  return () => h(Icon, { icon, inline: true });
+}
 
 const siderOptions = ref([
   {
@@ -101,25 +116,11 @@ const siderOptions = ref([
 
 watch(
   () => route.name,
-  (newRouteName) => (activeKey.value = newRouteName),
+  (newRouteName) => {
+    activeKey.value = newRouteName;
+  },
   { immediate: true },
 );
-
-const goToEditor = (id) => router.push({ name: 'trigger' });
-const goToHomePage = () => router.push({ name: 'workflows' });
-
-function onUpdateActive(value) {
-  if (value === 'editor') goToEditor('new-flow');
-}
-
-function renderIcon(icon, isButton = false) {
-  if (isButton) {
-    return () => (collapsed.value
-      ? h(NButton, { type: 'primary' }, { default: () => h(Icon, { icon, inline: true }) })
-      : '');
-  }
-  return () => h(Icon, { icon, inline: true });
-}
 </script>
 
 <style lang="scss">

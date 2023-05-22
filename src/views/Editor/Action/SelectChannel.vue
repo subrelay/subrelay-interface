@@ -29,8 +29,8 @@
 
 <script setup>
 import EditorData from '@/store/localStore/EditorData';
-import { channels } from '@/config';
-import { computed, ref } from 'vue';
+import channels from '@/config/channels';
+import { computed } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();

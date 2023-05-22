@@ -37,8 +37,8 @@ import { ref, h, provide, computed } from 'vue';
 import { useStore } from 'vuex';
 import { NAvatar } from 'naive-ui';
 import { useQuery, useRenderSortIcon, useGetChainImg } from '@/composables';
-import { logStatuses } from '@/config';
 import { useRouter } from 'vue-router';
+import logStatuses from '@/config/logStatuses';
 import moment from 'moment';
 
 const store = useStore();
@@ -124,7 +124,7 @@ const columns = ref([
     key: 'view',
     width: '10%',
     ellipsis: { tooltip: true },
-    render: ({ id }) => h('div', { style: { display: 'flex', alignItems: 'center' } }, [
+    render: () => h('div', { style: { display: 'flex', alignItems: 'center' } }, [
       'View',
       h(Icon, { icon: 'akar-icons:chevron-right', style: { 'margin-left': '4px' } }),
     ]),
@@ -133,14 +133,7 @@ const columns = ref([
 
 const [
   { query, searchText, loading, tablePagination, selectedChain, selectedStatus },
-  {
-    onDebouncedSearch,
-    handleSort,
-    handlePageChange,
-    handleSelectChain,
-    handleSelectStatus,
-    clearAllFilters,
-  },
+  { onDebouncedSearch, handleSort, handlePageChange, handleSelectChain, handleSelectStatus, clearAllFilters },
 ] = useQuery('log', 'logs', columns, fetchData);
 
 provide('search', {

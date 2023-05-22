@@ -16,7 +16,7 @@ export default defineConfig({
       zlib: 'browserify-zlib',
       util: 'util',
     },
-    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
+    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue', '.cjs'],
   },
 
   css: {

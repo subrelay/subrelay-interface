@@ -8,10 +8,8 @@ import EmailTest from '@/views/Editor/Action/EmailTest';
 import TelegramTest from '@/views/Editor/Action/TelegramTest';
 import DiscordTest from '@/views/Editor/Action/DiscordTest';
 import EditorData from '@/store/localStore/EditorData';
-import { computed, shallowRef, provide } from 'vue';
-import { useStore } from 'vuex';
+import { computed, shallowRef } from 'vue';
 
-const store = useStore();
 const actionIdx = computed(() => EditorData.actionIdx);
 const channel = computed(() => EditorData.workflow.tasks[actionIdx.value].type);
 

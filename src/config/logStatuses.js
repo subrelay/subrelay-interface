@@ -1,4 +1,4 @@
-export const logStatuses = [
+export default [
   {
     label: 'Success',
     value: 'success',

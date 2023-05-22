@@ -1,8 +1,5 @@
-import { useFormatNumber,
-  useDropdownFilter,
-  useParseCamelCaseStr,
-  useShowError,
-  useTruncate } from '@/composables';
+import { useDropdownFilter, useParseCamelCaseStr, useShowError, useTruncate } from '@/composables';
+import formatNumber from '@/utils/formatNumber';
 
 describe('Test useDropdownFilter', () => {
   const option1 = {
@@ -125,17 +122,17 @@ describe('Test useShowError', () => {
   });
 });
 
-describe('Test useFormatNumber', () => {
+describe('Test formatNumber', () => {
   it('should format numbers correctly', () => {
-    expect(useFormatNumber(1000)).toBe('1,000');
-    expect(useFormatNumber(1000000)).toBe('1,000,000');
-    expect(useFormatNumber(12345.67)).toBe('12,345.67');
+    expect(formatNumber(1000)).toBe('1,000');
+    expect(formatNumber(1000000)).toBe('1,000,000');
+    expect(formatNumber(12345.67)).toBe('12,345.67');
   });
 
   it('should return an empty string for invalid numbers', () => {
-    expect(useFormatNumber(null)).toBe('');
-    expect(useFormatNumber(undefined)).toBe('');
-    expect(useFormatNumber('not a number')).toBe('');
+    expect(formatNumber(null)).toBe('');
+    expect(formatNumber(undefined)).toBe('');
+    expect(formatNumber('not a number')).toBe('');
   });
 });
 

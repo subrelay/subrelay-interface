@@ -22,7 +22,7 @@ import './commands';
 // Import global styles
 import '@/assets/styles.scss';
 
-import { mount } from 'cypress/vue';
+// import { mount } from 'cypress/vue';
 
 // Cypress.Commands.add('mount', mount);
 

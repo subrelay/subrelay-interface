@@ -3,12 +3,11 @@
 </template>
 
 <script setup>
-import KeysMenu from '@/views/CustomMsg/KeysMenu.vue';
-import { ref, watch, computed, onMounted, onBeforeUnmount } from 'vue';
+import KeysMenu from '@/views/CustomMsg/KeysMenu';
+import { watch, computed, onBeforeUnmount } from 'vue';
 import { useStore } from 'vuex';
 import { useEditor, EditorContent, VueRenderer } from '@tiptap/vue-3';
 import { mergeAttributes, Node, Extension } from '@tiptap/core';
-import { Node as ProseMirrorNode } from '@tiptap/pm/model';
 import { PluginKey } from '@tiptap/pm/state';
 import Suggestion from '@tiptap/suggestion';
 import StarterKit from '@tiptap/starter-kit';
@@ -16,7 +15,7 @@ import tippy from 'tippy.js';
 
 const MentionPluginKey = new PluginKey('mention');
 
-const props = defineProps({
+const prop = defineProps({
   modelValue: { type: String, default: '' },
   padding: { type: String, default: '10px' },
   multiline: { type: Boolean, default: true },
@@ -28,7 +27,6 @@ const emits = defineEmits(['update:modelValue', 'getRawText']);
 
 const store = useStore();
 const customMsgKeys = computed(() => store.state.editor.customMsgKeys);
-const darkMode = computed(() => store.state.global.isDarkMode);
 
 const suggestion = {
   items: ({ query }) => {
@@ -76,7 +74,6 @@ const suggestion = {
 
         return component.ref?.onKeyDown(props);
       },
-
       onExit() {
         popup[0].destroy();
         component.destroy();
@@ -90,8 +87,7 @@ const KeySuggestion = Node.create({
 
   addOptions() {
     return {
-      renderLabel: ({ options, node }) => `$\{${node.attrs.id.display || node.attrs.id}\}`,
-
+      renderLabel: ({ node }) => `$\{${node.attrs.id.display || node.attrs.id}}`,
       suggestion: {
         char: '/',
 
@@ -189,6 +185,7 @@ const KeySuggestion = Node.create({
             tr.insertText(this.options.suggestion.char || '', pos, pos + node.nodeSize);
             return false;
           }
+          return true;
         });
 
         return isVariable;
@@ -208,15 +205,15 @@ const PreventEnter = Extension.create({
 });
 
 const editor = useEditor({
-  content: props.defaultContent,
+  content: prop.defaultContent,
 
   enablePasteRules: false,
   textSerializers: (content) => content?.toString() ?? '',
 
   editorProps: {
     attributes: {
-      style: `padding: ${props.padding}`,
-      class: `${props.multiline ? '' : 'no-multiline'}`,
+      style: `padding: ${prop.padding}`,
+      class: `${prop.multiline ? '' : 'no-multiline'}`,
     },
 
     keypress(view, event) {
@@ -226,7 +223,7 @@ const editor = useEditor({
 
   extensions: [
     StarterKit,
-    props.multiline ? null : PreventEnter,
+    prop.multiline ? null : PreventEnter,
     KeySuggestion.configure({ HTMLAttributes: { class: 'mention' }, suggestion }),
   ],
 
@@ -238,7 +235,7 @@ function setEditorContent(newValue) {
   if (!isSame) editor.value.commands.setContent(newValue);
 
   emits('getRawText', {
-    field: props.field,
+    field: prop.field,
     text: editor.value.getText({
       blockSeparator: '\n',
       textSerializers: {
@@ -248,7 +245,7 @@ function setEditorContent(newValue) {
   });
 }
 watch(
-  () => props.modelValue,
+  () => prop.modelValue,
   (newValue) => {
     if (editor.value) {
       setEditorContent(newValue);
@@ -267,8 +264,7 @@ onBeforeUnmount(() => editor.value.destroy());
 .ProseMirror {
   border: 1px solid transparent;
   border-radius: 3px;
-  transition: border-color 0.3s var(--n-bezier), box-shadow 0.3s var(--n-bezier),
-    background 0.3s var(--n-bezier);
+  transition: border-color 0.3s var(--n-bezier), box-shadow 0.3s var(--n-bezier), background 0.3s var(--n-bezier);
 
   &.no-multiline {
     [contenteditable='false'] {

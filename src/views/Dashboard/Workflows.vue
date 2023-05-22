@@ -33,7 +33,6 @@
 <script setup>
 import EditableCellValue from '@/components/EditableCellValue';
 import WorkflowActionMenu from '@/components/WorkflowActionMenu';
-import ButtonWithPopConfirm from '@/components/ButtonWithPopConfirm';
 import ButtonWithTooltip from '@/components/ButtonWithTooltip';
 import WorkflowSwitch from '@/components/WorkflowSwitch';
 import PageHeader from '@/components/PageHeader';
@@ -43,7 +42,7 @@ import { ref, h, provide, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import { useQuery, useRenderSortIcon, useGetChainImg, useShowError } from '@/composables';
-import { workflowStatuses } from '@/config';
+import workflowStatuses from '@/config/workflowStatuses';
 import moment from 'moment';
 import Api from '@/api';
 
@@ -65,7 +64,7 @@ const editingId = ref(null);
 const loadingId = ref(null);
 const editingValue = ref('');
 
-function onRename({ id, name }) {
+function onRename({ id }) {
   if (loadingId.value !== null) return;
   editingId.value = id;
 }
@@ -102,6 +101,7 @@ async function deleteWorkflow({ id, name }) {
   } catch (e) {
     const errMsg = e.message;
     if (errMsg === 'Cancelled') {
+      console.log('Request cancelled');
     } else {
       useShowError(e);
     }
@@ -145,7 +145,9 @@ const columns = ref([
         isEditing: editingId.value === row.id,
         loading: loadingId.value === row.id,
         submit: renameWorkflow,
-        onInput: (v) => (editingValue.value = v),
+        onInput: (v) => {
+          editingValue.value = v;
+        },
       });
     },
   },
@@ -190,11 +192,7 @@ const columns = ref([
     key: 'status',
     width: '10%',
     ellipsis: { tooltip: true },
-    render: ({ id, status }) => h(
-      'div',
-      { onClick: (e) => e.stopPropagation() },
-      h(WorkflowSwitch, { status, id, fetchOne: false }),
-    ),
+    render: ({ id, status }) => h('div', { onClick: (e) => e.stopPropagation() }, h(WorkflowSwitch, { status, id, fetchOne: false })),
   },
   {
     key: 'action',
@@ -218,7 +216,9 @@ const columns = ref([
         {
           tooltipText: 'Cancel',
           disabled: loadingId.value === id,
-          onClick: () => (editingId.value = null),
+          onClick: () => {
+            editingId.value = null;
+          },
         },
         {
           'trigger-content': () => h(Icon, {
@@ -250,14 +250,7 @@ function fetchData() {
 
 const [
   { query, searchText, loading, tablePagination, selectedChain, selectedStatus },
-  {
-    onDebouncedSearch,
-    handleSort,
-    handlePageChange,
-    handleSelectChain,
-    handleSelectStatus,
-    clearAllFilters,
-  },
+  { onDebouncedSearch, handleSort, handlePageChange, handleSelectChain, handleSelectStatus, clearAllFilters },
 ] = useQuery('workflow', 'workflows', columns, fetchData);
 
 provide('search', {

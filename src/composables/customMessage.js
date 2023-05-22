@@ -1,7 +1,7 @@
 import EditorData from '@/store/localStore/EditorData';
 import { watch, ref, computed } from 'vue';
 import { useStore } from 'vuex';
-import { useFormatNumber } from '@/composables';
+import formatNumber from '@/utils/formatNumber';
 import moment from 'moment';
 import isNumber from 'lodash/isNumber';
 import flow from 'lodash/flow';
@@ -65,7 +65,7 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
           const { name, data, display } = e;
           formattedData = data;
           if (isNumber(data)) {
-            formattedData = useFormatNumber(data);
+            formattedData = formatNumber(data);
           } else if (name === 'event.time') {
             formattedData = moment(data).local().format('MMM Do YYYY, HH:mm:ss');
           }
@@ -77,11 +77,9 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
 
         // Get default content
         const greetings = [
-          `<div>Event ${getKeyHTML('Event Name')} happened at ${getKeyHTML(
-            'Time',
-          )}, block ${getKeyHTML('Block Hash')} with following data:${
-            channel === 'email' ? '' : '<br>'
-          }</div>`,
+          `<div>Event ${getKeyHTML('Event Name')} happened at ${getKeyHTML('Time')}, block ${getKeyHTML(
+            'Block Hash',
+          )} with following data:${channel === 'email' ? '' : '<br>'}</div>`,
           channel === 'email' ? '<p></p>' : '',
           `<div>Success: ${getKeyHTML('Status')}</div>`,
         ];
@@ -94,9 +92,9 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
         content.value = defaultContent.value;
 
         // Get default subject
-        defaultSubject.value = `<div>Your tracked event ${getKeyHTML(
-          'Event Name',
-        )} on chain ${getKeyHTML('Chain Name')} has been triggered!</div>`;
+        defaultSubject.value = `<div>Your tracked event ${getKeyHTML('Event Name')} on chain ${getKeyHTML(
+          'Chain Name',
+        )} has been triggered!</div>`;
         subject.value = defaultSubject.value;
       }
     },
@@ -126,10 +124,7 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
         store.commit('editor/setError', { [template]: false });
       }
 
-      EditorData.workflow.tasks[actionIdx.value].config[template] = keyedContent.value.replace(
-        /<p><\/p>/g,
-        '<br/>',
-      );
+      EditorData.workflow.tasks[actionIdx.value].config[template] = keyedContent.value.replace(/<p><\/p>/g, '<br/>');
     },
     { immediate: true },
   );

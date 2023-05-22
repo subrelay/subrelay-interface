@@ -1,4 +1,4 @@
-export const defaultQuery = {
+export default {
   search: undefined,
   order: undefined,
   sort: undefined,

@@ -31,12 +31,12 @@
 
 <script setup>
 import AccountModal from '@/components/AccountModal';
-import { ref, computed, h } from 'vue';
+import { useRenderIcon as renderIcon, useTruncate as truncate } from '@/composables';
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { useMessage } from 'naive-ui';
 import { Icon } from '@iconify/vue';
-import { useRenderIcon as renderIcon, useTruncate as truncate } from '@/composables';
 
 const store = useStore();
 const router = useRouter();

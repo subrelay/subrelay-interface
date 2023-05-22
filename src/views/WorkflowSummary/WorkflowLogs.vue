@@ -49,32 +49,24 @@
 </template>
 
 <script setup>
-import ButtonWithTooltip from '@/components/ButtonWithTooltip';
 import WorkflowLogItem from '@/components/WorkflowLogItem';
-import { onMounted, computed, onBeforeUnmount } from 'vue';
+import logStatuses from '@/config/logStatuses';
+import { computed } from 'vue';
 import { useQuery, useRenderDropdownLabel } from '@/composables';
 import { useStore } from 'vuex';
-import { logStatuses } from '@/config';
-import Api from '@/api';
 
-const store = useStore();
-const account = computed(() => store.state.account.selected);
-const signer = computed(() => store.state.account.signer);
 const props = defineProps(['id']);
+const store = useStore();
 const logs = computed(() => store.state.log.log);
 
 async function fetchData() {
   store.dispatch('log/getLog', props.id);
 }
-const [
-  { query, searchText, loading, tablePagination, selectedChain, selectedStatus },
-  {
-    onDebouncedSearch,
-    handleSort,
-    handlePageChange,
-    handleSelectChain,
-    handleSelectStatus,
-    clearAllFilters,
-  },
-] = useQuery('log', 'log', null, fetchData);
+
+const [{ loading, tablePagination, selectedStatus }, { handlePageChange, handleSelectStatus }] = useQuery(
+  'log',
+  'log',
+  null,
+  fetchData,
+);
 </script>

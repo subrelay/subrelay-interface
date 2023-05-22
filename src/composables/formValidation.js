@@ -1,10 +1,12 @@
 import { ref } from 'vue';
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 import EditorData from '@/store/localStore/EditorData';
 
 export function useFormValidation() {
   const store = useStore();
   const formRef = ref(null);
+  const router = useRouter();
 
   async function validateForm({ keys, nextStep, nextExpand, taskName, callback = () => {} } = {}) {
     try {
@@ -21,11 +23,9 @@ export function useFormValidation() {
               resolve();
             }
           },
-          (rule) => (
-            keys.includes(rule.key)
-              || (rule.key.includes('filterCond') && keys.includes('filterCond'))
-              || (rule.key.includes('setupAction') && keys.includes('setupAction'))
-          ),
+          (rule) => keys.includes(rule.key)
+            || (rule.key.includes('filterCond') && keys.includes('filterCond'))
+            || (rule.key.includes('setupAction') && keys.includes('setupAction')),
         );
       });
 
@@ -38,7 +38,7 @@ export function useFormValidation() {
         store.commit('editor/setExpand', { [taskName]: nextExpand });
       }
     } catch (error) {
-      // console.error(error);
+      console.error(error);
     }
   }
 

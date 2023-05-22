@@ -21,9 +21,7 @@
             type="primary"
             class="action-button"
             @click="createWorkflow"
-            :disabled="
-              !isTriggerCompleted || !isActionCompleted || isErrorWithTrigger || isErrorWithAction
-            "
+            :disabled="!isTriggerCompleted || !isActionCompleted || isErrorWithTrigger || isErrorWithAction"
           >
             Finish
             <template #icon>
@@ -38,21 +36,13 @@
       <!-- STEPPER -->
       <div class="page_container">
         <n-steps :current="step" @update:current="onChangeStep" class="stepper">
-          <n-step
-            title="TRIGGER"
-            description="This is what starts the workflow"
-            :status="triggerStatus"
-          >
+          <n-step title="TRIGGER" description="This is what starts the workflow" :status="triggerStatus">
             <template #icon>
               <n-icon><ThunderboltOutlined /> </n-icon>
             </template>
           </n-step>
 
-          <n-step
-            title="ACTION"
-            description="Action will perform when the event is triggered"
-            :status="actionStatus"
-          >
+          <n-step title="ACTION" description="Action will perform when the event is triggered" :status="actionStatus">
             <template #icon>
               <n-icon><BellOutlined /> </n-icon>
             </template>
@@ -66,7 +56,7 @@
         </n-form>
       </div>
 
-      <pre>{{ EditorData }}</pre>
+      <!-- <pre>{{ EditorData }}</pre> -->
     </n-layout-content>
   </n-layout>
 </template>
@@ -79,13 +69,13 @@ import EditableText from '@/components/EditableText';
 import Trigger from '@/views/Editor/Trigger/Trigger';
 import Action from '@/views/Editor/Action/Action';
 import { ThunderboltOutlined, BellOutlined } from '@vicons/antd';
-import { h, ref, inject, computed, onBeforeMount, onBeforeUnmount, onMounted, watch } from 'vue';
+import { h, ref, inject, computed, onBeforeMount, onBeforeUnmount, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useDialog, useMessage } from 'naive-ui';
 import { useStore } from 'vuex';
 import Api from '@/api';
 
-const props = defineProps({ id: [String, Number] });
+defineProps({ id: [String, Number] });
 const router = useRouter();
 const route = useRoute();
 const store = useStore();
@@ -96,7 +86,9 @@ const step = computed(() => store.state.editor.step);
 const account = computed(() => store.state.account.selected);
 const signer = computed(() => store.state.account.signer);
 
-onMounted(() => (window.$message = useMessage()));
+onMounted(() => {
+  window.$message = useMessage();
+});
 
 // BUILD WORKFLOW DATA
 const triggerStatus = ref(null);
@@ -105,40 +97,43 @@ const triggerIdx = computed(() => EditorData.triggerIdx);
 const actionIdx = computed(() => EditorData.actionIdx);
 
 const isErrorWithTrigger = computed(() => EditorData.workflow.tasks[triggerIdx.value].isError);
-
 const isErrorWithAction = computed(() => EditorData.workflow.tasks[actionIdx.value].isError);
-
 const isTriggerCompleted = computed(() => EditorData.workflow.tasks[triggerIdx.value].isCompleted);
-
 const isActionCompleted = computed(() => EditorData.workflow.tasks[actionIdx.value].isCompleted);
 
 const changedToTrigger = computed(() => {
   const task = EditorData.workflow.tasks[triggerIdx.value];
   return (
-    typeof task.isError === 'boolean'
-    || typeof task.isCompleted === 'boolean'
-    || !!task.config.eventId
-    || !!task.uuid
+    typeof task.isError === 'boolean' || typeof task.isCompleted === 'boolean' || !!task.config.eventId || !!task.uuid
   );
 });
 
 const changedToAction = computed(() => {
   const task = EditorData.workflow.tasks[actionIdx.value];
-  // return typeof task.isError === 'boolean' || typeof task.isCompleted === 'boolean';
   return !!task.type;
 });
 
 const hasUpdates = computed(() => changedToTrigger.value || changedToAction.value);
 
-const hasError = computed(() => EditorData.workflow.tasks.some((task) => task.isError || !task.isCompleted));
+function handleReload(e) {
+  if (!hasUpdates.value) return;
+  e.preventDefault();
+  e.returnValue = '';
+}
+
+onBeforeUnmount(() => {
+  EditorData.loadWorkflow();
+  store.commit('editor/reset');
+  window.removeEventListener('beforeunload', (e) => handleReload(e));
+});
 
 const [{ formRef }, { validateForm }] = useFormValidation();
 const eventBus = inject('eventBus');
 eventBus.on('validate', validateForm);
 
-async function setStepStatus(step) {
+async function setStepStatus(nextStep) {
   // Switch from action to trigger
-  if (step === 1) {
+  if (nextStep === 1) {
     actionStatus.value = 'wait';
     triggerStatus.value = 'process';
 
@@ -167,7 +162,7 @@ async function setStepStatus(step) {
   }
 
   // Switch from trigger to action
-  if (step === 2) {
+  if (nextStep === 2) {
     actionStatus.value = 'process';
     triggerStatus.value = 'wait';
 
@@ -194,7 +189,7 @@ async function setStepStatus(step) {
 function onChangeStep(nextStep) {
   store.commit('editor/setStep', nextStep);
   setStepStatus(nextStep);
-  router.push({ name: nextStep == 1 ? 'trigger' : 'action' });
+  router.push({ name: nextStep === 1 ? 'trigger' : 'action' });
 }
 
 function onUpdateName(value) {
@@ -230,12 +225,6 @@ async function quitEditor() {
   }
 }
 
-function handleReload(e) {
-  if (!hasUpdates.value) return;
-  e.preventDefault();
-  e.returnValue = '';
-}
-
 async function createWorkflow() {
   loading.value = true;
   try {
@@ -268,13 +257,7 @@ onBeforeMount(async () => {
 
   if (uuid) store.dispatch('chain/getEvents', uuid);
   store.commit('editor/setStep', route.name === 'trigger' ? 1 : 2);
-  // window.addEventListener('beforeunload', (e) => handleReload(e));
-});
-
-onBeforeUnmount(() => {
-  EditorData.loadWorkflow();
-  store.commit('editor/reset');
-  // window.removeEventListener('beforeunload', (e) => handleReload(e));
+  window.addEventListener('beforeunload', (e) => handleReload(e));
 });
 </script>
 

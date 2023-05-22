@@ -2,7 +2,7 @@ import { NIcon, NAvatar, NText } from 'naive-ui';
 import { h } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useStore } from 'vuex';
-import { channels } from '@/config';
+import channels from '@/config/channels';
 
 export const useRenderSortIcon = ({ order }) => {
   if (order === false) return h('div', '');

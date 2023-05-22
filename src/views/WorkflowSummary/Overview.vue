@@ -170,14 +170,15 @@
 import WebhookInput from '@/views/Editor/Action/WebhookInput';
 import WorkflowSwitch from '@/components/WorkflowSwitch';
 import { useParseCamelCaseStr, useCustomMessage } from '@/composables';
-import { computed, ref, watch, onBeforeUnmount } from 'vue';
+import { computed } from 'vue';
 import { useStore } from 'vuex';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 
 const props = defineProps({ id: [String, Number] });
 const store = useStore();
-const [{}, { getFormattedString }] = useCustomMessage({ isCustomizing: false });
+// eslint-disable-next-line no-empty-pattern
+const [{} = {}, { getFormattedString }] = useCustomMessage({ isCustomizing: false });
 
 const customMsgKeys = computed(() => store.state.editor.customMsgKeys);
 const workflow = computed(() => store.state.workflow.workflow);

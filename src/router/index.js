@@ -1,30 +1,30 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 import { getSavedAuthToken } from '../api';
 
 const router = createRouter({
-  history: createWebHashHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '',
-      component: async () => import('@/views/Home.vue'),
+      component: async () => import('@/views/Home'),
       meta: { signInRequired: true },
       children: [
         {
           path: '',
           redirect: { name: 'workflows' },
-          component: () => import('@/views/Dashboard/Dashboard.vue'),
+          component: () => import('@/views/Dashboard/Dashboard'),
           meta: { signInRequired: true },
           children: [
             {
               path: 'workflows',
               name: 'workflows',
-              component: () => import('@/views/Dashboard/Workflows.vue'),
+              component: () => import('@/views/Dashboard/Workflows'),
               meta: { title: 'Workflows' },
             },
             {
               path: '/workflows/:id',
               props: true,
-              component: () => import('@/views/WorkflowSummary/WorkflowSummary.vue'),
+              component: () => import('@/views/WorkflowSummary/WorkflowSummary'),
               meta: { title: 'Workflow Summary' },
               children: [
                 { path: '', redirect: { name: 'overview' } },
@@ -32,27 +32,27 @@ const router = createRouter({
                   props: true,
                   path: 'overview',
                   name: 'overview',
-                  component: () => import('@/views/WorkflowSummary/Overview.vue'),
+                  component: () => import('@/views/WorkflowSummary/Overview'),
                 },
                 {
                   props: true,
                   path: 'logs',
                   name: 'workflowLogs',
-                  component: () => import('@/views/WorkflowSummary/WorkflowLogs.vue'),
+                  component: () => import('@/views/WorkflowSummary/WorkflowLogs'),
                 },
               ],
             },
             {
               path: 'logs',
               name: 'logs',
-              component: () => import('@/views/Dashboard/Logs.vue'),
+              component: () => import('@/views/Dashboard/Logs'),
               meta: { title: 'Logs' },
             },
             {
               path: 'logs/:id',
               name: 'logDetails',
               props: true,
-              component: () => import('@/views/LogDetails.vue'),
+              component: () => import('@/views/LogDetails'),
               meta: { title: 'Log Details' },
             },
           ],
@@ -60,19 +60,19 @@ const router = createRouter({
         {
           path: '/editor',
           props: true,
-          component: () => import('@/views/Editor/Editor.vue'),
+          component: () => import('@/views/Editor/Editor'),
           meta: { title: 'Editor', signInRequired: true },
           children: [
             { path: '', redirect: { name: 'trigger' } },
             {
               path: 'trigger',
               name: 'trigger',
-              component: () => import('@/views/Editor/Trigger/Trigger.vue'),
+              component: () => import('@/views/Editor/Trigger/Trigger'),
             },
             {
               path: 'action',
               name: 'action',
-              component: () => import('@/views/Editor/Action/Action.vue'),
+              component: () => import('@/views/Editor/Action/Action'),
             },
           ],
         },
@@ -81,21 +81,21 @@ const router = createRouter({
     {
       path: '/welcome',
       name: 'welcome',
-      component: () => import('@/views/WelcomeScreen.vue'),
+      component: () => import('@/views/WelcomeScreen'),
       meta: { title: 'Welcome' },
     },
     {
       path: '/:pathMatch(.*)*',
       name: 'notfound',
-      component: () => import('@/views/NotFound.vue'),
+      component: () => import('@/views/NotFound'),
       meta: { title: '404 Not Found' },
     },
-    {
-      path: '/test',
-      name: 'Test',
-      component: () => import('@/views/Test.vue'),
-      meta: { title: 'Test' },
-    },
+    // {
+    //   path: '/test',
+    //   name: 'Test',
+    //   component: () => import('@/views/Test'),
+    //   meta: { title: 'Test' },
+    // },
   ],
 });
 
@@ -104,9 +104,7 @@ router.beforeResolve((to, from, next) => {
   if (to.matched.some((record) => record.meta.signInRequired)) {
     const connectedAccount = localStorage.getItem('polkadot-js-connected');
 
-    const authToken = connectedAccount
-      ? getSavedAuthToken(JSON.parse(connectedAccount).address)
-      : null;
+    const authToken = connectedAccount ? getSavedAuthToken(JSON.parse(connectedAccount).address) : null;
 
     if (authToken) {
       next();

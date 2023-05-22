@@ -6,8 +6,8 @@
       </template>
 
       <div style="margin-bottom: 1.5em">
-        To test email, we need to send a new email to the recipients. This is what will be sent to
-        the defined {{ `${config.addresses.length > 1 ? 'addresses' : 'address'}` }}.
+        To test email, we need to send a new email to the recipients. This is what will be sent to the defined
+        {{ `${config.addresses.length > 1 ? 'addresses' : 'address'}` }}.
       </div>
 
       <n-skeleton v-if="runningTest" text :repeat="5" />
@@ -91,7 +91,7 @@
 import { useCustomMessage } from '@/composables';
 import StatusIcon from '@/components/StatusIcon';
 import EditorData from '@/store/localStore/EditorData';
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
@@ -102,6 +102,7 @@ const runningTest = computed(() => store.state.editor.runningTest[type.value]);
 const workflowLoading = computed(() => store.state.workflow.loading.workflow);
 const isTested = computed(() => store.state.editor.tested[type.value]);
 const testResult = computed(() => store.state.editor.testResult[type.value]);
+// eslint-disable-next-line no-empty-pattern
 const [{}, { getFormattedString }] = useCustomMessage({ isCustomizing: false });
 
 async function onTest() {

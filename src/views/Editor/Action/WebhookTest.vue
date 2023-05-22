@@ -54,7 +54,7 @@
 import StatusIcon from '@/components/StatusIcon';
 import WebhookInput from '@/views/Editor/Action/WebhookInput';
 import EditorData from '@/store/localStore/EditorData';
-import { computed, onBeforeUnmount } from 'vue';
+import { computed } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();

@@ -25,9 +25,13 @@ export default {
       state.loading = { ...state.loading, ...data };
     },
 
-    saveQuery: (state, data) => (state.query = { ...state.query, ...data }),
+    saveQuery: (state, data) => {
+      state.query = { ...state.query, ...data };
+    },
 
-    getItemCount: (state, data) => (state.itemCount = { ...state.itemCount, ...data }),
+    getItemCount: (state, data) => {
+      state.itemCount = { ...state.itemCount, ...data };
+    },
 
     reset: (state) => {
       state.logs = [];

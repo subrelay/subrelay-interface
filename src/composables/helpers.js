@@ -1,4 +1,3 @@
-import isNumber from 'lodash/isNumber';
 import isArray from 'lodash/isArray';
 
 export const useDropdownFilter = (string, option) => option.name.toLowerCase().includes(string.toLowerCase());
@@ -23,12 +22,6 @@ export function useShowError(e) {
   if (!window.$message) return;
   window.$message.error(displayMsg);
 }
-
-const formatter = new Intl.NumberFormat('en-US');
-export const useFormatNumber = (number) => {
-  if (!isNumber(number)) return '';
-  return formatter.format(number);
-};
 
 export function useTruncate({ address }) {
   if (!address) return '';

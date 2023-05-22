@@ -1,4 +1,4 @@
-export const workflowStatuses = [
+export default [
   {
     label: 'Running',
     value: 'running',
