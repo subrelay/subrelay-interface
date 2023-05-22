@@ -93,14 +93,10 @@
 
 <script setup>
 import EditorData from '@/store/localStore/EditorData';
-import { ref, computed, watch, inject, h, onBeforeMount } from 'vue';
+import { ref, computed, watch, h, onBeforeMount } from 'vue';
 import { useStore } from 'vuex';
 import { isEmpty } from 'lodash';
-import {
-  useRenderDropdownLabel,
-  useDropdownFilter,
-  renderSelectTagWithDescription,
-} from '@/composables';
+import { useRenderDropdownLabel, useDropdownFilter, renderSelectTagWithDescription } from '@/composables';
 
 const props = defineProps({
   index: Number,
@@ -121,6 +117,7 @@ const requiredRule = ref({
       return new Error('Required!');
     }
     // EditorData.setError('filter', false);
+    return true;
   },
 });
 
@@ -130,7 +127,10 @@ const properties = computed(() => store.state.editor.properties);
 const filterIdx = computed(() => EditorData.filterIdx);
 const operators = computed(() => store.state.editor.operators);
 const getOperatorsLoading = computed(() => store.state.editor.loading.getOperators);
-const getFieldsLoading = computed(() => store.state.editor.loading.getFields);
+
+function onInput(prop, value) {
+  emits('input', { prop, value });
+}
 
 function onSelectProp(val, options) {
   onInput('variable', val);
@@ -156,10 +156,6 @@ function onSelectOperator(val) {
 
 function onValueInput(val) {
   onInput('value', val);
-}
-
-function onInput(prop, value) {
-  emits('input', { prop, value });
 }
 
 function renderLabel(option) {

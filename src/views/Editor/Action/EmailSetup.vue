@@ -3,12 +3,7 @@
   <n-space vertical>
     <div class="text-semi-bold">Recipients:</div>
     <n-form-item :path="`tasks[${actionIdx}].config.addresses`" :show-label="false" :rule="rule">
-      <n-dynamic-tags
-        v-model:value="addressTags"
-        @create="addEmail"
-        :render-tag="renderTag"
-        :max="2"
-      >
+      <n-dynamic-tags v-model:value="addressTags" @create="addEmail" :render-tag="renderTag" :max="2">
         <template #input="{ submit, deactivate }">
           <n-input
             ref="inputRef"
@@ -106,7 +101,6 @@ import CustomError from '@/components/CustomError';
 import EditorData from '@/store/localStore/EditorData';
 import Compiler from '@/views/CustomMsg/Compiler';
 import { h, ref, watch, computed, inject, nextTick } from 'vue';
-import { isEmpty } from 'lodash';
 import { useIsCorrectEmailFormat, useCustomMessage } from '@/composables';
 import { Icon } from '@iconify/vue';
 import { useStore } from 'vuex';
@@ -114,27 +108,36 @@ import { NTag } from 'naive-ui';
 
 const store = useStore();
 const eventBus = inject('eventBus');
-const emits = defineEmits(['validate']);
 
 const addressTags = ref([]);
 const inputRef = ref(null);
 const inputValue = ref(null);
 const requiredSubject = computed(() => store.state.editor.error.subjectTemplate);
 const requiredBody = computed(() => store.state.editor.error.bodyTemplate);
-const uuid = computed(() => store.state.chain.event.uuid);
 const actionIdx = computed(() => EditorData.actionIdx);
 const actionConfig = computed(() => EditorData.workflow.tasks[EditorData.actionIdx].config);
-const customMsgKeys = computed(() => store.state.editor.customMsgKeys);
 
-const [
-  { content, previewContent, defaultContent, subject, previewSubject, defaultSubject, darkMode },
-  { getKeyHTML, getRawText, getFormattedString },
-] = useCustomMessage({ channel: 'email' });
+const [{ content, previewContent, defaultContent, subject, previewSubject, defaultSubject, darkMode }, { getRawText }] = useCustomMessage({ channel: 'email' });
+
+function removeAddress(index) {
+  addressTags.value.splice(index, 1);
+  EditorData.workflow.tasks[actionIdx.value].config.addresses.splice(index, 1);
+
+  eventBus.emit('validate', {
+    taskName: 'action',
+    keys: ['setupAction_addresses'],
+  });
+}
+
+function addEmail(email) {
+  const isCorrectFormat = useIsCorrectEmailFormat(email);
+  return { label: email, status: isCorrectFormat ? 'success' : 'warning' };
+}
 
 const rule = ref({
   key: 'setupAction_addresses',
   trigger: ['change'],
-  validator(rule, value) {
+  validator(_rule, value) {
     if (!value.length) {
       return new Error('Required!');
     }
@@ -152,24 +155,21 @@ const rule = ref({
   },
 });
 
-const renderTag = ({ label, status }, index) => {
-  return h(
-    NTag,
-    { type: status, closable: true, onClose: () => removeAddress(index) },
-    {
-      default: () =>
-        h('div', { style: { display: 'flex', 'align-items': 'center' } }, [
-          h('div', label),
-          status === 'warning'
-            ? h(Icon, {
-                icon: 'uiw:warning-o',
-                style: { 'margin-left': '4px', color: '#d03050ff' },
-              })
-            : '',
-        ]),
-    },
-  );
-};
+const renderTag = ({ label, status }, index) => h(
+  NTag,
+  { type: status, closable: true, onClose: () => removeAddress(index) },
+  {
+    default: () => h('div', { style: { display: 'flex', 'align-items': 'center' } }, [
+      h('div', label),
+      status === 'warning'
+        ? h(Icon, {
+          icon: 'uiw:warning-o',
+          style: { 'margin-left': '4px', color: '#d03050ff' },
+        })
+        : '',
+    ]),
+  },
+);
 
 watch(inputRef, (value) => {
   if (value) {
@@ -192,21 +192,6 @@ watch(
   { immediate: true },
 );
 
-function removeAddress(index) {
-  addressTags.value.splice(index, 1);
-  EditorData.workflow.tasks[actionIdx.value].config.addresses.splice(index, 1);
-
-  eventBus.emit('validate', {
-    taskName: 'action',
-    keys: ['setupAction_addresses'],
-  });
-}
-
-function addEmail(email) {
-  const isCorrectFormat = useIsCorrectEmailFormat(email);
-  return { label: email, status: isCorrectFormat ? 'success' : 'warning' };
-}
-
 const callback = () => {
   store.commit('editor/disableTestAction', false);
   EditorData.setComplete('action', true);
@@ -218,9 +203,9 @@ function validateSetupAction() {
     store.commit('editor/setError', { subjectTemplate: true });
     EditorData.setError('action', true);
   } else if (
-    !actionConfig.value.bodyTemplate ||
-    actionConfig.value.bodyTemplate === '<br>' ||
-    actionConfig.value.bodyTemplate === '<p></p>'
+    !actionConfig.value.bodyTemplate
+    || actionConfig.value.bodyTemplate === '<br>'
+    || actionConfig.value.bodyTemplate === '<p></p>'
   ) {
     store.commit('editor/setError', { bodyTemplate: true });
     EditorData.setError('action', true);

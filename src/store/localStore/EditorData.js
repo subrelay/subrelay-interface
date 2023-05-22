@@ -5,16 +5,16 @@ const conditionFormat = { variable: null, operator: null, value: null };
 
 const defaultConfig = () => ({
   name: null,
-  // uuid: '01GYAC2F61T2KXB62A7XJ2M5H6',
-  uuid: null,
+  uuid: '01GYAC2F61T2KXB62A7XJ2M5H6',
+  // uuid: null,
   tasks: [
     {
       name: 'trigger',
       type: 'trigger',
       dependOnName: null,
       config: {
-        // eventId: '01GYAC2FSW6YSQVBHJ86Z8VHX5',
-        eventId: null,
+        eventId: '01GYAC2FSW6YSQVBHJ86Z8VHX5',
+        // eventId: null,
       },
     },
     { name: 'filter', type: 'filter', dependOnName: 'trigger', config: { conditions: [] } },
@@ -130,9 +130,7 @@ const editor = reactive({
 
     if (this.postWorkflowData.tasks[this.filterIdx].config.conditions.length) {
       // Remove key for each condition before submitting
-      this.postWorkflowData.tasks[this.filterIdx].config.conditions.forEach((group) =>
-        group.forEach((condition) => delete condition.key),
-      );
+      this.postWorkflowData.tasks[this.filterIdx].config.conditions.forEach((group) => group.forEach((condition) => delete condition.key));
     } else {
       // Remove empty filter conditions
       this.postWorkflowData.tasks[this.actionIdx].dependOnName = 'trigger';

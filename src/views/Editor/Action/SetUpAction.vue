@@ -14,7 +14,7 @@ import WebhookSetup from '@/views/Editor/Action/WebhookSetup';
 import EmailSetup from '@/views/Editor/Action/EmailSetup';
 import TelegramSetup from '@/views/Editor/Action/TelegramSetup';
 import DiscordSetup from '@/views/Editor/Action/DiscordSetup';
-import { computed, shallowRef, provide } from 'vue';
+import { computed, shallowRef } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();

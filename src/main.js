@@ -5,7 +5,7 @@ import JsonViewer from 'vue3-json-viewer';
 import 'vue3-json-viewer/dist/index.css';
 import './assets/main.scss';
 import mitt from 'mitt';
-import App from './App.vue';
+import App from './App';
 import router from './router';
 import store from './store';
 

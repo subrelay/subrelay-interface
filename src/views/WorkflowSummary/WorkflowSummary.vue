@@ -82,7 +82,9 @@ watch(
   { immediate: true },
 );
 
-onBeforeMount(async () => (activeTab.value = route.name));
+onBeforeMount(async () => {
+  activeTab.value = route.name;
+});
 
 onBeforeUnmount(() => {
   store.commit('log/getLog', []);

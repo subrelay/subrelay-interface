@@ -2,6 +2,7 @@
   <n-spin v-if="userInfoLoading" :stroke-width="15" size="small"></n-spin>
 
   <n-space :wrap-item="false" vertical :size="24" v-else>
+    <div>formState {{ formState }}</div>
     <div v-if="formState === 'preCustom' || formState === 'customMsg'">
       <b>Subrelay Bot</b> will send notifications to your
       <span class="text-capitalize">{{ channel }}</span> account
@@ -89,11 +90,7 @@
     </n-collapse-transition>
 
     <n-space align="center" justify="end" v-if="formState !== 'setupKey'">
-      <n-button
-        type="primary"
-        v-if="false && userInfo.integration[channel]"
-        @click="reconfigureKey"
-      >
+      <n-button type="primary" v-if="userInfo.integration[channel]" @click="reconfigureKey">
         Reconfigure key
       </n-button>
 
@@ -164,9 +161,9 @@ function onCopy() {
 
 function validateSetupAction() {
   if (
-    !actionConfig.value.messageTemplate ||
-    actionConfig.value.messageTemplate === '<br>' ||
-    actionConfig.value.messageTemplate === '<p></p>'
+    !actionConfig.value.messageTemplate
+    || actionConfig.value.messageTemplate === '<br>'
+    || actionConfig.value.messageTemplate === '<p></p>'
   ) {
     store.commit('editor/setError', { messageTemplate: true });
     EditorData.setError('action', true);
@@ -190,14 +187,14 @@ function onContinue() {
 
 function reconfigureKey() {
   const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
-
+  const message = '/key foobarlorem';
   if (props.channel === 'telegram') {
     const protocol = isMac ? 'tg://' : 'https://';
     const link = `${protocol}t.me/subrelay_bot`;
 
     try {
       // Try to open the Telegram app with a deep link
-      window.navigator.sendBeacon(`tg://resolve?domain=subrelay_bot`);
+      window.navigator.sendBeacon('tg://resolve?domain=subrelay_bot');
 
       // If the deep link was successful, the Telegram app is installed
       window.location.href = link;
@@ -206,6 +203,21 @@ function reconfigureKey() {
       window.open(link);
     }
   }
+
+  // const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+  // const isWin = navigator.platform.toUpperCase().indexOf('WIN') >= 0;
+  // const telegramUrl = 'https://web.telegram.org/k/#@subrelay_bot';
+  // const message = '/key foobarlorem';
+
+  // if (isMac) {
+  //   window.location.href = `tg://msg?text=${encodeURIComponent(message)}`;
+  // } else if (isWin) {
+  //   window.location.href = `tg://msg_url?url=${encodeURIComponent(
+  //     telegramUrl,
+  //   )}&text=${encodeURIComponent(message)}`;
+  // } else {
+  //   window.open(telegramUrl);
+  // }
 }
 
 async function onVerify() {
@@ -225,19 +237,18 @@ async function onVerify() {
       title: 'No integration found',
       content: `Sorry, we were still unable to find a ${props.channel} integration in your account. Did you add the key properly follow the instruction?`,
 
-      content: () =>
-        h('div', { style: { fontSize: '0.85rem' } }, [
-          h('div', [
-            'Sorry, we were still unable to find a ',
-            h('span', { class: 'text-capitalize' }, `${props.channel}`),
-            ' integration in your account.',
-          ]),
-          h(
-            'div',
-            { style: { marginTop: '1rem' } },
-            'Did you add the key properly following the instruction?',
-          ),
+      content: () => h('div', { style: { fontSize: '0.85rem' } }, [
+        h('div', [
+          'Sorry, we were still unable to find a ',
+          h('span', { class: 'text-capitalize' }, `${props.channel}`),
+          ' integration in your account.',
         ]),
+        h(
+          'div',
+          { style: { marginTop: '1rem' } },
+          'Did you add the key properly following the instruction?',
+        ),
+      ]),
       positiveText: 'Retry',
     });
   }

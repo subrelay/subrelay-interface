@@ -22,9 +22,13 @@ export default {
       state.workflow = workflow;
     },
 
-    saveQuery: (state, data) => (state.query = { ...state.query, ...data }),
+    saveQuery: (state, data) => {
+      state.query = { ...state.query, ...data };
+    },
 
-    getItemCount: (state, data) => (state.itemCount = { ...state.itemCount, ...data }),
+    getItemCount: (state, data) => {
+      state.itemCount = { ...state.itemCount, ...data };
+    },
 
     setLoading: (state, data) => {
       state.loading = { ...state.loading, ...data };

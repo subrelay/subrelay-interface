@@ -91,14 +91,14 @@ export default {
   },
 
   mounted() {
-    const element = document.querySelector(`.menu-items`);
+    const element = document.querySelector('.menu-items');
     if (!element) return;
     element.addEventListener('mouseenter', this.handleMouseEnter);
     element.addEventListener('mouseleave', this.handleMouseLeave);
   },
 
   beforeUnmount() {
-    const element = document.querySelector(`.menu-items`);
+    const element = document.querySelector('.menu-items');
     if (!element) return;
     element.removeEventListener('mouseenter', this.handleMouseEnter);
     element.removeEventListener('mouseleave', this.handleMouseLeave);

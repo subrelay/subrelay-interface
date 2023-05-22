@@ -16,7 +16,7 @@
       class="channel_select"
     >
       <n-grid cols="2" y-gap="20" x-gap="30">
-        <n-gi span="1" v-for="channel in useChannels" :key="channel.value">
+        <n-gi span="1" v-for="channel in channels" :key="channel.value">
           <n-radio-button :value="channel.value" :bordered="false" class="channel_item">
             <Icon :icon="channel.icon" class="icon" />
             <span class="text">{{ channel.label }}</span>
@@ -29,8 +29,8 @@
 
 <script setup>
 import EditorData from '@/store/localStore/EditorData';
-import { useChannels } from '@/composables';
-import { computed, ref } from 'vue';
+import channels from '@/config/channels';
+import { computed } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();

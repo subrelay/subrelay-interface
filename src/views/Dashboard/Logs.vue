@@ -1,6 +1,6 @@
 <template>
   <n-space vertical :size="30">
-    <PageHeader title="Logs" :statusOptions="useLogStatuses" />
+    <PageHeader title="Logs" :statusOptions="logStatuses" />
 
     <n-space :wrapItem="false">
       <n-data-table
@@ -36,9 +36,10 @@ import { Icon } from '@iconify/vue';
 import { ref, h, provide, computed } from 'vue';
 import { useStore } from 'vuex';
 import { NAvatar } from 'naive-ui';
-import { useQuery, useRenderSortIcon, useLogStatuses, useGetChainImg } from '@/composables';
-import moment from 'moment';
+import { useQuery, useRenderSortIcon, useGetChainImg } from '@/composables';
 import { useRouter } from 'vue-router';
+import logStatuses from '@/config/logStatuses';
+import moment from 'moment';
 
 const store = useStore();
 const router = useRouter();
@@ -88,17 +89,16 @@ const columns = ref([
     key: 'chain',
     width: '22%',
     ellipsis: { tooltip: true },
-    render: ({ chain }) =>
-      h('div', { style: { display: 'flex', alignItems: 'center' } }, [
-        h(NAvatar, {
-          style: { background: 'transparent' },
-          src: useGetChainImg(chain.name, chains.value),
-          round: true,
-          size: 'small',
-          color: 'white',
-        }),
-        h('div', { style: { marginLeft: '12px', padding: '4px 0' } }, chain.name),
-      ]),
+    render: ({ chain }) => h('div', { style: { display: 'flex', alignItems: 'center' } }, [
+      h(NAvatar, {
+        style: { background: 'transparent' },
+        src: useGetChainImg(chain.name, chains.value),
+        round: true,
+        size: 'small',
+        color: 'white',
+      }),
+      h('div', { style: { marginLeft: '12px', padding: '4px 0' } }, chain.name),
+    ]),
   },
   {
     title: 'Started at',
@@ -124,25 +124,16 @@ const columns = ref([
     key: 'view',
     width: '10%',
     ellipsis: { tooltip: true },
-    render: ({ id }) => {
-      return h('div', { style: { display: 'flex', alignItems: 'center' } }, [
-        'View',
-        h(Icon, { icon: 'akar-icons:chevron-right', style: { 'margin-left': '4px' } }),
-      ]);
-    },
+    render: () => h('div', { style: { display: 'flex', alignItems: 'center' } }, [
+      'View',
+      h(Icon, { icon: 'akar-icons:chevron-right', style: { 'margin-left': '4px' } }),
+    ]),
   },
 ]);
 
 const [
   { query, searchText, loading, tablePagination, selectedChain, selectedStatus },
-  {
-    onDebouncedSearch,
-    handleSort,
-    handlePageChange,
-    handleSelectChain,
-    handleSelectStatus,
-    clearAllFilters,
-  },
+  { onDebouncedSearch, handleSort, handlePageChange, handleSelectChain, handleSelectStatus, clearAllFilters },
 ] = useQuery('log', 'logs', columns, fetchData);
 
 provide('search', {

@@ -1,11 +1,9 @@
-import { isArray } from 'lodash';
+import isArray from 'lodash/isArray';
 
-export const useDropdownFilter = (string, option) => {
-  return option.name.toLowerCase().includes(string.toLowerCase());
-};
+export const useDropdownFilter = (string, option) => option.name.toLowerCase().includes(string.toLowerCase());
 
-export const useParsePascalCaseStr = (string) => {
-  if (!string) return;
+export const useParseCamelCaseStr = (string) => {
+  if (!string) return '';
   return string.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase();
 };
 
@@ -21,11 +19,12 @@ export function useShowError(e) {
   const displayMsg = responseMsg || e.message || e;
 
   if (displayMsg === 'Cancelled' || displayMsg === 'Workflow Not Found') return;
+  if (!window.$message) return;
   window.$message.error(displayMsg);
 }
 
-// FORMAT
-const formatter = new Intl.NumberFormat('en-US');
-export const useFormatNumber = (number) => {
-  return formatter.format(number);
-};
+export function useTruncate({ address }) {
+  if (!address) return '';
+  if (address.length <= 10) return address;
+  return `${address.slice(0, 5)} ... ${address.slice(-5)}`;
+}

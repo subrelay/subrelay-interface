@@ -282,14 +282,6 @@ const loading = ref(true);
 const step = ref(null);
 const log = ref({});
 
-watch(
-  selectedAccount,
-  () => {
-    if (!isEmpty(selectedAccount.value)) fetch();
-  },
-  { immediate: true },
-);
-
 async function fetch() {
   try {
     const { data } = await Api.getLogDetails({
@@ -305,6 +297,14 @@ async function fetch() {
     loading.value = false;
   }
 }
+
+watch(
+  selectedAccount,
+  () => {
+    if (!isEmpty(selectedAccount.value)) fetch();
+  },
+  { immediate: true },
+);
 
 const options = ref([
   {

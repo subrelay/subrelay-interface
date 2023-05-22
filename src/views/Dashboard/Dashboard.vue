@@ -61,30 +61,44 @@ const router = useRouter();
 const store = useStore();
 const activeKey = ref(null);
 const collapsed = computed(() => store.state.global.isSiderCollapsed);
-const query = computed(() => store.state.global.defaultQuery);
 const selectedAccount = computed(() => store.state.account.selected);
 
 watch(selectedAccount, (acc) => {
   if (!acc) router.push('/welcome');
 });
 
-onMounted(() => (window.$message = useMessage()));
+onMounted(() => {
+  window.$message = useMessage();
+});
+
+const goToEditor = () => router.push({ name: 'trigger' });
+const goToHomePage = () => router.push({ name: 'workflows' });
+
+function onUpdateActive(value) {
+  if (value === 'editor') goToEditor('new-flow');
+}
+
+function renderIcon(icon, isButton = false) {
+  if (isButton) {
+    return () => (collapsed.value ? h(NButton, { type: 'primary' }, { default: () => h(Icon, { icon, inline: true }) }) : '');
+  }
+  return () => h(Icon, { icon, inline: true });
+}
 
 const siderOptions = ref([
   {
-    label: () =>
-      collapsed.value
-        ? h('div', {}, { default: () => 'New workflow' })
-        : h(
-            NButton,
-            { block: true, type: 'primary', round: true },
-            {
-              default: () => [
-                h(Icon, { icon: 'fluent:add-12-filled', inline: true }),
-                h('div', { style: 'margin-left: 0.6rem' }, 'New workflow'),
-              ],
-            },
-          ),
+    label: () => (collapsed.value
+      ? h('div', {}, { default: () => 'New workflow' })
+      : h(
+        NButton,
+        { block: true, type: 'primary', round: true },
+        {
+          default: () => [
+            h(Icon, { icon: 'fluent:add-12-filled', inline: true }),
+            h('div', { style: 'margin-left: 0.6rem' }, 'New workflow'),
+          ],
+        },
+      )),
     key: 'editor',
     icon: renderIcon('fluent:add-12-filled', true),
   },
@@ -102,46 +116,11 @@ const siderOptions = ref([
 
 watch(
   () => route.name,
-  (newRouteName) => (activeKey.value = newRouteName),
+  (newRouteName) => {
+    activeKey.value = newRouteName;
+  },
   { immediate: true },
 );
-
-const goToEditor = (id) => router.push({ name: 'trigger' });
-const goToHomePage = () => router.push({ name: 'workflows' });
-
-function onUpdateActive(value) {
-  if (value === 'editor') goToEditor('new-flow');
-}
-
-function renderIcon(icon, isButton = false) {
-  if (isButton) {
-    return () =>
-      collapsed.value
-        ? h(NButton, { type: 'primary' }, { default: () => h(Icon, { icon, inline: true }) })
-        : '';
-  }
-  return () => h(Icon, { icon, inline: true });
-}
-
-function test() {
-  const hostname = window.location.hostname;
-  const url = '';
-  const windowName = 'NewWindow';
-  const windowFeatures = 'width=700,height=500,left=500,top=200';
-
-  // if (hostname === 'localhost' || hostname === '127.0.0.1') {
-  //   url = 'http://127.0.0.1:9000/#/splash';
-  // } else if (hostname === 'develop.app.subrelay.xyz') {
-  //   url = 'https://develop.app.subrelay.xyz/#/splash';
-  // } else if (hostname === 'app.subrelay.xyz') {
-  //   url = 'https://app.subrelay.xyz/#/splash';
-  // }
-
-  // var url = 'http://127.0.0.1:9000/#/splash';
-  // var windowName = 'NewWindow';
-  // var windowFeatures = 'width=700,height=500,left=500,top=500';
-  // window.open(url, windowName, windowFeatures);
-}
 </script>
 
 <style lang="scss">

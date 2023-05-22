@@ -1,8 +1,8 @@
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
+import { configDefaults } from 'vitest/config';
 import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
-// import eslintPlugin from 'vite-plugin-eslint';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -16,7 +16,7 @@ export default defineConfig({
       zlib: 'browserify-zlib',
       util: 'util',
     },
-    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
+    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue', '.cjs'],
   },
 
   css: {
@@ -32,5 +32,15 @@ export default defineConfig({
 
   build: {
     chunkSizeWarningLimit: 2000,
+  },
+
+  test: {
+    globals: true,
+    clearMocks: true,
+    environment: 'happy-dom',
+    exclude: [...configDefaults.exclude, 'e2e/*'],
+    root: fileURLToPath(new URL('./', import.meta.url)),
+    transformMode: { web: [/\.[jt]sx$/] },
+    coverage: { provider: 'istanbul' },
   },
 });
