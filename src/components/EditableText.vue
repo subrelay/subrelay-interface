@@ -43,11 +43,7 @@ const ShowNode = defineComponent({
       { style: 'max-width: 250px' },
       {
         tooltip: () => h('div', { style: 'max-width: 250px' }, props.value),
-        default: () => h(
-          NText,
-          { class: 'workflow-name' },
-          { default: () => (props.value ? props.value : 'Untitled') },
-        ),
+        default: () => h(NText, { class: 'workflow-name' }, { default: () => (props.value ? props.value : 'Untitled') }),
       },
     );
   },
@@ -65,7 +61,9 @@ const EditNode = defineComponent({
       clearable: true,
       disabled: false,
       status: inputValue.value ? 'success' : 'error',
-      onUpdateValue: (v) => (inputValue.value = v),
+      onUpdateValue: (v) => {
+        inputValue.value = v;
+      },
       onKeyup: ({ key }) => {
         if (key === 'Enter') handleChange();
       },

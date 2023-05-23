@@ -17,10 +17,6 @@
 <script setup>
 import { useRouter } from 'vue-router';
 
-import { ref, h } from 'vue';
-
-import { NTag } from 'naive-ui';
-
 const router = useRouter();
 
 const onBackToHome = () => {

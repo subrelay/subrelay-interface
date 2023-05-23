@@ -71,11 +71,7 @@
                 <b v-if="subIndex !== 0" style="margin-left: 4px"> AND </b>
                 <n-text code> {{ condition.variable }} </n-text>
                 <span>
-                  {{
-                    ['greaterThan', 'greaterThanEqual', 'lessThan'].includes(condition.operator)
-                      ? ' is '
-                      : ' '
-                  }}
+                  {{ ['greaterThan', 'greaterThanEqual', 'lessThan'].includes(condition.operator) ? ' is ' : ' ' }}
                 </span>
                 <span> {{ useParseCamelCaseStr(condition.operator) + ' ' }}</span>
                 <n-text code>
@@ -112,11 +108,7 @@
             <n-space vertical>
               <div class="text-semi-bold">Recipients</div>
               <n-ellipsis>
-                <span
-                  v-for="(add, idx) in actionTask.config.addresses"
-                  style="font-size: 0.85em"
-                  :key="idx"
-                >
+                <span v-for="(add, idx) in actionTask.config.addresses" style="font-size: 0.85em" :key="idx">
                   <span>{{ add }}</span>
                   <span v-if="idx !== actionTask.config.addresses.length - 1">,&nbsp;</span>
                 </span>
@@ -135,9 +127,7 @@
         <n-space v-if="actionTask.type === 'email'" vertical :size="24">
           <n-space vertical v-if="!isEmpty(customMsgKeys)">
             <div class="text-semi-bold">Subject</div>
-            <n-blockquote
-              >{{ getFormattedString(actionTask.config.subjectTemplate) }}
-            </n-blockquote>
+            <n-blockquote>{{ getFormattedString(actionTask.config.subjectTemplate) }} </n-blockquote>
           </n-space>
 
           <n-space vertical v-if="!isEmpty(customMsgKeys)">
@@ -149,11 +139,7 @@
         </n-space>
 
         <!-- Telegram & Discord Content -->
-        <n-space
-          v-if="actionTask.type === 'telegram' || actionTask.type === 'discord'"
-          vertical
-          :size="24"
-        >
+        <n-space v-if="actionTask.type === 'telegram' || actionTask.type === 'discord'" vertical :size="24">
           <n-space vertical v-if="!isEmpty(customMsgKeys)">
             <div class="text-semi-bold">Content</div>
             <n-blockquote style="white-space: pre-wrap">
@@ -178,7 +164,7 @@ import moment from 'moment';
 const props = defineProps({ id: [String, Number] });
 const store = useStore();
 // eslint-disable-next-line no-empty-pattern
-const [{} = {}, { getFormattedString }] = useCustomMessage({ isCustomizing: false });
+const [{}, { getFormattedString }] = useCustomMessage({ isCustomizing: false });
 
 const customMsgKeys = computed(() => store.state.editor.customMsgKeys);
 const workflow = computed(() => store.state.workflow.workflow);

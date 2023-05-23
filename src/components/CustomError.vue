@@ -9,7 +9,6 @@
 <script setup>
 import { computed } from 'vue';
 import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
 
 defineProps({ show: Boolean, text: { String, default: 'Required!' } });
 

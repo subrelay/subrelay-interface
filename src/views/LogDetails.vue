@@ -22,9 +22,7 @@
         <n-breadcrumb separator=">" style="font-family: Unbounded">
           <n-breadcrumb-item>
             <template #default>
-              <router-link :to="{ name: 'logs' }" class="text-bold font-size-2rem">
-                LOGS
-              </router-link>
+              <router-link :to="{ name: 'logs' }" class="text-bold font-size-2rem"> LOGS </router-link>
             </template>
           </n-breadcrumb-item>
 
@@ -33,12 +31,7 @@
           </n-breadcrumb-item>
         </n-breadcrumb>
 
-        <n-dropdown
-          trigger="hover"
-          :options="options"
-          @select="handleSelect"
-          placement="bottom-end"
-        >
+        <n-dropdown trigger="hover" :options="options" @select="handleSelect" placement="bottom-end">
           <n-button text><Icon icon="ph:dots-six-vertical-bold" width="1.25rem" /> </n-button>
         </n-dropdown>
       </n-space>
@@ -64,13 +57,7 @@
 
       <!-- STEPS -->
       <n-space class="steps" :size="0" :wrap="false">
-        <n-space
-          v-for="(step, index) in log.taskLogs"
-          :key="index"
-          align="center"
-          :size="0"
-          :wrap="false"
-        >
+        <n-space v-for="(step, index) in log.taskLogs" :key="index" align="center" :size="0" :wrap="false">
           <!-- todo: Change to component -->
           <n-space
             v-if="log.taskLogs[index].task.type === 'trigger'"
@@ -80,13 +67,8 @@
             :wrap-item="false"
             :wrap="false"
           >
-            <n-space align="center" :wrap-item="false">
-              <n-avatar
-                style="background: transparent"
-                round
-                :size="24"
-                :src="log.chain.imageUrl"
-              />
+            <n-space align="center" :wrap-item="false" :wrap="false">
+              <n-avatar style="background: transparent" round :size="24" :src="log.chain.imageUrl" />
               <div>{{ log.event.name }}</div>
             </n-space>
 

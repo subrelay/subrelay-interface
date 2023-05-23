@@ -87,7 +87,7 @@ const router = createRouter({
     {
       path: '/splash',
       name: 'Splash',
-      component: () => import('@/views/SplashWindow.vue'),
+      component: () => import('@/views/SplashWindow'),
       meta: { title: 'Splash' },
     },
     {

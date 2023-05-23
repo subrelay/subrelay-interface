@@ -30,7 +30,7 @@ import moment from 'moment';
 
 const store = useStore();
 const router = useRouter();
-const props = defineProps(['log']);
+defineProps(['log']);
 const darkMode = computed(() => store.state.global.isDarkMode);
 </script>
 

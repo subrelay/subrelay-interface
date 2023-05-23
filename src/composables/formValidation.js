@@ -3,7 +3,7 @@ import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import EditorData from '@/store/localStore/EditorData';
 
-export function useFormValidation() {
+export default function useFormValidation() {
   const store = useStore();
   const formRef = ref(null);
   const router = useRouter();

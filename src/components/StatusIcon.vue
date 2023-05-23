@@ -9,11 +9,19 @@ import { computed } from 'vue';
 const store = useStore();
 const props = defineProps({ status: String });
 const darkMode = computed(() => store.state.global.isDarkMode);
-const isSuccess = computed(() => props.status === 'success');
 
-const sucessColor = computed(() => (darkMode.value ? '#63e2b7' : '#18a058ff'));
-const failedColor = computed(() => (darkMode.value ? '#e88080' : '#d03050ff'));
-const skippedColor = computed(() => (darkMode.value ? 'rgba(255, 255, 255, 0.52)' : 'rgb(51, 54, 57)'));
+const sucessColor = computed(() => {
+  const color = darkMode.value ? '#63e2b7' : '#18a058ff';
+  return color;
+});
+const failedColor = computed(() => {
+  const color = darkMode.value ? '#e88080' : '#d03050ff';
+  return color;
+});
+const skippedColor = computed(() => {
+  const color = darkMode.value ? 'rgba(255, 255, 255, 0.52)' : 'rgb(51, 54, 57)';
+  return color;
+});
 
 const color = computed(() => {
   switch (props.status) {
@@ -23,6 +31,8 @@ const color = computed(() => {
       return failedColor.value;
     case 'skipped':
       return skippedColor.value;
+    default:
+      return '';
   }
 });
 
@@ -34,6 +44,8 @@ const icon = computed(() => {
       return 'ic:round-cancel';
     case 'skipped':
       return 'ri:indeterminate-circle-fill';
+    default:
+      return '';
   }
 });
 </script>

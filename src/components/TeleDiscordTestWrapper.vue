@@ -6,8 +6,8 @@
       </template>
 
       <div style="margin-bottom: 1.5em">
-        To test <span class="text-capitalize">{{ channel }}</span> notification,
-        <b>Subrelay Bot</b> will send you a new message with below content:
+        To test <span class="text-capitalize">{{ channel }}</span> notification, <b>Subrelay Bot</b> will send you a new
+        message with below content:
       </div>
 
       <n-skeleton v-if="runningTest" text :repeat="5" />
@@ -72,10 +72,10 @@
 import StatusIcon from '@/components/StatusIcon';
 import EditorData from '@/store/localStore/EditorData';
 import { useCustomMessage } from '@/composables';
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { useStore } from 'vuex';
 
-const props = defineProps(['channel']);
+defineProps(['channel']);
 
 const store = useStore();
 const userInfo = computed(() => store.state.account.userInfo);
@@ -87,6 +87,7 @@ const runningTest = computed(() => store.state.editor.runningTest[type.value]);
 const workflowLoading = computed(() => store.state.workflow.loading.workflow);
 const isTested = computed(() => store.state.editor.tested[type.value]);
 const testResult = computed(() => store.state.editor.testResult[type.value]);
+// eslint-disable-next-line no-empty-pattern
 const [{}, { getFormattedString }] = useCustomMessage({ isCustomizing: false });
 
 async function onTest() {
