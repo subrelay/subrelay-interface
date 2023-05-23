@@ -4,16 +4,15 @@
   <n-space :wrap-item="false" vertical :size="24" v-else>
     <div>formState {{ formState }}</div>
     <div v-if="formState === 'preCustom' || formState === 'customMsg'">
-      <b>Subrelay Bot</b> will send notifications to your
-      <span class="text-capitalize">{{ channel }}</span> account
+      <b>Subrelay Bot</b> will send notifications to your <span class="text-capitalize">{{ channel }}</span> account
       <n-text code class="text-bold">{{ userInfo.integration[channel] }} </n-text>.
     </div>
 
     <n-space vertical v-if="formState === 'setupKey'" :wrap-item="false">
       <div>
         To grant permission for <b>Subrelay Bot</b> to send messages to your
-        <span class="text-capitalize">{{ channel }}</span> account, please use this key and follow
-        the instructions provided when you have successfully started the Bot.
+        <span class="text-capitalize">{{ channel }}</span> account, please use this key and follow the instructions
+        provided when you have successfully started the Bot.
       </div>
 
       <n-space>
@@ -35,9 +34,7 @@
 
       <div>After you already added the key to SubRelay Bot, click <b>Verfiy.</b></div>
 
-      <n-button style="margin-left: auto" type="primary" @click="onVerify" :loading="verifying">
-        Verify
-      </n-button>
+      <n-button style="margin-left: auto" type="primary" @click="onVerify" :loading="verifying"> Verify </n-button>
     </n-space>
 
     <n-collapse-transition :show="formState === 'customMsg'">
@@ -76,11 +73,7 @@
               content-style="padding:0"
               :segmented="{ content: true }"
             >
-              <n-space
-                vertical
-                class="custom-message-card-content"
-                style="height: 50vh; overflow: auto"
-              >
+              <n-space vertical class="custom-message-card-content" style="height: 50vh; overflow: auto">
                 <div v-html="previewContent" class="preview-content" />
               </n-space>
             </n-card>
@@ -90,9 +83,7 @@
     </n-collapse-transition>
 
     <n-space align="center" justify="end" v-if="formState !== 'setupKey'">
-      <n-button type="primary" v-if="userInfo.integration[channel]" @click="reconfigureKey">
-        Reconfigure key
-      </n-button>
+      <n-button type="primary" v-if="userInfo.integration[channel]" @click="reconfigureKey"> Reconfigure key </n-button>
 
       <n-button type="primary" @click="onContinue"> Continue </n-button>
     </n-space>
@@ -156,7 +147,9 @@ function onCopy() {
   navigator.clipboard.writeText(userInfo.value.key);
   isCopied.value = true;
   message.success('Copied!');
-  setTimeout(() => (isCopied.value = false), 1500);
+  setTimeout(() => {
+    isCopied.value = false;
+  }, 1500);
 }
 
 function validateSetupAction() {
@@ -187,7 +180,6 @@ function onContinue() {
 
 function reconfigureKey() {
   const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
-  const message = '/key foobarlorem';
   if (props.channel === 'telegram') {
     const protocol = isMac ? 'tg://' : 'https://';
     const link = `${protocol}t.me/subrelay_bot`;
@@ -227,15 +219,15 @@ async function onVerify() {
   if (userInfo.value.integration[props.channel]) {
     dialog.success({
       title: 'Success!',
-      content:
-        "Cool! You have successfully set up a key for Subrelay Bot. Let's move on to next steps.",
+      content: "Cool! You have successfully set up a key for Subrelay Bot. Let's move on to next steps.",
       positiveText: 'Continue',
-      onPositiveClick: () => (formState.value = 'preCustom'),
+      onPositiveClick: () => {
+        formState.value = 'preCustom';
+      },
     });
   } else {
     dialog.error({
       title: 'No integration found',
-      content: `Sorry, we were still unable to find a ${props.channel} integration in your account. Did you add the key properly follow the instruction?`,
 
       content: () => h('div', { style: { fontSize: '0.85rem' } }, [
         h('div', [
@@ -243,12 +235,9 @@ async function onVerify() {
           h('span', { class: 'text-capitalize' }, `${props.channel}`),
           ' integration in your account.',
         ]),
-        h(
-          'div',
-          { style: { marginTop: '1rem' } },
-          'Did you add the key properly following the instruction?',
-        ),
+        h('div', { style: { marginTop: '1rem' } }, 'Did you add the key properly following the instruction?'),
       ]),
+
       positiveText: 'Retry',
     });
   }

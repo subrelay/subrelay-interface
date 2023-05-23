@@ -19,11 +19,7 @@
         </n-gi>
 
         <n-gi span="2 1150:1">
-          <ChainDropdown
-            v-model="selectedChain"
-            :onSelectChain="handleSelectChain"
-            :disabled="loading"
-          />
+          <ChainDropdown v-model="selectedChain" :onSelectChain="handleSelectChain" :disabled="loading" />
         </n-gi>
 
         <n-gi span="2 1150:1">
@@ -53,8 +49,7 @@
 </template>
 
 <script setup>
-import { inject, ref } from 'vue';
-import { NAvatar } from 'naive-ui';
+import { inject } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useRenderDropdownLabel } from '@/composables';
 import ChainDropdown from '@/components/ChainDropdown';
@@ -69,7 +64,7 @@ const {
   clearAllFilters,
 } = inject('search');
 
-const props = defineProps({
+defineProps({
   title: String,
   statusOptions: Array,
   loading: Boolean,

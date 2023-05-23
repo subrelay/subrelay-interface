@@ -27,7 +27,13 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
   const actionIdx = computed(() => EditorData.actionIdx);
 
   function getKeyHTML(display) {
-    return `<span data-type="KeySuggestion" class="mention" data-id="${display}" >$\{${display}}\</span>`;
+    return `<span data-type="KeySuggestion" class="mention" data-id="${display}" >$\{${display}}</span>`;
+  }
+
+  function getKeyedString(displayString) {
+    if (!displayString) return '';
+    const output = displayString.replace(/\${[^}]+}/g, (match) => displayLookup.value[match] || match);
+    return output || '';
   }
 
   function getRawText({ field, text }) {
@@ -41,12 +47,6 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
     const replacement = '<p>&nbsp;</p>';
     const result = text.replace(regex, replacement);
     return result;
-  }
-
-  function getKeyedString(displayString) {
-    if (!displayString) return '';
-    const output = displayString.replace(/\${[^}]+}/g, (match) => displayLookup.value[match] || match);
-    return output || '';
   }
 
   function getFormattedString(text) {
@@ -108,23 +108,23 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
       keyedContent.value = getKeyedString(newContent);
       previewContent.value = getFormattedString(keyedContent.value);
 
-      let template = '';
+      let templateKey = '';
 
       if (channel === 'email') {
-        template = 'bodyTemplate';
+        templateKey = 'bodyTemplate';
       } else if (channel === 'telegram' || channel === 'discord') {
-        template = 'messageTemplate';
+        templateKey = 'messageTemplate';
       }
 
       if (!isCustomizing) return;
 
       if (!newContent || newContent === '<p></p>' || newContent === '<br>') {
-        store.commit('editor/setError', { [template]: true });
+        store.commit('editor/setError', { [templateKey]: true });
       } else {
-        store.commit('editor/setError', { [template]: false });
+        store.commit('editor/setError', { [templateKey]: false });
       }
 
-      EditorData.workflow.tasks[actionIdx.value].config[template] = keyedContent.value.replace(/<p><\/p>/g, '<br/>');
+      EditorData.workflow.tasks[actionIdx.value].config[templateKey] = keyedContent.value.replace(/<p><\/p>/g, '<br/>');
     },
     { immediate: true },
   );
