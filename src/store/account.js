@@ -122,5 +122,27 @@ export default {
         commit('setLoading', { loadUserInfo: false });
       }
     },
+
+    // async getUserTelegram({ state, commit }, { account, showLoading = true } = {}) {
+    //   try {
+    //     if (showLoading) commit('setLoading', { loadTelegramInfo: true });
+    //     const { signer } = state;
+    //     const { data: user } = await Api.getUserTelegram({
+    //       account,
+    //       signer,
+    //       // params: {
+    //       //   id: 1474841627,
+    //       //   username: 'anhthichieu',
+    //       //   avatar: 'https://t.me/i/userpic/320/ZhqNC81HZqUcQXuT2iXWZgapo-I6DhYIPUK_p1v1Sz8.jpg',
+    //       // },
+    //     });
+    //     console.log('teleinfo', user);
+    //     if (user) commit('setUserInfo', user);
+    //   } catch (e) {
+    //     console.error(e);
+    //   } finally {
+    //     commit('setLoading', { loadTelegramInfo: false });
+    //   }
+    // },
   },
 };

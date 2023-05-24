@@ -109,7 +109,6 @@ const buildQueryStr = (params) => `?${new URLSearchParams(params).toString()}`;
 export default {
   async getChains() {
     const response = await instance.get('/chains');
-
     return response.data;
   },
 
@@ -144,6 +143,10 @@ export default {
 
   async getUserInfo({ account, signer }) {
     return request({ account, signer, method: 'get', endpoint: '/user/info' });
+  },
+
+  async getUserTelegram({ account, signer, params }) {
+    return request({ account, signer, method: 'get', endpoint: `/user/telegram` });
   },
 
   async getWorkflows({ account, signer, params }) {
