@@ -110,7 +110,7 @@ export default {
       }
     },
 
-    async getUserInfo({ state, commit }, { account, showLoading = true } = {}) {
+    async getUserInfo({ state, commit }, { account = state.selected, showLoading = true } = {}) {
       try {
         if (showLoading) commit('setLoading', { loadUserInfo: true });
         const { signer } = state;
@@ -123,26 +123,17 @@ export default {
       }
     },
 
-    // async getUserTelegram({ state, commit }, { account, showLoading = true } = {}) {
-    //   try {
-    //     if (showLoading) commit('setLoading', { loadTelegramInfo: true });
-    //     const { signer } = state;
-    //     const { data: user } = await Api.getUserTelegram({
-    //       account,
-    //       signer,
-    //       // params: {
-    //       //   id: 1474841627,
-    //       //   username: 'anhthichieu',
-    //       //   avatar: 'https://t.me/i/userpic/320/ZhqNC81HZqUcQXuT2iXWZgapo-I6DhYIPUK_p1v1Sz8.jpg',
-    //       // },
-    //     });
-    //     console.log('teleinfo', user);
-    //     if (user) commit('setUserInfo', user);
-    //   } catch (e) {
-    //     console.error(e);
-    //   } finally {
-    //     commit('setLoading', { loadTelegramInfo: false });
-    //   }
-    // },
+    async updateTelegramInfo({ state, commit, dispatch }, { showLoading = true, params = {} } = {}) {
+      try {
+        if (showLoading) commit('setLoading', { updateTelegramInfo: true });
+        const { selected: account, signer } = state;
+        await Api.updateTelegramInfo({ account, signer, params });
+        dispatch('getUserInfo', { showLoading: false });
+      } catch (e) {
+        console.error(e);
+      } finally {
+        commit('setLoading', { updateTelegramInfo: false });
+      }
+    },
   },
 };

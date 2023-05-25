@@ -145,8 +145,8 @@ export default {
     return request({ account, signer, method: 'get', endpoint: '/user/info' });
   },
 
-  async getUserTelegram({ account, signer, params }) {
-    return request({ account, signer, method: 'get', endpoint: `/user/telegram` });
+  async updateTelegramInfo({ account, signer, params }) {
+    return request({ account, signer, method: 'get', endpoint: `/user/connections/telegram${buildQueryStr(params)}` });
   },
 
   async getWorkflows({ account, signer, params }) {

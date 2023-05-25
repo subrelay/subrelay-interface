@@ -45,13 +45,21 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
   function replaceEmptyParagraphsWithNbsp(text) {
     const regex = /<p><\/p>/g; // g flag to replace all occurrences
     const replacement = '<p>&nbsp;</p>';
+    // const replacement = '<p></p>';
+    const result = text.replace(regex, replacement);
+    return result;
+  }
+
+  function replaceLineBreak(text) {
+    const regex = /<br\/>/g; // g flag to replace all occurrences
+    const replacement = '<br\/><br class="ProseMirror-trailingBreak"/>';
     const result = text.replace(regex, replacement);
     return result;
   }
 
   function getFormattedString(text) {
     if (!text) return '';
-    const formatText = flow(replaceEmptyParagraphsWithNbsp, template);
+    const formatText = flow(replaceEmptyParagraphsWithNbsp, replaceLineBreak, template);
     const formattedText = formatText(text)({ ...keyLookup.value });
     return formattedText;
   }
@@ -77,16 +85,17 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
 
         // Get default content
         const greetings = [
-          `<div>Event ${getKeyHTML('Event Name')} happened at ${getKeyHTML('Time')}, block ${getKeyHTML(
-            'Block Hash',
-          )} with following data:${channel === 'email' ? '' : '<br>'}</div>`,
+          `<p>Event ${getKeyHTML('Event Name')} on chain ${getKeyHTML(
+            'Chain Name',
+          )} has just happened with following data:${channel === 'email' ? '' : '<br/>'}</p>`,
           channel === 'email' ? '<p></p>' : '',
-          `<div>Success: ${getKeyHTML('Status')}</div>`,
+          `<p>Block: ${getKeyHTML('Block Hash')}</p>`,
+          `<p>Success: ${getKeyHTML('Status')}</p>`,
         ];
 
         const dataContent = newKeys
           .filter((e) => e.data !== undefined && e.name.includes('data.'))
-          .map((e) => `<div>${e.display}: ${getKeyHTML(e.display)}</div>`);
+          .map((e) => `<p>${e.display}: ${getKeyHTML(e.display)}</p>`);
 
         defaultContent.value = [...greetings, ...dataContent].join('');
         content.value = defaultContent.value;

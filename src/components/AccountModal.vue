@@ -35,13 +35,7 @@
             :bordered="currentAcc.address === account.address"
             :embedded="currentAcc.address === account.address"
           >
-            <n-space
-              align="center"
-              justify="space-between"
-              :wrap="false"
-              :wrap-item="false"
-              style="max-width: 100%%"
-            >
+            <n-space align="center" justify="space-between" :wrap="false" :wrap-item="false" style="max-width: 100%%">
               <n-space align="center" :wrap-item="false" style="max-width: 95%">
                 <PolkadotAccountIcon @click="onCopy(account)" />
 
@@ -55,11 +49,7 @@
                 </div>
               </n-space>
 
-              <Icon
-                width="16"
-                icon="line-md:confirm"
-                v-if="currentAcc.address === account.address"
-              />
+              <Icon width="16" icon="line-md:confirm" v-if="currentAcc.address === account.address" />
             </n-space>
           </n-card>
         </n-space>
@@ -104,6 +94,10 @@ const accounts = computed(() => store.state.account.accounts);
 
 function onSelectAccount(account) {
   currentAcc.value = account;
+}
+
+function clearTelegramCookies() {
+  console.log('clear');
 }
 
 async function onConfirm() {

@@ -21,6 +21,7 @@ const theme = computed(() => (darkMode.value ? darkTheme : null));
 
 const lightOverrides = {
   common: {
+    fontSize: '13px',
     primaryColor: 'rgba(230, 0, 122, 1)',
     primaryColorHover: 'rgba(230, 0, 122, 0.7)',
     primaryColorPressed: 'rgba(230, 0, 122, 0.7)',
@@ -30,6 +31,7 @@ const lightOverrides = {
 
 const darkOverrides = {
   common: {
+    fontSize: '13px',
     baseColor: 'rgba(255, 255, 255)',
     primaryColor: 'rgba(230, 0, 122, 1)',
     primaryColorHover: 'rgba(230, 0, 122, 0.7)',

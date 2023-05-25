@@ -47,10 +47,13 @@
           <p>{{ testResult.error?.message || testResult.error?.code }}</p>
         </div>
 
-        <div v-else>
+        <n-space v-else align="center" :size="4">
           A test message was sent to
-          <n-text code class="text-bold">{{ userInfo.integration[channel] }} </n-text>.
-        </div>
+          <n-space align="center" :wrap-item="false" :size="4">
+            <n-avatar round size="small" :src="userInfo.integration[channel].avatar" />
+            <span class="text-bold">@{{ userInfo.integration[channel].username }} </span>.
+          </n-space>
+        </n-space>
       </n-space>
     </n-card>
 
