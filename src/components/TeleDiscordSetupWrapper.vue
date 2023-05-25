@@ -15,11 +15,11 @@
       <n-space align="center" justify="center">
         <telegram-login-temp
           mode="callback"
-          telegram-login="subrelay_local_bot"
-          @loaded="teleWidgetLoaded"
-          @callback="onAuthorizeSuccess"
           requestAccess="write"
           size="medium"
+          :telegram-login="teleBot"
+          @loaded="teleWidgetLoaded"
+          @callback="onAuthorizeSuccess"
         />
       </n-space>
     </n-space>
@@ -98,6 +98,7 @@ import { useCustomMessage } from '@/composables';
 import { computed, ref, inject, watch, h, onBeforeMount } from 'vue';
 import { useMessage, useDialog } from 'naive-ui';
 import { useStore } from 'vuex';
+import { divide } from 'lodash';
 
 const props = defineProps(['channel']);
 const [{ content, previewContent, defaultContent, darkMode }, { getRawText }] = useCustomMessage({
@@ -115,6 +116,7 @@ const userInfo = computed(() => store.state.account.userInfo);
 const userInfoLoading = computed(() => store.state.account.loading.loadUserInfo);
 const actionConfig = computed(() => EditorData.workflow.tasks[EditorData.actionIdx].config);
 const requiredMessage = computed(() => store.state.editor.error.messageTemplate);
+const teleBot = ref(null);
 
 function setFormState() {
   if (userInfo.value.integration[props.channel]) {
@@ -123,7 +125,20 @@ function setFormState() {
     formState.value = 'authenticate';
   }
 }
-onBeforeMount(() => setFormState());
+onBeforeMount(() => {
+  setFormState();
+
+  // Get bot for different env.
+  const hostname = window.location.hostname;
+  if (hostname === 'a053-171-251-18-95.ngrok-free.app') {
+    teleBot.value = 'subrelay_local_bot';
+  } else if (hostname === 'develop.app.subrelay.xyz') {
+    teleBot.value = 'sr_develop_bot';
+  } else if (hostname === 'app.subrelay.xyz') {
+    teleBot.value = 'subrelay_bot';
+  }
+});
+
 watch(userInfo, () => setFormState());
 
 function validateSetupAction() {
