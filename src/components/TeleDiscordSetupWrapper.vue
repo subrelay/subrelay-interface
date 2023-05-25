@@ -1,45 +1,46 @@
 <template>
   <n-spin v-if="userInfoLoading" :stroke-width="15" size="small"></n-spin>
 
-  <n-space :wrap-item="false" vertical :size="24" v-else>
-    <div>formState {{ formState }}</div>
-    <div v-if="formState === 'preCustom' || formState === 'customMsg'">
-      <b>Subrelay Bot</b> will send notifications to your <span class="text-capitalize">{{ channel }}</span> account
-      <n-text code class="text-bold">{{ userInfo.integration[channel] }} </n-text>.
-    </div>
+  <n-space :wrap-item="false" vertical :size="16" v-else>
+    <n-space vertical v-if="formState === 'authenticate'" :wrap-item="false">
+      <n-spin v-if="!isWidgetLoaded" :stroke-width="16" size="small">
+        <template #description> Loading... </template>
+      </n-spin>
 
-    <n-space vertical v-if="formState === 'setupKey'" :wrap-item="false">
-      <div>
-        To grant permission for <b>Subrelay Bot</b> to send messages to your
-        <span class="text-capitalize">{{ channel }}</span> account, please use this key and follow the instructions
-        provided when you have successfully started the Bot.
+      <div v-if="isWidgetLoaded">
+        Please grant permission for <b>Subrelay Bot</b> to send messages to your
+        <span class="text-capitalize">{{ channel }}</span> account.
       </div>
 
-      <n-space>
-        <n-text code>{{ userInfo.key }}</n-text>
-
-        <n-tooltip trigger="hover">
-          <template #trigger>
-            <div class="code__icon completed" v-if="isCopied">
-              <Icon icon="akar-icons:check" width="13" />
-            </div>
-
-            <div class="code__icon copy" @click="onCopy" v-else>
-              <Icon icon="fluent:document-copy-48-filled" width="13" />
-            </div>
-          </template>
-          Copy
-        </n-tooltip>
+      <n-space align="center" justify="center">
+        <telegram-login-temp
+          mode="callback"
+          telegram-login="subrelay_local_bot"
+          @loaded="teleWidgetLoaded"
+          @callback="onAuthorizeSuccess"
+          requestAccess="write"
+          size="medium"
+        />
       </n-space>
+    </n-space>
 
-      <div>After you already added the key to SubRelay Bot, click <b>Verfiy.</b></div>
+    <n-space v-if="formState === 'preCustom' || formState === 'customMsg'" vertical>
+      <div style="display: inline">
+        You have already authorized <b>Subrelay Bot</b> to send notifications to your
+        <span class="text-capitalize">{{ channel }}</span> account.
 
-      <n-button style="margin-left: auto" type="primary" @click="onVerify" :loading="verifying"> Verify </n-button>
+        <n-space align="center" :wrap-item="false" :size="4">
+          <n-avatar round size="small" :src="userInfo.integration[channel].avatar" />
+          <span class="text-bold">@{{ userInfo.integration[channel].username }} </span>
+        </n-space>
+      </div>
     </n-space>
 
     <n-collapse-transition :show="formState === 'customMsg'">
       <n-space vertical>
-        <div>You can customize the notification message content below.</div>
+        <div>
+          We have prepared a default notification content as below. You can still customize the message as you please.
+        </div>
 
         <n-grid cols="2" x-gap="30" style="margin: 1rem 0">
           <!-- COMPILER -->
@@ -82,35 +83,19 @@
       </n-space>
     </n-collapse-transition>
 
-    <n-space align="center" justify="end" v-if="formState !== 'setupKey'">
-      <n-button type="primary" v-if="userInfo.integration[channel]" @click="reconfigureKey"> Reconfigure key </n-button>
-
-      <n-button type="primary" @click="onContinue"> Continue </n-button>
-    </n-space>
+    <n-button type="primary" @click="onContinue" v-if="formState !== 'authenticate'" class="action_button">
+      Continue
+    </n-button>
   </n-space>
-
-  <n-modal
-    v-model:show="showModal"
-    class="custom-card"
-    preset="card"
-    style="width: 600px"
-    title="Modal"
-    size="huge"
-    header-style="font-size: 1rem"
-    :bordered="false"
-    :segmented="{ content: true }"
-  >
-    Content
-    <template #footer> Footer </template>
-  </n-modal>
 </template>
 
 <script setup>
 import CustomError from '@/components/CustomError';
 import EditorData from '@/store/localStore/EditorData';
+import { telegramLoginTemp } from 'vue3-telegram-login';
 import Compiler from '@/views/CustomMsg/Compiler';
 import { useCustomMessage } from '@/composables';
-import { computed, ref, inject, watch, h, onMounted } from 'vue';
+import { computed, ref, inject, watch, h, onBeforeMount } from 'vue';
 import { useMessage, useDialog } from 'naive-ui';
 import { useStore } from 'vuex';
 
@@ -123,8 +108,6 @@ const store = useStore();
 const dialog = useDialog();
 const message = useMessage();
 const isCopied = ref(false);
-const showModal = ref(false);
-const verifying = ref(false);
 const formState = ref('preCustom');
 const eventBus = inject('eventBus');
 const account = computed(() => store.state.account.selected);
@@ -137,26 +120,17 @@ function setFormState() {
   if (userInfo.value.integration[props.channel]) {
     formState.value = 'preCustom';
   } else {
-    formState.value = 'setupKey';
+    formState.value = 'authenticate';
   }
 }
-onMounted(() => setFormState());
+onBeforeMount(() => setFormState());
 watch(userInfo, () => setFormState());
-
-function onCopy() {
-  navigator.clipboard.writeText(userInfo.value.key);
-  isCopied.value = true;
-  message.success('Copied!');
-  setTimeout(() => {
-    isCopied.value = false;
-  }, 1500);
-}
 
 function validateSetupAction() {
   if (
-    !actionConfig.value.messageTemplate
-    || actionConfig.value.messageTemplate === '<br>'
-    || actionConfig.value.messageTemplate === '<p></p>'
+    !actionConfig.value.messageTemplate ||
+    actionConfig.value.messageTemplate === '<br>' ||
+    actionConfig.value.messageTemplate === '<p></p>'
   ) {
     store.commit('editor/setError', { messageTemplate: true });
     EditorData.setError('action', true);
@@ -178,69 +152,16 @@ function onContinue() {
   validateSetupAction();
 }
 
-function reconfigureKey() {
-  const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
-  if (props.channel === 'telegram') {
-    const protocol = isMac ? 'tg://' : 'https://';
-    const link = `${protocol}t.me/subrelay_bot`;
+// Set up telegram
+const isWidgetLoaded = ref(false);
 
-    try {
-      // Try to open the Telegram app with a deep link
-      window.navigator.sendBeacon('tg://resolve?domain=subrelay_bot');
-
-      // If the deep link was successful, the Telegram app is installed
-      window.location.href = link;
-    } catch (error) {
-      // If the deep link failed, the Telegram app is not installed
-      window.open(link);
-    }
-  }
-
-  // const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
-  // const isWin = navigator.platform.toUpperCase().indexOf('WIN') >= 0;
-  // const telegramUrl = 'https://web.telegram.org/k/#@subrelay_bot';
-  // const message = '/key foobarlorem';
-
-  // if (isMac) {
-  //   window.location.href = `tg://msg?text=${encodeURIComponent(message)}`;
-  // } else if (isWin) {
-  //   window.location.href = `tg://msg_url?url=${encodeURIComponent(
-  //     telegramUrl,
-  //   )}&text=${encodeURIComponent(message)}`;
-  // } else {
-  //   window.open(telegramUrl);
-  // }
+function teleWidgetLoaded() {
+  isWidgetLoaded.value = true;
 }
 
-async function onVerify() {
-  verifying.value = true;
-  await store.dispatch('account/getUserInfo', { account: account.value, showLoading: false });
-  verifying.value = false;
-  if (userInfo.value.integration[props.channel]) {
-    dialog.success({
-      title: 'Success!',
-      content: "Cool! You have successfully set up a key for Subrelay Bot. Let's move on to next steps.",
-      positiveText: 'Continue',
-      onPositiveClick: () => {
-        formState.value = 'preCustom';
-      },
-    });
-  } else {
-    dialog.error({
-      title: 'No integration found',
-
-      content: () => h('div', { style: { fontSize: '0.85rem' } }, [
-        h('div', [
-          'Sorry, we were still unable to find a ',
-          h('span', { class: 'text-capitalize' }, `${props.channel}`),
-          ' integration in your account.',
-        ]),
-        h('div', { style: { marginTop: '1rem' } }, 'Did you add the key properly following the instruction?'),
-      ]),
-
-      positiveText: 'Retry',
-    });
-  }
+function onAuthorizeSuccess(user) {
+  const { id, username } = user;
+  store.dispatch('account/updateTelegramInfo', { params: { id, username } });
 }
 </script>
 

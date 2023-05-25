@@ -90,11 +90,11 @@ export const renderSelectTagWithDescription = ({ option }) => {
 export const useRenderIcon = (icon) => () => h(Icon, { icon, inline: true });
 
 export function useGetChannelIcon(channelName) {
-  const channel = channels.find((el) => el.value === channelName);
+  const channel = channels.find((el) => el.value === channelName) || {};
   return channel.icon;
 }
 
 export function useGetChainImg(chainName, chainsData) {
-  const chain = chainsData.find((el) => el.name === chainName);
+  const chain = chainsData.find((el) => el.name === chainName) || {};
   return chain.imageUrl;
 }

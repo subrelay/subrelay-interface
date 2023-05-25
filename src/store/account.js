@@ -110,7 +110,7 @@ export default {
       }
     },
 
-    async getUserInfo({ state, commit }, { account, showLoading = true } = {}) {
+    async getUserInfo({ state, commit }, { account = state.selected, showLoading = true } = {}) {
       try {
         if (showLoading) commit('setLoading', { loadUserInfo: true });
         const { signer } = state;
@@ -120,6 +120,19 @@ export default {
         console.error(e);
       } finally {
         commit('setLoading', { loadUserInfo: false });
+      }
+    },
+
+    async updateTelegramInfo({ state, commit, dispatch }, { showLoading = true, params = {} } = {}) {
+      try {
+        if (showLoading) commit('setLoading', { updateTelegramInfo: true });
+        const { selected: account, signer } = state;
+        await Api.updateTelegramInfo({ account, signer, params });
+        dispatch('getUserInfo', { showLoading: false });
+      } catch (e) {
+        console.error(e);
+      } finally {
+        commit('setLoading', { updateTelegramInfo: false });
       }
     },
   },

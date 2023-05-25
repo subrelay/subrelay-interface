@@ -7,8 +7,11 @@ vi.mock('vuex', () => ({
 }));
 
 describe('Test useAccordion', () => {
-  let store; let task; let expandValue; let computedProps; let
-    methods;
+  let store;
+  let task;
+  let methods;
+  let expandValue;
+  let computedProps;
 
   beforeEach(() => {
     task = 'trigger';
@@ -19,6 +22,7 @@ describe('Test useAccordion', () => {
       state: { editor: { expand: { [task]: expandValue } } },
       commit: vi.fn(),
     });
+    
     store = useStore();
 
     // Call the useAccordion function with the mock store

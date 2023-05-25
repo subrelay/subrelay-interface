@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import EditorData from '@/store/localStore/EditorData';
@@ -7,6 +7,7 @@ export default function useFormValidation() {
   const store = useStore();
   const formRef = ref(null);
   const router = useRouter();
+  const actionConfig = computed(() => EditorData.workflow.tasks[EditorData.actionIdx].config);
 
   async function validateForm({ keys, nextStep, nextExpand, taskName, callback = () => {} } = {}) {
     try {
@@ -23,9 +24,10 @@ export default function useFormValidation() {
               resolve();
             }
           },
-          (rule) => keys.includes(rule.key)
-            || (rule.key.includes('filterCond') && keys.includes('filterCond'))
-            || (rule.key.includes('setupAction') && keys.includes('setupAction')),
+          (rule) =>
+            keys.includes(rule.key) ||
+            (rule.key.includes('filterCond') && keys.includes('filterCond')) ||
+            (rule.key.includes('setupAction') && keys.includes('setupAction')),
         );
       });
 
@@ -49,18 +51,18 @@ export default function useFormValidation() {
     }
 
     if (
-      !actionConfig.value.bodyTemplate
-      || actionConfig.value.bodyTemplate === '<br>'
-      || actionConfig.value.bodyTemplate === '<p></p>'
+      !actionConfig.value.bodyTemplate ||
+      actionConfig.value.bodyTemplate === '<br>' ||
+      actionConfig.value.bodyTemplate === '<p></p>'
     ) {
       store.commit('editor/setError', { bodyTemplate: true });
       EditorData.setError('action', true);
     }
 
     if (
-      !actionConfig.value.messageTemplate
-      || actionConfig.value.messageTemplate === '<br>'
-      || actionConfig.value.messageTemplate === '<p></p>'
+      !actionConfig.value.messageTemplate ||
+      actionConfig.value.messageTemplate === '<br>' ||
+      actionConfig.value.messageTemplate === '<p></p>'
     ) {
       store.commit('editor/setError', { messageTemplate: true });
       EditorData.setError('action', true);
