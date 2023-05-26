@@ -149,6 +149,10 @@ export default {
     return request({ account, signer, method: 'get', endpoint: `/user/connections/telegram${buildQueryStr(params)}` });
   },
 
+  async updateDiscordInfo({ account, signer, params }) {
+    return request({ account, signer, method: 'get', endpoint: `/user/connections/discord${buildQueryStr(params)}` });
+  },
+
   async getWorkflows({ account, signer, params }) {
     return request({
       account,

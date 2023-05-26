@@ -9,7 +9,7 @@
         <h1 class="title">Welcome to Subrelay</h1>
         <div class="text">
           <span style="margin-right: 5px">Please connect your</span>
-          <n-avatar round :size="24" src="https://polkadot.js.org/logo.svg" />
+          <n-avatar color="transparent" round :size="24" src="https://polkadot.js.org/logo.svg" />
           <span style="margin-left: 5px"> Polkadot{.js} wallet to start using SubRelay.</span>
         </div>
 

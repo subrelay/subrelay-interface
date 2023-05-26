@@ -1,5 +1,6 @@
 import { useShowError } from '@/composables';
 import Api, { getSavedAuthToken } from '@/api';
+import isEmpty from 'lodash/isEmpty';
 
 const MAX_RETRY = 10;
 const CONNECTED_ACCOUNT = 'polkadot-js-connected';
@@ -111,6 +112,8 @@ export default {
     },
 
     async getUserInfo({ state, commit }, { account = state.selected, showLoading = true } = {}) {
+      if (isEmpty(account)) return;
+
       try {
         if (showLoading) commit('setLoading', { loadUserInfo: true });
         const { signer } = state;
@@ -133,6 +136,21 @@ export default {
         console.error(e);
       } finally {
         commit('setLoading', { updateTelegramInfo: false });
+      }
+    },
+
+    async updateDiscordInfo({ state, commit, dispatch }, { showLoading = true, params = {} } = {}) {
+      try {
+        if (showLoading) commit('setLoading', { updateDiscordInfo: true });
+        const { selected: account, signer } = state;
+        console.log('account', JSON.stringify(account));
+        console.log('params', params);
+        await Api.updateDiscordInfo({ account, signer, params });
+        dispatch('getUserInfo', { showLoading: false });
+      } catch (e) {
+        console.error(e);
+      } finally {
+        commit('setLoading', { updateDiscordInfo: false });
       }
     },
   },

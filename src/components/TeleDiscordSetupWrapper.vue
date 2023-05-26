@@ -3,24 +3,37 @@
 
   <n-space :wrap-item="false" vertical :size="16" v-else>
     <n-space vertical v-if="formState === 'authenticate'" :wrap-item="false">
-      <n-spin v-if="!isWidgetLoaded" :stroke-width="16" size="small">
-        <template #description> Loading... </template>
-      </n-spin>
+      <!-- Authen with Telegram -->
+      <div v-if="channel === 'telegram'">
+        <n-spin v-if="!isWidgetLoaded" :stroke-width="16" size="small" style="margin: auto; width: 100%">
+          <template #description> Loading... </template>
+        </n-spin>
 
-      <div v-if="isWidgetLoaded">
-        Please grant permission for <b>Subrelay Bot</b> to send messages to your
-        <span class="text-capitalize">{{ channel }}</span> account.
+        <div v-if="isWidgetLoaded">
+          Please grant permission for <b>Subrelay Bot</b> to send messages to your Telegram account.
+        </div>
+
+        <n-space align="center" justify="center" style="padding-top: 1rem">
+          <telegram-login-temp
+            mode="callback"
+            requestAccess="write"
+            size="medium"
+            :telegram-login="teleBot"
+            @loaded="teleWidgetLoaded"
+            @callback="onAuthorizeSuccess"
+          />
+        </n-space>
       </div>
 
-      <n-space align="center" justify="center">
-        <telegram-login-temp
-          mode="callback"
-          requestAccess="write"
-          size="medium"
-          :telegram-login="teleBot"
-          @loaded="teleWidgetLoaded"
-          @callback="onAuthorizeSuccess"
-        />
+      <!-- Authen with Discord -->
+      <n-space v-if="channel === 'discord'" vertical :size="14">
+        <div>Please grant permission for <b>Subrelay Bot</b> to send messages to your Discord account.</div>
+
+        <n-space align="center" justify="center">
+          <n-button @click="showDiscordAuth">
+            <Icon icon="logos:discord-icon" style="margin-right: 5px" /> Login with Discord
+          </n-button>
+        </n-space>
       </n-space>
     </n-space>
 
@@ -30,19 +43,26 @@
         <span class="text-capitalize">{{ channel }}</span> account.
 
         <n-space align="center" :wrap-item="false" :size="4">
-          <n-avatar round size="small" :src="userInfo.integration[channel].avatar" />
+          <n-avatar
+            color="transparent"
+            round
+            size="small"
+            :src="userInfo.integration[channel].avatar"
+            v-if="userInfo.integration[channel].avatar"
+          />
+
           <span class="text-bold">@{{ userInfo.integration[channel].username }} </span>
         </n-space>
       </div>
     </n-space>
 
     <n-collapse-transition :show="formState === 'customMsg'">
-      <n-space vertical>
+      <n-space vertical :size="16">
         <div>
           We have prepared a default notification content as below. You can still customize the message as you please.
         </div>
 
-        <n-grid cols="2" x-gap="30" style="margin: 1rem 0">
+        <n-grid cols="2" x-gap="30">
           <!-- COMPILER -->
           <n-gi>
             <n-card
@@ -92,13 +112,14 @@
 <script setup>
 import CustomError from '@/components/CustomError';
 import EditorData from '@/store/localStore/EditorData';
-import { telegramLoginTemp } from 'vue3-telegram-login';
 import Compiler from '@/views/CustomMsg/Compiler';
+import { telegramLoginTemp } from 'vue3-telegram-login';
 import { useCustomMessage } from '@/composables';
 import { computed, ref, inject, watch, h, onBeforeMount } from 'vue';
 import { useMessage, useDialog } from 'naive-ui';
 import { useStore } from 'vuex';
 import { divide } from 'lodash';
+import Api from '@/api';
 
 const props = defineProps(['channel']);
 const [{ content, previewContent, defaultContent, darkMode }, { getRawText }] = useCustomMessage({
@@ -111,12 +132,17 @@ const message = useMessage();
 const isCopied = ref(false);
 const formState = ref('preCustom');
 const eventBus = inject('eventBus');
-const account = computed(() => store.state.account.selected);
 const userInfo = computed(() => store.state.account.userInfo);
 const userInfoLoading = computed(() => store.state.account.loading.loadUserInfo);
 const actionConfig = computed(() => EditorData.workflow.tasks[EditorData.actionIdx].config);
 const requiredMessage = computed(() => store.state.editor.error.messageTemplate);
+const account = computed(() => store.state.account.selected);
+const signer = computed(() => store.state.account.signer);
+const polling = ref(null);
+
 const teleBot = ref(null);
+const client_id = ref(null);
+const redirect_uri = ref(null);
 
 function setFormState() {
   if (userInfo.value.integration[props.channel]) {
@@ -125,21 +151,49 @@ function setFormState() {
     formState.value = 'authenticate';
   }
 }
+
 onBeforeMount(() => {
   setFormState();
 
-  // Get bot for different env.
+  // Get Tele bot for different env.
   const hostname = window.location.hostname;
-  if (hostname === 'a053-171-251-18-95.ngrok-free.app') {
+
+  if (hostname.includes('ngrok-free.app')) {
     teleBot.value = 'subrelay_local_bot';
+    client_id.value = '1111221036235632651';
   } else if (hostname === 'develop.app.subrelay.xyz') {
     teleBot.value = 'sr_develop_bot';
+    client_id.value = '1108254667726663730';
   } else if (hostname === 'app.subrelay.xyz') {
     teleBot.value = 'subrelay_bot';
+    client_id.value = '1093462283683889214';
+  }
+
+  // Get Discord info for different env.
+
+  if (props.channel === 'discord') {
+    const { origin } = window.location;
+    redirect_uri.value = `${origin}/user/connections/discord`;
+
+    if (!userInfo.value.integration[props.channel]) {
+      polling.value = setInterval(() => {
+        store.dispatch('account/getUserInfo', { showLoading: false });
+      }, 5000);
+    }
   }
 });
 
-watch(userInfo, () => setFormState());
+watch(
+  userInfo,
+  () => {
+    setFormState();
+
+    if (props.channel === 'discord' && polling.value && userInfo.value.integration[props.channel]) {
+      clearInterval(polling.value);
+    }
+  },
+  { immediate: true },
+);
 
 function validateSetupAction() {
   if (
@@ -175,8 +229,18 @@ function teleWidgetLoaded() {
 }
 
 function onAuthorizeSuccess(user) {
-  const { id, username } = user;
-  store.dispatch('account/updateTelegramInfo', { params: { id, username } });
+  const { id } = user;
+  store.dispatch('account/updateTelegramInfo', { params: { id } });
+}
+
+// Set up discord
+function showDiscordAuth() {
+  var url = `https://discord.com/api/oauth2/authorize?client_id=${client_id.value}&redirect_uri=${redirect_uri.value}&response_type=token&scope=identify%20bot`;
+  var windowName = 'NewWindow';
+  var windowFeatures = 'width=800,height=800,left=500,top=50';
+
+  // Open the new window
+  window.open(url, windowName, windowFeatures);
 }
 </script>
 

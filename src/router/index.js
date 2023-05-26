@@ -91,17 +91,17 @@ const router = createRouter({
       meta: { title: 'Splash' },
     },
     {
+      path: '/user/connections/discord',
+      name: 'DiscordAuth',
+      component: () => import('@/views/Editor/Action/DiscordAuth'),
+      meta: { title: 'Discord Authentication' },
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'notfound',
       component: () => import('@/views/NotFound'),
       meta: { title: '404 Not Found' },
     },
-    // {
-    //   path: '/test',
-    //   name: 'Test',
-    //   component: () => import('@/views/Test'),
-    //   meta: { title: 'Test' },
-    // },
   ],
 });
 
