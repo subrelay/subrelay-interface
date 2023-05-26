@@ -7,18 +7,11 @@
     </n-layout-header>
 
     <n-layout-content>
-      <n-space align="center" justify="center" style="height: 80vh; width: 100%" v-if="loading">
-        <Icon icon="eos-icons:three-dots-loading" width="50" color="rgba(230, 0, 122, 1)" />
-      </n-space>
-
       <n-result
-        v-else
         style="margin-top: 25vh"
         :title="isSuccess ? 'Success' : 'Error'"
         :description="
-          isSuccess
-            ? 'Connect successfully! You can close this window.'
-            : 'Something went wrong. Please try again!'
+          isSuccess ? 'Connect successfully! You can close this window.' : 'Something went wrong. Please try again!'
         "
         :status="isSuccess ? 'success' : 'error'"
       >
@@ -34,6 +27,7 @@
 import Logo from '@/components/Logo';
 import { onBeforeMount, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
+import isEmpty from 'lodash/isEmpty';
 
 const route = useRoute();
 const closeWindow = () => {
@@ -41,17 +35,10 @@ const closeWindow = () => {
 };
 
 const isSuccess = ref(false);
-const loading = ref(true);
 
 onBeforeMount(() => {
-  if (!route.query || route.query.success === 'true') {
+  if (isEmpty(route.query) || route.query.success === 'true') {
     isSuccess.value = true;
   }
-});
-
-onMounted(() => {
-  setTimeout(() => {
-    loading.value = false;
-  }, 2000);
 });
 </script>

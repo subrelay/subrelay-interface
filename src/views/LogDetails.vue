@@ -68,7 +68,13 @@
             :wrap="false"
           >
             <n-space align="center" :wrap-item="false" :wrap="false">
-              <n-avatar style="background: transparent" round :size="24" :src="log.chain.imageUrl" />
+              <n-avatar
+                color="transparent"
+                style="background: transparent"
+                round
+                :size="24"
+                :src="log.chain.imageUrl"
+              />
               <div>{{ log.event.name }}</div>
             </n-space>
 

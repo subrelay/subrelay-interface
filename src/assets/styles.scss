@@ -95,7 +95,7 @@ body {
   transition: color 0.5s, background-color 0.5s;
   line-height: 1.6;
   font-family: 'Poppins', sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -347,4 +347,9 @@ flex-1 {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.n-base-selection,
+.n-button {
+  font-size: 13px;
 }

@@ -68,7 +68,7 @@ function handleSelectChannel(newChannel) {
   .channel_item {
     width: 150px;
     padding: 10px;
-    font-size: 1rem;
+    font-size: 13px;
     font-weight: bold;
 
     .n-radio__label {

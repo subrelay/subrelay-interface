@@ -5,7 +5,7 @@ const conditionFormat = { variable: null, operator: null, value: null };
 
 const defaultConfig = () => ({
   name: null,
-  // uuid: '01H16J1X13ZDN5XRJP9JD3KJ91',
+  // uuid: '01H1BE98ER69WGY85D5ABW80Y0',
   uuid: null,
   tasks: [
     {
@@ -13,7 +13,7 @@ const defaultConfig = () => ({
       type: 'trigger',
       dependOnName: null,
       config: {
-        // eventId: '01H16J1X1QXE5J9B2DH0QA2YRH',
+        // eventId: '01H1BE98F85QPY408WD1AQ0MKT',
         eventId: null,
       },
     },
@@ -68,9 +68,7 @@ const editor = reactive({
   },
 
   addOr() {
-    this.workflow.tasks[this.filterIdx].config.conditions.push([
-      { ...conditionFormat, key: randomKey() },
-    ]);
+    this.workflow.tasks[this.filterIdx].config.conditions.push([{ ...conditionFormat, key: randomKey() }]);
   },
 
   addAnd(groupIdx) {
@@ -130,7 +128,9 @@ const editor = reactive({
 
     if (this.postWorkflowData.tasks[this.filterIdx].config.conditions.length) {
       // Remove key for each condition before submitting
-      this.postWorkflowData.tasks[this.filterIdx].config.conditions.forEach((group) => group.forEach((condition) => delete condition.key));
+      this.postWorkflowData.tasks[this.filterIdx].config.conditions.forEach((group) =>
+        group.forEach((condition) => delete condition.key),
+      );
     } else {
       // Remove empty filter conditions
       this.postWorkflowData.tasks[this.actionIdx].dependOnName = 'trigger';

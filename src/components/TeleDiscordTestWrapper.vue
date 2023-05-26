@@ -50,8 +50,15 @@
         <n-space v-else align="center" :size="4">
           A test message was sent to
           <n-space align="center" :wrap-item="false" :size="4">
-            <n-avatar round size="small" :src="userInfo.integration[channel].avatar" />
-            <span class="text-bold">@{{ userInfo.integration[channel].username }} </span>.
+            <n-avatar
+              color="transparent"
+              round
+              size="small"
+              :src="userInfo.integration[channel].avatar"
+              v-if="userInfo.integration[channel].avatar"
+            />
+            <span class="text-bold">@{{ userInfo.integration[channel].username }}</span>
+            .
           </n-space>
         </n-space>
       </n-space>

@@ -52,7 +52,7 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
 
   function replaceLineBreak(text) {
     const regex = /<br\/>/g; // g flag to replace all occurrences
-    const replacement = '<br\/><br class="ProseMirror-trailingBreak"/>';
+    const replacement = '<br/><br class="ProseMirror-trailingBreak"/>';
     const result = text.replace(regex, replacement);
     return result;
   }
