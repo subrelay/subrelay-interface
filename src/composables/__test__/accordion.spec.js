@@ -1,7 +1,6 @@
 import { useAccordion } from '@/composables';
 import { useStore } from 'vuex';
 
-// Mock the useStore function from vuex
 vi.mock('vuex', () => ({
   useStore: vi.fn(),
 }));
