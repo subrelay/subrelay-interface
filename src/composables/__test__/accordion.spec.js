@@ -1,7 +1,6 @@
 import { useAccordion } from '@/composables';
 import { useStore } from 'vuex';
 
-// Mock the useStore function from vuex
 vi.mock('vuex', () => ({
   useStore: vi.fn(),
 }));
@@ -9,8 +8,8 @@ vi.mock('vuex', () => ({
 describe('Test useAccordion', () => {
   let store;
   let task;
-  let methods;
   let expandValue;
+  let methods;
   let computedProps;
 
   beforeEach(() => {
@@ -22,7 +21,7 @@ describe('Test useAccordion', () => {
       state: { editor: { expand: { [task]: expandValue } } },
       commit: vi.fn(),
     });
-    
+
     store = useStore();
 
     // Call the useAccordion function with the mock store

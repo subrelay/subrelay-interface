@@ -81,17 +81,14 @@ describe('Test useShowError', () => {
   });
 
   afterEach(() => {
-    // This can be skipped if clearMocks: true is already set in config file
-    console.error.mockClear();
-    window.$message.error.mockClear();
+    vi.clearAllMocks(); // This can be skipped if clearMocks: true is already set in config file
   });
 
   afterAll(() => {
-    console.error.mockRestore();
-    window.$message.error.mockRestore();
+    vi.clearAllMocks();
   });
 
-  it('Should log the error to the console', () => {
+  it('Should log the error to console', () => {
     const error = new Error('Test error');
     useShowError(error);
     expect(console.error).toHaveBeenCalledWith(error);
@@ -110,15 +107,23 @@ describe('Test useShowError', () => {
     expect(window.$message.error).toHaveBeenCalledWith(expectedErrorMessage);
   });
 
-  it('should handle the "Cancelled" and "Workflow Not Found" messages', () => {
+  it('Should handle the "Cancelled" and "Workflow Not Found" messages', () => {
     const error1 = { message: 'Cancelled' };
     const error2 = { message: 'Workflow Not Found' };
-    // window.$message = { error: vi.fn() }; // Mock $message.error function
 
     useShowError(error1);
     useShowError(error2);
 
     expect(window.$message.error).not.toHaveBeenCalled();
+  });
+
+  it('Should handle the case when window.$message is undefined', () => {
+    window.$message = undefined;
+    expect(window.$message).toBeUndefined();
+
+    const mockError = new Error('Test error');
+    useShowError(mockError);
+    expect(console.error).toHaveBeenCalledWith(mockError);
   });
 });
 

@@ -9,17 +9,15 @@ export const useParseCamelCaseStr = (string) => {
 
 export function useShowError(e) {
   console.error(e);
+  if (!window.$message) return;
 
   let responseMsg = e.response?.data.message;
-
   if (isArray(responseMsg)) {
     responseMsg = responseMsg.join();
   }
 
-  const displayMsg = responseMsg || e.message || e;
-
+  const displayMsg = responseMsg || e.message;
   if (displayMsg === 'Cancelled' || displayMsg === 'Workflow Not Found') return;
-  if (!window.$message) return;
   window.$message.error(displayMsg);
 }
 
