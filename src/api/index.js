@@ -27,7 +27,6 @@ export const getSavedAuthToken = (address) => {
 
 const saveAuthToken = (address, token, generatedAt) => {
   const json = JSON.stringify({ token, generatedAt });
-
   localStorage.setItem(address, json);
 };
 
