@@ -7,12 +7,12 @@
     "build-stg": "vite build --mode staging",
     "build-prd": "vite build --mode production",
     "preview": "vite preview",
-    "test:e2e": "start-server-and-test preview :4173 'cypress run --e2e'",
-    "test:e2e:dev": "start-server-and-test 'vite dev --port 4173' :4173 'cypress open --e2e'",
-    "test:unit:dev": "cypress open --component",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --ignore-path .gitignore",
+    "test:e2e:ci": "start-server-and-test preview :9000 'cypress run --e2e'",
+    "test:e2e": "start-server-and-test 'vite dev --port 9000' :9000 'cypress open --e2e'",
+    "cypress:open": "cypress open",
     "test:unit": "vitest run",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --ignore-path .gitignore"
   },
   "dependencies": {
     "@iconify/vue": "^4.0.0",

@@ -13,7 +13,14 @@
           <span style="margin-left: 5px"> Polkadot{.js} wallet to start using SubRelay.</span>
         </div>
 
-        <n-button :loading="loading" type="primary" round size="large" @click="onConnectWallet">
+        <n-button
+          type="primary"
+          round
+          size="large"
+          @click="onConnectWallet"
+          data-test="connect-wallet"
+          :loading="loading"
+        >
           Connect Wallet
         </n-button>
       </div>

@@ -1,33 +1,9 @@
-import { useShowError } from '@/composables';
 import Api, { getSavedAuthToken } from '@/api';
+import getInjectedExtension from '@/utils/getExtension';
 import isEmpty from 'lodash/isEmpty';
+import mockedAccounts from '../../cypress/fixtures/accounts.json';
 
-const MAX_RETRY = 10;
 const CONNECTED_ACCOUNT = 'polkadot-js-connected';
-
-const getInjectedExtension = () => {
-  let counter = 0;
-  return new Promise((resolve, reject) => {
-    // Retry until the injected extensions loaded or reach timeout.
-    const interval = setInterval(() => {
-      if (window.injectedWeb3) {
-        clearInterval(interval);
-        if (window.injectedWeb3['polkadot-js']) {
-          resolve(window.injectedWeb3['polkadot-js']);
-        } else {
-          reject(new Error('Unsupported extension.'));
-        }
-      }
-
-      counter += 1;
-      if (counter === MAX_RETRY) {
-        clearInterval(interval);
-        useShowError('Error loading wallet. Please try again.');
-        reject(new Error('Timeout.'));
-      }
-    }, 500);
-  });
-};
 
 export default {
   namespaced: true,
@@ -73,13 +49,19 @@ export default {
       commit('setLoading', { loadAccounts: true });
       try {
         const connectedAccount = localStorage.getItem(CONNECTED_ACCOUNT);
+        let accounts, signer;
 
-        const extension = await getInjectedExtension();
-        const result = await extension.enable();
-        const accounts = await result.accounts.get();
-
-        commit('setAccounts', accounts);
-        commit('setSigner', result.signer);
+        if (!window.Cypress) {
+          const extension = await getInjectedExtension();
+          const result = await extension.enable();
+          accounts = await result.accounts.get();
+          signer = result.signer;
+          commit('setAccounts', accounts);
+          commit('setSigner', signer);
+        } else {
+          commit('setAccounts', mockedAccounts);
+          commit('setSigner', null);
+        }
 
         if (connectedAccount) {
           const connected = JSON.parse(connectedAccount);
@@ -143,8 +125,6 @@ export default {
       try {
         if (showLoading) commit('setLoading', { updateDiscordInfo: true });
         const { selected: account, signer } = state;
-        console.log('account', JSON.stringify(account));
-        console.log('params', params);
         await Api.updateDiscordInfo({ account, signer, params });
         dispatch('getUserInfo', { showLoading: false });
       } catch (e) {
