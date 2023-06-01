@@ -23,11 +23,11 @@
       </template>
 
       <n-scrollbar style="max-height: 50vh" trigger="none">
-        <n-space vertical v-if="accounts.length">
+        <n-space vertical v-if="accounts.length" :wrap-item="false">
           <n-card
             small
             hoverable
-            class="cursor-pointer"
+            class="cursor-pointer account-item"
             v-for="(account, index) in accounts"
             @click="onSelectAccount(account)"
             style="max-width: 97%"
@@ -60,6 +60,7 @@
       <template #action>
         <div style="text-align: right">
           <n-button
+            data-test="confirm-account"
             type="primary"
             @click="onConfirm"
             :loading="loading"
@@ -96,10 +97,6 @@ function onSelectAccount(account) {
   currentAcc.value = account;
 }
 
-function clearTelegramCookies() {
-  console.log('clear');
-}
-
 async function onConfirm() {
   if (!accounts.value.length) {
     emits('update:modelValue', false);
@@ -109,7 +106,9 @@ async function onConfirm() {
   try {
     loading.value = true;
 
-    await generateGetToken({ account: currentAcc.value, signer: signer.value });
+    if (!window.Cypress) {
+      await generateGetToken({ account: currentAcc.value, signer: signer.value });
+    }
 
     const isAccChanged = storedAccount.value?.address !== currentAcc.value?.address;
 

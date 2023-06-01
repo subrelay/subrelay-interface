@@ -27,7 +27,6 @@ export default {
 
     setAccounts: (state, accounts) => {
       state.accounts = accounts;
-      console.log('accounts', accounts);
     },
 
     setUserInfo: (state, info) => {
