@@ -1,7 +1,6 @@
 import Api, { getSavedAuthToken } from '@/api';
 import getInjectedExtension from '@/utils/getExtension';
 import isEmpty from 'lodash/isEmpty';
-import mockedAccounts from '../../cypress/fixtures/accounts.json';
 
 const CONNECTED_ACCOUNT = 'polkadot-js-connected';
 
@@ -51,17 +50,13 @@ export default {
         const connectedAccount = localStorage.getItem(CONNECTED_ACCOUNT);
         let accounts, signer;
 
-        if (!window.Cypress) {
-          const extension = await getInjectedExtension();
-          const result = await extension.enable();
-          accounts = await result.accounts.get();
-          signer = result.signer;
-          commit('setAccounts', accounts);
-          commit('setSigner', signer);
-        } else {
-          commit('setAccounts', mockedAccounts);
-          commit('setSigner', null);
-        }
+        const extension = await getInjectedExtension();
+        const result = await extension.enable();
+        accounts = await result.accounts.get();
+        signer = result.signer;
+        console.log(signer);
+        commit('setAccounts', accounts);
+        commit('setSigner', signer);
 
         if (connectedAccount) {
           const connected = JSON.parse(connectedAccount);
