@@ -1,13 +1,11 @@
 <template>
   <n-layout style="height: 100vh">
-    <n-layout-header style="padding: 5px 3rem" bordered>
-      <n-space align="center" justify="space-between">
-        <Logo @click="goToHomePage" />
+    <n-layout-header class="header" bordered>
+      <Logo @click="goToHomePage" />
 
-        <n-space align="center" :size="32">
-          <DarkmodeSwitch />
-          <AccountDropdown />
-        </n-space>
+      <n-space align="center" :size="32">
+        <DarkmodeSwitch />
+        <AccountDropdown />
       </n-space>
     </n-layout-header>
 
@@ -17,7 +15,7 @@
           bordered
           show-trigger="bar"
           collapse-mode="width"
-          :width="240"
+          :width="300"
           :collapsed-width="64"
           :collapsed="collapsed"
           @update:collapsed="(value) => store.commit('global/toggleSider', value)"
@@ -25,7 +23,7 @@
           collapsed-trigger-style="top:20%"
         >
           <n-menu
-            style="padding-top: 20px"
+            style="padding-top: 32px"
             v-model:value="activeKey"
             @update:value="onUpdateActive"
             :default-value="'workflows'"
@@ -88,14 +86,13 @@ function renderIcon(icon, isButton = false) {
 const siderOptions = ref([
   {
     label: () => (collapsed.value
-      ? h('div', {}, { default: () => 'New workflow' })
+      ? h('div', { style: 'font-weight: bold' }, { default: () => 'Create workflow' })
       : h(
         NButton,
-        { block: true, type: 'primary', round: true },
+        { block: true, type: 'primary', round: true, style: 'font-family: Unbounded; font-size: 16px; font-weight: bold; padding: 24px; margin-bottom: 32px;' },
         {
           default: () => [
-            h(Icon, { icon: 'fluent:add-12-filled', inline: true }),
-            h('div', { style: 'margin-left: 0.6rem' }, 'New workflow'),
+            h('div', { style: 'margin-left: 0.6rem' }, 'Create workflow'),
           ],
         },
       )),
@@ -124,6 +121,14 @@ watch(
 </script>
 
 <style lang="scss">
+.header {
+  height: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 32px;
+}
+
 .profile_menu {
   .icon {
     transition: 0.3s transform ease;
@@ -134,6 +139,9 @@ watch(
 .n-menu {
   .n-menu-item {
     margin: 10px 0px;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: Unbounded; 
     &:first-child {
       margin-bottom: 15px;
 
