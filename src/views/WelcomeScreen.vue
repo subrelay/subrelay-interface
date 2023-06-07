@@ -17,8 +17,8 @@
           type="primary"
           round
           size="large"
-          @click="onConnectWallet"
           data-test="connect-wallet"
+          @click="onConnectWallet"
           :loading="loading"
         >
           Connect Wallet
@@ -37,6 +37,7 @@ import { useRouter } from 'vue-router';
 import { useMessage } from 'naive-ui';
 import Logo from '@/components/Logo';
 import AccountModal from '@/components/AccountModal';
+import isEmpty from 'lodash/isEmpty';
 
 const router = useRouter();
 const store = useStore();
@@ -49,14 +50,16 @@ onMounted(() => {
 });
 
 const onConnectWallet = async () => {
-  await store.dispatch('account/loadAccounts');
+  // await store.dispatch('account/loadAccounts');
   showModal.value = true;
 };
 
 watch(
   selectedAccount,
-  (acc) => {
-    if (acc) router.push('/');
+  async (acc) => {
+    if (!isEmpty(acc)) {
+      router.push('/');
+    }
   },
   { immediate: true },
 );

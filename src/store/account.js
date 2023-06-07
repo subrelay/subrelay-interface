@@ -54,7 +54,6 @@ export default {
         const result = await extension.enable();
         accounts = await result.accounts.get();
         signer = result.signer;
-        console.log(signer);
         commit('setAccounts', accounts);
         commit('setSigner', signer);
 

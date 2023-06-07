@@ -1,27 +1,18 @@
 <template>
-  <n-dropdown v-model:show="showMenu" :options="profileOptions" @select="onSelectProfileOption">
-    <n-button size="large" class="profile_menu" round>
+  <n-dropdown v-model:show="showMenu" @select="onSelectProfileOption" :options="profileOptions">
+    <n-button size="large" class="profile_menu" round data-test="account-dropdown">
       <n-space align="center">
-        <n-avatar
-          round
-          size="small"
-          color="transparent"
-          src="https://cryptologos.cc/logos/polkadot-new-dot-logo.png"
-        />
+        <n-avatar round size="small" color="transparent" src="https://cryptologos.cc/logos/polkadot-new-dot-logo.png" />
 
         <n-space vertical :size="5" class="test" :wrap-item="false">
-          <div v-html="walletAccount.name" class="text-bold font-size-085 text-ellipsis" />
+          <div v-html="walletAccount.name" class="text-bold font-size-085 text-ellipsis" data-test="account-name" />
 
-          <n-text depth="3" class="font-size-075">
+          <n-text depth="3" class="font-size-075" data-test="account-address">
             {{ truncate(walletAccount) }}
           </n-text>
         </n-space>
 
-        <Icon
-          icon="akar-icons:chevron-down"
-          class="icon"
-          :style="{ transform: showMenu ? 'rotate(180deg)' : '' }"
-        />
+        <Icon icon="akar-icons:chevron-down" class="icon" :style="{ transform: showMenu ? 'rotate(180deg)' : '' }" />
       </n-space>
     </n-button>
   </n-dropdown>
