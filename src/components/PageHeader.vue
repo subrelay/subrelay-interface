@@ -6,6 +6,7 @@
       <n-grid cols="6" :x-gap="20" item-responsive>
         <n-gi span="2 1150:1">
           <n-input
+            data-test="search-bar"
             clearable
             placeholder="Search"
             v-model:value="searchText"

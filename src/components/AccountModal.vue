@@ -1,5 +1,6 @@
 <template>
   <n-modal
+    data-test="account-modal"
     class="account_modal"
     @update:show="emits('update:modelValue', $event)"
     :show="props.modelValue"
