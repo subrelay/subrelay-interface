@@ -12,30 +12,23 @@ Cypress.Commands.add('getBySelLike', (selector, ...args) => {
 
 Cypress.Commands.add('interceptUserInfo', () => {
   cy.intercept('GET', '/user/info', {
-    fixture: 'userInfo',
+    fixture: 'general/userInfo',
     delay: Cypress.env('delay'),
   }).as('getUserInfo');
 });
 
 Cypress.Commands.add('interceptChains', () => {
   cy.intercept('GET', '/chains', {
-    fixture: 'chains',
+    fixture: 'general/chains',
     delay: Cypress.env('delay'),
   }).as('getChains');
 });
 
 Cypress.Commands.add('interceptOperators', () => {
   cy.intercept('GET', '*/operators', {
-    fixture: 'operators',
+    fixture: 'general/operators',
     delay: Cypress.env('delay'),
   }).as('getOperators');
-});
-
-Cypress.Commands.add('interceptNoWorkflow', () => {
-  cy.intercept('GET', '/workflows*', {
-    fixture: 'workflow/noWorkflow',
-    delay: Cypress.env('delay'),
-  }).as('getNoWorkflow');
 });
 
 Cypress.Commands.add('interceptWorkflows', (fixture = 'workflow/workflows', alias = 'getWorkflows') => {
@@ -48,4 +41,12 @@ Cypress.Commands.add('interceptDeleteWorkflow', () => {
 
 Cypress.Commands.add('interceptEditWorkflow', () => {
   cy.intercept('PATCH', '/workflows/*', { statusCode: 204, delay: Cypress.env('delay') }).as('editWorkflow');
+});
+
+Cypress.Commands.add('interceptLogs', () => {
+  cy.intercept('GET', '/workflow-logs?*', { fixture: 'log/logs', delay: Cypress.env('delay') }).as('getLogs');
+});
+
+Cypress.Commands.add('interceptLog', () => {
+  cy.intercept('GET', '/workflow-logs/*', { fixture: 'log/log', delay: Cypress.env('delay') }).as('getLog');
 });

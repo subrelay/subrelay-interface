@@ -102,7 +102,7 @@ export default function useQuery(module, path, columns = {}, fetchData = () => {
     selectedChain.value = null;
     selectedStatus.value = null;
     const sortingIndex = findIndex(columns.value, ({ sortOrder }) => !!sortOrder);
-    columns.value[sortingIndex].sortOrder = false;
+    if (sortingIndex !== -1) columns.value[sortingIndex].sortOrder = false;
     pushQueryToRoute({ ...defaultQuery });
   }
 

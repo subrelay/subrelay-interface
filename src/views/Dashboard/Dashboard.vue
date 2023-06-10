@@ -111,7 +111,8 @@ const siderOptions = ref([
     icon: renderIcon('ic:round-dashboard'),
   },
   {
-    label: () => h(RouterLink, { to: { name: 'logs' } }, { default: () => 'Logs' }),
+    label: () =>
+      h(RouterLink, { to: { name: 'logs' }, 'data-test': 'side-bar-logs-router' }, { default: () => 'Logs' }),
     key: 'logs',
     icon: renderIcon('system-uicons:files-history'),
   },

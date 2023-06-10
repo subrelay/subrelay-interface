@@ -133,7 +133,7 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
         store.commit('editor/setError', { [templateKey]: false });
       }
 
-      EditorData.workflow.tasks[actionIdx.value].config[templateKey] = keyedContent.value.replace(/<p><\/p>/g, '<br/>');
+      EditorData.workflow.tasks[actionIdx.value].config[templateKey] = keyedContent;
     },
     { immediate: true },
   );

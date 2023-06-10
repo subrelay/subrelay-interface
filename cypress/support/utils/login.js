@@ -1,4 +1,4 @@
-import mockedAccounts from '../../fixtures/accounts.json';
+import mockedAccounts from '../../fixtures/general/accounts.json';
 
 const mockedEnabledExtension = {
   signer: {

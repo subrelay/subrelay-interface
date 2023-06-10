@@ -48,7 +48,7 @@ describe('Workflows dasboard', () => {
         .find('.n-switch')
         .should('have.attr', 'aria-checked', 'false');
 
-      // 2nd row
+      // 3rd row
       cy.get('tbody')
         .find('tr')
         .eq(2)
@@ -137,7 +137,7 @@ describe('Workflows dasboard', () => {
     cy.get('.n-message').should('be.visible').and('contain', 'Workflow resumed successfully');
   });
 
-  it.only('Can rename workflow', () => {
+  it('Can rename workflow', () => {
     cy.interceptEditWorkflow();
     cy.getBySel('workflows-table')
       .find('tr')
