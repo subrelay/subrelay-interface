@@ -28,6 +28,8 @@
             filterable
             clearable
             placeholder="All statuses"
+            data-test="status-filter"
+            :menu-props="{ 'data-test': 'status-filter-menu' }"
             :render-label="useRenderDropdownLabel"
             :options="statusOptions"
             :value="selectedStatus"
@@ -39,7 +41,7 @@
 
       <n-tooltip trigger="hover">
         <template #trigger>
-          <n-button @click="clearAllFilters" :disabled="loading">
+          <n-button @click="clearAllFilters" :disabled="loading" data-test="clear-filters">
             <Icon icon="mdi:filter-remove" />
           </n-button>
         </template>

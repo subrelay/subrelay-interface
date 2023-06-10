@@ -1,6 +1,6 @@
 <template>
   <n-dropdown trigger="hover" :options="options" @select="handleSelect" placement="bottom-end">
-    <n-button text>
+    <n-button text data-test="workflow-action-menu">
       <Icon icon="ph:dots-six-vertical-bold" />
     </n-button>
   </n-dropdown>
