@@ -54,7 +54,7 @@ describe('Workflows dasboard', () => {
         .eq(2)
         .find('td')
         .first()
-        .should('have.text', 'Webhook ksm')
+        .should('have.text', 'KSM tele')
         .next()
         .should('have.text', 'Kusama')
         .next()

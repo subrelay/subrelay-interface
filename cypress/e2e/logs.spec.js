@@ -93,10 +93,10 @@ describe('Logs dasboard', () => {
     cy.url().should('not.include', `search=`).and('not.include', 'chainUuid=').and('not.include', `status=failed`);
   });
 
-  it.only('Can navigate to corresponding workflow details', () => {
+  i('Can navigate to corresponding workflow details', () => {
     cy.interceptEditWorkflow();
     cy.interceptLog();
     cy.getBySel('logs-table').find('tbody').find('tr').first().contains('View').click();
-    cy.url().should('include', '/logs/');
+    cy.url().should('include', '/logs/01H2JXJESBT1A5CDX9VM4RZBXN');
   });
 });

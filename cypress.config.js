@@ -3,6 +3,7 @@ const { defineConfig } = require('cypress');
 module.exports = defineConfig({
   env: {
     delay: 200,
+    logId: '01H2JXJESBT1A5CDX9VM4RZBXN',
   },
   e2e: {
     specPattern: 'cypress/e2e/**/*.{cy,spec}.{js,jsx,ts,tsx}',
