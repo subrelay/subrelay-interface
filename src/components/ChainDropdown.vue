@@ -1,5 +1,7 @@
 <template>
   <n-select
+    data-test="chain-dropdown"
+    :menu-props="{ 'data-test': 'chain-dropdown-menu' }"
     filterable
     clearable
     value-field="uuid"

@@ -8,14 +8,16 @@
 import AppProvider from '@/components/AppProvider';
 import { useStore } from 'vuex';
 import { onBeforeMount } from 'vue';
+import { useRoute } from 'vue-router';
 
 const store = useStore();
+const route = useRoute();
 
 onBeforeMount(() => {
   store.dispatch('chain/getChains');
   store.dispatch('editor/getOperators');
-  store.dispatch('account/loadAccounts');
   store.dispatch('global/loadSiderState');
+  store.dispatch('account/loadAccounts');
 });
 </script>
 

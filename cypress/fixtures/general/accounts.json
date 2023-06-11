@@ -2,19 +2,19 @@
   {
     "address": "5CFk5jMTFbRZhAMxhEYNPq8kLndMC3iDcrKLFAUMufB1TU8U",
     "genesisHash": "",
-    "name": "111",
+    "name": "foo",
     "type": "sr25519"
   },
   {
     "address": "5DHubW1rnEsUsksfzmdUhx5gBxECtif61EhsP9rs1o1xTQJK",
     "genesisHash": "",
-    "name": "222",
+    "name": "bar",
     "type": "sr25519"
   },
   {
     "address": "5Dq8F4LmGDVa5nzUXhHyeLLwSrE7VnHKAueuJyKN37wBtyJ7",
     "genesisHash": "",
-    "name": "333",
+    "name": "lorem",
     "type": "sr25519"
   }
 ]

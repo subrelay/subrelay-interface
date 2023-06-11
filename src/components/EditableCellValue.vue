@@ -9,6 +9,7 @@
       :disabled="loading"
       :value="inputValue"
       :placeholder="placeholder"
+      :data-test="dataTest"
       @update:value="onInput"
       @keyup.enter="onSubmit"
     >
@@ -26,7 +27,7 @@
   </n-space>
 
   <!-- SHOW NODE -->
-  <n-ellipsis v-else :tooltip="{ style: { maxWidth: '400px' }, placement: 'bottom' }">
+  <n-ellipsis v-else :tooltip="{ style: { maxWidth: '400px' }, placement: 'bottom' }" :data-test="dataTest">
     {{ props.value ? props.value : '' }}
   </n-ellipsis>
 </template>
@@ -41,6 +42,7 @@ const props = defineProps({
   value: [String, Number],
   submit: { type: [Function, Object], default: () => {} },
   placeholder: { type: String, default: '' },
+  dataTest: { type: String, default: '' },
 });
 
 const emits = defineEmits(['input', 'cancelEdit']);

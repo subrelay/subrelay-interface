@@ -51,7 +51,7 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
   }
 
   function replaceLineBreak(text) {
-    const regex = /<br\/>/g; // g flag to replace all occurrences
+    const regex = /<br\s*\/?>/g; // g flag to replace all occurrences
     const replacement = '<br/><br class="ProseMirror-trailingBreak"/>';
     const result = text.replace(regex, replacement);
     return result;
@@ -94,7 +94,7 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
         ];
 
         const dataContent = newKeys
-          .filter((e) => e.data !== undefined && e.name.includes('data.'))
+          .filter((e) => e.data !== undefined && (e.name.includes('data.') || e.name.includes('data[')))
           .map((e) => `<p>${e.display}: ${getKeyHTML(e.display)}</p>`);
 
         defaultContent.value = [...greetings, ...dataContent].join('');
@@ -133,7 +133,7 @@ export default function useCustomMessage({ channel, isCustomizing = true } = {})
         store.commit('editor/setError', { [templateKey]: false });
       }
 
-      EditorData.workflow.tasks[actionIdx.value].config[templateKey] = keyedContent.value.replace(/<p><\/p>/g, '<br/>');
+      EditorData.workflow.tasks[actionIdx.value].config[templateKey] = keyedContent;
     },
     { immediate: true },
   );

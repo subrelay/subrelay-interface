@@ -4,6 +4,7 @@
 
     <n-space :wrapItem="false">
       <n-data-table
+        data-test="logs-table"
         :columns="columns"
         :data="logs"
         :loading="loading"
@@ -74,8 +75,8 @@ const columns = ref([
     },
   },
   {
-    title: 'Workflow Name',
-    key: 'workflow',
+    title: 'Workflow name',
+    key: 'name',
     className: 'text-bold',
     width: '22%',
     ellipsis: { tooltip: true },
@@ -89,16 +90,17 @@ const columns = ref([
     key: 'chain',
     width: '22%',
     ellipsis: { tooltip: true },
-    render: ({ chain }) => h('div', { style: { display: 'flex', alignItems: 'center' } }, [
-      h(NAvatar, {
-        style: { background: 'transparent' },
-        src: useGetChainImg(chain.name, chains.value),
-        round: true,
-        size: 'small',
-        color: 'white',
-      }),
-      h('div', { style: { marginLeft: '12px', padding: '4px 0' } }, chain.name),
-    ]),
+    render: ({ chain }) =>
+      h('div', { style: { display: 'flex', alignItems: 'center' } }, [
+        h(NAvatar, {
+          style: { background: 'transparent' },
+          src: useGetChainImg(chain.name, chains.value),
+          round: true,
+          size: 'small',
+          color: 'white',
+        }),
+        h('div', { style: { marginLeft: '12px', padding: '4px 0' } }, chain.name),
+      ]),
   },
   {
     title: 'Started at',
@@ -124,10 +126,11 @@ const columns = ref([
     key: 'view',
     width: '10%',
     ellipsis: { tooltip: true },
-    render: () => h('div', { style: { display: 'flex', alignItems: 'center' } }, [
-      'View',
-      h(Icon, { icon: 'akar-icons:chevron-right', style: { 'margin-left': '4px' } }),
-    ]),
+    render: () =>
+      h('div', { style: { display: 'flex', alignItems: 'center' } }, [
+        'View',
+        h(Icon, { icon: 'akar-icons:chevron-right', style: { 'margin-left': '4px' } }),
+      ]),
   },
 ]);
 
