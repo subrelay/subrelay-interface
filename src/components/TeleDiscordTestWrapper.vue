@@ -58,7 +58,6 @@
               v-if="userInfo.integration[channel].avatar"
             />
             <span class="text-bold">@{{ userInfo.integration[channel].username }}</span>
-            .
           </n-space>
         </n-space>
       </n-space>
