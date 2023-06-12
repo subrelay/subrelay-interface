@@ -18,9 +18,9 @@
             mode="callback"
             requestAccess="write"
             size="medium"
-            :telegram-login="teleBot"
             @loaded="teleWidgetLoaded"
             @callback="onAuthorizeSuccess"
+            :telegram-login="teleBot"
           />
         </n-space>
       </div>
@@ -140,8 +140,8 @@ const account = computed(() => store.state.account.selected);
 const signer = computed(() => store.state.account.signer);
 const polling = ref(null);
 
-const teleBot = ref(null);
-const client_id = ref(null);
+const teleBot = ref(import.meta.env.VITE_TELE_BOT);
+const client_id = ref(import.meta.env.VITE_DISCORD_CLIENT_ID);
 const redirect_uri = ref(null);
 
 function setFormState() {
@@ -154,22 +154,6 @@ function setFormState() {
 
 onBeforeMount(() => {
   setFormState();
-
-  // Get Tele bot for different env.
-  const hostname = window.location.hostname;
-
-  if (hostname.includes('ngrok-free.app')) {
-    teleBot.value = 'subrelay_local_bot';
-    client_id.value = '1111221036235632651';
-  } else if (hostname === 'develop.app.subrelay.xyz') {
-    teleBot.value = 'sr_develop_bot';
-    client_id.value = '1108254667726663730';
-  } else if (hostname === 'app.subrelay.xyz') {
-    teleBot.value = 'subrelay_bot';
-    client_id.value = '1093462283683889214';
-  }
-
-  // Get Discord info for different env.
 
   if (props.channel === 'discord') {
     const { origin } = window.location;
