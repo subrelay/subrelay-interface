@@ -32,7 +32,11 @@ Cypress.Commands.add('interceptOperators', () => {
 });
 
 Cypress.Commands.add('interceptWorkflows', (fixture = 'workflow/workflows', alias = 'getWorkflows') => {
-  cy.intercept('GET', '/workflows*', { fixture, delay: Cypress.env('delay') }).as(alias);
+  cy.intercept('GET', '/workflows?*', { fixture, delay: Cypress.env('delay') }).as(alias);
+});
+
+Cypress.Commands.add('interceptWorkflow', () => {
+  cy.intercept('GET', '/workflows/*', { fixture: 'workflow/workflow', delay: Cypress.env('delay') }).as('getWorkflow');
 });
 
 Cypress.Commands.add('interceptDeleteWorkflow', () => {

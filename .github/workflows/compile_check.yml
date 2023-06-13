@@ -88,4 +88,4 @@ jobs:
           yarn install
       - name: Run test
         run: |
-          yarn test:unit
+          yarn cypress:open

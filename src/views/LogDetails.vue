@@ -31,8 +31,10 @@
           </n-breadcrumb-item>
         </n-breadcrumb>
 
-        <n-dropdown trigger="hover" :options="options" @select="handleSelect" placement="bottom-end">
-          <n-button text><Icon icon="ph:dots-six-vertical-bold" width="1.25rem" /> </n-button>
+        <n-dropdown trigger="hover" @select="handleSelect" placement="bottom-end" :options="options">
+          <n-button text data-test="log-details-navigation-menu">
+            <Icon icon="ph:dots-six-vertical-bold" width="1.25rem" />
+          </n-button>
         </n-dropdown>
       </n-space>
 

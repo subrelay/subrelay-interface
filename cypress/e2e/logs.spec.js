@@ -93,7 +93,7 @@ describe('Logs dasboard', () => {
     cy.url().should('not.include', `search=`).and('not.include', 'chainUuid=').and('not.include', `status=failed`);
   });
 
-  i('Can navigate to corresponding workflow details', () => {
+  it('Can navigate to corresponding workflow details', () => {
     cy.interceptEditWorkflow();
     cy.interceptLog();
     cy.getBySel('logs-table').find('tbody').find('tr').first().contains('View').click();

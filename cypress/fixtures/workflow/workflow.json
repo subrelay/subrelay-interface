@@ -1,0 +1,66 @@
+{
+  "id": "01H2JXD6EPS7WJR8ZXJ7WPDHG0",
+  "name": "KSM tele",
+  "createdAt": "2023-06-10T08:04:44.758Z",
+  "updatedAt": "2023-06-10T15:07:59.498Z",
+  "status": "pausing",
+  "userId": "01H1BGZV9WX8A59DHGZ8YEFR2V",
+  "chain": {
+    "name": "Kusama",
+    "uuid": "01H1BE98K91AXQNQR9314G4ECF",
+    "chainId": "kusama",
+    "imageUrl": "https://raw.githubusercontent.com/paritytech/polkadot-staking-dashboard/29c060c49518c060561b7bac008a0059bbf1145f/src/img/kusama_icon.svg"
+  },
+  "event": {
+    "id": "01H1BE98KC37MY1EMR3D5889QW",
+    "name": "balances.Transfer",
+    "description": "Transfer succeeded."
+  },
+  "tasks": [
+    {
+      "id": "01H2JXD6EVE3X6D5DDH5HMFBHD",
+      "type": "trigger",
+      "name": "trigger",
+      "dependOn": null,
+      "config": {
+        "eventId": "01H1BE98KC37MY1EMR3D5889QW"
+      },
+      "workflowId": "01H2JXD6EPS7WJR8ZXJ7WPDHG0"
+    },
+    {
+      "id": "01H2JXD6EWMNXFGXG6BADKKPAY",
+      "type": "filter",
+      "name": "filter",
+      "dependOn": "01H2JXD6EVE3X6D5DDH5HMFBHD",
+      "config": {
+        "conditions": [
+          [
+            {
+              "value": "1",
+              "operator": "contains",
+              "variable": "event.data.from"
+            }
+          ],
+          [
+            {
+              "value": "a",
+              "operator": "contains",
+              "variable": "event.data.to"
+            }
+          ]
+        ]
+      },
+      "workflowId": "01H2JXD6EPS7WJR8ZXJ7WPDHG0"
+    },
+    {
+      "id": "01H2JXD6EY13C7VRGBZBN12RCW",
+      "type": "telegram",
+      "name": "action",
+      "dependOn": "01H2JXD6EWMNXFGXG6BADKKPAY",
+      "config": {
+        "messageTemplate": "Event ${event.name} on chain ${chain.name} has just happened with following data:\n\nBlock: ${event.block.hash}\nSuccess: ${event.success}\nFrom: ${event.data.from}\nTo: ${event.data.to}\nAmount: ${event.data.amount}"
+      },
+      "workflowId": "01H2JXD6EPS7WJR8ZXJ7WPDHG0"
+    }
+  ]
+}
