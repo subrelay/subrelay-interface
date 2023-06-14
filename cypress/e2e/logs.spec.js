@@ -23,7 +23,7 @@ describe('Logs dasboard', () => {
         .first()
         .should('have.text', 'Status')
         .next()
-        .should('have.text', 'Workflow Name')
+        .should('have.text', 'Workflow name')
         .next()
         .should('have.text', 'Chain')
         .next()
@@ -36,11 +36,11 @@ describe('Logs dasboard', () => {
   it('Can sort and update URL ', () => {
     // Sort by workflow name
     cy.getBySel('logs-table').find('thead').contains('Workflow name').click({ force: true });
-    cy.url().should('include', 'order=workflow&sort=DESC');
+    cy.url().should('include', 'order=name&sort=DESC');
     cy.getBySel('logs-table').find('thead').contains('Workflow name').click({ force: true });
-    cy.url().should('include', 'order=workflow&sort=ASC');
+    cy.url().should('include', 'order=name&sort=ASC');
     cy.getBySel('logs-table').find('thead').contains('Workflow name').click({ force: true });
-    cy.url().should('not.include', 'order=workflow');
+    cy.url().should('not.include', 'order=name');
 
     // Can change sort from this column to another column
     cy.getBySel('logs-table').find('thead').contains('Started at').click();
@@ -48,7 +48,7 @@ describe('Logs dasboard', () => {
     cy.getBySel('logs-table').find('thead').contains('Finished at').click();
     cy.url().should('include', 'order=finishedAt&sort=DESC');
     cy.getBySel('logs-table').find('thead').contains('Workflow name').click();
-    cy.url().should('include', 'order=workflow&sort=DESC');
+    cy.url().should('include', 'order=name&sort=DESC');
     cy.getBySel('clear-filters').click();
     cy.url().should('not.include', 'order=');
   });

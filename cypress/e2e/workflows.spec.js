@@ -1,4 +1,4 @@
-describe('Workflows dasboard', () => {
+describe('Workflows dashboard', () => {
   const searchStr = 'dot';
 
   beforeEach(() => {
