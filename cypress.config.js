@@ -1,6 +1,7 @@
 const { defineConfig } = require('cypress');
 
 module.exports = defineConfig({
+  projectId: '7i61p7',
   env: {
     delay: 200,
   },

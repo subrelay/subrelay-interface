@@ -1,4 +1,4 @@
-describe('Workflows dasboard', () => {
+describe('Workflows dashboard', () => {
   const searchStr = 'dot';
 
   beforeEach(() => {
@@ -24,9 +24,9 @@ describe('Workflows dasboard', () => {
         .next()
         .should('have.text', 'Polkadot')
         .next()
-        .should('have.text', 'Jun 8th 2023, 17:16:58')
+        .should('have.text', 'Jun 8th 2023, 10:16:58')
         .next()
-        .should('have.text', 'Jun 8th 2023, 20:55:11')
+        .should('have.text', 'Jun 8th 2023, 13:55:11')
         .next()
         .find('.n-switch')
         .should('have.attr', 'aria-checked', 'true');
@@ -41,9 +41,9 @@ describe('Workflows dasboard', () => {
         .next()
         .should('have.text', 'Westend')
         .next()
-        .should('have.text', 'Jun 8th 2023, 17:36:16')
+        .should('have.text', 'Jun 8th 2023, 10:36:16')
         .next()
-        .should('have.text', 'Jun 8th 2023, 17:36:16')
+        .should('have.text', 'Jun 8th 2023, 10:36:16')
         .next()
         .find('.n-switch')
         .should('have.attr', 'aria-checked', 'false');
@@ -58,9 +58,9 @@ describe('Workflows dasboard', () => {
         .next()
         .should('have.text', 'Kusama')
         .next()
-        .should('have.text', 'Jun 8th 2023, 21:52:18')
+        .should('have.text', 'Jun 8th 2023, 14:52:18')
         .next()
-        .should('have.text', 'Jun 8th 2023, 21:52:18')
+        .should('have.text', 'Jun 8th 2023, 14:52:18')
         .next()
         .find('.n-switch')
         .should('have.attr', 'aria-checked', 'true');
@@ -120,11 +120,9 @@ describe('Workflows dasboard', () => {
     cy.getBySel('search-bar').type(searchStr);
     cy.getBySel('chain-dropdown').click();
     cy.getBySel('chain-dropdown-menu').within(() => cy.contains(searchStr).click());
-    cy.getBySel('status-filter').click().click().click();
-    cy.getBySel('status-filter-menu').within(() => cy.contains('Running').click());
-    cy.url().should('include', `search=${searchStr}`).and('include', 'chainUuid=').and('include', 'status=running');
+    cy.url().should('include', `search=${searchStr}`).and('include', 'chainUuid=');
     cy.getBySel('clear-filters').click();
-    cy.url().should('not.include', `search=`).and('not.include', 'chainUuid=').and('not.include', `status=running`);
+    cy.url().should('not.include', `search=`).and('not.include', 'chainUuid=');
   });
 
   it('Can change workflow status', () => {

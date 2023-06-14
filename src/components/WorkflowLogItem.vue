@@ -2,6 +2,7 @@
   <div
     :class="`wrapper ${darkMode ? 'dark' : ''}`"
     @click="router.push({ name: 'logDetails', params: { id: log.id } })"
+    class="workflow-log-item"
   >
     <n-grid cols="3" item-responsive>
       <n-gi>

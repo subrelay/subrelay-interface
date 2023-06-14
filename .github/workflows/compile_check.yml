@@ -66,26 +66,22 @@ jobs:
 
   e2e-test:
     runs-on: ubuntu-latest
-
+    container: cypress/browsers:node16.16.0-chrome107-ff107-edge
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - uses: actions/setup-node@v3
         with:
           node-version: '16.x'
-      - name: Cache node modules
-        uses: actions/cache@v3
-        env:
-          cache-name: cache-node-modules
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v5
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-      - name: Install packages
-        run: |
-          yarn install
-      - name: Run test
-        run: |
-          yarn cypress:open
+          start: yarn dev
+          wait-on: http://localhost:9000/
+          browser: chrome
+          record: true
+        env:
+          CYPRESS_baseUrl: http://localhost:9000/
+          CYPRESS_RECORD_KEY: 0c6d6452-9422-40ff-815f-376d300e09c6

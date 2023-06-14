@@ -110,7 +110,6 @@ router.beforeResolve((to, from, next) => {
   if (to.matched.some((record) => record.meta.signInRequired)) {
     const connectedAccount = localStorage.getItem('polkadot-js-connected');
 
-
     const authToken = connectedAccount ? getSavedAuthToken(JSON.parse(connectedAccount).address) : null;
 
     if (authToken) {

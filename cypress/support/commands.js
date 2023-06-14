@@ -54,3 +54,17 @@ Cypress.Commands.add('interceptLogs', () => {
 Cypress.Commands.add('interceptLog', () => {
   cy.intercept('GET', '/workflow-logs/*', { fixture: 'log/log', delay: Cypress.env('delay') }).as('getLog');
 });
+
+Cypress.Commands.add('interceptAWorkflowLogs', () => {
+  cy.intercept('GET', '/workflow-logs?*', {
+    fixture: 'log/workflowLogs',
+    delay: Cypress.env('delay'),
+  }).as('getAWorkflowLogs');
+});
+
+Cypress.Commands.add('interceptAWorkflowFailedLogs', () => {
+  cy.intercept('GET', '/workflow-logs?status=failed&*', {
+    fixture: 'log/workflowFailedLogs',
+    delay: Cypress.env('delay'),
+  }).as('getAWorkflowFailedLogs');
+});
