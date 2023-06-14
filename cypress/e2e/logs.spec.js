@@ -65,7 +65,7 @@ describe('Logs dasboard', () => {
   });
 
   it('Can filter by chain and update URL ', () => {
-    cy.getBySel('chain-dropdown').click({ force: true });
+    cy.getBySel('chain-dropdown').click().click();
     cy.getBySel('chain-dropdown-menu').within(() => cy.contains(searchStr).click());
     cy.getBySel('logs-table').get('.n-base-loading').should('be.visible');
     cy.url().should('include', 'chainUuid=');

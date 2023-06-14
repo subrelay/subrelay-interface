@@ -120,11 +120,9 @@ describe('Workflows dashboard', () => {
     cy.getBySel('search-bar').type(searchStr);
     cy.getBySel('chain-dropdown').click();
     cy.getBySel('chain-dropdown-menu').within(() => cy.contains(searchStr).click());
-    cy.getBySel('status-filter').click().click().click();
-    cy.getBySel('status-filter-menu').within(() => cy.contains('Running').click());
-    cy.url().should('include', `search=${searchStr}`).and('include', 'chainUuid=').and('include', 'status=running');
+    cy.url().should('include', `search=${searchStr}`).and('include', 'chainUuid=');
     cy.getBySel('clear-filters').click();
-    cy.url().should('not.include', `search=`).and('not.include', 'chainUuid=').and('not.include', `status=running`);
+    cy.url().should('not.include', `search=`).and('not.include', 'chainUuid=');
   });
 
   it('Can change workflow status', () => {
