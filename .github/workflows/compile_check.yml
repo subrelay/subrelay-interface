@@ -81,3 +81,8 @@ jobs:
           start: yarn dev
           wait-on: http://localhost:9000/
           browser: chrome
+          record: true
+          runTests: false
+        env:
+          CYPRESS_baseUrl: http://localhost:9000/
+          CYPRESS_RECORD_KEY: 0c6d6452-9422-40ff-815f-376d300e09c6
