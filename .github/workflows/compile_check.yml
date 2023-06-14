@@ -68,7 +68,8 @@ jobs:
     runs-on: ubuntu-latest
     container: cypress/browsers:node16.16.0-chrome107-ff107-edge
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: '16.x'
@@ -83,9 +84,9 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
-      - name: Install packages
-        run: |
-          yarn install
-      - name: Run test
-        run: |
-          yarn cypress:open
+      - name: Cypress run
+        uses: cypress-io/github-action@v5
+        with:
+          dev: yarn dev
+          wait-on: http://localhost:9000/
+          browser: chrome
