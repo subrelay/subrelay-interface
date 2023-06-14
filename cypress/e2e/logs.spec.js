@@ -7,6 +7,8 @@ describe('Logs dasboard', () => {
     cy.authenticate();
     cy.getBySel('side-bar-logs-router').click();
     cy.get('.n-layout-toggle-bar').click();
+    cy.wait('@getWorkflows');
+    cy.wait('@getLogs');
   });
 
   it('Display correct data list of workflow', () => {
