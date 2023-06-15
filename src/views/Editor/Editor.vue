@@ -71,7 +71,7 @@
         </n-form>
       </div>
 
-      <!-- <pre>{{ EditorData }}</pre> -->
+      <pre>{{ EditorData }}</pre>
     </n-layout-content>
   </n-layout>
 </template>

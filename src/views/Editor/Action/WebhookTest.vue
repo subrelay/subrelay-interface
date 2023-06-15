@@ -1,6 +1,6 @@
 <template>
   <n-space vertical :size="30">
-    <n-card :segmented="{ content: 'soft' }" header-style="padding-bottom: 0.5rem">
+    <n-card :segmented="{ content: 'soft' }" header-style="padding-bottom: 0.5rem" data-test="webhook-test">
       <template #header>
         <div class="title">Input</div>
       </template>
@@ -38,6 +38,7 @@
 
     <n-space justify="end">
       <n-button
+        data-test="webhook-test-run-test-btn"
         class="action_button"
         type="primary"
         @click="onTest"

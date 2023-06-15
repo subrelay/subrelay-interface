@@ -12,14 +12,13 @@
     }"
   >
     <n-radio-group
-      data-test="channel-option"
       v-model:value="EditorData.workflow.tasks[actionIdx].type"
       @update:value="handleSelectChannel"
       class="channel_select"
     >
       <n-grid cols="2" y-gap="20" x-gap="30">
         <n-gi span="1" v-for="channel in channels" :key="channel.value">
-          <n-radio-button :value="channel.value" :bordered="false" class="channel_item">
+          <n-radio-button :value="channel.value" :bordered="false" class="channel_item" data-test="channel-option">
             <Icon :icon="channel.icon" class="icon" />
             <span class="text">{{ channel.label }}</span>
           </n-radio-button>

@@ -4,7 +4,6 @@ describe('Workflow details', () => {
   const workflowName = 'KSM tele';
 
   beforeEach(() => {
-    cy.interceptWorkflows();
     cy.interceptWorkflow();
     cy.authenticate();
     cy.get('.n-layout-toggle-bar').click();

@@ -2,7 +2,6 @@ describe('Workflows dashboard', () => {
   const searchStr = 'dot';
 
   beforeEach(() => {
-    cy.interceptWorkflows();
     cy.authenticate();
     cy.wait('@getWorkflows');
     cy.get('.n-layout-toggle-bar').click();

@@ -7,7 +7,6 @@ describe('Authentication', () => {
   });
 
   it('Show correct account after auth', () => {
-    cy.interceptWorkflows();
     cy.authenticate();
     cy.getBySel('account-dropdown').should('be.visible');
     cy.getBySel('account-name').should('contain', 'foo');
@@ -15,7 +14,6 @@ describe('Authentication', () => {
   });
 
   it('Can change to account', () => {
-    cy.interceptWorkflows();
     cy.authenticate();
     cy.getBySel('account-dropdown').click();
     cy.contains('Change Account').click();
@@ -27,7 +25,6 @@ describe('Authentication', () => {
   });
 
   it('Should redirect to the welcome page after loggin', () => {
-    cy.interceptWorkflows();
     cy.authenticate();
     cy.getBySel('account-dropdown').click();
     cy.contains('Sign Out').click();

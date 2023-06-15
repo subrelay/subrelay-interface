@@ -28,7 +28,8 @@ export const login = () => {
   Cypress.on('window:before:load', (win) => {
     win.injectedWeb3 = mockedInjectedWeb3;
   });
-
+  
+  cy.interceptWorkflows();
   cy.interceptUserInfo();
   cy.interceptChains();
   cy.interceptOperators();

@@ -1,6 +1,9 @@
 import { login } from './utils/login';
+import { initWorkflow } from './utils/initWorkflow';
 
 Cypress.Commands.add('authenticate', login);
+
+Cypress.Commands.add('initWorkflow', initWorkflow);
 
 Cypress.Commands.add('getBySel', (selector, ...args) => {
   return cy.get(`[data-test=${selector}]`, ...args);
@@ -67,4 +70,19 @@ Cypress.Commands.add('interceptAWorkflowFailedLogs', () => {
     fixture: 'log/workflowFailedLogs',
     delay: Cypress.env('delay'),
   }).as('getAWorkflowFailedLogs');
+});
+
+Cypress.Commands.add('interceptRunTask', () => {
+  cy.intercept('POST', '/tasks/run', {
+    statusCode: 200,
+    body: { status: 'success' },
+    delay: Cypress.env('delay'),
+  }).as('runTask');
+});
+
+Cypress.Commands.add('interceptCreateWorkflow', () => {
+  cy.intercept('POST', '/workflows', {
+    statusCode: 201,
+    delay: Cypress.env('delay'),
+  }).as('createWorkflow');
 });

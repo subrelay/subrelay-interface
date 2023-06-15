@@ -1,8 +1,15 @@
 <template>
   <!-- EMAIl LIST -->
   <n-space vertical>
+    <div>requiredSubject {{ requiredSubject }}</div>
+    <div>foo: {{ store.state.editor.error }}</div>
     <div class="text-semi-bold">Recipients:</div>
-    <n-form-item :path="`tasks[${actionIdx}].config.addresses`" :show-label="false" :rule="rule">
+    <n-form-item
+      :path="`tasks[${actionIdx}].config.addresses`"
+      :show-label="false"
+      :rule="rule"
+      data-test="editor-form-item-address"
+    >
       <n-dynamic-tags v-model:value="addressTags" @create="addEmail" :render-tag="renderTag" :max="2">
         <template #input="{ submit, deactivate }">
           <n-input
@@ -87,6 +94,7 @@
   </n-grid>
 
   <n-button
+    data-test="email-setup-continue-btn"
     class="action_button"
     type="primary"
     v-if="EditorData.workflow.tasks[EditorData.actionIdx].type"
@@ -117,7 +125,8 @@ const requiredBody = computed(() => store.state.editor.error.bodyTemplate);
 const actionIdx = computed(() => EditorData.actionIdx);
 const actionConfig = computed(() => EditorData.workflow.tasks[EditorData.actionIdx].config);
 
-const [{ content, previewContent, defaultContent, subject, previewSubject, defaultSubject, darkMode }, { getRawText }] = useCustomMessage({ channel: 'email' });
+const [{ content, previewContent, defaultContent, subject, previewSubject, defaultSubject, darkMode }, { getRawText }] =
+  useCustomMessage({ channel: 'email' });
 
 function removeAddress(index) {
   addressTags.value.splice(index, 1);
@@ -155,21 +164,23 @@ const rule = ref({
   },
 });
 
-const renderTag = ({ label, status }, index) => h(
-  NTag,
-  { type: status, closable: true, onClose: () => removeAddress(index) },
-  {
-    default: () => h('div', { style: { display: 'flex', 'align-items': 'center' } }, [
-      h('div', label),
-      status === 'warning'
-        ? h(Icon, {
-          icon: 'uiw:warning-o',
-          style: { 'margin-left': '4px', color: '#d03050ff' },
-        })
-        : '',
-    ]),
-  },
-);
+const renderTag = ({ label, status }, index) =>
+  h(
+    NTag,
+    { type: status, closable: true, onClose: () => removeAddress(index) },
+    {
+      default: () =>
+        h('div', { style: { display: 'flex', 'align-items': 'center' } }, [
+          h('div', label),
+          status === 'warning'
+            ? h(Icon, {
+                icon: 'uiw:warning-o',
+                style: { 'margin-left': '4px', color: '#d03050ff' },
+              })
+            : '',
+        ]),
+    },
+  );
 
 watch(inputRef, (value) => {
   if (value) {
@@ -203,9 +214,9 @@ function validateSetupAction() {
     store.commit('editor/setError', { subjectTemplate: true });
     EditorData.setError('action', true);
   } else if (
-    !actionConfig.value.bodyTemplate
-    || actionConfig.value.bodyTemplate === '<br>'
-    || actionConfig.value.bodyTemplate === '<p></p>'
+    !actionConfig.value.bodyTemplate ||
+    actionConfig.value.bodyTemplate === '<br>' ||
+    actionConfig.value.bodyTemplate === '<p></p>'
   ) {
     store.commit('editor/setError', { bodyTemplate: true });
     EditorData.setError('action', true);
