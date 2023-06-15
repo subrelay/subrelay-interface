@@ -1,5 +1,6 @@
 <template>
   <n-form-item
+    data-test="editor-form-item-select-event"
     label="Select event"
     :path="`tasks[${EditorData.triggerIdx}].config.eventId`"
     :rule="{
@@ -13,6 +14,8 @@
     <n-select
       clearable
       filterable
+      placeholder="Please select"
+      data-test="event-dropdown"
       :loading="loading"
       :disabled="loading"
       :options="options"

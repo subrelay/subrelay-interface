@@ -11,15 +11,10 @@
           <SelectChannel />
 
           <n-button
+            data-test="channel-continue-btn"
             class="action_button"
             type="primary"
-            @click="
-              emits('validate', {
-                taskName: 'action',
-                keys: ['selectChannel'],
-                nextExpand: '2',
-              })
-            "
+            @click="emits('validate', { taskName: 'action', keys: ['selectChannel'], nextExpand: '2' })"
           >
             Continue
           </n-button>
@@ -27,11 +22,15 @@
       </n-collapse-item>
 
       <n-collapse-item name="2" title="Setup Action">
-        <div class="step_container"><SetUpAction /></div>
+        <div class="step_container">
+          <SetUpAction />
+        </div>
       </n-collapse-item>
 
       <n-collapse-item name="3" title="Test" :disabled="isDisabledTest">
-        <div class="step_container"><TestAction /></div>
+        <div class="step_container">
+          <TestAction />
+        </div>
       </n-collapse-item>
     </n-collapse>
   </n-card>

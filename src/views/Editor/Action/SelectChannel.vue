@@ -1,5 +1,6 @@
 <template>
   <n-form-item
+    data-test="editor-form-item-select-channel"
     class="form_item_wrapper"
     label="Select channel you want to receive notifications form triggered event."
     :path="`tasks[${actionIdx}].type`"
@@ -11,6 +12,7 @@
     }"
   >
     <n-radio-group
+      data-test="channel-option"
       v-model:value="EditorData.workflow.tasks[actionIdx].type"
       @update:value="handleSelectChannel"
       class="channel_select"

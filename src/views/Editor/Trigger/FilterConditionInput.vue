@@ -1,8 +1,9 @@
 <template>
-  <n-space :wrap="false" :wrap-item="false" class="w-100">
+  <n-space :wrap="false" :wrap-item="false" class="w-100" data-test="filter-condition">
     <n-grid cols="3" x-gap="20" class="grid_area">
       <n-gi>
         <n-form-item
+          data-test="editor-form-item-property-dropdown"
           label="Property"
           :rule="{ ...requiredRule, key: `filterCond_variable_${index}_${conditionIdx}` }"
           :path="`tasks[${filterIdx}].config.conditions[${props.index}][${props.conditionIdx}].variable`"
@@ -10,6 +11,7 @@
           <n-select
             filterable
             clearable
+            data-test="property-dropdown"
             :consistent-menu-width="false"
             :filter="useDropdownFilter"
             :value-field="'name'"
@@ -28,6 +30,7 @@
 
       <n-gi>
         <n-form-item
+          data-test="editor-form-item-operator-dropdown"
           label="Operator"
           :rule="{ ...requiredRule, key: `filterCond_operator_${index}_${conditionIdx}` }"
           :path="`tasks[${filterIdx}].config.conditions[${props.index}][${conditionIdx}].operator`"
@@ -35,6 +38,7 @@
           <n-select
             filterable
             clearable
+            data-test="operator-dropdown"
             :consistent-menu-width="false"
             :render-label="renderLabel"
             :loading="isLoading || getOperatorsLoading"
@@ -53,6 +57,7 @@
 
       <n-gi v-if="inputType !== 'boolean'">
         <n-form-item
+          data-test="editor-form-item-value-input"
           label="Value"
           :path="`tasks[${filterIdx}].config.conditions[${props.index}][${props.conditionIdx}].value`"
           :rule="{
@@ -62,6 +67,7 @@
           }"
         >
           <n-input
+            data-test="value-string-input"
             placeholder="Filter value"
             v-if="inputType === 'string'"
             clearable
@@ -72,6 +78,7 @@
           </n-input>
 
           <n-input-number
+            data-test="value-number-input"
             v-else
             placeholder="Filter value"
             class="w-100"
@@ -85,7 +92,7 @@
       </n-gi>
     </n-grid>
 
-    <n-button @click="emits('remove')" text>
+    <n-button @click="emits('remove')" text data-test="delete-condition-btn">
       <Icon icon="bi:trash" />
     </n-button>
   </n-space>

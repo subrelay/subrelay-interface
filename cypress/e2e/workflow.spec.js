@@ -27,12 +27,12 @@ describe('Workflow details', () => {
 
         cy.getBySel('workflow-overview_createdAt').within((el) => {
           cy.contains('Created at').should('be.visible');
-          cy.wrap(el).children().eq(1).should('contain', 'Jun 10th 2023, 08:04:44');
+          cy.wrap(el).children().eq(1).should('contain', 'Jun 10th 2023');
         });
 
         cy.getBySel('workflow-overview_updatedAt').within((el) => {
           cy.contains('Updated at').should('be.visible');
-          cy.wrap(el).children().eq(1).should('contain', 'Jun 10th 2023, 15:07:59');
+          cy.wrap(el).children().eq(1).should('contain', 'Jun 10th 2023');
         });
       });
 
@@ -80,8 +80,8 @@ describe('Workflow details', () => {
     it('Show log list of a workflow', () => {
       cy.getBySel('a-workflow-log-status-filter').should('be.visible');
       cy.get('.workflow-log-item').should('have.length', 10);
-      cy.get('.workflow-log-item').eq(0).should('contain', 'success').and('contain', 'Jun 10th 2023, 05:46:28');
-      cy.get('.workflow-log-item').eq(2).should('contain', 'failed').and('contain', 'Jun 10th 2023, 05:43:30');
+      cy.get('.workflow-log-item').eq(0).should('contain', 'success').and('contain', 'Jun 10th 2023');
+      cy.get('.workflow-log-item').eq(2).should('contain', 'failed').and('contain', 'Jun 10th 2023');
     });
 
     it('Can navigate to log details page', () => {

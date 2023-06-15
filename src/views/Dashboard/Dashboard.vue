@@ -91,14 +91,14 @@ const siderOptions = ref([
   {
     label: () =>
       collapsed.value
-        ? h('div', {}, { default: () => 'New workflow' })
+        ? h('div', { 'data-test': 'new-workflow-btn' }, { default: () => 'New workflow' })
         : h(
             NButton,
             { block: true, type: 'primary', round: true },
             {
               default: () => [
                 h(Icon, { icon: 'fluent:add-12-filled', inline: true }),
-                h('div', { style: 'margin-left: 0.6rem' }, 'New workflow'),
+                h('div', { style: 'margin-left: 0.6rem', 'data-test': 'new-workflow-btn' }, 'New workflow'),
               ],
             },
           ),
