@@ -70,8 +70,8 @@
           <Action v-show="step == 2" @validate="validateForm" />
         </n-form>
       </div>
-
-      <pre>{{ EditorData }}</pre>
+      <div>operators {{ operators }}</div>
+      <!-- <pre>{{ EditorData }}</pre> -->
     </n-layout-content>
   </n-layout>
 </template>
@@ -100,6 +100,7 @@ const loading = ref(false);
 const step = computed(() => store.state.editor.step);
 const account = computed(() => store.state.account.selected);
 const signer = computed(() => store.state.account.signer);
+const operators = computed(() => store.state.editor.operators);
 
 onMounted(() => {
   window.$message = useMessage();
