@@ -49,7 +49,7 @@ Cypress.Commands.add('interceptCustomMsgFields', () => {
 });
 
 Cypress.Commands.add('interceptOperators', () => {
-  cy.intercept('GET', '/tasks/filters/operators', {
+  cy.intercept('GET', '/tasks/filter/operators', {
     fixture: 'general/operators',
     delay: Cypress.env('delay'),
   }).as('getOperators');
