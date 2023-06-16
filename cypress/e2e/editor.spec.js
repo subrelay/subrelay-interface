@@ -48,6 +48,7 @@ describe('Editor', () => {
       // Clear error after event is selected
       cy.getBySel('event-dropdown').then((el) => {
         cy.wrap(el).type('transfer').type('{enter}');
+        cy.wait(200);
         cy.wrap(el).should('contain', 'balances.Transfer');
       });
 
