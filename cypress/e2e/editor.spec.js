@@ -28,6 +28,7 @@ describe('Editor', () => {
 
       // Clear error after chain is selected
       cy.getBySel('chain-dropdown').then((el) => {
+        cy.wrap(el).scrollIntoView();
         cy.wrap(el).type('dot').type('{enter}');
         cy.wait(200);
         cy.wrap(el).should('contain', 'Polkadot');
