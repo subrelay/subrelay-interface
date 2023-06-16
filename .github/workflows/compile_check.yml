@@ -61,6 +61,7 @@ jobs:
       - name: Run test
         run: |
           yarn test:unit
+
   e2e-test:
     runs-on: ubuntu-latest
     container: cypress/browsers:node18.12.0-chrome107
@@ -77,6 +78,7 @@ jobs:
           wait-on: http://localhost:9000/
           browser: chrome
           record: true
+          headless: false
         env:
           CYPRESS_baseUrl: http://localhost:9000/
           CYPRESS_RECORD_KEY: 0c6d6452-9422-40ff-815f-376d300e09c6
