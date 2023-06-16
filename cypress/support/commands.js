@@ -28,7 +28,7 @@ Cypress.Commands.add('interceptChains', () => {
 });
 
 Cypress.Commands.add('interceptOperators', () => {
-  cy.intercept('GET', '*/operators', {
+  cy.intercept('GET', '/tasks/filters/operators', {
     fixture: 'general/operators',
     delay: Cypress.env('delay'),
   }).as('getOperators');

@@ -19,7 +19,7 @@ describe('Editor', () => {
       });
     });
 
-    it('TRIGGER - Can filtering to select chain and event, and can add some filtering conditions', () => {
+    it('TRIGGER - Can filter to select chain and event, and can add some filtering conditions', () => {
       cy.getBySel('chain-dropdown').should('be.visible');
 
       // Display error if chain is not selected yet
