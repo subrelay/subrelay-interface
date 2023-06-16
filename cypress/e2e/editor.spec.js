@@ -1,6 +1,9 @@
 describe('Editor', () => {
   beforeEach(() => {
     cy.interceptCreateWorkflow();
+    cy.interceptEvents();
+    cy.interceptFilterFields();
+    cy.interceptCustomMsgFields();
     cy.authenticate();
     cy.getBySel('new-workflow-btn').click();
     cy.wait(1000);
@@ -30,7 +33,7 @@ describe('Editor', () => {
       cy.getBySel('chain-dropdown').then((el) => {
         cy.wrap(el).scrollIntoView();
         cy.wrap(el).type('dot').type('{enter}');
-        cy.wait(200);
+        cy.wait('@getEvents');
         cy.wrap(el).should('contain', 'Polkadot');
       });
 
@@ -48,7 +51,8 @@ describe('Editor', () => {
       // Clear error after event is selected
       cy.getBySel('event-dropdown').then((el) => {
         cy.wrap(el).type('transfer').type('{enter}');
-        cy.wait(200);
+        cy.wait('@getFilterFields');
+        cy.wait('@getCustomMsgFields');
         cy.wrap(el).should('contain', 'balances.Transfer');
       });
 

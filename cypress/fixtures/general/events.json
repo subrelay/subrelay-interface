@@ -1,0 +1,8 @@
+[
+  {
+    "description": "An auction ended. All funds become unreserved.",
+    "id": "01H1BE98F8TWDD4VQBZ7BE6NAA",
+    "name": "auctions.AuctionClosed"
+  },
+  { "id": "01H1BE98F3S2E2FJK1V80W2DRF", "name": "balances.Transfer", "description": "Transfer succeeded." }
+]

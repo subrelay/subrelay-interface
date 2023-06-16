@@ -27,6 +27,27 @@ Cypress.Commands.add('interceptChains', () => {
   }).as('getChains');
 });
 
+Cypress.Commands.add('interceptEvents', () => {
+  cy.intercept('GET', '/chains/*/events', {
+    fixture: 'general/events',
+    delay: Cypress.env('delay'),
+  }).as('getEvents');
+});
+
+Cypress.Commands.add('interceptFilterFields', () => {
+  cy.intercept('GET', '/tasks/filter/fields?eventId=*', {
+    fixture: 'general/filterFields',
+    delay: Cypress.env('delay'),
+  }).as('getFilterFields');
+});
+
+Cypress.Commands.add('interceptCustomMsgFields', () => {
+  cy.intercept('GET', '/tasks/custom-message/fields?eventId=*', {
+    fixture: 'general/customMsgFields',
+    delay: Cypress.env('delay'),
+  }).as('getCustomMsgFields');
+});
+
 Cypress.Commands.add('interceptOperators', () => {
   cy.intercept('GET', '/tasks/filters/operators', {
     fixture: 'general/operators',
