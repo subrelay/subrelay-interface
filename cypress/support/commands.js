@@ -1,6 +1,9 @@
 import { login } from './utils/login';
+import { initWorkflow } from './utils/initWorkflow';
 
 Cypress.Commands.add('authenticate', login);
+
+Cypress.Commands.add('initWorkflow', initWorkflow);
 
 Cypress.Commands.add('getBySel', (selector, ...args) => {
   return cy.get(`[data-test=${selector}]`, ...args);
@@ -24,8 +27,29 @@ Cypress.Commands.add('interceptChains', () => {
   }).as('getChains');
 });
 
+Cypress.Commands.add('interceptEvents', () => {
+  cy.intercept('GET', '/chains/*/events', {
+    fixture: 'general/events',
+    delay: Cypress.env('delay'),
+  }).as('getEvents');
+});
+
+Cypress.Commands.add('interceptFilterFields', () => {
+  cy.intercept('GET', '/tasks/filter/fields?eventId=*', {
+    fixture: 'general/filterFields',
+    delay: Cypress.env('delay'),
+  }).as('getFilterFields');
+});
+
+Cypress.Commands.add('interceptCustomMsgFields', () => {
+  cy.intercept('GET', '/tasks/custom-message/fields?eventId=*', {
+    fixture: 'general/customMsgFields',
+    delay: Cypress.env('delay'),
+  }).as('getCustomMsgFields');
+});
+
 Cypress.Commands.add('interceptOperators', () => {
-  cy.intercept('GET', '*/operators', {
+  cy.intercept('GET', '/tasks/filter/operators', {
     fixture: 'general/operators',
     delay: Cypress.env('delay'),
   }).as('getOperators');
@@ -67,4 +91,19 @@ Cypress.Commands.add('interceptAWorkflowFailedLogs', () => {
     fixture: 'log/workflowFailedLogs',
     delay: Cypress.env('delay'),
   }).as('getAWorkflowFailedLogs');
+});
+
+Cypress.Commands.add('interceptRunTask', () => {
+  cy.intercept('POST', '/tasks/run', {
+    statusCode: 200,
+    body: { status: 'success' },
+    delay: Cypress.env('delay'),
+  }).as('runTask');
+});
+
+Cypress.Commands.add('interceptCreateWorkflow', () => {
+  cy.intercept('POST', '/workflows', {
+    statusCode: 201,
+    delay: Cypress.env('delay'),
+  }).as('createWorkflow');
 });

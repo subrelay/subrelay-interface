@@ -4,7 +4,6 @@ describe('Log details', () => {
   const workflowId = '01H2JXD6EPS7WJR8ZXJ7WPDHG0';
 
   beforeEach(() => {
-    cy.interceptWorkflows();
     cy.interceptLog();
     cy.authenticate();
     cy.visit(`/logs/${logId}`);

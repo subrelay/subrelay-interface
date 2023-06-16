@@ -10,11 +10,10 @@
         <div class="step_container">
           <SelectChain />
           <n-button
+            data-test="chain-continue-btn"
             class="action_button"
             type="primary"
-            @click="
-              emits('validate', { taskName: 'trigger', keys: ['selectChain'], nextExpand: '2' })
-            "
+            @click="emits('validate', { taskName: 'trigger', keys: ['selectChain'], nextExpand: '2' })"
           >
             Continue
           </n-button>
@@ -26,11 +25,10 @@
           <SelectEvent />
 
           <n-button
+            data-test="event-continue-btn"
             class="action_button"
             type="primary"
-            @click="
-              emits('validate', { taskName: 'trigger', keys: ['selectEvent'], nextExpand: '3' })
-            "
+            @click="emits('validate', { taskName: 'trigger', keys: ['selectEvent'], nextExpand: '3' })"
           >
             Continue
           </n-button>
@@ -41,8 +39,8 @@
         <div class="step_container">
           <Filters />
 
-          <n-button class="action_button" type="primary" @click="validateFilter">
-            {{ conditionLength ? 'Continue' : 'Skip filter' }}
+          <n-button class="action_button" type="primary" @click="validateFilter" data-test="filter-continue-btn">
+            {{ conditionLength ? 'Continue' : 'Skip filters' }}
           </n-button>
         </div>
       </n-collapse-item>
@@ -62,9 +60,7 @@ const [{ expandedNames }, { setExpand }] = useAccordion('trigger');
 const emits = defineEmits(['validate']);
 
 const filterIdx = computed(() => EditorData.filterIdx);
-const conditionLength = computed(
-  () => EditorData.workflow.tasks[filterIdx.value].config.conditions.length,
-);
+const conditionLength = computed(() => EditorData.workflow.tasks[filterIdx.value].config.conditions.length);
 
 function validateFilter() {
   const callback = () => {

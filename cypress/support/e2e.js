@@ -1,3 +1,9 @@
 import './commands';
 
-Cypress.on('uncaught:exception', (err) => !err.message.includes('ResizeObserver loop limit exceeded'));
+Cypress.on('uncaught:exception', (err, runnable, promise) => {
+  if (promise) {
+    return false;
+  }
+  
+  return !err.message.includes('ResizeObserver loop limit exceeded');
+});

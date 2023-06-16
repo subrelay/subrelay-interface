@@ -2,7 +2,6 @@ describe('Logs dasboard', () => {
   const searchStr = 'dot';
 
   beforeEach(() => {
-    cy.interceptWorkflows();
     cy.interceptLogs();
     cy.authenticate();
     cy.getBySel('side-bar-logs-router').click();

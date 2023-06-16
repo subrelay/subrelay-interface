@@ -32,6 +32,7 @@ export const login = () => {
   cy.interceptUserInfo();
   cy.interceptChains();
   cy.interceptOperators();
+  cy.interceptWorkflows();
 
   cy.visit('/');
   cy.wait(1000);

@@ -1,0 +1,30 @@
+[
+  {
+    "name": "event.data.from",
+    "description": "From",
+    "type": "string",
+    "data": "2UbGKC42DuUXaZYanQpJ9y5eRREAPttW8fwm",
+    "display": "From"
+  },
+  {
+    "name": "event.data.to",
+    "description": "To",
+    "type": "string",
+    "data": "2UbGKC42DuUXaZagQ3EWbQsBW4LQBXiuoG3b",
+    "display": "To"
+  },
+  {
+    "name": "event.data.amount",
+    "description": "Amount",
+    "type": "number",
+    "data": 84000,
+    "display": "Amount"
+  },
+  {
+    "name": "event.success",
+    "description": "The status of the event",
+    "type": "boolean",
+    "data": true,
+    "display": "Status"
+  }
+]

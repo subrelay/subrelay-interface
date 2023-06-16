@@ -1,15 +1,12 @@
 <template>
   <n-form-item
+    data-test="editor-form-item-select-chain"
     path="uuid"
     class="w-100"
     label="Select chain"
     :rule="{ required: true, trigger: 'input', message: 'Required', key: 'selectChain' }"
   >
-    <ChainDropdown
-      v-model="EditorData.workflow.uuid"
-      placeholder="Please select"
-      :onSelectChain="handleSelectChain"
-    />
+    <ChainDropdown v-model="EditorData.workflow.uuid" placeholder="Please select" :onSelectChain="handleSelectChain" />
   </n-form-item>
 </template>
 

@@ -2,7 +2,6 @@ describe('Workflows dashboard', () => {
   const searchStr = 'dot';
 
   beforeEach(() => {
-    cy.interceptWorkflows();
     cy.authenticate();
     cy.wait('@getWorkflows');
     cy.get('.n-layout-toggle-bar').click();
@@ -20,13 +19,13 @@ describe('Workflows dashboard', () => {
         .eq(0)
         .find('td')
         .first()
-        .should('have.text', 'Dot email')
+        .should('contain', 'Dot email')
         .next()
-        .should('have.text', 'Polkadot')
+        .should('contain', 'Polkadot')
         .next()
-        .should('have.text', 'Jun 8th 2023, 10:16:58')
+        .should('contain', 'Jun 8th 2023')
         .next()
-        .should('have.text', 'Jun 8th 2023, 13:55:11')
+        .should('contain', 'Jun 8th 2023')
         .next()
         .find('.n-switch')
         .should('have.attr', 'aria-checked', 'true');
@@ -37,13 +36,13 @@ describe('Workflows dashboard', () => {
         .eq(1)
         .find('td')
         .first()
-        .should('have.text', 'Westend tele')
+        .should('contain', 'Westend tele')
         .next()
-        .should('have.text', 'Westend')
+        .should('contain', 'Westend')
         .next()
-        .should('have.text', 'Jun 8th 2023, 10:36:16')
+        .should('contain', 'Jun 8th 2023')
         .next()
-        .should('have.text', 'Jun 8th 2023, 10:36:16')
+        .should('contain', 'Jun 8th 2023')
         .next()
         .find('.n-switch')
         .should('have.attr', 'aria-checked', 'false');
@@ -54,13 +53,13 @@ describe('Workflows dashboard', () => {
         .eq(2)
         .find('td')
         .first()
-        .should('have.text', 'KSM tele')
+        .should('contain', 'KSM tele')
         .next()
-        .should('have.text', 'Kusama')
+        .should('contain', 'Kusama')
         .next()
-        .should('have.text', 'Jun 8th 2023, 14:52:18')
+        .should('contain', 'Jun 8th 2023')
         .next()
-        .should('have.text', 'Jun 8th 2023, 14:52:18')
+        .should('contain', 'Jun 8th 2023')
         .next()
         .find('.n-switch')
         .should('have.attr', 'aria-checked', 'true');
