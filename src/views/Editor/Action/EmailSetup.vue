@@ -1,8 +1,6 @@
 <template>
   <!-- EMAIl LIST -->
   <n-space vertical>
-    <div>requiredSubject {{ requiredSubject }}</div>
-    <div>foo: {{ store.state.editor.error }}</div>
     <div class="text-semi-bold">Recipients:</div>
     <n-form-item
       :path="`tasks[${actionIdx}].config.addresses`"
@@ -13,6 +11,7 @@
       <n-dynamic-tags v-model:value="addressTags" @create="addEmail" :render-tag="renderTag" :max="2">
         <template #input="{ submit, deactivate }">
           <n-input
+            data-test="add-address-input"
             ref="inputRef"
             size="small"
             placeholder="Email"
@@ -23,7 +22,14 @@
         </template>
 
         <template #trigger="{ activate, disabled }">
-          <n-button size="small" type="primary" dashed :disabled="disabled" @click="activate()">
+          <n-button
+            data-test="add-email-btn"
+            size="small"
+            type="primary"
+            dashed
+            @click="activate()"
+            :disabled="disabled"
+          >
             <template #icon><Icon icon="material-symbols:add" /> </template>
             Add email
           </n-button>
@@ -167,7 +173,7 @@ const rule = ref({
 const renderTag = ({ label, status }, index) =>
   h(
     NTag,
-    { type: status, closable: true, onClose: () => removeAddress(index) },
+    { type: status, closable: true, onClose: () => removeAddress(index), 'data-test': 'email-tag' },
     {
       default: () =>
         h('div', { style: { display: 'flex', 'align-items': 'center' } }, [

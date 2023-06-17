@@ -214,15 +214,80 @@ describe('Editor', () => {
       cy.url().should('contain', 'workflows');
     });
 
-    it('ACTION - Can create email action', () => {
+    it.only('ACTION - Can create email action', () => {
+      const validEmail = 'buulee@gmail.com';
+      const validEmail2 = 'anhthichieu@gmail.com';
+      const invalidEmail = 'This is not valid';
       cy.initWorkflow();
 
       // Select Email and move to set up
       cy.getBySel('channel-option').contains('Email').click();
       cy.getBySel('channel-continue-btn').click();
+      cy.wait(200); // Wait for code to prepare default email and subject content
+
+      // Display error if email is not added
+      cy.getBySel('email-setup-continue-btn').click();
+      cy.getBySel('editor-form-item-address').find('.n-form-item-feedback-wrapper').should('contain', 'Required');
+
+      // Display error if email is not in correct format
+      cy.getBySel('add-email-btn').click();
+      cy.getBySel('add-address-input').type(invalidEmail).type('{enter}');
+      cy.getBySel('editor-form-item-address')
+        .find('.n-form-item-feedback-wrapper')
+        .should('contain', 'Invalid email address');
+
+      // Add another email address, the error displays still
+      cy.getBySel('add-email-btn').click();
+      cy.getBySel('add-address-input').type(validEmail).type('{enter}');
+      cy.getBySel('editor-form-item-address')
+        .find('.n-form-item-feedback-wrapper')
+        .should('contain', 'Invalid email address');
+
+      // Delete the invalid email address
+      cy.getBySel('email-tag').eq(0).find('.n-base-close ').click();
+      cy.getBySel('editor-form-item-address').find('.n-form-item-feedback-wrapper').should('be.empty');
+
+      // Add another email address, dipsplay another error
+      cy.getBySel('add-email-btn').click();
+      cy.getBySel('add-address-input').type(validEmail2).type('{enter}');
+      cy.getBySel('editor-form-item-address').find('.n-form-item-feedback-wrapper').should('not.be.empty');
+
+      // Delete one, now able to move to test
+      cy.getBySel('email-tag').eq(0).find('.n-base-close ').click();
+      cy.getBySel('editor-form-item-address').find('.n-form-item-feedback-wrapper').should('not.be.empty');
       cy.getBySel('email-setup-continue-btn').click();
 
-      // cy.getBySel('editor-form-item-address').find('.n-form-item-feedback-wrapper').should('contain', 'Required');
+      // Check input before test
+      cy.getBySel('email-test-input').then((el) => {
+        cy.wrap(el).should('be.visible');
+        cy.getBySel('email-address').should('contain', validEmail2);
+        cy.getBySel('email-subject').should(
+          'contain',
+          'Your tracked event balances.Transfer on chain Polkadot has been triggered!',
+        );
+
+        cy.getBySel('email-content').should('be.not.empty');
+      });
+
+      const requestBody = {
+        type: 'email',
+        config: {
+          addresses: ['anhthichieu@gmail.com'],
+          subjectTemplate:
+            '====(TESTING EMAIL)==== Your tracked event ${event.name} on chain ${chain.name} has been triggered!',
+          bodyTemplate:
+            '<p>Event <span data-type="KeySuggestion" class="mention" data-id="Event Name" >${event.name}</span> on chain <span data-type="KeySuggestion" class="mention" data-id="Chain Name" >${chain.name}</span> has just happened with following data:</p><p></p><p>Block: <span data-type="KeySuggestion" class="mention" data-id="Block Hash" >${event.block.hash}</span></p><p>Success: <span data-type="KeySuggestion" class="mention" data-id="Status" >${event.success}</span></p><p>From: <span data-type="KeySuggestion" class="mention" data-id="From" >${event.data.from}</span></p><p>To: <span data-type="KeySuggestion" class="mention" data-id="To" >${event.data.to}</span></p><p>Amount: <span data-type="KeySuggestion" class="mention" data-id="Amount" >${event.data.amount}</span></p>',
+        },
+        data: { eventId: '01H1BE98F3S2E2FJK1V80W2DRF' },
+      };
+
+      cy.getBySel('email-test-run-test-btn').should('have.text', 'Test').click();
+      cy.wait('@runTask').its('request.body').should('deep.equal', requestBody);
+      cy.getBySel('email-test-run-test-btn').should('have.text', 'Retest');
+      cy.getBySel('email-test-output').should('be.visible');
+
+      cy.getBySel('editor-finish-btn').click();
+      cy.url().should('contain', 'workflows');
     });
   });
 });
