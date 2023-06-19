@@ -28,12 +28,14 @@ describe('Log details', () => {
         cy.wrap(el).click();
       });
 
-    cy.getBySel('log-details-input-output').within((el) => {
-      cy.wrap(el).should('be.visible');
-      cy.getBySel('log-details-input-output-title').should('contain', 'Filters');
-      cy.getBySel('log-details-input').should('be.visible');
-      cy.getBySel('log-details-output').should('be.visible');
-    });
+    cy.getBySel('log-details-input-output')
+      .scrollIntoView()
+      .within((el) => {
+        cy.wrap(el).should('be.visible');
+        cy.getBySel('log-details-input-output-title').should('contain', 'Filters');
+        cy.getBySel('log-details-input').should('be.visible');
+        cy.getBySel('log-details-output').should('be.visible');
+      });
 
     cy.getBySel('log-details-step-2').should('contain', 'telegram').click();
     cy.getBySel('log-details-input-output-title').should('contain', 'telegram');
