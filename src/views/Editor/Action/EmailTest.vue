@@ -1,6 +1,6 @@
 <template>
   <n-space vertical :size="30">
-    <n-card :segmented="{ content: 'soft' }" header-style="padding-bottom: 0.5rem">
+    <n-card :segmented="{ content: 'soft' }" header-style="padding-bottom: 0.5rem" data-test="email-test-input">
       <template #header>
         <div class="title">Input</div>
       </template>
@@ -13,7 +13,7 @@
       <n-skeleton v-if="runningTest" text :repeat="5" />
 
       <n-space vertical :size="10" v-else>
-        <div class="input-item">
+        <div class="input-item" data-test="email-address">
           <div class="title">To:</div>
 
           <n-text
@@ -28,14 +28,14 @@
           </n-text>
         </div>
 
-        <n-space align="baseline" :size="0" :wrap-item="false" :wrap="false">
+        <n-space align="baseline" :size="0" :wrap-item="false" :wrap="false" data-test="email-subject">
           <div class="title" style="width: 100px; min-width: 100px">Subject:</div>
           <n-text code style="font-size: 0.85em">
             {{ getFormattedString(config.subjectTemplate) }}
           </n-text>
         </n-space>
 
-        <n-collapse arrow-placement="right" default-expanded-names="content">
+        <n-collapse arrow-placement="right" default-expanded-names="content" data-test="email-content">
           <n-collapse-item title="Content" name="content">
             <template #header>
               <div style="margin-left: -32px; font-weight: normal">Content:</div>
@@ -49,7 +49,12 @@
       </n-space>
     </n-card>
 
-    <n-card header-style="padding-bottom: 0.5rem" v-if="isTested" :segmented="{ content: 'soft' }">
+    <n-card
+      data-test="email-test-output"
+      header-style="padding-bottom: 0.5rem"
+      v-if="isTested"
+      :segmented="{ content: 'soft' }"
+    >
       <template #header>
         <div class="title">Output</div>
       </template>
@@ -75,6 +80,7 @@
 
     <n-space justify="end">
       <n-button
+        data-test="email-test-run-test-btn"
         class="action_button"
         type="primary"
         @click="onTest"

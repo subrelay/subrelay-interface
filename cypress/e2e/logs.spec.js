@@ -59,7 +59,7 @@ describe('Logs dasboard', () => {
     cy.getBySel('logs-table').get('.n-base-loading').should('be.visible');
     cy.url().should('include', `search=${searchStr}`);
     cy.getBySel('search-bar').find('.n-base-clear').click();
-    cy.url().should('not.include', `search=`);
+    cy.url().should('not.include', 'search=');
     cy.getBySel('logs-table').get('.n-base-loading').should('be.visible');
   });
 
@@ -68,7 +68,8 @@ describe('Logs dasboard', () => {
     cy.getBySel('chain-dropdown-menu').within(() => cy.contains(searchStr).click());
     cy.getBySel('logs-table').get('.n-base-loading').should('be.visible');
     cy.url().should('include', 'chainUuid=');
-    cy.getBySel('chain-dropdown').trigger('mouseover').find('.n-base-clear').click().click();
+    cy.getBySel('chain-dropdown').trigger('mouseover').find('.n-base-clear').click()
+      .click();
     cy.url().should('not.include', 'chainUuid=');
     cy.getBySel('logs-table').get('.n-base-loading').should('be.visible');
   });
@@ -78,8 +79,9 @@ describe('Logs dasboard', () => {
     cy.getBySel('status-filter-menu').within(() => cy.contains('Success').click());
     cy.getBySel('logs-table').get('.n-base-loading').should('be.visible');
     cy.url().should('include', 'status=success');
-    cy.getBySel('status-filter').trigger('mouseover').find('.n-base-clear').click().click();
-    cy.url().should('not.include', `status=success`);
+    cy.getBySel('status-filter').trigger('mouseover').find('.n-base-clear').click()
+      .click();
+    cy.url().should('not.include', 'status=success');
     cy.getBySel('logs-table').get('.n-base-loading').should('be.visible');
   });
 
@@ -91,13 +93,15 @@ describe('Logs dasboard', () => {
     cy.getBySel('status-filter-menu').within(() => cy.contains('Failed').click());
     cy.url().should('include', `search=${searchStr}`).and('include', 'chainUuid=').and('include', 'status=failed');
     cy.getBySel('clear-filters').click();
-    cy.url().should('not.include', `search=`).and('not.include', 'chainUuid=').and('not.include', `status=failed`);
+    cy.url().should('not.include', 'search=').and('not.include', 'chainUuid=').and('not.include', 'status=failed');
   });
 
   it('Can navigate to corresponding workflow details', () => {
     cy.interceptEditWorkflow();
     cy.interceptLog();
-    cy.getBySel('logs-table').find('tbody').find('tr').first().contains('View').click();
+    cy.getBySel('logs-table').find('tbody').find('tr').first()
+      .contains('View')
+      .click();
     cy.url().should('include', '/logs/01H2JXJESBT1A5CDX9VM4RZBXN');
   });
 });

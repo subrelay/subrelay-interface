@@ -1,17 +1,13 @@
-import { login } from './utils/login';
-import { initWorkflow } from './utils/initWorkflow';
+import login from './utils/login';
+import initWorkflow from './utils/initWorkflow';
 
 Cypress.Commands.add('authenticate', login);
 
 Cypress.Commands.add('initWorkflow', initWorkflow);
 
-Cypress.Commands.add('getBySel', (selector, ...args) => {
-  return cy.get(`[data-test=${selector}]`, ...args);
-});
+Cypress.Commands.add('getBySel', (selector, ...args) => cy.get(`[data-test=${selector}]`, ...args));
 
-Cypress.Commands.add('getBySelLike', (selector, ...args) => {
-  return cy.get(`[data-test*=${selector}]`, ...args);
-});
+Cypress.Commands.add('getBySelLike', (selector, ...args) => cy.get(`[data-test*=${selector}]`, ...args));
 
 Cypress.Commands.add('interceptUserInfo', () => {
   cy.intercept('GET', '/user/info', {

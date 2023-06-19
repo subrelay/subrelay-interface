@@ -8,10 +8,8 @@
 import AppProvider from '@/components/AppProvider';
 import { useStore } from 'vuex';
 import { onBeforeMount } from 'vue';
-import { useRoute } from 'vue-router';
 
 const store = useStore();
-const route = useRoute();
 
 onBeforeMount(() => {
   store.dispatch('chain/getChains');

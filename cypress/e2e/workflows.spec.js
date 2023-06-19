@@ -68,11 +68,14 @@ describe('Workflows dashboard', () => {
 
   it('Can sort and update URL ', () => {
     // Sort by name
-    cy.getBySel(' workflows-table').find('thead').find('th').eq(0).click();
+    cy.getBySel(' workflows-table').find('thead').find('th').eq(0)
+      .click();
     cy.url().should('include', 'order=name&sort=DESC');
-    cy.getBySel(' workflows-table').find('thead').find('th').eq(0).click();
+    cy.getBySel(' workflows-table').find('thead').find('th').eq(0)
+      .click();
     cy.url().should('include', 'order=name&sort=ASC');
-    cy.getBySel(' workflows-table').find('thead').find('th').eq(0).click();
+    cy.getBySel(' workflows-table').find('thead').find('th').eq(0)
+      .click();
     cy.url().should('not.include', 'order=name');
 
     // Can change sort from this column to another column
@@ -91,7 +94,7 @@ describe('Workflows dashboard', () => {
     cy.getBySel('workflows-table').get('.n-base-loading').should('be.visible');
     cy.url().should('include', `search=${searchStr}`);
     cy.getBySel('search-bar').find('.n-base-clear').click();
-    cy.url().should('not.include', `search=`);
+    cy.url().should('not.include', 'search=');
     cy.getBySel('workflows-table').get('.n-base-loading').should('be.visible');
   });
 
@@ -100,7 +103,8 @@ describe('Workflows dashboard', () => {
     cy.getBySel('chain-dropdown-menu').within(() => cy.contains(searchStr).click());
     cy.getBySel('workflows-table').get('.n-base-loading').should('be.visible');
     cy.url().should('include', 'chainUuid=');
-    cy.getBySel('chain-dropdown').trigger('mouseover').find('.n-base-clear').click().click();
+    cy.getBySel('chain-dropdown').trigger('mouseover').find('.n-base-clear').click()
+      .click();
     cy.url().should('not.include', 'chainUuid=');
     cy.getBySel('workflows-table').get('.n-base-loading').should('be.visible');
   });
@@ -110,8 +114,9 @@ describe('Workflows dashboard', () => {
     cy.getBySel('status-filter-menu').within(() => cy.contains('Running').click());
     cy.getBySel('workflows-table').get('.n-base-loading').should('be.visible');
     cy.url().should('include', 'status=running');
-    cy.getBySel('status-filter').trigger('mouseover').find('.n-base-clear').click().click();
-    cy.url().should('not.include', `status=running`);
+    cy.getBySel('status-filter').trigger('mouseover').find('.n-base-clear').click()
+      .click();
+    cy.url().should('not.include', 'status=running');
     cy.getBySel('workflows-table').get('.n-base-loading').should('be.visible');
   });
 
@@ -121,15 +126,17 @@ describe('Workflows dashboard', () => {
     cy.getBySel('chain-dropdown-menu').within(() => cy.contains(searchStr).click());
     cy.url().should('include', `search=${searchStr}`).and('include', 'chainUuid=');
     cy.getBySel('clear-filters').click();
-    cy.url().should('not.include', `search=`).and('not.include', 'chainUuid=');
+    cy.url().should('not.include', 'search=').and('not.include', 'chainUuid=');
   });
 
   it('Can change workflow status', () => {
     cy.interceptEditWorkflow();
-    cy.getBySel('workflows-table').find('tr').eq(1).find('.n-switch').click();
+    cy.getBySel('workflows-table').find('tr').eq(1).find('.n-switch')
+      .click();
     cy.wait('@editWorkflow').its('request.body').should('deep.equal', { status: 'pausing' });
     cy.get('.n-message').should('be.visible').and('contain', 'Workflow paused successfully');
-    cy.getBySel('workflows-table').find('tr').eq(2).find('.n-switch').click();
+    cy.getBySel('workflows-table').find('tr').eq(2).find('.n-switch')
+      .click();
     cy.wait('@editWorkflow').its('request.body').should('deep.equal', { status: 'running' });
     cy.get('.n-message').should('be.visible').and('contain', 'Workflow resumed successfully');
   });

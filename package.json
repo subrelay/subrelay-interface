@@ -12,7 +12,7 @@
     "cypress:open": "cypress open",
     "test:unit": "vitest run",
     "coverage": "vitest run --coverage",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --ignore-path .gitignore"
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --ignore-path .gitignore --fix"
   },
   "dependencies": {
     "@iconify/vue": "^4.0.0",

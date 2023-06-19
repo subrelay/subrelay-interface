@@ -81,27 +81,25 @@ function onUpdateActive(value) {
 
 function renderIcon(icon, isButton = false) {
   if (isButton) {
-    return () =>
-      collapsed.value ? h(NButton, { type: 'primary' }, { default: () => h(Icon, { icon, inline: true }) }) : '';
+    return () => (collapsed.value ? h(NButton, { type: 'primary' }, { default: () => h(Icon, { icon, inline: true }) }) : '');
   }
   return () => h(Icon, { icon, inline: true });
 }
 
 const siderOptions = ref([
   {
-    label: () =>
-      collapsed.value
-        ? h('div', { 'data-test': 'new-workflow-btn' }, { default: () => 'New workflow' })
-        : h(
-            NButton,
-            { block: true, type: 'primary', round: true },
-            {
-              default: () => [
-                h(Icon, { icon: 'fluent:add-12-filled', inline: true }),
-                h('div', { style: 'margin-left: 0.6rem', 'data-test': 'new-workflow-btn' }, 'New workflow'),
-              ],
-            },
-          ),
+    label: () => (collapsed.value
+      ? h('div', { 'data-test': 'new-workflow-btn' }, { default: () => 'New workflow' })
+      : h(
+        NButton,
+        { block: true, type: 'primary', round: true },
+        {
+          default: () => [
+            h(Icon, { icon: 'fluent:add-12-filled', inline: true }),
+            h('div', { style: 'margin-left: 0.6rem', 'data-test': 'new-workflow-btn' }, 'New workflow'),
+          ],
+        },
+      )),
     key: 'editor',
     icon: renderIcon('fluent:add-12-filled', true),
   },
@@ -111,8 +109,7 @@ const siderOptions = ref([
     icon: renderIcon('ic:round-dashboard'),
   },
   {
-    label: () =>
-      h(RouterLink, { to: { name: 'logs' }, 'data-test': 'side-bar-logs-router' }, { default: () => 'Logs' }),
+    label: () => h(RouterLink, { to: { name: 'logs' }, 'data-test': 'side-bar-logs-router' }, { default: () => 'Logs' }),
     key: 'logs',
     icon: renderIcon('system-uicons:files-history'),
   },

@@ -158,17 +158,16 @@ const columns = ref([
     key: 'chain',
     width: '20%',
     ellipsis: { tooltip: true },
-    render: ({ chain }) =>
-      h('div', { style: { display: 'flex', alignItems: 'center' } }, [
-        h(NAvatar, {
-          style: { background: 'transparent' },
-          src: useGetChainImg(chain.name, chains.value),
-          round: true,
-          size: 'small',
-          color: 'white',
-        }),
-        h('div', { style: { marginLeft: '12px', padding: '4px 0' } }, chain.name),
-      ]),
+    render: ({ chain }) => h('div', { style: { display: 'flex', alignItems: 'center' } }, [
+      h(NAvatar, {
+        style: { background: 'transparent' },
+        src: useGetChainImg(chain.name, chains.value),
+        round: true,
+        size: 'small',
+        color: 'white',
+      }),
+      h('div', { style: { marginLeft: '12px', padding: '4px 0' } }, chain.name),
+    ]),
   },
   {
     title: 'Created at',
@@ -195,8 +194,7 @@ const columns = ref([
     key: 'status',
     width: '10%',
     ellipsis: { tooltip: true },
-    render: ({ id, status }) =>
-      h('div', { onClick: (e) => e.stopPropagation() }, h(WorkflowSwitch, { status, id, fetchOne: false })),
+    render: ({ id, status }) => h('div', { onClick: (e) => e.stopPropagation() }, h(WorkflowSwitch, { status, id, fetchOne: false })),
   },
   {
     key: 'action',
@@ -225,11 +223,10 @@ const columns = ref([
           },
         },
         {
-          'trigger-content': () =>
-            h(Icon, {
-              icon: 'grommet-icons:close',
-              style: { 'margin-left': '1rem', 'margin-right': '0' },
-            }),
+          'trigger-content': () => h(Icon, {
+            icon: 'grommet-icons:close',
+            style: { 'margin-left': '1rem', 'margin-right': '0' },
+          }),
         },
       );
 

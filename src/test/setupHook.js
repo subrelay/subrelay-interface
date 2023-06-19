@@ -1,7 +1,7 @@
 import { createApp } from 'vue';
 // Ref: https://mayashavin.com/articles/testing-components-with-vitest
 
-export function withSetup(hook) {
+export default function withSetup(hook) {
   let result;
 
   const app = createApp({
