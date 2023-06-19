@@ -84,7 +84,7 @@ watch(
     font-size: 48px;
     margin-top: 48px;
   }
-  
+
   .subtitle {
     font-family: 'Unbounded';
     font-size: 16px;
