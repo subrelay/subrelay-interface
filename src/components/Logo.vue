@@ -1,6 +1,6 @@
 <template>
   <div class="logo" @click="emits('click')" :style="style" data-test="subrelay-logo">
-    <n-text depth="1" class="text"> Subrelay </n-text>
+    <n-text depth="1" class="text">↗Subrelay↘</n-text>
   </div>
 </template>
 
@@ -25,11 +25,7 @@ const style = computed(() => ({
   user-select: none;
   display: flex;
   align-items: center;
-  font-size: 1.4rem;
+  font-size: 28px;
   font-weight: 700;
-
-  .text {
-    margin-left: 0.8rem;
-  }
 }
 </style>

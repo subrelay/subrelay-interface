@@ -1,27 +1,26 @@
 <template>
   <n-layout style="height: 100vh">
-    <n-layout-header bordered class="page_header center">
-      <Logo />
+    <n-layout-header bordered>
+      <div class="header__content">
+        <Logo/>
+      </div>
+
     </n-layout-header>
 
     <n-layout-content>
-      <div class="welcome">
-        <h1 class="title">Welcome to Subrelay</h1>
-        <div class="text">
-          <span style="margin-right: 5px">Please connect your</span>
-          <n-avatar color="transparent" round :size="24" src="https://polkadot.js.org/logo.svg" />
-          <span style="margin-left: 5px"> Polkadot{.js} wallet to start using SubRelay.</span>
-        </div>
-
+      <div class="container">
+        <h1 class="title">Subrelay</h1>
+        <h2 class="subtitle">Build your own Web3 automation workflows on any Substrate based chain</h2>
         <n-button
           type="primary"
-          round
           size="large"
+          round
+          style="font-weight: bold; font-size: 16px; padding: 32px; font-family: 'Unbounded';"
           data-test="connect-wallet"
           @click="onConnectWallet"
           :loading="loading"
         >
-          Connect Wallet
+          Continue with my wallet
         </n-button>
       </div>
     </n-layout-content>
@@ -66,33 +65,35 @@ watch(
 </script>
 
 <style lang="scss" scoped>
-.page_header {
-  padding: 16px 32px;
-}
-.welcome {
-  margin-top: 15vh;
+.header__content {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-
-  .text {
-    display: flex;
-    align-items: center;
-    margin-bottom: 2rem;
-  }
+  max-width: 1200px;
+  height: 80px;
+  margin: auto;
+}
+.container {
+  height: 100%;
+  max-width: 1200px;
+  margin: auto;
+  padding-top: 48px;
 
   .title {
     font-family: 'Unbounded';
-    font-size: 2.4rem;
-    margin-bottom: 1rem;
+    font-size: 48px;
+    margin-top: 48px;
   }
 
-  .connect_button {
-    width: 50vw;
-    max-width: 500px;
-    padding: 1.5rem;
-    font-size: 1.5rem;
-    margin-top: 5rem;
+  .subtitle {
+    font-family: 'Unbounded';
+    font-size: 16px;
+    font-weight: 500;
+    font-size: 28px;
+    color: #808695;
+    max-width: 480px;
+    margin-top: 8px;
+    margin-bottom: 24px;
   }
 }
 </style>
