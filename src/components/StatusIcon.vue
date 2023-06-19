@@ -3,6 +3,7 @@
 </template>
 
 <script setup>
+import { Icon } from '@iconify/vue';
 import { useStore } from 'vuex';
 import { computed } from 'vue';
 
@@ -10,7 +11,7 @@ const store = useStore();
 const props = defineProps({ status: String });
 const darkMode = computed(() => store.state.global.isDarkMode);
 
-const sucessColor = computed(() => {
+const successColor = computed(() => {
   const color = darkMode.value ? '#63e2b7' : '#18a058ff';
   return color;
 });
@@ -26,7 +27,7 @@ const skippedColor = computed(() => {
 const color = computed(() => {
   switch (props.status) {
     case 'success':
-      return sucessColor.value;
+      return successColor.value;
     case 'failed':
       return failedColor.value;
     case 'skipped':
@@ -37,6 +38,7 @@ const color = computed(() => {
 });
 
 const icon = computed(() => {
+  console.log('Status', props.status);
   switch (props.status) {
     case 'success':
       return 'ep:success-filled';

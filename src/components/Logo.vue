@@ -5,6 +5,7 @@
 </template>
 
 <script setup>
+import { NText } from 'naive-ui';
 import { computed } from 'vue';
 
 const props = defineProps({

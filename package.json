@@ -46,7 +46,7 @@
     "@vitejs/plugin-vue": "^3.2.0",
     "@vitejs/plugin-vue-jsx": "^2.0.1",
     "@vue/eslint-config-prettier": "^7.1.0",
-    "@vue/test-utils": "^2.3.2",
+    "@vue/test-utils": "2.0.2",
     "cypress": "^10.10.0",
     "eslint": "^7.32.0 || ^8.2.0",
     "eslint-config-airbnb-base": "^15.0.0",
