@@ -53,6 +53,7 @@ import { useStore } from 'vuex';
 import { Icon } from '@iconify/vue';
 import { RouterLink, useRouter, useRoute } from 'vue-router';
 import { NButton, useMessage } from 'naive-ui';
+import isEmpty from 'lodash/isEmpty';
 
 const route = useRoute();
 const router = useRouter();
@@ -62,7 +63,7 @@ const collapsed = computed(() => store.state.global.isSiderCollapsed);
 const selectedAccount = computed(() => store.state.account.selected);
 
 watch(selectedAccount, (acc) => {
-  if (!acc) router.push('/welcome');
+  if (isEmpty(acc)) router.push('/welcome');
 });
 
 onMounted(() => {
@@ -78,24 +79,35 @@ function onUpdateActive(value) {
 
 function renderIcon(icon, isButton = false) {
   if (isButton) {
-    return () => (collapsed.value ? h(NButton, { type: 'primary' }, { default: () => h(Icon, { icon, inline: true }) }) : '');
+    return () =>
+      collapsed.value ? h(NButton, { type: 'primary' }, { default: () => h(Icon, { icon, inline: true }) }) : '';
   }
   return () => h(Icon, { icon, inline: true });
 }
 
 const siderOptions = ref([
   {
-    label: () => (collapsed.value
-      ? h('div', { style: 'font-weight: bold' }, { default: () => 'Create workflow' })
-      : h(
-        NButton,
-        { block: true, type: 'primary', round: true, style: 'font-family: Unbounded; font-size: 16px; font-weight: bold; padding: 24px; margin-bottom: 32px;' },
-        {
-          default: () => [
-            h('div', { style: 'margin-left: 0.6rem' }, 'Create workflow'),
-          ],
-        },
-      )),
+    label: () =>
+      collapsed.value
+        ? h(
+            'div',
+            { style: 'font-weight: bold', 'data-test': 'new-workflow-btn' },
+            { default: () => 'Create workflow' },
+          )
+        : h(
+            NButton,
+            {
+              block: true,
+              type: 'primary',
+              round: true,
+              style: 'font-family: Unbounded; font-size: 16px; font-weight: bold; padding: 24px; margin-bottom: 32px;',
+            },
+            {
+              default: () => [
+                h('div', { style: 'margin-left: 0.6rem', 'data-test': 'new-workflow-btn' }, 'Create workflow'),
+              ],
+            },
+          ),
     key: 'editor',
     icon: renderIcon('fluent:add-12-filled', true),
   },
@@ -105,7 +117,8 @@ const siderOptions = ref([
     icon: renderIcon('ic:round-dashboard'),
   },
   {
-    label: () => h(RouterLink, { to: { name: 'logs' } }, { default: () => 'Logs' }),
+    label: () =>
+      h(RouterLink, { to: { name: 'logs' }, 'data-test': 'side-bar-logs-router' }, { default: () => 'Logs' }),
     key: 'logs',
     icon: renderIcon('system-uicons:files-history'),
   },
@@ -141,7 +154,7 @@ watch(
     margin: 10px 0px;
     font-size: 16px;
     font-weight: bold;
-    font-family: Unbounded; 
+    font-family: Unbounded;
     &:first-child {
       margin-bottom: 15px;
 

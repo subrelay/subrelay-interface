@@ -1,0 +1,64 @@
+{
+  "workflows": [
+    {
+      "id": "01H2D84TNHPG5HBJQ7TNFJ18NF",
+      "name": "Dot email",
+      "createdAt": "2023-06-08T10:16:58.289Z",
+      "updatedAt": "2023-06-08T13:55:11.304Z",
+      "status": "running",
+      "userId": "01H1BGZV9WX8A59DHGZ8YEFR2V",
+      "chain": {
+        "name": "Polkadot",
+        "uuid": "01H1BE98ER69WGY85D5ABW80Y0",
+        "chainId": "polkadot",
+        "imageUrl": "https://raw.githubusercontent.com/paritytech/polkadot-staking-dashboard/29c060c49518c060561b7bac008a0059bbf1145f/src/img/polkadot_icon.svg"
+      },
+      "event": {
+        "id": "01H1BE98F32SY2GRHBKXT6MPHA",
+        "name": "balances.Deposit",
+        "description": "Some amount was deposited (e.g. for transaction fees)."
+      }
+    },
+    {
+      "id": "01H2D985NZRZ1ESYF5GC5VZCET",
+      "name": "Westend tele",
+      "createdAt": "2023-06-08T10:36:16.446Z",
+      "updatedAt": "2023-06-08T10:36:16.447Z",
+      "status": "pausing",
+      "userId": "01H1BGZV9WX8A59DHGZ8YEFR2V",
+      "chain": {
+        "name": "Westend",
+        "uuid": "01H1BE9B63BHD987X220RQTXS9",
+        "chainId": "westend",
+        "imageUrl": "https://raw.githubusercontent.com/paritytech/polkadot-staking-dashboard/29c060c49518c060561b7bac008a0059bbf1145f/src/img/westend_icon.svg"
+      },
+      "event": {
+        "id": "01H1BE9B6BFGB3BCEZSGWEYQRG",
+        "name": "paraInclusion.CandidateIncluded",
+        "description": "A candidate was included. `[candidate, head_data]`"
+      }
+    },
+    {
+      "id": "01H2DQWZB2H2RTB93TDTMHSPX1",
+      "name": "KSM tele",
+      "createdAt": "2023-06-08T14:52:18.146Z",
+      "updatedAt": "2023-06-08T14:52:18.146Z",
+      "status": "running",
+      "userId": "01H1BGZV9WX8A59DHGZ8YEFR2V",
+      "chain": {
+        "name": "Kusama",
+        "uuid": "01H1BE98K91AXQNQR9314G4ECF",
+        "chainId": "kusama",
+        "imageUrl": "https://raw.githubusercontent.com/paritytech/polkadot-staking-dashboard/29c060c49518c060561b7bac008a0059bbf1145f/src/img/kusama_icon.svg"
+      },
+      "event": {
+        "id": "01H1BE98KC37MY1EMR3D5889QW",
+        "name": "balances.Transfer",
+        "description": "Transfer succeeded."
+      }
+    }
+  ],
+  "total": 3,
+  "limit": 10,
+  "offset": 0
+}

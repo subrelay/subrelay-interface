@@ -5,6 +5,8 @@
       filterable
       clearable
       placeholder="All statuses"
+      data-test="a-workflow-log-status-filter"
+      :menu-props="{ 'data-test': 'workflow-log-status-filter-menu' }"
       :disabled="loading"
       :render-label="useRenderDropdownLabel"
       :options="logStatuses"
@@ -50,9 +52,9 @@
 
 <script setup>
 import WorkflowLogItem from '@/components/WorkflowLogItem';
+import { useQuery, useRenderDropdownLabel } from '@/composables';
 import logStatuses from '@/config/logStatuses';
 import { computed } from 'vue';
-import { useQuery, useRenderDropdownLabel } from '@/composables';
 import { useStore } from 'vuex';
 
 const props = defineProps(['id']);

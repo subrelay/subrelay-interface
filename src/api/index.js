@@ -9,7 +9,6 @@ const EXPIRED_TIME = 82800000; // 23 hours in ms
 
 export const getSavedAuthToken = (address) => {
   const json = localStorage.getItem(address);
-
   if (json) {
     const { token, generatedAt } = JSON.parse(json);
     const now = Date.now();
@@ -21,7 +20,7 @@ export const getSavedAuthToken = (address) => {
     localStorage.removeItem(address);
   }
 
-  localStorage.removeItem('polkadot-js-connected');
+  // localStorage.removeItem('polkadot-js-connected');
   return null;
 };
 

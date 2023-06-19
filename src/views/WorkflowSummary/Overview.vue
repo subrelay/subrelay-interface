@@ -1,21 +1,25 @@
 <template>
   <n-space vertical :size="24">
     <!-- DETAILS -->
-    <n-card header-style="padding-bottom: 0.5rem" :segmented="{ content: 'soft' }">
+    <n-card
+      data-test="workflow-overview_details"
+      header-style="padding-bottom: 0.5rem"
+      :segmented="{ content: 'soft' }"
+    >
       <template #header>
         <div class="font-size-1rem">Details</div>
       </template>
 
       <n-grid cols="3">
         <n-gi>
-          <n-space vertical>
+          <n-space vertical data-test="workflow-overview_status">
             <div class="text-semi-bold">Status</div>
             <WorkflowSwitch :id="props.id" :status="workflow.status" fetchOne />
           </n-space>
         </n-gi>
 
         <n-gi>
-          <n-space vertical>
+          <n-space vertical data-test="workflow-overview_createdAt">
             <div class="text-semi-bold">Created at</div>
             <div>
               {{ moment(workflow.createdAt).local().format('MMM Do YYYY, HH:mm:ss') }}
@@ -24,7 +28,7 @@
         </n-gi>
 
         <n-gi>
-          <n-space vertical>
+          <n-space vertical data-test="workflow-overview_updatedAt">
             <div class="text-semi-bold">Updated at</div>
             <div>
               {{ moment(workflow.updatedAt).local().format('MMM Do YYYY, HH:mm:ss') }}
@@ -35,7 +39,11 @@
     </n-card>
 
     <!-- TRIGGER -->
-    <n-card header-style="padding-bottom: 0.5rem" :segmented="{ content: 'soft' }">
+    <n-card
+      data-test="workflow-overview_trigger"
+      header-style="padding-bottom: 0.5rem"
+      :segmented="{ content: 'soft' }"
+    >
       <template #header>
         <div class="title">Trigger</div>
       </template>
@@ -44,7 +52,7 @@
         <n-grid cols="3">
           <!-- Chain -->
           <n-gi span="1">
-            <n-space vertical>
+            <n-space vertical data-test="workflow-overview_chain">
               <div class="text-semi-bold">Chain</div>
               <div>{{ workflow.chain.name }}</div>
             </n-space>
@@ -52,7 +60,7 @@
 
           <!-- Event -->
           <n-gi>
-            <n-space vertical>
+            <n-space vertical data-test="workflow-overview_event">
               <div class="text-semi-bold">Event</div>
               <div>{{ workflow.event.name }}</div>
             </n-space>
@@ -60,14 +68,14 @@
         </n-grid>
 
         <!-- Conditions -->
-        <n-space vertical>
+        <n-space vertical data-test="workflow-overview_filters">
           <div class="text-semi-bold">Filters</div>
 
           <n-space vertical v-if="filtersCondition.length">
             <div v-for="(conditionGroup, index) in filtersCondition" :key="index">
               <b v-if="index !== 0" style="margin-right: 4px">OR</b>
 
-              <span v-for="(condition, subIndex) in conditionGroup" :key="subIndex">
+              <span v-for="(condition, subIndex) in conditionGroup" :key="subIndex" class="filter-condition">
                 <b v-if="subIndex !== 0" style="margin-left: 4px"> AND </b>
                 <n-text code> {{ condition.variable }} </n-text>
                 <span>
@@ -86,7 +94,7 @@
       </n-space>
     </n-card>
 
-    <n-card header-style="padding-bottom: 0.5rem" :segmented="{ content: 'soft' }">
+    <n-card header-style="padding-bottom: 0.5rem" :segmented="{ content: 'soft' }" data-test="workflow-overview_action">
       <template #header>
         <div class="title">Action</div>
       </template>
@@ -95,7 +103,7 @@
         <n-grid cols="3">
           <!-- Channel -->
           <n-gi span="1">
-            <n-space vertical>
+            <n-space vertical data-test="workflow-overview_channel">
               <div class="text-semi-bold">Channel</div>
               <div class="text-capitalize">
                 {{ actionTask.type }}
@@ -139,7 +147,12 @@
         </n-space>
 
         <!-- Telegram & Discord Content -->
-        <n-space v-if="actionTask.type === 'telegram' || actionTask.type === 'discord'" vertical :size="24">
+        <n-space
+          data-test="workflow-overview_custom-message-content"
+          v-if="actionTask.type === 'telegram' || actionTask.type === 'discord'"
+          vertical
+          :size="24"
+        >
           <n-space vertical v-if="!isEmpty(customMsgKeys)">
             <div class="text-semi-bold">Content</div>
             <n-blockquote style="white-space: pre-wrap">

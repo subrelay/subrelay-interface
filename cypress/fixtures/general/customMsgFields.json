@@ -1,0 +1,79 @@
+[
+  {
+    "name": "workflow.id",
+    "description": "The workflow ID",
+    "type": "string",
+    "data": "01H31S749FVDCXY0WEDNJ1WPQG",
+    "display": "Workflow ID"
+  },
+  {
+    "name": "workflow.name",
+    "description": "The workflow name",
+    "type": "string",
+    "data": "Workflow for event balances.Transfer",
+    "display": "Workflow Name"
+  },
+  {
+    "name": "chain.name",
+    "description": "The chain name",
+    "type": "string",
+    "data": "Polkadot",
+    "display": "Chain Name"
+  },
+  {
+    "name": "event.id",
+    "description": "The Id of the event",
+    "type": "number",
+    "data": "01H1BE98F3S2E2FJK1V80W2DRF",
+    "display": "Event ID"
+  },
+  {
+    "name": "event.name",
+    "description": "The name of the event",
+    "type": "string",
+    "data": "balances.Transfer",
+    "display": "Event Name"
+  },
+  {
+    "name": "event.description",
+    "description": "The description of the event",
+    "type": "string",
+    "data": "Transfer succeeded.",
+    "display": "Event Description"
+  },
+  {
+    "name": "event.success",
+    "description": "The status of the event",
+    "type": "boolean",
+    "data": true,
+    "display": "Status"
+  },
+  {
+    "name": "event.block.hash",
+    "description": "The hash of the block",
+    "type": "string",
+    "data": "0x3661333f6b7e0807e6b72a1ff8e47c53da1e41e9ae1dfdbb6e9a1a198acd1271",
+    "display": "Block Hash"
+  },
+  {
+    "name": "event.data.from",
+    "description": "From",
+    "type": "string",
+    "data": "2UbGKC42DuUXaZYanQpJ9y5eRREAPttW8fwm",
+    "display": "From"
+  },
+  {
+    "name": "event.data.to",
+    "description": "To",
+    "type": "string",
+    "data": "2UbGKC42DuUXaZagQ3EWbQsBW4LQBXiuoG3b",
+    "display": "To"
+  },
+  {
+    "name": "event.data.amount",
+    "description": "Amount",
+    "type": "number",
+    "data": 84000,
+    "display": "Amount"
+  }
+]

@@ -3,6 +3,8 @@
     filterable
     clearable
     value-field="uuid"
+    data-test="chain-dropdown"
+    :menu-props="{ 'data-test': 'chain-dropdown-menu' }"
     :placeholder="placeholder"
     :filter="useDropdownFilter"
     :render-label="useRenderDropdownLabel"

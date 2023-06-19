@@ -1,5 +1,5 @@
 <template>
-  <div class="logo" @click="emits('click')" :class="classes" :style="style">
+  <div class="logo" @click="emits('click')" :style="style" data-test="subrelay-logo">
     <n-text depth="1" class="text">↗Subrelay↘</n-text>
   </div>
 </template>
@@ -12,8 +12,6 @@ const props = defineProps({
 });
 
 const emits = defineEmits(['click']);
-
-const classes = computed(() => ({}));
 
 const style = computed(() => ({
   color: props.color,

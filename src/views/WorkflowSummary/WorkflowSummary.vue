@@ -17,8 +17,9 @@
     </n-result>
 
     <n-space v-else vertical :size="20" style="margin-bottom: 5vh">
-      <div class="page_title">{{ workflow.name }}</div>
+      <div class="page_title" data-test="workflow-details-name">{{ workflow.name }}</div>
       <n-tabs
+        data-test="workflow-details-tabs"
         v-if="workflow.tasks"
         default-value="overview"
         justify-content="space-evenly"
@@ -27,11 +28,11 @@
         :value="activeTab"
         @update:value="onChangeTab"
       >
-        <n-tab-pane name="overview" tab="Overview">
+        <n-tab-pane name="overview" tab="Overview" data-test="workflow-details-tab-pane-overview">
           <Overview :id="id" />
         </n-tab-pane>
 
-        <n-tab-pane name="workflowLogs" tab="Logs">
+        <n-tab-pane name="workflowLogs" tab="Logs" data-test="workflow-details-tab-pane-logs">
           <WorkflowLogs :id="id" />
         </n-tab-pane>
       </n-tabs>

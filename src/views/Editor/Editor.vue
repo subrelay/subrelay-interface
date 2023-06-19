@@ -5,12 +5,16 @@
     <n-layout-header style="padding: 5px 3rem" bordered>
       <!-- HEADER -->
       <n-space align="center" justify="space-between">
-        <EditableText :onUpdateValue="onUpdateName" :value="EditorData.workflow.name" />
+        <EditableText
+          :onUpdateValue="onUpdateName"
+          :value="EditorData.workflow.name"
+          data-test="editor-editable-name"
+        />
 
         <Logo @click="quitEditor" />
 
         <n-space>
-          <n-button type="primary" class="action-button" @click="quitEditor">
+          <n-button type="primary" class="action-button" @click="quitEditor" data-test="editor-home-btn">
             <template #icon>
               <Icon icon="line-md:home-md" :inline="true" class="icon" />
             </template>
@@ -18,6 +22,7 @@
           </n-button>
 
           <n-button
+            data-test="editor-finish-btn"
             type="primary"
             class="action-button"
             @click="createWorkflow"
@@ -35,14 +40,24 @@
     <n-layout-content content-style="padding-top: 50px;">
       <!-- STEPPER -->
       <div class="page_container">
-        <n-steps :current="step" @update:current="onChangeStep" class="stepper">
-          <n-step title="TRIGGER" description="This is what starts the workflow" :status="triggerStatus">
+        <n-steps :current="step" @update:current="onChangeStep" class="stepper" data-test="editor-stepper">
+          <n-step
+            data-test="editor-trigger-stepper"
+            title="TRIGGER"
+            description="This is what starts the workflow"
+            :status="triggerStatus"
+          >
             <template #icon>
               <n-icon><ThunderboltOutlined /> </n-icon>
             </template>
           </n-step>
 
-          <n-step title="ACTION" description="Action will perform when the event is triggered" :status="actionStatus">
+          <n-step
+            data-test="editor-action-stepper"
+            title="ACTION"
+            description="Action will perform when the event is triggered"
+            :status="actionStatus"
+          >
             <template #icon>
               <n-icon><BellOutlined /> </n-icon>
             </template>
@@ -55,8 +70,6 @@
           <Action v-show="step == 2" @validate="validateForm" />
         </n-form>
       </div>
-
-      <!-- <pre>{{ EditorData }}</pre> -->
     </n-layout-content>
   </n-layout>
 </template>
@@ -116,9 +129,9 @@ const changedToAction = computed(() => {
 const hasUpdates = computed(() => changedToTrigger.value || changedToAction.value);
 
 function handleReload(e) {
-  // if (!hasUpdates.value) return;
-  // e.preventDefault();
-  // e.returnValue = '';
+  if (!hasUpdates.value) return;
+  e.preventDefault();
+  e.returnValue = '';
 }
 
 onBeforeUnmount(() => {
@@ -199,11 +212,10 @@ function onUpdateName(value) {
 function showExitWarning() {
   dialog.warning({
     title: 'Confirm quit',
-    content: () =>
-      h('div', { style: { fontSize: '0.85rem' } }, [
-        h('div', 'Changes you made will be discarded because the workflow is not yet completed.'),
-        h('div', { style: { marginTop: '1rem' } }, 'You can’t undo this action.'),
-      ]),
+    content: () => h('div', { style: { fontSize: '0.85rem' } }, [
+      h('div', 'Changes you made will be discarded because the workflow is not yet completed.'),
+      h('div', { style: { marginTop: '1rem' } }, 'You can’t undo this action.'),
+    ]),
 
     positiveText: 'Leave',
     negativeText: 'Stay',

@@ -1,0 +1,145 @@
+{
+  "id": "01H2JXJESBT1A5CDX9VM4RZBXN",
+  "finishedAt": "2023-06-10T15:07:37.141Z",
+  "startedAt": "2023-06-10T15:07:37.133Z",
+  "status": "success",
+  "chain": {
+    "name": "Kusama",
+    "uuid": "01H1BE98K91AXQNQR9314G4ECF",
+    "imageUrl": "https://raw.githubusercontent.com/paritytech/polkadot-staking-dashboard/29c060c49518c060561b7bac008a0059bbf1145f/src/img/kusama_icon.svg"
+  },
+  "event": {
+    "id": "01H1BE98KC37MY1EMR3D5889QW",
+    "name": "balances.Transfer",
+    "description": "Transfer succeeded."
+  },
+  "workflow": {
+    "id": "01H2JXD6EPS7WJR8ZXJ7WPDHG0",
+    "name": "KSM tele"
+  },
+  "taskLogs": [
+    {
+      "id": "01H2JXJESG319NZVR81N6NV9KC",
+      "startedAt": "2023-06-10T15:07:36.415Z",
+      "finishedAt": "2023-06-10T15:07:36.415Z",
+      "status": "success",
+      "workflowLogId": "01H2JXJESBT1A5CDX9VM4RZBXN",
+      "task": {
+        "id": "01H2JXD6EVE3X6D5DDH5HMFBHD",
+        "type": "trigger",
+        "name": "trigger",
+        "dependOn": null,
+        "config": {
+          "eventId": "01H1BE98KC37MY1EMR3D5889QW"
+        },
+        "workflowId": "01H2JXD6EPS7WJR8ZXJ7WPDHG0"
+      },
+      "taskId": "01H2JXD6EVE3X6D5DDH5HMFBHD",
+      "output": null,
+      "input": null,
+      "error": null
+    },
+    {
+      "id": "01H2JXJESG3Q4C74FA06C5VP3D",
+      "startedAt": "2023-06-10T15:07:36.415Z",
+      "finishedAt": "2023-06-10T15:07:36.415Z",
+      "status": "success",
+      "workflowLogId": "01H2JXJESBT1A5CDX9VM4RZBXN",
+      "task": {
+        "id": "01H2JXD6EWMNXFGXG6BADKKPAY",
+        "type": "filter",
+        "name": "filter",
+        "dependOn": "01H2JXD6EVE3X6D5DDH5HMFBHD",
+        "config": {
+          "conditions": [
+            [
+              {
+                "value": "1",
+                "operator": "contains",
+                "variable": "event.data.from"
+              }
+            ],
+            [
+              {
+                "value": "a",
+                "operator": "contains",
+                "variable": "event.data.to"
+              }
+            ]
+          ]
+        },
+        "workflowId": "01H2JXD6EPS7WJR8ZXJ7WPDHG0"
+      },
+      "taskId": "01H2JXD6EWMNXFGXG6BADKKPAY",
+      "output": {
+        "match": true
+      },
+      "input": {
+        "user": {
+          "id": "01H1BGZV9WX8A59DHGZ8YEFR2V",
+          "address": "5CFk5jMTFbRZhAMxhEYNPq8kLndMC3iDcrKLFAUMufB1TU8U",
+          "createdAt": "2023-05-26T07:57:21.604Z",
+          "integration": {
+            "discord": {
+              "id": "852752684434849814",
+              "avatar": "https://cdn.discordapp.com/avatars/852752684434849814/936c1c989339f0e41fe6890bda214dce.webp",
+              "username": "anhthichieu#3366"
+            },
+            "telegram": {
+              "id": "1474841627",
+              "username": "anhthichieu"
+            }
+          }
+        },
+        "chain": {
+          "name": "Kusama",
+          "uuid": "01H1BE98K91AXQNQR9314G4ECF"
+        },
+        "event": {
+          "id": "01H1BE98KC37MY1EMR3D5889QW",
+          "data": {
+            "to": "HZAuLzpLDs2vUvq2QQedo1JyxBAdkLLer9AWgRifEppUuLj",
+            "from": "ES7nMTXLmqMM64HfXPhZgG662N6HAitnQPEneSGxgq3Mfe1",
+            "amount": "183.0000"
+          },
+          "name": "balances.Transfer",
+          "time": "2023-06-10T15:07:18.000Z",
+          "block": {
+            "hash": "0x47c722488962e122dd3ddaaaf8a0290498b17547759aa23cc54ce9da3aba6f53"
+          },
+          "success": true,
+          "timestamp": 1686409638000,
+          "description": "Transfer succeeded."
+        },
+        "workflow": {
+          "id": "01H2JXD6EPS7WJR8ZXJ7WPDHG0",
+          "name": "KSM tele"
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "01H2JXJESGRMC1Q16F4SNVZ6QA",
+      "startedAt": "2023-06-10T15:07:36.415Z",
+      "finishedAt": "2023-06-10T15:07:37.130Z",
+      "status": "success",
+      "workflowLogId": "01H2JXJESBT1A5CDX9VM4RZBXN",
+      "task": {
+        "id": "01H2JXD6EY13C7VRGBZBN12RCW",
+        "type": "telegram",
+        "name": "action",
+        "dependOn": "01H2JXD6EWMNXFGXG6BADKKPAY",
+        "config": {
+          "messageTemplate": "Event ${event.name} on chain ${chain.name} has just happened with following data:\n\nBlock: ${event.block.hash}\nSuccess: ${event.success}\nFrom: ${event.data.from}\nTo: ${event.data.to}\nAmount: ${event.data.amount}"
+        },
+        "workflowId": "01H2JXD6EPS7WJR8ZXJ7WPDHG0"
+      },
+      "taskId": "01H2JXD6EY13C7VRGBZBN12RCW",
+      "output": null,
+      "input": {
+        "message": "Event balances.Transfer on chain Kusama has just happened with following data:\n\nBlock: 0x47c722488962e122dd3ddaaaf8a0290498b17547759aa23cc54ce9da3aba6f53\nSuccess: true\nFrom: ES7nMTXLmqMM64HfXPhZgG662N6HAitnQPEneSGxgq3Mfe1\nTo: HZAuLzpLDs2vUvq2QQedo1JyxBAdkLLer9AWgRifEppUuLj\nAmount: 183.0000"
+      },
+      "error": null
+    }
+  ]
+}

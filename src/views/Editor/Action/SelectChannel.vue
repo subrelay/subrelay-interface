@@ -1,5 +1,6 @@
 <template>
   <n-form-item
+    data-test="editor-form-item-select-channel"
     class="form_item_wrapper"
     label="Select channel you want to receive notifications form triggered event."
     :path="`tasks[${actionIdx}].type`"
@@ -17,7 +18,7 @@
     >
       <n-grid cols="2" y-gap="20" x-gap="30">
         <n-gi span="1" v-for="channel in channels" :key="channel.value">
-          <n-radio-button :value="channel.value" :bordered="false" class="channel_item">
+          <n-radio-button :value="channel.value" :bordered="false" class="channel_item" data-test="channel-option">
             <Icon :icon="channel.icon" class="icon" />
             <span class="text">{{ channel.label }}</span>
           </n-radio-button>

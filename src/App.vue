@@ -14,8 +14,8 @@ const store = useStore();
 onBeforeMount(() => {
   store.dispatch('chain/getChains');
   store.dispatch('editor/getOperators');
-  store.dispatch('account/loadAccounts');
   store.dispatch('global/loadSiderState');
+  store.dispatch('account/loadAccounts');
 });
 </script>
 

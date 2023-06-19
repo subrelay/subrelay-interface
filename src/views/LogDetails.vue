@@ -19,7 +19,7 @@
     <div v-else>
       <!-- HEADER -->
       <n-space align="center" justify="space-between">
-        <n-breadcrumb separator=">" style="font-family: Unbounded">
+        <n-breadcrumb separator=">" style="font-family: Unbounded" data-test="log-details-breadcrumb">
           <n-breadcrumb-item>
             <template #default>
               <router-link :to="{ name: 'logs' }" class="text-bold font-size-2rem"> LOGS </router-link>
@@ -31,19 +31,21 @@
           </n-breadcrumb-item>
         </n-breadcrumb>
 
-        <n-dropdown trigger="hover" :options="options" @select="handleSelect" placement="bottom-end">
-          <n-button text><Icon icon="ph:dots-six-vertical-bold" width="1.25rem" /> </n-button>
+        <n-dropdown trigger="hover" @select="handleSelect" placement="bottom-end" :options="options">
+          <n-button text data-test="log-details-navigation-menu">
+            <Icon icon="ph:dots-six-vertical-bold" width="1.25rem" />
+          </n-button>
         </n-dropdown>
       </n-space>
 
       <!-- INFO -->
       <n-space vertical style="margin: 2rem 0">
-        <n-space>
+        <n-space data-test="log-details-time">
           <div class="info-title">Time:</div>
           <div>{{ moment(log.finishedAt).local().format('MMM Do YYYY, HH:mm:ss') }}</div>
         </n-space>
 
-        <n-space>
+        <n-space data-test="log-details-status">
           <div class="info-title">Status:</div>
 
           <n-space align="vertical">
@@ -56,8 +58,15 @@
       </n-space>
 
       <!-- STEPS -->
-      <n-space class="steps" :size="0" :wrap="false">
-        <n-space v-for="(step, index) in log.taskLogs" :key="index" align="center" :size="0" :wrap="false">
+      <n-space class="steps" :size="0" :wrap="false" data-test="log-details-steps">
+        <n-space
+          align="center"
+          v-for="(step, index) in log.taskLogs"
+          :key="index"
+          :data-test="`log-details-step-${index}`"
+          :size="0"
+          :wrap="false"
+        >
           <!-- todo: Change to component -->
           <n-space
             v-if="log.taskLogs[index].task.type === 'trigger'"
@@ -97,7 +106,7 @@
             <n-space align="center" justify="space-between" class="w-100" :size="8">
               <n-space align="center" :wrap-item="false">
                 <Icon icon="clarity:filter-grid-circle-solid" width="24" />
-                <div class="text-capitalize">{{ log.taskLogs[index].task.type }}</div>
+                <div class="text-capitalize">Filters</div>
               </n-space>
 
               <n-space align="center" :wrap-item="false">
@@ -158,18 +167,21 @@
 
       <!-- DETAILS -->
       <transition name="fade" mode="out-in">
-        <n-card style="margin-bottom: 5vh" v-if="currentLogDetails">
+        <n-card style="margin-bottom: 5vh" v-if="currentLogDetails" data-test="log-details-input-output">
           <template #header>
-            <n-space align="center" :wrap-item="false">
-              <div class="text-capitalize">{{ currentLogDetails.task.type }}</div>
+            <n-space align="center" :wrap-item="false" data-test="log-details-input-output-title">
+              <div class="text-capitalize">
+                {{ currentLogDetails.task.type === 'filter' ? 'Filters' : currentLogDetails.task.type }}
+              </div>
             </n-space>
           </template>
 
           <!-- Input -->
           <n-space vertical :size="20">
-            <n-space v-if="currentLogDetails.input" vertical>
+            <n-space v-if="currentLogDetails.input" vertical data-test="log-details-input">
               <div>Input:</div>
 
+              <!-- Filters -->
               <JsonViewer
                 :class="{ 'jv-dark': isDarkMode }"
                 :value="currentLogDetails.input"
@@ -180,6 +192,7 @@
                 sort
               />
 
+              <!-- Messages -->
               <n-card embedded v-else>
                 <n-space vertical :size="24">
                   <n-space vertical v-if="currentLogDetails.input.subject">
@@ -219,7 +232,7 @@
             </n-space>
 
             <!-- Output -->
-            <div v-if="currentLogDetails.output">
+            <div v-if="currentLogDetails.output" data-test="log-details-output">
               <div>Output:</div>
               <JsonViewer
                 :class="{ 'jv-dark': isDarkMode }"
@@ -366,6 +379,7 @@ function setStep(newStep) {
   background-color: rgba(194, 194, 194, 1);
   height: 1px;
   width: 10vw;
+  max-width: 30px;
 }
 
 /* TRANSITIONS */

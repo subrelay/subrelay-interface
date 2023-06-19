@@ -1,19 +1,26 @@
 <template>
   <n-form-item
+    data-test="editor-form-item-webhook-setup"
     label-placement="left"
     label="URL"
     label-width="70"
     :path="`tasks[${actionIdx}].config.url`"
     :rule="urlRule"
   >
-    <n-input clearable v-model:value="EditorData.workflow.tasks[actionIdx].config.url" />
+    <n-input clearable v-model:value="EditorData.workflow.tasks[actionIdx].config.url" data-test="webhook-url-input" />
   </n-form-item>
 
   <n-form-item label="Secret" label-width="70" label-placement="left" :path="`tasks[${actionIdx}].config.secret`">
-    <n-input type="password" clearable v-model:value="EditorData.workflow.tasks[actionIdx].config.secret" />
+    <n-input
+      type="password"
+      clearable
+      v-model:value="EditorData.workflow.tasks[actionIdx].config.secret"
+      data-test="webhook-secret-input"
+    />
   </n-form-item>
 
   <n-button
+    data-test="webhook-setup-continue-btn"
     class="action_button"
     type="primary"
     v-if="EditorData.workflow.tasks[EditorData.actionIdx].type"

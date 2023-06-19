@@ -4,6 +4,7 @@
 
     <n-space :wrapItem="false">
       <n-data-table
+        data-test="workflows-table"
         row-class-name="pointer-cursor"
         :columns="columns"
         :data="workflows"
@@ -139,8 +140,9 @@ const columns = ref([
     sorter: true,
     sortOrder: false,
     renderSorterIcon: useRenderSortIcon,
-    render(row) {
+    render(row, index) {
       return h(EditableCellValue, {
+        dataTest: `editable-cell-${index}`,
         value: row.name,
         isEditing: editingId.value === row.id,
         loading: loadingId.value === row.id,
@@ -237,7 +239,7 @@ const columns = ref([
 
       return h(
         'div',
-        { onClick: (e) => e.stopPropagation() },
+        { onClick: (e) => e.stopPropagation(), 'data-test': 'workflow-actions' },
         editingId.value === id ? [saveNode, cancelNode] : menuNode,
       );
     },

@@ -4,6 +4,7 @@
 
     <n-space :wrapItem="false">
       <n-data-table
+        data-test="logs-table"
         :columns="columns"
         :data="logs"
         :loading="loading"
@@ -74,8 +75,8 @@ const columns = ref([
     },
   },
   {
-    title: 'Workflow Name',
-    key: 'workflow',
+    title: 'Workflow name',
+    key: 'name',
     className: 'text-bold',
     width: '22%',
     ellipsis: { tooltip: true },

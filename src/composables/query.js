@@ -101,6 +101,8 @@ export default function useQuery(module, path, columns = {}, fetchData = () => {
     searchText.value = '';
     selectedChain.value = null;
     selectedStatus.value = null;
+    sortingIndex = findIndex(columns.value, ({ sortOrder }) => !!sortOrder);
+    if (sortingIndex !== -1) columns.value[sortingIndex].sortOrder = false;
     pushQueryToRoute({ ...defaultQuery });
   }
 

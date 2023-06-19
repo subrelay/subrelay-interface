@@ -25,7 +25,7 @@
 
 <script setup>
 import Logo from '@/components/Logo';
-import { onBeforeMount, onMounted, ref } from 'vue';
+import { onBeforeMount, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import isEmpty from 'lodash/isEmpty';
 
