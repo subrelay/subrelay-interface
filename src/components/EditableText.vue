@@ -38,36 +38,39 @@ function handleChange() {
 
 const ShowNode = defineComponent({
   setup() {
-    return () => h(
-      NEllipsis,
-      { style: 'max-width: 250px' },
-      {
-        tooltip: () => h('div', { style: 'max-width: 250px' }, props.value),
-        default: () => h(NText, { class: 'workflow-name' }, { default: () => (props.value ? props.value : 'Untitled') }),
-      },
-    );
+    return () =>
+      h(
+        NEllipsis,
+        { style: 'max-width: 250px' },
+        {
+          tooltip: () => h('div', { style: 'max-width: 250px' }, props.value),
+          default: () =>
+            h(NText, { class: 'workflow-name' }, { default: () => (props.value ? props.value : 'Unnamed workflow') }),
+        },
+      );
   },
 });
 
 const EditNode = defineComponent({
   setup() {
-    return () => h(NInput, {
-      style: 'width: 250px',
-      ref: inputRef,
-      value: inputValue.value,
-      size: 'small',
-      placeholder: 'Enter name',
-      onBlur: handleChange,
-      clearable: true,
-      disabled: false,
-      status: inputValue.value ? 'success' : 'error',
-      onUpdateValue: (v) => {
-        inputValue.value = v;
-      },
-      onKeyup: ({ key }) => {
-        if (key === 'Enter') handleChange();
-      },
-    });
+    return () =>
+      h(NInput, {
+        style: 'width: 250px',
+        ref: inputRef,
+        value: inputValue.value,
+        size: 'small',
+        placeholder: 'Enter name',
+        onBlur: handleChange,
+        clearable: true,
+        disabled: false,
+        status: inputValue.value ? 'success' : 'error',
+        onUpdateValue: (v) => {
+          inputValue.value = v;
+        },
+        onKeyup: ({ key }) => {
+          if (key === 'Enter') handleChange();
+        },
+      });
   },
 });
 </script>
@@ -78,7 +81,6 @@ const EditNode = defineComponent({
   height: 100%;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
 
   .n-input {
     width: 90%;

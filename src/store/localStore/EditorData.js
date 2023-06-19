@@ -44,7 +44,7 @@ const editor = reactive({
   },
 
   setName(name) {
-    this.workflow.name = name || 'Untitled';
+    this.workflow.name = name || 'Unnamed workflow';
   },
 
   setChainUuid(uuid) {
@@ -128,7 +128,9 @@ const editor = reactive({
 
     if (this.postWorkflowData.tasks[this.filterIdx].config.conditions.length) {
       // Remove key for each condition before submitting
-      this.postWorkflowData.tasks[this.filterIdx].config.conditions.forEach((group) => group.forEach((condition) => delete condition.key));
+      this.postWorkflowData.tasks[this.filterIdx].config.conditions.forEach((group) =>
+        group.forEach((condition) => delete condition.key),
+      );
     } else {
       // Remove empty filter conditions
       this.postWorkflowData.tasks[this.actionIdx].dependOnName = 'trigger';
