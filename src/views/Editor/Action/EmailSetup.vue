@@ -131,8 +131,7 @@ const requiredBody = computed(() => store.state.editor.error.bodyTemplate);
 const actionIdx = computed(() => EditorData.actionIdx);
 const actionConfig = computed(() => EditorData.workflow.tasks[EditorData.actionIdx].config);
 
-const [{ content, previewContent, defaultContent, subject, previewSubject, defaultSubject, darkMode }, { getRawText }] =
-  useCustomMessage({ channel: 'email' });
+const [{ content, previewContent, defaultContent, subject, previewSubject, defaultSubject, darkMode }, { getRawText }] = useCustomMessage({ channel: 'email' });
 
 function removeAddress(index) {
   addressTags.value.splice(index, 1);
@@ -170,23 +169,21 @@ const rule = ref({
   },
 });
 
-const renderTag = ({ label, status }, index) =>
-  h(
-    NTag,
-    { type: status, closable: true, onClose: () => removeAddress(index), 'data-test': 'email-tag' },
-    {
-      default: () =>
-        h('div', { style: { display: 'flex', 'align-items': 'center' } }, [
-          h('div', label),
-          status === 'warning'
-            ? h(Icon, {
-                icon: 'uiw:warning-o',
-                style: { 'margin-left': '4px', color: '#d03050ff' },
-              })
-            : '',
-        ]),
-    },
-  );
+const renderTag = ({ label, status }, index) => h(
+  NTag,
+  { type: status, closable: true, onClose: () => removeAddress(index), 'data-test': 'email-tag' },
+  {
+    default: () => h('div', { style: { display: 'flex', 'align-items': 'center' } }, [
+      h('div', label),
+      status === 'warning'
+        ? h(Icon, {
+          icon: 'uiw:warning-o',
+          style: { 'margin-left': '4px', color: '#d03050ff' },
+        })
+        : '',
+    ]),
+  },
+);
 
 watch(inputRef, (value) => {
   if (value) {
@@ -220,9 +217,9 @@ function validateSetupAction() {
     store.commit('editor/setError', { subjectTemplate: true });
     EditorData.setError('action', true);
   } else if (
-    !actionConfig.value.bodyTemplate ||
-    actionConfig.value.bodyTemplate === '<br>' ||
-    actionConfig.value.bodyTemplate === '<p></p>'
+    !actionConfig.value.bodyTemplate
+    || actionConfig.value.bodyTemplate === '<br>'
+    || actionConfig.value.bodyTemplate === '<p></p>'
   ) {
     store.commit('editor/setError', { bodyTemplate: true });
     EditorData.setError('action', true);

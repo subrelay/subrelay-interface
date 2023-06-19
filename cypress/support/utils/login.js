@@ -24,7 +24,7 @@ const mockedInjectedWeb3 = {
   'polkadot-js': mockedExtension,
 };
 
-export const login = () => {
+const login = () => {
   Cypress.on('window:before:load', (win) => {
     win.injectedWeb3 = mockedInjectedWeb3;
   });
@@ -41,3 +41,5 @@ export const login = () => {
   cy.getBySel('confirm-account').click();
   cy.wait('@getUserInfo');
 };
+
+export default login;

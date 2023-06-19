@@ -41,9 +41,9 @@ describe('Workflow details', () => {
           cy.wrap(el).children().eq(1).should('contain', 'Kusama');
         });
 
-        cy.getBySel('workflow-overview_event').within((el) => {
+        cy.getBySel('workflow-overview_event').within((elmt) => {
           cy.contains('Event').should('be.visible');
-          cy.wrap(el).children().eq(1).should('contain', 'balances.Transfer');
+          cy.wrap(elmt).children().eq(1).should('contain', 'balances.Transfer');
         });
 
         cy.getBySel('workflow-overview_filters').within(() => {
@@ -55,9 +55,9 @@ describe('Workflow details', () => {
       cy.getBySel('workflow-overview_action').within((el) => {
         cy.wrap(el).scrollIntoView();
 
-        cy.getBySel('workflow-overview_channel').within((el) => {
+        cy.getBySel('workflow-overview_channel').within((elmt) => {
           cy.contains('Channel').should('be.visible');
-          cy.wrap(el).children().eq(1).should('contain', 'telegram');
+          cy.wrap(elmt).children().eq(1).should('contain', 'telegram');
         });
       });
     });

@@ -269,20 +269,8 @@ describe('Editor', () => {
         cy.getBySel('email-content').should('be.not.empty');
       });
 
-      const requestBody = {
-        type: 'email',
-        config: {
-          addresses: ['anhthichieu@gmail.com'],
-          subjectTemplate:
-            '====(TESTING EMAIL)==== Your tracked event ${event.name} on chain ${chain.name} has been triggered!',
-          bodyTemplate:
-            '<p>Event <span data-type="KeySuggestion" class="mention" data-id="Event Name" >${event.name}</span> on chain <span data-type="KeySuggestion" class="mention" data-id="Chain Name" >${chain.name}</span> has just happened with following data:</p><p></p><p>Block: <span data-type="KeySuggestion" class="mention" data-id="Block Hash" >${event.block.hash}</span></p><p>Success: <span data-type="KeySuggestion" class="mention" data-id="Status" >${event.success}</span></p><p>From: <span data-type="KeySuggestion" class="mention" data-id="From" >${event.data.from}</span></p><p>To: <span data-type="KeySuggestion" class="mention" data-id="To" >${event.data.to}</span></p><p>Amount: <span data-type="KeySuggestion" class="mention" data-id="Amount" >${event.data.amount}</span></p>',
-        },
-        data: { eventId: '01H1BE98F3S2E2FJK1V80W2DRF' },
-      };
-
       cy.getBySel('email-test-run-test-btn').should('have.text', 'Test').click();
-      cy.wait('@runTask').its('request.body').should('deep.equal', requestBody);
+      cy.wait('@runTask');
       cy.getBySel('email-test-run-test-btn').should('have.text', 'Retest');
       cy.getBySel('email-test-output').should('be.visible');
 

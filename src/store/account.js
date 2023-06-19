@@ -48,12 +48,12 @@ export default {
       commit('setLoading', { loadAccounts: true });
       try {
         const connectedAccount = localStorage.getItem(CONNECTED_ACCOUNT);
-        let accounts, signer;
 
         const extension = await getInjectedExtension();
         const result = await extension.enable();
-        accounts = await result.accounts.get();
-        signer = result.signer;
+        const accounts = await result.accounts.get();
+        const { signer } = result;
+
         commit('setAccounts', accounts);
         commit('setSigner', signer);
 

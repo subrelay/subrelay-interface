@@ -1,4 +1,4 @@
-export const initWorkflow = () => {
+const initWorkflow = () => {
   // Set name
   cy.getBySel('editor-editable-name').click();
   cy.getBySel('editor-editable-name').type('Test editor');
@@ -21,3 +21,5 @@ export const initWorkflow = () => {
   // Skip filters
   cy.getBySel('filter-continue-btn').click();
 };
+
+export default initWorkflow;

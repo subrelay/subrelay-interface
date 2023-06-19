@@ -129,9 +129,9 @@ const changedToAction = computed(() => {
 const hasUpdates = computed(() => changedToTrigger.value || changedToAction.value);
 
 function handleReload(e) {
-  // if (!hasUpdates.value) return;
-  // e.preventDefault();
-  // e.returnValue = '';
+  if (!hasUpdates.value) return;
+  e.preventDefault();
+  e.returnValue = '';
 }
 
 onBeforeUnmount(() => {
@@ -212,11 +212,10 @@ function onUpdateName(value) {
 function showExitWarning() {
   dialog.warning({
     title: 'Confirm quit',
-    content: () =>
-      h('div', { style: { fontSize: '0.85rem' } }, [
-        h('div', 'Changes you made will be discarded because the workflow is not yet completed.'),
-        h('div', { style: { marginTop: '1rem' } }, 'You can’t undo this action.'),
-      ]),
+    content: () => h('div', { style: { fontSize: '0.85rem' } }, [
+      h('div', 'Changes you made will be discarded because the workflow is not yet completed.'),
+      h('div', { style: { marginTop: '1rem' } }, 'You can’t undo this action.'),
+    ]),
 
     positiveText: 'Leave',
     negativeText: 'Stay',

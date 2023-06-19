@@ -115,11 +115,8 @@ import EditorData from '@/store/localStore/EditorData';
 import Compiler from '@/views/CustomMsg/Compiler';
 import { telegramLoginTemp } from 'vue3-telegram-login';
 import { useCustomMessage } from '@/composables';
-import { computed, ref, inject, watch, h, onBeforeMount } from 'vue';
-import { useMessage, useDialog } from 'naive-ui';
+import { computed, ref, inject, watch, onBeforeMount } from 'vue';
 import { useStore } from 'vuex';
-import { divide } from 'lodash';
-import Api from '@/api';
 
 const props = defineProps(['channel']);
 const [{ content, previewContent, defaultContent, darkMode }, { getRawText }] = useCustomMessage({
@@ -127,22 +124,17 @@ const [{ content, previewContent, defaultContent, darkMode }, { getRawText }] = 
 });
 
 const store = useStore();
-const dialog = useDialog();
-const message = useMessage();
-const isCopied = ref(false);
 const formState = ref('preCustom');
 const eventBus = inject('eventBus');
 const userInfo = computed(() => store.state.account.userInfo);
 const userInfoLoading = computed(() => store.state.account.loading.loadUserInfo);
 const actionConfig = computed(() => EditorData.workflow.tasks[EditorData.actionIdx].config);
 const requiredMessage = computed(() => store.state.editor.error.messageTemplate);
-const account = computed(() => store.state.account.selected);
-const signer = computed(() => store.state.account.signer);
 const polling = ref(null);
 
 const teleBot = ref(import.meta.env.VITE_TELE_BOT);
-const client_id = ref(import.meta.env.VITE_DISCORD_CLIENT_ID);
-const redirect_uri = ref(null);
+const clientId = ref(import.meta.env.VITE_DISCORD_CLIENT_ID);
+const redirectUri = ref(null);
 
 function setFormState() {
   if (userInfo.value.integration[props.channel]) {
@@ -157,7 +149,7 @@ onBeforeMount(() => {
 
   if (props.channel === 'discord') {
     const { origin } = window.location;
-    redirect_uri.value = `${origin}/user/connections/discord`;
+    redirectUri.value = `${origin}/user/connections/discord`;
 
     if (!userInfo.value.integration[props.channel]) {
       polling.value = setInterval(() => {
@@ -181,9 +173,9 @@ watch(
 
 function validateSetupAction() {
   if (
-    !actionConfig.value.messageTemplate ||
-    actionConfig.value.messageTemplate === '<br>' ||
-    actionConfig.value.messageTemplate === '<p></p>'
+    !actionConfig.value.messageTemplate
+    || actionConfig.value.messageTemplate === '<br>'
+    || actionConfig.value.messageTemplate === '<p></p>'
   ) {
     store.commit('editor/setError', { messageTemplate: true });
     EditorData.setError('action', true);
@@ -219,9 +211,9 @@ function onAuthorizeSuccess(user) {
 
 // Set up discord
 function showDiscordAuth() {
-  var url = `https://discord.com/api/oauth2/authorize?client_id=${client_id.value}&redirect_uri=${redirect_uri.value}&response_type=token&scope=identify%20bot`;
-  var windowName = 'NewWindow';
-  var windowFeatures = 'width=800,height=800,left=500,top=50';
+  const url = `https://discord.com/api/oauth2/authorize?client_id=${clientId.value}&redirect_uri=${redirectUri.value}&response_type=token&scope=identify%20bot`;
+  const windowName = 'NewWindow';
+  const windowFeatures = 'width=800,height=800,left=500,top=50';
 
   // Open the new window
   window.open(url, windowName, windowFeatures);
