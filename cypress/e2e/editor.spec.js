@@ -159,7 +159,7 @@ describe('Editor', () => {
       cy.interceptRunTask();
     });
 
-    it('ACTION - Can create webhook action', () => {
+    it('Can create webhook action', () => {
       const validURL = 'https://webhook.site/8d706069-e6f2-49db-9772-22bf180ccf9f';
       const invalidURL = 'This is an invalid url';
 
@@ -214,7 +214,7 @@ describe('Editor', () => {
       cy.url().should('contain', 'workflows');
     });
 
-    it.only('ACTION - Can create email action', () => {
+    it('Can create email action', () => {
       const validEmail = 'buulee@gmail.com';
       const validEmail2 = 'anhthichieu@gmail.com';
       const invalidEmail = 'This is not valid';
