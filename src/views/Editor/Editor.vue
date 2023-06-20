@@ -4,37 +4,47 @@
   <n-layout v-if="EditorData.workflow" style="height: 100vh">
     <n-layout-header style="padding: 5px 3rem" bordered>
       <!-- HEADER -->
-      <n-space align="center" justify="space-between">
-        <EditableText
-          :onUpdateValue="onUpdateName"
-          :value="EditorData.workflow.name"
-          data-test="editor-editable-name"
-        />
+      <n-grid cols="3">
+        <n-gi>
+          <n-space align="center" style="height: 100%">
+            <EditableText
+              :onUpdateValue="onUpdateName"
+              :value="EditorData.workflow.name"
+              data-test="editor-editable-name"
+            />
+          </n-space>
+        </n-gi>
 
-        <Logo @click="quitEditor" />
+        <n-gi>
+          <n-space align="center" justify="center">
+            <Logo @click="quitEditor" />
+          </n-space>
+        </n-gi>
 
-        <n-space>
-          <n-button type="primary" class="action-button" @click="quitEditor" data-test="editor-home-btn">
-            <template #icon>
-              <Icon icon="line-md:home-md" :inline="true" class="icon" />
-            </template>
-            Home
-          </n-button>
+        <n-gi>
+          <n-space align="center" justify="flex-end" style="height: 100%">
+            <n-button type="primary" class="action-button" @click="quitEditor" data-test="editor-home-btn">
+              <template #icon>
+                <Icon icon="line-md:home-md" :inline="true" class="icon" />
+              </template>
+              Home
+            </n-button>
 
-          <n-button
-            data-test="editor-finish-btn"
-            type="primary"
-            class="action-button"
-            @click="createWorkflow"
-            :disabled="!isTriggerCompleted || !isActionCompleted || isErrorWithTrigger || isErrorWithAction"
-          >
-            Finish
-            <template #icon>
-              <Icon icon="line-md:confirm" class="icon" />
-            </template>
-          </n-button>
-        </n-space>
-      </n-space>
+            <n-button
+              data-test="editor-finish-btn"
+              type="primary"
+              class="action-button"
+              @click="createWorkflow"
+              :disabled="!isTriggerCompleted || !isActionCompleted || isErrorWithTrigger || isErrorWithAction"
+            >
+              Finish
+              <template #icon>
+                <Icon icon="line-md:confirm" class="icon" />
+              </template>
+            </n-button>
+          </n-space>
+        </n-gi>
+      </n-grid>
     </n-layout-header>
 
     <n-layout-content content-style="padding-top: 50px;">
@@ -212,10 +222,11 @@ function onUpdateName(value) {
 function showExitWarning() {
   dialog.warning({
     title: 'Confirm quit',
-    content: () => h('div', { style: { fontSize: '0.85rem' } }, [
-      h('div', 'Changes you made will be discarded because the workflow is not yet completed.'),
-      h('div', { style: { marginTop: '1rem' } }, 'You can’t undo this action.'),
-    ]),
+    content: () =>
+      h('div', { style: { fontSize: '0.85rem' } }, [
+        h('div', 'Changes you made will be discarded because the workflow is not yet completed.'),
+        h('div', { style: { marginTop: '1rem' } }, 'You can’t undo this action.'),
+      ]),
 
     positiveText: 'Leave',
     negativeText: 'Stay',
