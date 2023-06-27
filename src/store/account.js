@@ -1,31 +1,8 @@
-import { useShowError } from '@/composables';
+import Api, { getSavedAuthToken } from '@/api';
+import getInjectedExtension from '@/utils/getExtension';
+import isEmpty from 'lodash/isEmpty';
 
-const MAX_RETRY = 10;
 const CONNECTED_ACCOUNT = 'polkadot-js-connected';
-
-const getInjectedExtension = () => {
-  let counter = 0;
-  return new Promise((resolve, reject) => {
-    // Retry until the injected extensions loaded or reach timeout.
-    const interval = setInterval(() => {
-      if (window.injectedWeb3) {
-        clearInterval(interval);
-        if (window.injectedWeb3['polkadot-js']) {
-          resolve(window.injectedWeb3['polkadot-js']);
-        } else {
-          reject(new Error('Unsupported extension.'));
-        }
-      }
-
-      counter += 1;
-      if (counter === MAX_RETRY) {
-        clearInterval(interval);
-        useShowError('Error loading wallet. Please try again.');
-        reject(new Error('Timeout.'));
-      }
-    }, 500);
-  });
-};
 
 export default {
   namespaced: true,
@@ -33,13 +10,14 @@ export default {
   state: () => ({
     accounts: [],
     signer: null,
-    selected: null,
-    loading: null,
+    selected: {},
+    loading: { loadAccounts: null, loadUserInfo: null },
+    userInfo: { integration: {} },
   }),
 
   mutations: {
-    setLoading: (state, isLoading) => {
-      state.loading = isLoading;
+    setLoading: (state, data) => {
+      state.loading = { ...state.loading, ...data };
     },
 
     setSigner: (state, signer) => {
@@ -48,6 +26,10 @@ export default {
 
     setAccounts: (state, accounts) => {
       state.accounts = accounts;
+    },
+
+    setUserInfo: (state, info) => {
+      state.userInfo = info;
     },
 
     setSelected: (state, selected) => {
@@ -62,38 +44,87 @@ export default {
   },
 
   actions: {
-    async loadAccounts({ commit, state }) {
-      commit('setLoading', true);
+    async loadAccounts({ commit, dispatch }) {
+      commit('setLoading', { loadAccounts: true });
       try {
+        const connectedAccount = localStorage.getItem(CONNECTED_ACCOUNT);
+
         const extension = await getInjectedExtension();
         const result = await extension.enable();
         const accounts = await result.accounts.get();
+        const { signer } = result;
 
         commit('setAccounts', accounts);
-        commit('setSigner', result.signer);
+        commit('setSigner', signer);
 
-        if (state.selected) {
+        if (connectedAccount) {
+          const connected = JSON.parse(connectedAccount);
+          const savedToken = getSavedAuthToken(connected.address);
+
+          // Case: time expired 24hrs
+          if (!savedToken) {
+            commit('setSelected', null);
+            return;
+          }
+
+          // Case: acc deleted from polkadot wallet
           const isAccountExisted = !!accounts.find(({ address }) => {
-            const cond = address === state.selected.address;
+            const cond = address === connected.address;
             return cond;
           });
 
-          if (!isAccountExisted) {
+          if (isAccountExisted) {
+            commit('setSelected', connected);
+            dispatch('getUserInfo', { account: connected });
+          } else {
             commit('setSelected', null);
           }
         }
       } catch (e) {
         console.error('e', e);
       } finally {
-        commit('setLoading', false);
+        commit('setLoading', { loadAccounts: false });
       }
     },
 
-    loadConnectedAccount({ commit, dispatch }) {
-      const connectedAccount = localStorage.getItem(CONNECTED_ACCOUNT);
-      if (connectedAccount) {
-        commit('setSelected', JSON.parse(connectedAccount));
-        dispatch('loadAccounts');
+    async getUserInfo({ state, commit }, { account = state.selected, showLoading = true } = {}) {
+      if (isEmpty(account)) return;
+
+      try {
+        if (showLoading) commit('setLoading', { loadUserInfo: true });
+        const { signer } = state;
+        const { data: user } = await Api.getUserInfo({ account, signer });
+        if (user) commit('setUserInfo', user);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        commit('setLoading', { loadUserInfo: false });
+      }
+    },
+
+    async updateTelegramInfo({ state, commit, dispatch }, { showLoading = true, params = {} } = {}) {
+      try {
+        if (showLoading) commit('setLoading', { updateTelegramInfo: true });
+        const { selected: account, signer } = state;
+        await Api.updateTelegramInfo({ account, signer, params });
+        dispatch('getUserInfo', { showLoading: false });
+      } catch (e) {
+        console.error(e);
+      } finally {
+        commit('setLoading', { updateTelegramInfo: false });
+      }
+    },
+
+    async updateDiscordInfo({ state, commit, dispatch }, { showLoading = true, params = {} } = {}) {
+      try {
+        if (showLoading) commit('setLoading', { updateDiscordInfo: true });
+        const { selected: account, signer } = state;
+        await Api.updateDiscordInfo({ account, signer, params });
+        dispatch('getUserInfo', { showLoading: false });
+      } catch (e) {
+        console.error(e);
+      } finally {
+        commit('setLoading', { updateDiscordInfo: false });
       }
     },
   },

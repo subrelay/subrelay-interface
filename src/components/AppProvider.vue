@@ -19,47 +19,41 @@ const store = useStore();
 const darkMode = computed(() => store.state.global.isDarkMode);
 const theme = computed(() => (darkMode.value ? darkTheme : null));
 
+const preferredFontSize = '13px';
+
 const lightOverrides = {
   common: {
+    fontSize: preferredFontSize,
     primaryColor: 'rgba(230, 0, 122, 1)',
     primaryColorHover: 'rgba(230, 0, 122, 0.7)',
     primaryColorPressed: 'rgba(230, 0, 122, 0.7)',
     primaryColorSuppl: 'rgba(230, 0, 122, 1)',
+  },
+  Form: {
+    labelFontSizeTopMedium: preferredFontSize,
+    feedbackFontSizeMedium: preferredFontSize,
+  },
+  Button: {
+    fontSizeSmall: preferredFontSize,
   },
 };
 
 const darkOverrides = {
   common: {
+    fontSize: preferredFontSize,
     baseColor: 'rgba(255, 255, 255)',
     primaryColor: 'rgba(230, 0, 122, 1)',
     primaryColorHover: 'rgba(230, 0, 122, 0.7)',
     primaryColorPressed: 'rgba(230, 0, 122, 0.7)',
     primaryColorSuppl: 'rgba(230, 0, 122, 1)',
-    // infoColor: string;
-    // infoColorHover: string;
-    // infoColorPressed: string;
-    // infoColorSuppl: string;
-
-    // successColor: 'green',
-    // successColorHover: string;
-    // successColorPressed: string;
-    // successColorSuppl: string;
     warningColor: 'rgb(255, 206, 0)',
-    // warningColorHover: string;
-    // warningColorPressed: string;
-    // warningColorSuppl: string;
-    errorColor: 'rgb(210, 84, 93)',
-    // errorColorHover: string;
-    // errorColorPressed: string;
-    // errorColorSuppl: string;
-    // textColorBase: string;
-    // textColor1: string;
-    // textColor2: string;
-    // textColor3: string;
   },
   Radio: {
     buttonColorActive: '#0000',
     buttonTextColorActive: 'rgba(230, 0, 122, 1)',
+  },
+  Button: {
+    fontSizeSmall: preferredFontSize,
   },
 };
 

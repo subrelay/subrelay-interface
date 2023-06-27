@@ -5,7 +5,7 @@ import JsonViewer from 'vue3-json-viewer';
 import 'vue3-json-viewer/dist/index.css';
 import './assets/main.scss';
 import mitt from 'mitt';
-import App from './App.vue';
+import App from './App';
 import router from './router';
 import store from './store';
 
@@ -13,7 +13,7 @@ const eventBus = mitt();
 
 const app = createApp(App);
 app.provide('eventBus', eventBus);
-app.component('SubIcon', Icon);
+app.component('Icon', Icon);
 app.component('JsonViewer', JsonViewer);
 
 app.use(router);

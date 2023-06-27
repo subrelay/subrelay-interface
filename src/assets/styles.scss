@@ -95,7 +95,7 @@ body {
   transition: color 0.5s, background-color 0.5s;
   line-height: 1.6;
   font-family: 'Poppins', sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -125,7 +125,7 @@ body {
 
 .page_title {
   font-family: 'Unbounded';
-  text-transform: capitalize;
+  text-transform: uppercase;
   font-size: 2rem;
   font-weight: bold;
   user-select: none;
@@ -149,22 +149,19 @@ body {
 }
 
 .page_container {
-  max-width: 70vw;
+  width: 70vw;
+  max-width: 1000px;
+  min-width: 500px;
   margin: 0 auto;
   padding: 0 !important;
 }
 
 .step_container {
   width: 100%;
-  padding: 0 2rem 1.5rem 2rem;
+  padding: 0 1.5rem 1.5rem 1.5rem;
   margin: auto;
   display: flex;
   flex-direction: column;
-
-  .title {
-    font-size: 0.8rem;
-    font-weight: 700;
-  }
 
   .action_button {
     display: flex;
@@ -192,6 +189,14 @@ body {
   text-transform: capitalize;
 }
 
+.text-center {
+  text-align: center;
+}
+
+.text-end {
+  text-align: end;
+}
+
 .text-gray {
   color: #5f5f5f;
 
@@ -202,7 +207,7 @@ body {
 
 .text-ellipsis {
   overflow: hidden;
-  white-space: nowrap;
+  white-space: nowrap !important;
   text-overflow: ellipsis;
 }
 
@@ -216,6 +221,10 @@ body {
 
 .h-100 {
   height: 100%;
+}
+
+.font-size-2rem {
+  font-size: 2rem !important;
 }
 
 .font-size-1rem {
@@ -237,8 +246,10 @@ flex-1 {
 .input-item {
   display: flex;
   align-items: center;
+
   .title {
-    width: 15%;
+    width: 100px;
+    min-width: 100px;
   }
 }
 .table-pagination {
@@ -246,9 +257,9 @@ flex-1 {
   margin-bottom: 5vh;
 }
 
-.full-page {
-  min-height: calc(100vh - 50px);
-}
+// .full-page {
+//   min-height: calc(100vh - 50px);
+// }
 
 .n-data-table-empty {
   padding: 1rem !important;
@@ -256,4 +267,89 @@ flex-1 {
 
 .pointer-cursor {
   cursor: pointer;
+}
+
+.n-collapse-item--active {
+  .n-collapse-item__header {
+    .n-collapse-item__header-main {
+      font-weight: bold !important;
+    }
+  }
+}
+
+/*
+  Enter and leave animations can use different
+  durations and timing functions.
+*/
+.slide-fade-enter-active {
+  transition: all 0.25s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.25s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateY(-10px);
+  opacity: 0;
+}
+
+.n-layout-scroll-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.code {
+  &__card {
+    position: relative;
+  }
+
+  &__icon {
+    margin: auto;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+    background: transparent;
+
+    &.copy {
+      color: rgb(136, 147, 151);
+
+      &:hover {
+        background: #eaeaea;
+      }
+    }
+
+    &.completed {
+      color: white;
+      background: green;
+      @media (prefers-color-scheme: dark) {
+        background: #63e2b7;
+        color: black;
+      }
+    }
+  }
+}
+
+.page-container {
+  height: 100vh;
+}
+
+.content-center {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.n-base-selection,
+.n-button {
+  font-size: 13px;
 }

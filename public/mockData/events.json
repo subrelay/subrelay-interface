@@ -1,8 +1,0 @@
-[
-  {
-    "id": "1",
-    "name": "balances.deposit",
-    "description": "this event does this"
-  },
-  { "id": "2", "name": "token.endowed", "description": "this event does that" }
-]

@@ -24,16 +24,4 @@ const onBackToHome = () => {
 };
 </script>
 
-<style lang="scss" scoped>
-.page-container {
-  height: 100vh;
-}
-
-.content-center {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-</style>
+<style lang="scss" scoped></style>

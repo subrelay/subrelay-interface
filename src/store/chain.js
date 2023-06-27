@@ -7,11 +7,7 @@ export default {
     chains: [],
     events: [],
     event: {},
-    loading: {
-      getChainsLoading: null,
-      getEventsLoading: null,
-      getEventLoading: null,
-    },
+    loading: { getChainsLoading: null, getEventsLoading: null, getEventLoading: null },
   }),
 
   mutations: {
@@ -21,9 +17,7 @@ export default {
     getEvents: (state, events) => {
       state.events = events;
     },
-    getEvent: (state, event) => {
-      state.event = event;
-    },
+
     setLoading: (state, data) => {
       state.loading = { ...state.loading, ...data };
     },
@@ -43,30 +37,17 @@ export default {
       }
     },
 
-    async getEvents({ commit }, chainUuid) {
+    async getEvents({ commit }, uuid) {
       commit('setLoading', { getEventsLoading: true });
       try {
-        const events = await API.getEvents(chainUuid);
+        const events = await API.getEvents(uuid);
+
         commit('getEvents', events);
       } catch (error) {
         commit('getChains', []);
         console.error('error', error);
       } finally {
         commit('setLoading', { getEventsLoading: false });
-      }
-    },
-
-    async getEvent({ commit }, { chainUuid, eventId }) {
-      commit('setLoading', { getEventLoading: true });
-      try {
-        const event = await API.getEvent(chainUuid, eventId);
-
-        commit('getEvent', event);
-      } catch (error) {
-        commit('getEvent', []);
-        console.error(error);
-      } finally {
-        commit('setLoading', { getEventLoading: false });
       }
     },
   },

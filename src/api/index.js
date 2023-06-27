@@ -9,7 +9,6 @@ const EXPIRED_TIME = 82800000; // 23 hours in ms
 
 export const getSavedAuthToken = (address) => {
   const json = localStorage.getItem(address);
-
   if (json) {
     const { token, generatedAt } = JSON.parse(json);
     const now = Date.now();
@@ -21,12 +20,12 @@ export const getSavedAuthToken = (address) => {
     localStorage.removeItem(address);
   }
 
+  // localStorage.removeItem('polkadot-js-connected');
   return null;
 };
 
 const saveAuthToken = (address, token, generatedAt) => {
   const json = JSON.stringify({ token, generatedAt });
-
   localStorage.setItem(address, json);
 };
 
@@ -38,12 +37,7 @@ export const generateGetToken = async ({ account, signer }) => {
   }
 
   const timestamp = Date.now();
-  const data = {
-    endpoint: '/*',
-    method: 'GET',
-    body: {},
-    timestamp,
-  };
+  const data = { endpoint: '/*', method: 'GET', body: {}, timestamp };
 
   const message = JSON.stringify(data);
 
@@ -83,11 +77,8 @@ const generateToken = async ({ account, signer, endpoint, method, body }) => {
 const request = async ({ account, signer, endpoint, method, body }) => {
   if (method === 'get') {
     const getToken = await generateGetToken({ account, signer });
-
     return instance[method](endpoint, {
-      headers: {
-        Authorization: getToken,
-      },
+      headers: { Authorization: getToken },
     });
   }
 
@@ -116,36 +107,48 @@ const buildQueryStr = (params) => `?${new URLSearchParams(params).toString()}`;
 export default {
   async getChains() {
     const response = await instance.get('/chains');
-
     return response.data;
   },
 
-  async getEvents(chainId) {
-    const response = await instance.get(`/chains/${chainId}/events`);
-
+  async getEvents(uuid) {
+    const response = await instance.get(`/chains/${uuid}/events`);
     return response.data;
   },
 
-  async getEvent(chainId, eventId) {
-    const response = await instance.get(`/chains/${chainId}/events/${eventId}`);
+  async getEvent(uuid, eventId) {
+    const response = await instance.get(`/chains/${uuid}/events/${eventId}`);
+    return response.data;
+  },
 
+  async getFilterFields(eventId) {
+    const response = await instance.get(`/tasks/filter/fields?eventId=${eventId}`);
+    return response.data;
+  },
+
+  async getCustomMsgFields(eventId) {
+    const response = await instance.get(`/tasks/custom-message/fields?eventId=${eventId}`);
     return response.data;
   },
 
   async getOperators() {
-    const response = await instance.get('/tasks/operators');
-
+    const response = await instance.get('/tasks/filter/operators');
     return response.data;
   },
 
   async runTask({ account, signer, body }) {
-    return request({
-      account,
-      signer,
-      method: 'post',
-      endpoint: '/tasks/run',
-      body,
-    });
+    return request({ account, signer, method: 'post', endpoint: '/tasks/run', body });
+  },
+
+  async getUserInfo({ account, signer }) {
+    return request({ account, signer, method: 'get', endpoint: '/user/info' });
+  },
+
+  async updateTelegramInfo({ account, signer, params }) {
+    return request({ account, signer, method: 'get', endpoint: `/user/connections/telegram${buildQueryStr(params)}` });
+  },
+
+  async updateDiscordInfo({ account, signer, params }) {
+    return request({ account, signer, method: 'get', endpoint: `/user/connections/discord${buildQueryStr(params)}` });
   },
 
   async getWorkflows({ account, signer, params }) {
@@ -158,41 +161,19 @@ export default {
   },
 
   async getWorkflow({ account, signer, id }) {
-    return request({
-      account,
-      signer,
-      method: 'get',
-      endpoint: `/workflows/${id}`,
-    });
+    return request({ account, signer, method: 'get', endpoint: `/workflows/${id}` });
   },
 
   async createWorkflow({ account, signer, body }) {
-    return request({
-      account,
-      signer,
-      method: 'post',
-      endpoint: '/workflows',
-      body,
-    });
+    return request({ account, signer, method: 'post', endpoint: '/workflows', body });
   },
 
   async editWorkflow({ account, signer, id, body }) {
-    return request({
-      account,
-      signer,
-      method: 'patch',
-      endpoint: `/workflows/${id}`,
-      body,
-    });
+    return request({ account, signer, method: 'patch', endpoint: `/workflows/${id}`, body });
   },
 
   async deleteWorkflow({ account, signer, id }) {
-    return request({
-      account,
-      signer,
-      method: 'delete',
-      endpoint: `/workflows/${id}`,
-    });
+    return request({ account, signer, method: 'delete', endpoint: `/workflows/${id}` });
   },
 
   async getLogs({ account, signer, params }) {
@@ -202,5 +183,9 @@ export default {
       method: 'get',
       endpoint: `/workflow-logs${buildQueryStr(params)}`,
     });
+  },
+
+  async getLogDetails({ account, signer, id }) {
+    return request({ account, signer, method: 'get', endpoint: `/workflow-logs/${id}` });
   },
 };

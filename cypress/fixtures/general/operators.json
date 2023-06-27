@@ -1,0 +1,17 @@
+{
+  "boolean": [
+    { "value": "isFalse", "name": "is false" },
+    { "value": "isTrue", "name": "is true" }
+  ],
+  "string": [
+    { "value": "equal", "name": "equal" },
+    { "value": "contains", "name": "contains" }
+  ],
+  "number": [
+    { "value": "equal", "name": "equal" },
+    { "value": "greaterThan", "name": "greater than" },
+    { "value": "greaterThanEqual", "name": "greater than equal" },
+    { "value": "lessThan", "name": "less than" },
+    { "value": "lessThanEqual", "name": "less than equal" }
+  ]
+}

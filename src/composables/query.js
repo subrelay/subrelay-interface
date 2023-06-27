@@ -1,10 +1,10 @@
-import { ref, onMounted, computed, watch } from 'vue';
+import { ref, computed, watch, onBeforeMount } from 'vue';
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router';
 import { debounce, isEmpty, findIndex } from 'lodash';
 import { useStore } from 'vuex';
-import { defaultQuery } from '@/composables/config';
+import defaultQuery from '@/config/defaultQuery';
 
-export default function useQuery(module, columns, fetchData = () => {}) {
+export default function useQuery(module, path, columns = {}, fetchData = () => {}) {
   const store = useStore();
   const route = useRoute();
   const router = useRouter();
@@ -16,9 +16,9 @@ export default function useQuery(module, columns, fetchData = () => {}) {
   let sortingIndex;
   let prevSortIndex;
 
-  const query = computed(() => store.state[module].query);
-  const loading = computed(() => store.state[module].loading);
-  const itemCount = computed(() => store.state[module].itemCount);
+  const query = computed(() => store.state[module].query[path]);
+  const loading = computed(() => store.state[module].loading[path]);
+  const itemCount = computed(() => store.state[module].itemCount[path]);
   const selectedAccount = computed(() => store.state.account.selected);
 
   const tablePagination = ref({
@@ -77,7 +77,8 @@ export default function useQuery(module, columns, fetchData = () => {}) {
     }
 
     const queryBySort = { order, sort };
-    pushQueryToRoute({ ...query.value, ...queryBySort });
+    const nextQuery = { ...query.value, ...queryBySort };
+    if (shouldChangeRoute(nextQuery)) pushQueryToRoute(nextQuery);
   }
 
   function handlePageChange(nextPage) {
@@ -87,7 +88,6 @@ export default function useQuery(module, columns, fetchData = () => {}) {
 
   function handleSelectChain(chainUuid) {
     selectedChain.value = chainUuid || undefined;
-
     pushQueryToRoute({ ...query.value, offset: 0, chainUuid: selectedChain.value });
   }
 
@@ -101,6 +101,8 @@ export default function useQuery(module, columns, fetchData = () => {}) {
     searchText.value = '';
     selectedChain.value = null;
     selectedStatus.value = null;
+    sortingIndex = findIndex(columns.value, ({ sortOrder }) => !!sortOrder);
+    if (sortingIndex !== -1) columns.value[sortingIndex].sortOrder = false;
     pushQueryToRoute({ ...defaultQuery });
   }
 
@@ -117,43 +119,22 @@ export default function useQuery(module, columns, fetchData = () => {}) {
   }
 
   onBeforeRouteUpdate((to, from, next) => {
-    const params = getQueryFromRoute(to.query);
-    store.commit(`${module}/saveQuery`, params);
+    if (from.name !== to.name) {
+      next();
+    } else {
+      const params = getQueryFromRoute(to.query);
+      store.commit(`${module}/saveQuery`, { [path]: params });
 
-    const { order, sort, search, chainUuid, status } = to.query;
-    searchText.value = search || '';
-    selectedChain.value = chainUuid;
-    selectedStatus.value = status;
+      if (!isEmpty(from.query)) fetchData();
 
-    // Clear previous order if different
-    const prevOrder = from.query.order;
-    if (order || prevOrder) {
-      sortingIndex = findIndex(columns.value, { key: prevOrder });
-      const nextSortIndex = findIndex(columns.value, { key: order });
-
-      let tableSort;
-
-      if (sort === 'ASC') {
-        tableSort = 'ascend';
-      } else if (sort === 'DESC') {
-        tableSort = 'descend';
-      } else {
-        tableSort = false;
-      }
-
-      if (sortingIndex !== -1) columns.value[sortingIndex].sortOrder = false;
-      if (nextSortIndex !== -1) columns.value[nextSortIndex].sortOrder = tableSort;
+      next();
     }
-
-    if (!isEmpty(from.query)) fetchData();
-
-    next();
   });
 
   watch(
     query,
     () => {
-      const { offset, limit } = query.value;
+      const { offset, limit } = query.value || {};
 
       tablePagination.value = {
         ...tablePagination.value,
@@ -167,6 +148,10 @@ export default function useQuery(module, columns, fetchData = () => {}) {
   watch(
     itemCount,
     (val) => {
+      const offset = query.value?.offset;
+      if (offset > val) {
+        pushQueryToRoute({ ...query.value, offset: 0 });
+      }
       tablePagination.value = { ...tablePagination.value, itemCount: val };
     },
     { immediate: true },
@@ -176,18 +161,18 @@ export default function useQuery(module, columns, fetchData = () => {}) {
     if (selectedAccount.value) fetchData();
   });
 
-  function initQuery() {
+  async function initQuery() {
     const params = query.value || getQueryFromRoute(route.query);
-    store.commit(`${module}/saveQuery`, params);
+    store.commit(`${module}/saveQuery`, { [path]: params });
 
-    const { order, sort, search, chainUuid, status } = route.query;
+    const { order, sort, search, chainUuid, status } = params;
     searchText.value = search || '';
     selectedChain.value = chainUuid;
     selectedStatus.value = status;
 
     if (order) {
-      const index = findIndex(columns.value, { key: order });
-
+      sortingIndex = findIndex(columns.value, { key: order });
+      prevSortIndex = sortingIndex;
       let tableSort;
 
       if (sort === 'ASC') {
@@ -198,13 +183,13 @@ export default function useQuery(module, columns, fetchData = () => {}) {
         tableSort = false;
       }
 
-      if (index !== -1) columns.value[index].sortOrder = tableSort;
+      if (sortingIndex !== -1) columns.value[sortingIndex].sortOrder = tableSort;
     }
 
-    pushQueryToRoute(params);
+    if (isEmpty(route.query)) pushQueryToRoute(params);
   }
 
-  onMounted(() => {
+  onBeforeMount(async () => {
     initQuery();
     fetchData();
   });

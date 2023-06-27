@@ -2,6 +2,7 @@ import { NIcon, NAvatar, NText } from 'naive-ui';
 import { h } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useStore } from 'vuex';
+import channels from '@/config/channels';
 
 export const useRenderSortIcon = ({ order }) => {
   if (order === false) return h('div', '');
@@ -85,3 +86,15 @@ export const renderSelectTagWithDescription = ({ option }) => {
   );
   return tag;
 };
+
+export const useRenderIcon = (icon) => () => h(Icon, { icon, inline: true });
+
+export function useGetChannelIcon(channelName) {
+  const channel = channels.find((el) => el.value === channelName) || {};
+  return channel.icon;
+}
+
+export function useGetChainImg(chainName, chainsData) {
+  const chain = chainsData.find((el) => el.name === chainName) || {};
+  return chain.imageUrl;
+}

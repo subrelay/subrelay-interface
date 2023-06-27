@@ -1,0 +1,17 @@
+{
+  "id": "01H1BGZV9WX8A59DHGZ8YEFR2V",
+  "address": "5CFk5jMTFbRZhAMxhEYNPq8kLndMC3iDcrKLFAUMufB1TU8U",
+  "createdAt": "2023-05-26T07:57:21.604Z",
+  "integration": {
+    "discord": {
+      "id": "852752684434849814",
+      "username": "anhthichieu#3366",
+      "avatar": "https://cdn.discordapp.com/avatars/852752684434849814/936c1c989339f0e41fe6890bda214dce.webp"
+    },
+    "telegram": {
+      "id": "1474841627",
+      "username": "anhthichieu",
+      "avatar": "https://cdn.discordapp.com/avatars/852752684434849814/936c1c989339f0e41fe6890bda214dce.webp"
+    }
+  }
+}
