@@ -37,23 +37,23 @@
       </n-space>
     </n-space>
 
-    <n-space v-if="formState === 'preCustom' || formState === 'customMsg'" vertical>
-      <div style="display: inline">
+    <n-space v-if="formState === 'preCustom' || formState === 'customMsg'" :wrap-item="false" align="center" :size="4">
+      <div>
         You have already authorized <b>Subrelay Bot</b> to send notifications to your
-        <span class="text-capitalize">{{ channel }}</span> account.
-
-        <n-space align="center" :wrap-item="false" :size="4">
-          <n-avatar
-            color="transparent"
-            round
-            size="small"
-            :src="userInfo.integration[channel].avatar"
-            v-if="userInfo.integration[channel].avatar"
-          />
-
-          <span class="text-bold">@{{ userInfo.integration[channel].username }} </span>
-        </n-space>
+        <span class="text-capitalize">{{ channel }}</span> account
       </div>
+
+      <n-space align="center" :wrap-item="false" :size="4">
+        <n-avatar
+          color="transparent"
+          round
+          size="small"
+          :src="userInfo.integration[channel].avatar"
+          v-if="userInfo.integration[channel].avatar"
+        />
+
+        <span class="text-bold"> @{{ userInfo.integration[channel].username }} </span>
+      </n-space>
     </n-space>
 
     <n-collapse-transition :show="formState === 'customMsg'">
@@ -173,9 +173,9 @@ watch(
 
 function validateSetupAction() {
   if (
-    !actionConfig.value.messageTemplate
-    || actionConfig.value.messageTemplate === '<br>'
-    || actionConfig.value.messageTemplate === '<p></p>'
+    !actionConfig.value.messageTemplate ||
+    actionConfig.value.messageTemplate === '<br>' ||
+    actionConfig.value.messageTemplate === '<p></p>'
   ) {
     store.commit('editor/setError', { messageTemplate: true });
     EditorData.setError('action', true);
