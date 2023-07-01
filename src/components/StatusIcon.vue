@@ -38,7 +38,6 @@ const color = computed(() => {
 });
 
 const icon = computed(() => {
-  console.log('Status', props.status);
   switch (props.status) {
     case 'success':
       return 'ep:success-filled';

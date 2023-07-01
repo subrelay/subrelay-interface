@@ -20,6 +20,6 @@ describe('Logo', () => {
 
   test('renders the text content correctly', () => {
     const wrapper = mount(Logo);
-    expect(wrapper.find('.text').text()).toBe('Subrelay');
+    expect(wrapper.find('.text').text()).toBe('↗Subrelay↘');
   });
 });

@@ -1,5 +1,5 @@
 import { createStore } from 'vuex';
-import { NButton, NCard, NModal, NSpace, NScrollbar, NText } from 'naive-ui';
+import { NButton, NCard, NModal, NSpace, NScrollbar, NText, NTooltip, NEllipsis, NInput, NAvatar } from 'naive-ui';
 import { Icon } from '@iconify/vue';
 
 export const createMockStore = (modules) => {
@@ -23,5 +23,9 @@ export const globalComponents = {
   'n-space': NSpace,
   'n-text': NText,
   'n-scrollbar': NScrollbar,
+  'n-tooltip': NTooltip,
+  'n-ellipsis': NEllipsis,
+  'n-input': NInput,
+  'n-avatar': NAvatar,
   'Icon': Icon,
 };

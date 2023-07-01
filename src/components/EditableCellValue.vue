@@ -64,10 +64,12 @@ function editNodeClick(e) {
 }
 
 async function onSubmit() {
+  consol.log('on submit');
   await props.submit(inputValue.value);
 }
 
 function onCancel() {
+  console.log('on cancel');
   emits('cancelEdit');
   inputValue.value = props.value;
 }

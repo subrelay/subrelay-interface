@@ -72,6 +72,10 @@ const editor = reactive({
   },
 
   addAnd(groupIdx) {
+    if (!this.workflow.tasks[this.filterIdx].config.conditions[groupIdx]) {
+      this.workflow.tasks[this.filterIdx].config.conditions[groupIdx] = [];
+    }
+
     this.workflow.tasks[this.filterIdx].config.conditions[groupIdx].push({
       ...conditionFormat,
       key: randomKey(),
