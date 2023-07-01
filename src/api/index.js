@@ -24,7 +24,7 @@ export const getSavedAuthToken = (address) => {
   return null;
 };
 
-const saveAuthToken = (address, token, generatedAt) => {
+export const saveAuthToken = (address, token, generatedAt) => {
   const json = JSON.stringify({ token, generatedAt });
   localStorage.setItem(address, json);
 };
@@ -54,7 +54,7 @@ export const generateGetToken = async ({ account, signer }) => {
   return token;
 };
 
-const generateToken = async ({ account, signer, endpoint, method, body }) => {
+export const generateToken = async ({ account, signer, endpoint, method, body }) => {
   const timestamp = Date.now();
   const data = {
     endpoint,
@@ -74,7 +74,7 @@ const generateToken = async ({ account, signer, endpoint, method, body }) => {
   return window.btoa(JSON.stringify({ address: account.address, timestamp, signature }));
 };
 
-const request = async ({ account, signer, endpoint, method, body }) => {
+export const request = async ({ account, signer, endpoint, method, body }) => {
   if (method === 'get') {
     const getToken = await generateGetToken({ account, signer });
     return instance[method](endpoint, {
@@ -102,7 +102,7 @@ const request = async ({ account, signer, endpoint, method, body }) => {
   });
 };
 
-const buildQueryStr = (params) => `?${new URLSearchParams(params).toString()}`;
+export const buildQueryStr = (params) => `?${new URLSearchParams(params).toString()}`;
 
 export default {
   async getChains() {

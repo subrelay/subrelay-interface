@@ -96,5 +96,5 @@ export function useGetChannelIcon(channelName) {
 
 export function useGetChainImg(chainName, chainsData) {
   const chain = chainsData.find((el) => el.name === chainName) || {};
-  return chain.imageUrl;
+  return chain.imageUrl || '';
 }
