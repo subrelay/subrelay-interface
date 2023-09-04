@@ -21,9 +21,9 @@
       <n-pagination
         class="table-pagination"
         @update:page="handlePageChange"
-        :page="tablePagination.page"
-        :item-count="tablePagination.itemCount"
-        :page-size="tablePagination.pageSize"
+        :page="pagination.page"
+        :item-count="pagination.itemCount"
+        :page-size="pagination.pageSize"
         :disabled="loading"
         size="small"
       />
@@ -46,10 +46,6 @@ const store = useStore();
 const router = useRouter();
 const chains = computed(() => store.state.chain.chains);
 const darkMode = computed(() => store.state.global.isDarkMode);
-
-function fetchData() {
-  store.dispatch('log/getLogs');
-}
 
 const logs = computed(() => store.state.log.logs);
 
@@ -90,16 +86,17 @@ const columns = ref([
     key: 'chain',
     width: '22%',
     ellipsis: { tooltip: true },
-    render: ({ chain }) => h('div', { style: { display: 'flex', alignItems: 'center' } }, [
-      h(NAvatar, {
-        style: { background: 'transparent' },
-        src: useGetChainImg(chain.name, chains.value),
-        round: true,
-        size: 'small',
-        color: 'white',
-      }),
-      h('div', { style: { marginLeft: '12px', padding: '4px 0' } }, chain.name),
-    ]),
+    render: ({ chain }) =>
+      h('div', { style: { display: 'flex', alignItems: 'center' } }, [
+        h(NAvatar, {
+          style: { background: 'transparent' },
+          src: useGetChainImg(chain.name, chains.value),
+          round: true,
+          size: 'small',
+          color: 'white',
+        }),
+        h('div', { style: { marginLeft: '12px', padding: '4px 0' } }, chain.name),
+      ]),
   },
   {
     title: 'Started at',
@@ -125,17 +122,18 @@ const columns = ref([
     key: 'view',
     width: '10%',
     ellipsis: { tooltip: true },
-    render: () => h('div', { style: { display: 'flex', alignItems: 'center' } }, [
-      'View',
-      h(Icon, { icon: 'akar-icons:chevron-right', style: { 'margin-left': '4px' } }),
-    ]),
+    render: () =>
+      h('div', { style: { display: 'flex', alignItems: 'center' } }, [
+        'View',
+        h(Icon, { icon: 'akar-icons:chevron-right', style: { 'margin-left': '4px' } }),
+      ]),
   },
 ]);
 
 const [
-  { query, searchText, loading, tablePagination, selectedChain, selectedStatus },
+  { query, searchText, loading, pagination, selectedChain, selectedStatus },
   { onDebouncedSearch, handleSort, handlePageChange, handleSelectChain, handleSelectStatus, clearAllFilters },
-] = useQuery('log', 'logs', columns, fetchData);
+] = useQuery({ module: 'log', path: 'logs', columns, fetchPath: 'log/getLogs' });
 
 provide('search', {
   selectedChain,

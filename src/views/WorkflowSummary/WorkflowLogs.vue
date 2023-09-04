@@ -37,9 +37,9 @@
           style="margin-top: 1rem"
           class="table-pagination"
           @update:page="handlePageChange"
-          :page="tablePagination.page"
-          :item-count="tablePagination.itemCount"
-          :page-size="tablePagination.pageSize"
+          :page="pagination.page"
+          :item-count="pagination.itemCount"
+          :page-size="pagination.pageSize"
           :disabled="loading"
           size="small"
         />
@@ -65,10 +65,11 @@ async function fetchData() {
   store.dispatch('log/getLog', props.id);
 }
 
-const [{ loading, tablePagination, selectedStatus }, { handlePageChange, handleSelectStatus }] = useQuery(
-  'log',
-  'log',
-  null,
-  fetchData,
-);
+const [{ loading, pagination, selectedStatus }, { handlePageChange, handleSelectStatus }] = useQuery({
+  module: 'log',
+  path: 'log',
+  columns: null,
+  fetchPath: 'log/getLog',
+  fetchParams: { workflowId: props.id },
+});
 </script>

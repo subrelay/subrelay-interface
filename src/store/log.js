@@ -65,7 +65,7 @@ export default {
       }
     },
 
-    async getLog({ commit, state, rootState }, workflowId) {
+    async getLog({ commit, state, rootState }, { workflowId }) {
       if (isEmpty(rootState.account.selected)) return;
 
       try {
