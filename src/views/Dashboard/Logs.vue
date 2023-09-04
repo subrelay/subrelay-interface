@@ -38,7 +38,7 @@ import { ref, h, provide, computed } from 'vue';
 import { useStore } from 'vuex';
 import { NAvatar } from 'naive-ui';
 import { useQuery, useRenderSortIcon, useGetChainImg } from '@/composables';
-import { useRouter } from 'vue-router';
+import { useRouter, onBeforeRouteLeave } from 'vue-router';
 import logStatuses from '@/config/logStatuses';
 import moment from 'moment';
 
@@ -144,5 +144,10 @@ provide('search', {
   handleSelectChain,
   handleSelectStatus,
   clearAllFilters,
+});
+
+onBeforeRouteLeave((to, from) => {
+  store.commit('log/reset');
+  return true;
 });
 </script>

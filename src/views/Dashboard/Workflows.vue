@@ -41,7 +41,7 @@ import { NAvatar, useMessage, useDialog } from 'naive-ui';
 import { Icon } from '@iconify/vue';
 import { ref, h, provide, computed } from 'vue';
 import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
+import { useRouter, onBeforeRouteLeave } from 'vue-router';
 import { useQuery, useRenderSortIcon, useGetChainImg, useShowError } from '@/composables';
 import workflowStatuses from '@/config/workflowStatuses';
 import moment from 'moment';
@@ -263,5 +263,10 @@ provide('search', {
   handleSelectChain,
   handleSelectStatus,
   clearAllFilters,
+});
+
+onBeforeRouteLeave((to, from) => {
+  store.commit('log/reset');
+  return true;
 });
 </script>
